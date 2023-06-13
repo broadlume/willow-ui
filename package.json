@@ -1,0 +1,63 @@
+{
+  "name": "broadlume-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/milestone-components.cjs",
+      "import": "./dist/milestone-components.es.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": {
+      "require": "./dist/styles.css",
+      "default": "./dist/styles.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && npm run build:scss",
+    "build:scss": "tailwindcss -m -i ./src/tailwind-entry.scss -o ./dist/styles.css",
+    "storybook": "concurrently \"npm run storybook:scss\" \"storybook dev -p 6006\"",
+    "storybook:scss": "tailwindcss -w -i ./src/tailwind-entry.scss -o ./src/index.css",
+    "build-storybook": "concurrently \"npm run build-storybook:scss\" \"storybook build\"",
+    "build-storybook:scss": "tailwindcss -m -i ./src/tailwind-entry.scss -o ./src/index.css",
+    "prepublishOnly": "npm run build",
+    "bundle-analyze": "npx vite-bundle-analyzer",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.1.0-alpha.31",
+    "@storybook/addon-interactions": "^7.1.0-alpha.31",
+    "@storybook/addon-links": "^7.1.0-alpha.31",
+    "@storybook/blocks": "^7.1.0-alpha.31",
+    "@storybook/react": "^7.1.0-alpha.31",
+    "@storybook/react-vite": "^7.1.0-alpha.31",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "eslint-plugin-storybook": "^0.6.12",
+    "postcss": "^8.4.24",
+    "prop-types": "^15.8.1",
+    "sass": "^1.63.3",
+    "storybook": "^7.1.0-alpha.31",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9"
+  }
+}
