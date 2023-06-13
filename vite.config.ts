@@ -28,7 +28,6 @@ export default defineConfig({
       external: Object.keys(peerDependencies),
     },
     minify: true,
-    cssCodeSplit: true,
   },
   resolve: {
     alias: {

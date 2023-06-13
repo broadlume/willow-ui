@@ -1,7 +1,8 @@
-import './Button.scss';
+import styles from './Button.module.scss';
 
 const Button = () => {
-  return <button className='im-a-button'>I'm a button</button>;
+  const { button, test } = styles;
+  return <button className={`${button} ${test}`}>I'm a button</button>;
 };
 
 export default Button;
