@@ -7,10 +7,10 @@ type CardProps = {
 
 export const Card = ({ title, description }: CardProps) => {
   return (
-    <div className='yeee test rounded-lg shadow-lg overflow-hidden'>
+    <div className='yeee test overflow-hidden rounded-lg shadow-lg'>
       <div className='px-6 py-4'>
-        <h2 className='font-bold text-xl mb-2'>{title}</h2>
-        <p className='text-gray-700 text-base'>{description}</p>
+        <h2 className='mb-2 text-xl font-bold'>{title}</h2>
+        <p className='text-base text-gray-700'>{description}</p>
       </div>
     </div>
   );
