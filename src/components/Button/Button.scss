@@ -1,0 +1,8 @@
+@mixin blue-bg {
+  background-color: cyan;
+  border: 2px solid blue;
+}
+
+.im-a-button {
+  @include blue-bg;
+}
