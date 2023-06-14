@@ -1,3 +1,138 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+$ribbon: rgb(0 143 189 / 100%);
+$ash: rgb(34 30 32 / 100%);
+
+h1 {
+  color: $ash;
+  font-family: Moret, serif;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+h2 {
+  color: $ash;
+  font-family: Moret, serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+h3 {
+  color: $ash;
+  font-family: Moret, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+h4 {
+  color: $ash;
+  font-family: Filson-Pro, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+h5 {
+  color: $ash;
+  font-family: Filson-Pro, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+h6 {
+  color: $ash;
+  font-family: Filson-Pro, sans-serif;
+  font-size: 18px;
+  font-weight: 425;
+  line-height: 30px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+a {
+  color: $ribbon;
+  font-family: Filson-Pro, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+p {
+  color: $ash;
+}
+
+.body-large {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 18px;
+  font-weight: 425;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.body-medium {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 16px;
+  font-weight: 425;
+  line-height: 22px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.body-small {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.body-x-small {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 12px;
+  font-weight: 425;
+  line-height: 16px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.caption-1 {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.caption-2 {
+  font-family: Filson-Pro, sans-serif;
+  font-size: 12px;
+  font-weight: 425;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+}

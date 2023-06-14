@@ -1,1 +1,11 @@
 * Where are types exported from, again?
+* recommended extensions
+* check that the library can be imported
+* double check if consumers must import a stylesheet
+* We need CI/CD
+  * For now, all PRs just need approval from me
+* We need versioning
+* We need a way to distribute the library
+* Formatting - Prettier, likely requiring a .prettierrc & .prettierignore
+* A README? Not a priority though
+* Type safety for CSS modules would be nice
