@@ -20,6 +20,15 @@ import { Button } from 'broadlume-ui';
 
 We will have better examples later.
 
+In addition, since the library isn't currently hosted on NPM, here's how you can test the library in your own projects:
+
+- Clone the repo (if you're reading this right now, you've already done that).
+- Run `npm link` in the root directory of this repo.
+- Then, in your consuming project, run `npm link broadlume-ui` to link this library to your project.
+- You will then be able to consume the library, as well as make changes & see them reflected in your project.\*
+
+\*Note: in my experience, you will have to re-link every time you run `npm install` in your consuming project, as it removes symlinks. As far as I can tell, this is just an issue with `npm link` & I'm not sure if there's a workaround.
+
 ## Technologies
 
 In terms of adding components, here are some technologies installed in this library you can leverage to make your dev experience better:
