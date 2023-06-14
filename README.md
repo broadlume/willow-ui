@@ -1,4 +1,4 @@
-Hi, the better documentation is in the Storybook, for more info please run that.
+Hi, the real documentation is in the Storybook, for more info please run that.
 
 To install the dependencies of the project:
 `npm i`
