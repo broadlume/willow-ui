@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import config from '../../tailwind.config';
-const { theme: { extend: { colors } = {} } = {} } = config;
+const colors = config.theme.extend.colors;
 
 const meta = {
   title: 'Quarks/Colors',
