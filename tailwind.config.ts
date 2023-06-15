@@ -5,8 +5,8 @@ export default {
     extend: {
       colors: {
         wool: {
-          dark: '#FBF9F4',
           DEFAULT: '#FFF8E6',
+          dark: '#FBF9F4',
           light: '#FFFDF8',
         },
         ash: {

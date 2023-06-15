@@ -2,11 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-$ribbon: rgb(0 143 189 / 100%);
-$ash: rgb(34 30 32 / 100%);
-
 h1 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Moret, serif;
   font-size: 44px;
   font-weight: 700;
@@ -16,7 +13,7 @@ h1 {
 }
 
 h2 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Moret, serif;
   font-size: 32px;
   font-weight: 700;
@@ -26,7 +23,7 @@ h2 {
 }
 
 h3 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Moret, serif;
   font-size: 24px;
   font-weight: 700;
@@ -36,7 +33,7 @@ h3 {
 }
 
 h4 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Filson-Pro, sans-serif;
   font-size: 22px;
   font-weight: 700;
@@ -46,7 +43,7 @@ h4 {
 }
 
 h5 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Filson-Pro, sans-serif;
   font-size: 18px;
   font-weight: 700;
@@ -57,7 +54,7 @@ h5 {
 }
 
 h6 {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
   font-family: Filson-Pro, sans-serif;
   font-size: 18px;
   font-weight: 425;
@@ -68,7 +65,7 @@ h6 {
 }
 
 a {
-  color: $ribbon;
+  color: theme('colors.ribbon');
   font-family: Filson-Pro, sans-serif;
   font-size: 18px;
   font-weight: 500;
@@ -78,7 +75,7 @@ a {
 }
 
 p {
-  color: $ash;
+  color: theme('colors.ash.DEFAULT');
 }
 
 .body-large {
@@ -93,7 +90,7 @@ p {
 .body-medium {
   font-family: Filson-Pro, sans-serif;
   font-size: 16px;
-  font-weight: 425;
+  font-weight: 400;
   line-height: 22px;
   letter-spacing: 0;
   text-align: left;

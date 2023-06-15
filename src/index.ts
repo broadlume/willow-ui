@@ -1,4 +1,3 @@
 import './assets/typekit.css';
 import './index.scss';
-export { Card } from './components/Card/Card';
-export { default as Button } from './components/Button/Button';
+export { Button } from './components/Button/Button';
