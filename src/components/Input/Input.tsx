@@ -1,23 +1,30 @@
-type Props = {
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
+import React from 'react';
+import { cn } from '@src/lib/utils';
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   disabled?: boolean;
-};
+}
 
-export const Input = ({
-  input,
-  setInput,
-  placeholder,
-  disabled = false,
-}: Props) => {
-  return (
-    <input
-      disabled={disabled}
-      value={input}
-      onChange={(e) => setInput && setInput(e.target.value)}
-      placeholder={placeholder}
-      className='body-medium min-h-[48px] min-w-[345px] rounded-[6px] border border-ash-medium bg-white p-[12px] disabled:bg-ash-light disabled:bg-opacity-50 disabled:text-ash-medium'
-    />
-  );
-};
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(
+          'body-medium flex h-12 w-full rounded-md border border-border bg-background px-3 py-1 text-foreground shadow-sm transition-colors',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+          'placeholder:text-mutedForeground',
+          'disabled:cursor-not-allowed disabled:bg-muted disabled:bg-opacity-50 disabled:text-mutedForeground',
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Input.displayName = 'Input';
+
+export { Input };

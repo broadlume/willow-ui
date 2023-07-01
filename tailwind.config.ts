@@ -29,8 +29,11 @@ const colorPalette = {
 } as const satisfies ColorScheme;
 
 const themeToken = {
-  primary: colorPalette.heart,
-  primaryForeground: 'white',
+  background: 'white', // site background
+  foreground: colorPalette.ash.DEFAULT, // site text
+  border: colorPalette.ash.medium, // default borders
+  primary: colorPalette.heart, // site primary component background
+  primaryForeground: 'white', // site primary component text
   primaryHover: 'white',
   primaryForegroundHover: colorPalette.heart,
   secondary: colorPalette.ash.DEFAULT,
@@ -41,6 +44,10 @@ const themeToken = {
   secondaryDarkForeground: colorPalette.ash.DEFAULT,
   secondaryDarkHover: colorPalette.ash.DEFAULT,
   secondaryDarkForegroundHover: 'white',
+  muted: colorPalette.ash.light, // disabled background
+  mutedForeground: colorPalette.ash.medium, // disabled/placeholder text color
+  ring: colorPalette.ash.medium, // focus ring color
+  input: colorPalette.ash.medium, // input unchecked background color
 } as const;
 
 export default {
@@ -49,21 +56,11 @@ export default {
     extend: {
       colors: {
         ...colorPalette,
-        // shadCN
-        border: '#e1e7ef',
-        input: '#e1e7ef',
-        ring: '#94a3b8',
-
-        background: '#ffffff',
-        foreground: '#0f1729',
         ...themeToken,
+        // shadCN defaults
         destructive: {
           DEFAULT: '#ff0000',
           foreground: '#f8fafc',
-        },
-        muted: {
-          DEFAULT: '#f1f5f9',
-          foreground: '#65758b',
         },
         accent: {
           DEFAULT: '#f1f5f9',

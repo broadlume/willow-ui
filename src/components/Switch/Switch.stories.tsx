@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Toggle } from './Toggle';
+import { Switch } from './Switch';
 
 const meta = {
-  title: 'Atoms/Toggle',
-  component: Toggle,
+  title: 'Atoms/Switch',
+  component: Switch,
   tags: ['autodocs'],
-  args: {
-    onChange: undefined,
-  },
-} as Meta<typeof Toggle>;
+  argTypes: {},
+} as Meta<typeof Switch>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -17,7 +15,7 @@ export const Demo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A basic toggle.',
+        story: 'A basic switch.',
       },
     },
   },
