@@ -21,7 +21,8 @@
     "paths": {
       "broadlume-ui": ["src/index.ts"],
       "@components/*": ["src/components/*"],
-      "@src/*": ["src/*"]
+      "@src/*": ["src/*"],
+      "@/*": ["./*"]
     },
     "typeRoots": ["node_modules/@types", "src/index.d.ts"]
   },

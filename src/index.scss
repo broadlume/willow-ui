@@ -133,3 +133,40 @@ p {
   text-align: left;
   text-transform: uppercase;
 }
+
+// ShadCN
+@layer base {
+  :root {
+    --border: theme('colors.border');
+    --input: theme('colors.input');
+    --ring: theme('colors.ring');
+    --background: theme('colors.background');
+    --foreground: theme('colors.foreground');
+    --primary: theme('colors.primary');
+    --primary-foreground: theme('colors.primaryForeground');
+    --secondary: theme('colors.secondary');
+    --secondary-foreground: theme('colors.secondaryForeground');
+    --destructive: theme('colors.destructive.DEFAULT');
+    --destructive-foreground: theme('colors.destructive.foreground');
+    --muted: theme('colors.muted.DEFAULT');
+    --muted-foreground: theme('colors.muted.foreground');
+    --accent: theme('colors.accent.DEFAULT');
+    --accent-foreground: theme('colors.accent.foreground');
+    --popover: theme('colors.popover.DEFAULT');
+    --popover-foreground: theme('colors.popover.foreground');
+    --card: theme('colors.card.DEFAULT');
+    --card-foreground: theme('colors.card.foreground');
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}

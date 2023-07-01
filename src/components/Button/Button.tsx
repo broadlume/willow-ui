@@ -16,7 +16,7 @@ export const Button = ({
   const variantTextStyles = {
     primary: 'caption-1 text-white group-hover:text-heart',
     secondary: 'body-x-small text-white group-hover:text-ash',
-    'secondary-dark': 'body-x-small text-ash group-hover:text-white',
+    'secondary-dark': 'text-ash group-hover:text-white body-x-small',
   };
 
   return (
