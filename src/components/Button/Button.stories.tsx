@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './Button';
-import config from '../../../tailwind.config';
+import config from '@/tailwind.config';
 const colors = config.theme.extend.colors;
 
 const meta = {
@@ -19,7 +19,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     children: 'Button Label',
-    variant: 'primary',
   },
 };
 
@@ -27,7 +26,7 @@ export const Secondary: Story = {
   parameters: {
     backgrounds: {
       default: 'ash',
-      values: [{ name: 'ash', value: colors?.ash.DEFAULT }],
+      values: [{ name: 'ash', value: colors.ash.DEFAULT }],
     },
   },
   args: {

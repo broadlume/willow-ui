@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import config from '../../tailwind.config';
+import config from '@/tailwind.config';
 const colors = config.theme.extend.colors;
 
 const meta = {
