@@ -19,7 +19,6 @@
     "declarationMap": true,
     "baseUrl": ".",
     "paths": {
-      "broadlume-ui": ["src/index.ts"],
       "@components/*": ["src/components/*"],
       "@src/*": ["src/*"],
       "@/*": ["./*"]
