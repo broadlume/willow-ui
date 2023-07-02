@@ -13,7 +13,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'caption-1 min-h-[44px] border-heart bg-primary text-primaryForeground hover:bg-primaryHover hover:text-primaryForegroundHover',
+          'caption-1 min-h-[44px] border-primary bg-primary text-primaryForeground hover:bg-primaryHover hover:text-primaryForegroundHover',
         secondary:
           'body-x-small min-h-[30px] border border-white bg-secondary text-secondaryForeground ring-offset-ash hover:bg-secondaryHover hover:text-secondaryForegroundHover',
         'secondary-dark':

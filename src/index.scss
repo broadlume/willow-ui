@@ -150,8 +150,8 @@ p {
     --destructive-foreground: theme('colors.destructive.foreground');
     --muted: theme('colors.muted');
     --muted-foreground: theme('colors.mutedForeground');
-    --accent: theme('colors.accent.DEFAULT');
-    --accent-foreground: theme('colors.accent.foreground');
+    --accent: theme('colors.accent');
+    --accent-foreground: theme('colors.accentForeground');
     --popover: theme('colors.popover.DEFAULT');
     --popover-foreground: theme('colors.popover.foreground');
     --card: theme('colors.card.DEFAULT');

@@ -2,11 +2,6 @@ import type { Config } from 'tailwindcss';
 // this type error should be fixed by the tailwindcss-animate team in the next week
 import twAnimate from 'tailwindcss-animate';
 
-type ColorValue = string;
-interface ColorScheme {
-  [color: string]: ColorValue | ColorScheme;
-}
-
 const colorPalette = {
   wool: {
     DEFAULT: '#FFF8E6',
@@ -17,6 +12,7 @@ const colorPalette = {
     DEFAULT: '#221E20',
     medium: '#747474',
     light: '#D1D1D1',
+    lighter: '#E8E8E8',
     lightest: '#F9F9F9',
   },
   gold: '#EEA820',
@@ -26,7 +22,7 @@ const colorPalette = {
   ribbon: '#008FBD',
   success: '#20A585',
   danger: '#B71717',
-} as const satisfies ColorScheme;
+} as const;
 
 const themeToken = {
   background: 'white', // site background
@@ -44,10 +40,13 @@ const themeToken = {
   secondaryDarkForeground: colorPalette.ash.DEFAULT,
   secondaryDarkHover: colorPalette.ash.DEFAULT,
   secondaryDarkForegroundHover: 'white',
-  muted: colorPalette.ash.light, // disabled background
+  muted: colorPalette.ash.lighter, // disabled background
   mutedForeground: colorPalette.ash.medium, // disabled/placeholder text color
   ring: colorPalette.ash.medium, // focus ring color
   input: colorPalette.ash.medium, // input unchecked background color
+  accent: colorPalette.ash.lightest, // background hover color
+  accentForeground: colorPalette.ash.medium, // background hover text
+  active: colorPalette.ash.lighter, // active background color
 } as const;
 
 export default {
@@ -61,10 +60,6 @@ export default {
         destructive: {
           DEFAULT: '#ff0000',
           foreground: '#f8fafc',
-        },
-        accent: {
-          DEFAULT: '#f1f5f9',
-          foreground: '#0f1729',
         },
         popover: {
           DEFAULT: '#ffffff',
