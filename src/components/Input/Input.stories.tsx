@@ -20,3 +20,16 @@ export const Demo: Story = {
     },
   },
 };
+
+export const Password = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'A password input field.',
+      },
+    },
+  },
+  args: {
+    type: 'password',
+  },
+};
