@@ -1,63 +1,129 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './Button';
-import config from '../../../tailwind.config';
-import { useState } from 'react';
-const colors = config.theme.extend.colors;
 
-const meta = {
-  title: 'Atoms/Button',
+import { Button } from './Button';
+import { HomeIcon } from '@radix-ui/react-icons';
+
+const meta: Meta<typeof Button> = {
   component: Button,
   tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof Button>;
+
+export const Demo: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'A basic button.',
+      },
+    },
+  },
+  args: {
+    children: 'Button Label',
+  },
   argTypes: {
     children: {
-      control: { type: 'text' },
-      description: 'Text to display',
+      description: 'The button label.',
+      control: {
+        type: 'text',
+      },
     },
-  },
-} satisfies Meta<typeof Button>;
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Primary: Story = {
-  args: {
-    children: 'Button Label',
+    variant: {
+      description: 'The button variant.',
+      control: {
+        type: 'select',
+        options: [
+          'primary',
+          'secondary',
+          'outline',
+          'destructive',
+          'ghost',
+          'link',
+        ],
+      },
+    },
+    size: {
+      description: 'The button size.',
+      control: {
+        type: 'select',
+        options: ['default', 'sm', 'lg', 'icon'],
+      },
+    },
+    disabled: {
+      description: 'Whether the button is disabled.',
+      control: {
+        type: 'boolean',
+      },
+    },
+    asChild: {
+      description: 'Whether the button is rendered as a child of a slot.',
+      control: {
+        type: 'boolean',
+      },
+    },
   },
 };
 
-export const Secondary: Story = {
+export const Variants: Story = {
   parameters: {
-    backgrounds: {
-      default: 'ash',
-      values: [{ name: 'ash', value: colors.ash.DEFAULT }],
+    docs: {
+      description: {
+        story: 'All button variants.',
+      },
     },
   },
   args: {
     children: 'Button Label',
-    variant: 'secondary',
   },
+  render: (args) => (
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
+        <Button {...args}>Primary</Button>
+        <Button {...args} variant='secondary'>
+          Secondary
+        </Button>
+        <Button {...args} variant='outline'>
+          Outline
+        </Button>
+        <Button {...args} variant='destructive'>
+          Destructive
+        </Button>
+        <Button {...args} variant='ghost'>
+          Ghost
+        </Button>
+        <Button {...args} variant='link'>
+          Link
+        </Button>
+      </div>
+    </div>
+  ),
 };
-
-export const SecondaryDark: Story = {
+export const Sizes: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'All button sizes.',
+      },
+    },
+  },
   args: {
     children: 'Button Label',
-    variant: 'secondary-dark',
   },
-};
-
-export const Counter: Story = {
-  args: {
-    children: '+',
-    variant: 'primary',
-  },
-  render: (args) => {
-    const [count, setCount] = useState(0);
-    return (
-      <div className='flex items-center'>
-        <Button {...args} onClick={() => setCount((count) => count + 1)}>
-          {args.children}
+  render: (args) => (
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
+        <Button {...args} size='lg'>
+          Primary (lg)
         </Button>
-        <span className='ml-2'>{count}</span>
+        <Button {...args}>Primary (default)</Button>
+        <Button {...args} size='sm'>
+          Primary (sm)
+        </Button>
+        <Button {...args} size='icon'>
+          <HomeIcon />
+        </Button>
       </div>
-    );
-  },
+    </div>
+  ),
 };

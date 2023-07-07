@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Switch } from './Switch';
+import { Label } from '@components/Label/Label';
 
 const meta = {
-  title: 'Atoms/Switch',
   component: Switch,
   tags: ['autodocs'],
-  argTypes: {},
 } as Meta<typeof Switch>;
 
 export default meta;
@@ -19,4 +18,10 @@ export const Demo: Story = {
       },
     },
   },
+  render: (_) => (
+    <div className='flex items-center space-x-2'>
+      <Switch id='airplane-mode' />
+      <Label htmlFor='airplane-mode'>Airplane Mode</Label>
+    </div>
+  ),
 };
