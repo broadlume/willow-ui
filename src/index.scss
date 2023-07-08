@@ -78,62 +78,6 @@ p {
   color: theme('colors.ash.DEFAULT');
 }
 
-.body-large {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 18px;
-  font-weight: 425;
-  line-height: 24px;
-  letter-spacing: 0;
-  text-align: left;
-}
-
-.body-medium {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 22px;
-  letter-spacing: 0;
-  text-align: left;
-}
-
-.body-small {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 20px;
-  letter-spacing: 0;
-  text-align: left;
-}
-
-.body-x-small {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 12px;
-  font-weight: 425;
-  line-height: 16px;
-  letter-spacing: 0;
-  text-align: left;
-}
-
-.caption-1 {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 20px;
-  letter-spacing: 0.02em;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.caption-2 {
-  font-family: Filson-Pro, sans-serif;
-  font-size: 12px;
-  font-weight: 425;
-  line-height: 20px;
-  letter-spacing: 0.02em;
-  text-align: left;
-  text-transform: uppercase;
-}
-
 // ShadCN
 @layer base {
   :root {
@@ -192,5 +136,63 @@ p {
     @apply bg-background text-foreground;
 
     font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+@layer utilities {
+  .body-large {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 18px;
+    font-weight: 425;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  .body-medium {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 22px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  .body-small {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  .body-x-small {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 12px;
+    font-weight: 425;
+    line-height: 16px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  .caption-1 {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .caption-2 {
+    font-family: Filson-Pro, sans-serif;
+    font-size: 12px;
+    font-weight: 425;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    text-transform: uppercase;
   }
 }
