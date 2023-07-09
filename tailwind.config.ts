@@ -24,31 +24,6 @@ const colorPalette = {
   danger: '#B71717',
 } as const;
 
-const themeToken = {
-  background: 'white', // site background
-  foreground: colorPalette.ash.DEFAULT, // site text
-  border: colorPalette.ash.medium, // default borders
-  primary: colorPalette.heart, // site primary component background
-  primaryForeground: 'white', // site primary component text
-  primaryHover: 'white',
-  primaryForegroundHover: colorPalette.heart,
-  secondary: colorPalette.ash.DEFAULT,
-  secondaryForeground: 'white',
-  secondaryHover: 'white',
-  secondaryForegroundHover: colorPalette.ash.DEFAULT,
-  secondaryDark: 'white',
-  secondaryDarkForeground: colorPalette.ash.DEFAULT,
-  secondaryDarkHover: colorPalette.ash.DEFAULT,
-  secondaryDarkForegroundHover: 'white',
-  muted: colorPalette.ash.lighter, // disabled background
-  mutedForeground: colorPalette.ash.medium, // disabled/placeholder text color
-  ring: colorPalette.ash.medium, // focus ring color
-  input: colorPalette.ash.medium, // input unchecked background color
-  accent: colorPalette.ash.lightest, // background hover color
-  accentForeground: colorPalette.ash.medium, // background hover text
-  active: colorPalette.ash.lighter, // active background color
-} as const;
-
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
