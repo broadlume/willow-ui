@@ -28,12 +28,20 @@ export const Default: Story = {
       },
     },
   },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'pills'],
+    },
+  },
 
-  render: (_) => (
-    <Tabs defaultValue='account' className='w-[400px]'>
-      <TabsList className='grid w-full grid-cols-2'>
-        <TabsTrigger value='account'>Account</TabsTrigger>
-        <TabsTrigger value='password'>Password</TabsTrigger>
+  render: (args) => (
+    <Tabs defaultValue='contacts' {...args}>
+      <TabsList className='grid grid-cols-4'>
+        <TabsTrigger value='leads'>Leads</TabsTrigger>
+        <TabsTrigger value='contacts'>Contacts</TabsTrigger>
+        <TabsTrigger value='stores'>Stores</TabsTrigger>
+        <TabsTrigger value='reviews'>Reviews</TabsTrigger>
       </TabsList>
     </Tabs>
   ),
@@ -49,7 +57,7 @@ export const WithContent: Story = {
   },
   render: (_) => (
     <Tabs defaultValue='account' className='w-[400px]'>
-      <TabsList className='grid w-full grid-cols-2'>
+      <TabsList className='grid grid-cols-2'>
         <TabsTrigger value='account'>Account</TabsTrigger>
         <TabsTrigger value='password'>Password</TabsTrigger>
       </TabsList>
