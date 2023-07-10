@@ -31,17 +31,15 @@ export const Demo: Story = {
     },
     variant: {
       description: 'The button variant.',
-      control: {
-        type: 'select',
-        options: [
-          'primary',
-          'secondary',
-          'outline',
-          'destructive',
-          'ghost',
-          'link',
-        ],
-      },
+      control: 'select',
+      options: [
+        'default',
+        'secondary',
+        'outline',
+        'destructive',
+        'ghost',
+        'link',
+      ],
     },
     size: {
       description: 'The button size.',

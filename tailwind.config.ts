@@ -4,24 +4,24 @@ import twAnimate from 'tailwindcss-animate';
 
 const colorPalette = {
   wool: {
-    DEFAULT: '#FFF8E6',
-    dark: '#FBF9F4',
-    light: '#FFFDF8',
+    DEFAULT: 'hsl(var(--wool))',
+    dark: 'hsl(var(--wool-dark))',
+    light: 'hsl(var(--wool-light))',
   },
   ash: {
-    DEFAULT: '#221E20',
-    medium: '#747474',
-    light: '#D1D1D1',
-    lighter: '#E8E8E8',
-    lightest: '#F9F9F9',
+    DEFAULT: 'hsl(var(--ash))',
+    medium: 'hsl(var(--ash-medium))',
+    light: 'hsl(var(--ash-light))',
+    lighter: 'hsl(var(--ash-lighter))',
+    lightest: 'hsl(var(--ash-lightest))',
   },
-  gold: '#EEA820',
-  beryl: '#3FCFAD',
-  mosaic: '#24CAFF',
-  heart: '#A52F76',
-  ribbon: '#008FBD',
-  success: '#20A585',
-  danger: '#B71717',
+  gold: 'hsl(var(--gold))',
+  beryl: 'hsl(var(--beryl))',
+  mosaic: 'hsl(var(--mosaic))',
+  heart: 'hsl(var(--heart))',
+  ribbon: 'hsl(var(--ribbon))',
+  success: 'hsl(var(--success))',
+  danger: 'hsl(var(--danger))',
 } as const;
 
 export default {
