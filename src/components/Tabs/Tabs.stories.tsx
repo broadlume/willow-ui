@@ -55,8 +55,8 @@ export const WithContent: Story = {
       },
     },
   },
-  render: (_) => (
-    <Tabs defaultValue='account' className='w-[400px]'>
+  render: (args) => (
+    <Tabs defaultValue='account' className='w-[400px]' {...args}>
       <TabsList className='grid grid-cols-2'>
         <TabsTrigger value='account'>Account</TabsTrigger>
         <TabsTrigger value='password'>Password</TabsTrigger>
