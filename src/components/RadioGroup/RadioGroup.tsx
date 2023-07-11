@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { CheckIcon } from '@radix-ui/react-icons';
+import React from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 
 import { cn } from '@src/lib/utils';
@@ -21,18 +20,26 @@ RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, children, ...props }, ref) => {
+>(({ className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        'aspect-square h-4 w-4 rounded-full border border-primary text-primary shadow focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'group aspect-square h-5 w-5 rounded-full border-2 border-input text-primary shadow',
+        'focus:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        'data-[state="checked"]:border-primary',
         className
       )}
       {...props}
     >
       <RadioGroupPrimitive.Indicator className='flex items-center justify-center'>
-        <CheckIcon className='h-3.5 w-3.5 fill-primary' />
+        <div
+          className={cn(
+            'aspect-square h-3 w-3 rounded-full bg-primary',
+            'group-data-[state="checked"]:animate-in group-data-[state="checked"]:zoom-in-75'
+          )}
+        ></div>
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );
