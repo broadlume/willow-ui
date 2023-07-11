@@ -190,7 +190,7 @@ export const WithRadioItems: Story = {
   render: WithRadioItemsComponent,
 };
 
-const DropdownMenuStressTest = (_) => {
+const WithEverythingComponent = (_) => {
   const [bookmarksChecked, setBookmarksChecked] = useState(true);
   const [urlsChecked, setUrlsChecked] = useState(false);
   const [person, setPerson] = useState('pedro');
@@ -245,6 +245,6 @@ const DropdownMenuStressTest = (_) => {
   );
 };
 
-export const DropdownMenuStressTestDemo: Story = {
-  render: DropdownMenuStressTest,
+export const WithEverything: Story = {
+  render: WithEverythingComponent,
 };
