@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Card, CardContent, Separator } from '@src/index';
 import { colorPalette, themeColors } from '../../tailwind.config';
 
@@ -22,7 +22,7 @@ const ColorCard = (
   const [matchedColor, setMatchedColor] = useState('');
   const [textColor, setTextColor] = useState('black');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (colorRef.current) {
       const _computedColor = window.getComputedStyle(
         colorRef.current
@@ -86,10 +86,7 @@ const flattenColorConfig = (
 const ColorPaletteDemoComponent = (_) => {
   const colorPaletteFlattened = flattenColorConfig(colorPalette);
   const themeColorsFlattened = flattenColorConfig(themeColors);
-
   const calculatedColors = useRef<Record<string, string>>({});
-
-  console.log(calculatedColors);
 
   return (
     <div className='flex flex-col gap-4'>
