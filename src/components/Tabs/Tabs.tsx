@@ -53,8 +53,7 @@ const tabTriggerVariants = cva(
     variants: {
       variant: {
         default: 'h-full border-b border-border',
-        pills:
-          'z-10 rounded-full mix-blend-difference data-[state=active]:text-white',
+        pills: 'z-10 rounded-full data-[state=active]:text-white',
       },
     },
     defaultVariants: {
