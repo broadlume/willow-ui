@@ -9,3 +9,4 @@ export * from '@components/Calendar/Calendar';
 export * from '@components/Checkbox/Checkbox';
 export * from '@components/Popover/Popover';
 export * from '@components/Tooltip/Tooltip';
+export * from '@components/Separator/Separator';

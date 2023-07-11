@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import config from '../../tailwind.config';
-const colors = config.theme.extend.colors;
+import { useEffect, useRef, useState } from 'react';
+import { Card, CardContent, Separator } from '@src/index';
+import { colorPalette, themeColors } from '../../tailwind.config';
 
 const meta = {
   title: 'Quarks/Colors',
@@ -10,18 +11,45 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mapColorString = (name: string, color: string) => (
-  <div key={name} className='m-[10px]'>
-    <div
-      className='h-[100px] w-[100px] rounded-[20px]'
-      style={{
-        backgroundColor: color,
-      }}
-    ></div>
-    <p>{name}</p>
-    <p>{color}</p>
-  </div>
-);
+const ColorCard = (variableName: string) => {
+  const colorRef = useRef<HTMLDivElement>(null);
+
+  const [computedColor, setComputedColor] = useState('');
+  const [textColor, setTextColor] = useState('black');
+
+  useEffect(() => {
+    if (colorRef.current) {
+      const color = window.getComputedStyle(colorRef.current).backgroundColor;
+      const rgb = color.match(/(\d+), (\d+), (\d+)/);
+
+      if (rgb) {
+        const [r, g, b] = rgb.slice(1, 4).map(Number);
+        // calculate the luminance of the background color
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        // choose either white or black text color based on the luminance
+        const textColor = luminance > 0.5 ? 'black' : 'white';
+
+        setComputedColor(color);
+        setTextColor(textColor);
+      }
+    }
+  }, []);
+
+  return (
+    <Card
+      ref={colorRef}
+      key={variableName}
+      className='m-[10px]'
+      style={{ backgroundColor: `hsl(var(--${variableName}))` }}
+    >
+      <CardContent className='p-6'>
+        <p style={{ color: textColor }}>{variableName}</p>
+        <p style={{ color: textColor }}>{computedColor}</p>
+      </CardContent>
+    </Card>
+  );
+};
 const flattenColorConfig = (
   obj?: Record<string, string | Record<string, string>>
 ) => {
@@ -48,13 +76,29 @@ export const Palette: Story = {
       },
     },
   },
-  render: () => {
-    const flattened = flattenColorConfig(colors);
+  render: (_) => {
+    const colorPaletteFlattened = flattenColorConfig(colorPalette);
+    const themeColorsFlattened = flattenColorConfig(themeColors);
     return (
-      <div className='flex flex-wrap'>
-        {Object.entries(flattened).map(([name, value]) => {
-          return mapColorString(name, value);
-        })}
+      <div className='flex flex-col gap-4'>
+        <p className='body-large'>
+          Note: All colors are defined with HSL values, so RGB conversion may
+          not be 100% accurate.
+        </p>
+        <Separator />
+        <p className='body-large'>Palette</p>
+        <div className='flex flex-wrap'>
+          {Object.entries(colorPaletteFlattened).map(([name]) => {
+            return ColorCard(name);
+          })}
+        </div>
+        <Separator />
+        <p className='body-large'>Theme Colors</p>
+        <div className='flex flex-wrap'>
+          {Object.entries(themeColorsFlattened).map(([name]) => {
+            return ColorCard(name);
+          })}
+        </div>
       </div>
     );
   },
