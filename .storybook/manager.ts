@@ -1,11 +1,11 @@
 import { addons } from '@storybook/manager-api';
 import { create } from '@storybook/theming/create';
-import CombinationMark from '../src/assets/onyx-combination-mark.svg';
+import Logo from '../src/assets/willow-ui-logo.svg';
 
 const theme = create({
   base: 'light',
-  brandTitle: 'Onyx Design System',
-  brandImage: CombinationMark,
+  brandTitle: 'Willow Design System',
+  brandImage: Logo,
   brandTarget: '_self',
 });
 
