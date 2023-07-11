@@ -11,16 +11,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const ColorCard = (variableName: string) => {
+const ColorCard = (
+  variableName: string,
+  dictionary: Record<string, string>,
+  isBaseColor = false
+) => {
   const colorRef = useRef<HTMLDivElement>(null);
 
   const [computedColor, setComputedColor] = useState('');
+  const [matchedColor, setMatchedColor] = useState('');
   const [textColor, setTextColor] = useState('black');
 
   useEffect(() => {
     if (colorRef.current) {
-      const color = window.getComputedStyle(colorRef.current).backgroundColor;
-      const rgb = color.match(/(\d+), (\d+), (\d+)/);
+      const _computedColor = window.getComputedStyle(
+        colorRef.current
+      ).backgroundColor;
+      const rgb = _computedColor.match(/(\d+), (\d+), (\d+)/);
 
       if (rgb) {
         const [r, g, b] = rgb.slice(1, 4).map(Number);
@@ -30,11 +37,15 @@ const ColorCard = (variableName: string) => {
         // choose either white or black text color based on the luminance
         const textColor = luminance > 0.5 ? 'black' : 'white';
 
-        setComputedColor(color);
+        if (isBaseColor) dictionary[_computedColor] = variableName;
+        else if (dictionary[_computedColor])
+          setMatchedColor(dictionary[_computedColor]);
+
+        setComputedColor(_computedColor);
         setTextColor(textColor);
       }
     }
-  }, []);
+  }, [variableName, dictionary, isBaseColor]);
 
   return (
     <Card
@@ -44,8 +55,12 @@ const ColorCard = (variableName: string) => {
       style={{ backgroundColor: `hsl(var(--${variableName}))` }}
     >
       <CardContent className='p-6'>
-        <p style={{ color: textColor }}>{variableName}</p>
-        <p style={{ color: textColor }}>{computedColor}</p>
+        <p style={{ color: textColor }} className='font-medium'>
+          {variableName}
+        </p>
+        <p style={{ color: textColor }}>
+          {(matchedColor && `--${matchedColor}`) || computedColor}
+        </p>
       </CardContent>
     </Card>
   );
@@ -68,6 +83,38 @@ const flattenColorConfig = (
   return flattened;
 };
 
+const ColorPaletteDemoComponent = (_) => {
+  const colorPaletteFlattened = flattenColorConfig(colorPalette);
+  const themeColorsFlattened = flattenColorConfig(themeColors);
+
+  const calculatedColors = useRef<Record<string, string>>({});
+
+  console.log(calculatedColors);
+
+  return (
+    <div className='flex flex-col gap-4'>
+      <p className='body-large'>
+        Note: All colors are defined in index.scss with HSL values, so RGB
+        conversion may not be 100% accurate.
+      </p>
+      <Separator />
+      <p className='body-large'>Palette</p>
+      <div className='flex flex-wrap'>
+        {Object.entries(colorPaletteFlattened).map(([name]) => {
+          return ColorCard(name, calculatedColors.current, true);
+        })}
+      </div>
+      <Separator />
+      <p className='body-large'>Theme Colors</p>
+      <div className='flex flex-wrap'>
+        {Object.entries(themeColorsFlattened).map(([name]) => {
+          return ColorCard(name, calculatedColors.current);
+        })}
+      </div>
+    </div>
+  );
+};
+
 export const Palette: Story = {
   parameters: {
     docs: {
@@ -76,30 +123,5 @@ export const Palette: Story = {
       },
     },
   },
-  render: (_) => {
-    const colorPaletteFlattened = flattenColorConfig(colorPalette);
-    const themeColorsFlattened = flattenColorConfig(themeColors);
-    return (
-      <div className='flex flex-col gap-4'>
-        <p className='body-large'>
-          Note: All colors are defined with HSL values, so RGB conversion may
-          not be 100% accurate.
-        </p>
-        <Separator />
-        <p className='body-large'>Palette</p>
-        <div className='flex flex-wrap'>
-          {Object.entries(colorPaletteFlattened).map(([name]) => {
-            return ColorCard(name);
-          })}
-        </div>
-        <Separator />
-        <p className='body-large'>Theme Colors</p>
-        <div className='flex flex-wrap'>
-          {Object.entries(themeColorsFlattened).map(([name]) => {
-            return ColorCard(name);
-          })}
-        </div>
-      </div>
-    );
-  },
+  render: ColorPaletteDemoComponent,
 };
