@@ -168,9 +168,14 @@ p {
   }
 
   .body-medium {
+    @apply body-medium-base;
+
+    font-weight: 300;
+  }
+
+  .body-medium-base {
     font-family: Filson-Pro, sans-serif;
     font-size: 16px;
-    font-weight: 300;
     line-height: 22px;
     letter-spacing: 0;
     text-align: left;

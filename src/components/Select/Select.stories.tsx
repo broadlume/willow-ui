@@ -52,30 +52,6 @@ export const Demo: Story = {
   ),
 };
 
-export const Default: StoryObj = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic select.',
-      },
-    },
-  },
-  render: (_) => (
-    <Select>
-      <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Select a fruit' />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value='apple'>Apple</SelectItem>
-        <SelectItem value='banana'>Banana</SelectItem>
-        <SelectItem value='blueberry'>Blueberry</SelectItem>
-        <SelectItem value='grapes'>Grapes</SelectItem>
-        <SelectItem value='pineapple'>Pineapple</SelectItem>
-      </SelectContent>
-    </Select>
-  ),
-};
-
 export const WithGroups: StoryObj = {
   parameters: {
     docs: {
