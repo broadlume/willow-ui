@@ -48,7 +48,7 @@ export const Styled: Story = {
         <TooltipTrigger asChild>
           <Button variant='outline'>Hover over me!</Button>
         </TooltipTrigger>
-        <TooltipContent className='bg-secondary'>
+        <TooltipContent className='bg-beryl'>
           <p>You did it!</p>
         </TooltipContent>
       </Tooltip>

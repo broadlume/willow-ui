@@ -16,7 +16,7 @@ export const WithText: Story = {
       <Checkbox id='terms1' />
       <div className='grid gap-1 leading-none'>
         <Label htmlFor='terms1'>Accept terms and conditions</Label>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground'>
           You agree to our Terms of Service and Privacy Policy.
         </p>
       </div>

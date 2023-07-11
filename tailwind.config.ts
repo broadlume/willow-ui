@@ -20,13 +20,14 @@ export const colorPalette = {
   mosaic: 'hsl(var(--mosaic))',
   heart: 'hsl(var(--heart))',
   ribbon: 'hsl(var(--ribbon))',
-  success: 'hsl(var(--success))',
+  junglegreen: 'hsl(var(--junglegreen))',
   danger: 'hsl(var(--danger))',
 } as const;
 
 export const themeColors = {
   border: 'hsl(var(--border))',
   input: 'hsl(var(--input))',
+  placeholder: 'hsl(var(--placeholder))',
   ring: 'hsl(var(--ring))',
   background: 'hsl(var(--background))',
   foreground: 'hsl(var(--foreground))',
@@ -41,6 +42,10 @@ export const themeColors = {
   destructive: {
     DEFAULT: 'hsl(var(--destructive))',
     foreground: 'hsl(var(--destructive-foreground))',
+  },
+  success: {
+    DEFAULT: 'hsl(var(--success))',
+    foreground: 'hsl(var(--success-foreground))',
   },
   muted: {
     DEFAULT: 'hsl(var(--muted))',

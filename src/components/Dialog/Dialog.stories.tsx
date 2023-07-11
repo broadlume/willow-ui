@@ -39,7 +39,7 @@ export const Default: Story = {
             </Label>
             <Input
               id='name'
-              defaultValue='Pedro Duarte'
+              defaultValue='Scott Hetrick'
               className='col-span-3'
             />
           </div>
@@ -49,7 +49,7 @@ export const Default: Story = {
             </Label>
             <Input
               id='username'
-              defaultValue='@peduarte'
+              defaultValue='@dreadhalor'
               className='col-span-3'
             />
           </div>

@@ -7,16 +7,16 @@ import { cn } from '@src/lib/utils';
 const toggleVariants = cva(
   [
     'body-medium inline-flex items-center justify-center rounded-md bg-transparent transition-colors',
-    'hover:bg-muted hover:text-muted-foreground',
+    'hover:bg-accent hover:text-muted-foreground',
     'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
     'disabled:pointer-events-none disabled:opacity-50',
-    'data-[state=on]:bg-accent data-[state=on]:text-accent-foreground',
+    'data-[state=on]:bg-secondary data-[state=on]:text-accent-foreground',
   ],
   {
     variants: {
       variant: {
         default: '',
-        outline: 'border border-input shadow-sm hover:bg-accent',
+        outline: 'border border-input shadow-sm',
       },
       shape: {
         default: '',

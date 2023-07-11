@@ -193,7 +193,7 @@ export const WithRadioItems: Story = {
 const WithEverythingComponent = (_) => {
   const [bookmarksChecked, setBookmarksChecked] = useState(true);
   const [urlsChecked, setUrlsChecked] = useState(false);
-  const [person, setPerson] = useState('pedro');
+  const [person, setPerson] = useState('dread');
 
   return (
     <DropdownMenu>
@@ -238,7 +238,9 @@ const WithEverythingComponent = (_) => {
           <DropdownMenuRadioItem value='pedro'>
             Pedro Duarte
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value='colm'>Colm Tuite</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value='dread'>
+            Scott Hetrick
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
