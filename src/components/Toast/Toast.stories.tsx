@@ -32,6 +32,11 @@ const meta: Meta = {
         options: ['default', 'destructive'],
       },
     },
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
   },
 };
 

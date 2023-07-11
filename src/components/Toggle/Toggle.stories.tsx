@@ -5,6 +5,17 @@ import { Toggle } from './Toggle';
 const meta: Meta<typeof Toggle> = {
   component: Toggle,
   tags: ['autodocs'],
+  argTypes: {
+    disabled: {
+      description: 'Whether the toggle button is disabled.',
+      control: 'boolean',
+    },
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+  },
 };
 
 export default meta;

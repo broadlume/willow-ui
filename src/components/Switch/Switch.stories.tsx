@@ -5,6 +5,17 @@ import { Label } from '@components/Label/Label';
 const meta = {
   component: Switch,
   tags: ['autodocs'],
+  argTypes: {
+    disabled: {
+      description: 'Whether the switch is disabled.',
+      control: 'boolean',
+    },
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+  },
 } as Meta<typeof Switch>;
 
 export default meta;
@@ -18,9 +29,9 @@ export const Demo: Story = {
       },
     },
   },
-  render: (_) => (
+  render: (args) => (
     <div className='flex items-center space-x-2'>
-      <Switch id='airplane-mode' />
+      <Switch id='airplane-mode' {...args} />
       <Label htmlFor='airplane-mode'>Airplane Mode</Label>
     </div>
   ),

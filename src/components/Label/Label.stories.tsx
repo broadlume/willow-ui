@@ -19,6 +19,17 @@ export const Demo: Story = {
       },
     },
   },
+  argTypes: {
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+    children: {
+      control: 'text',
+      description: 'The label text.',
+    },
+  },
   args: {
     children: 'Accept terms and conditions',
   },

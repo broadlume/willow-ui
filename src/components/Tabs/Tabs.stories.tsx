@@ -15,6 +15,13 @@ import {
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
   tags: ['autodocs'],
+  argTypes: {
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+  },
 };
 
 export default meta;

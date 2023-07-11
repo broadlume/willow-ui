@@ -17,6 +17,11 @@ export const Default: Story = {
       description: 'Whether the slider is disabled.',
       control: 'boolean',
     },
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
   },
   render: (args) => (
     <Slider

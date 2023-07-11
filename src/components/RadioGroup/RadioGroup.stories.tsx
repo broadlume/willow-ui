@@ -20,8 +20,25 @@ export const Demo: Story = {
       },
     },
   },
-  render: (_) => (
-    <RadioGroup defaultValue='comfortable'>
+  argTypes: {
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+    disabled: {
+      control: 'boolean',
+      defaultValue: false,
+      description: 'Whether the radio group is disabled.',
+      table: {
+        type: {
+          summary: 'boolean',
+        },
+      },
+    },
+  },
+  render: (args) => (
+    <RadioGroup defaultValue='comfortable' {...args}>
       <div className='flex items-center space-x-2'>
         <RadioGroupItem value='default' id='r1' />
         <Label htmlFor='r1'>Default</Label>
