@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from './AlertDialog';
+import { Button } from '@src/index';
 
 const meta: Meta<typeof AlertDialog> = {
   component: AlertDialog,
@@ -25,6 +26,29 @@ export const Default: Story = {
   render: (_) => (
     <AlertDialog>
       <AlertDialogTrigger>Open</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. You will forfeit all of your bagels,
+            and your dog will think less of you.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ),
+};
+
+export const CustomTrigger: Story = {
+  render: (_) => (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button>Open</Button>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

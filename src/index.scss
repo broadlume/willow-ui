@@ -76,6 +76,8 @@ a {
 
 p {
   color: theme('colors.ash.DEFAULT');
+
+  @apply body-medium;
 }
 
 // Shadcn/ui

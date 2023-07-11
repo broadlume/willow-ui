@@ -6,7 +6,16 @@ import { buttonVariants } from '@src/index';
 
 const AlertDialog = AlertDialogPrimitive.Root;
 
-const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
+const AlertDialogTrigger = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Trigger
+    ref={ref}
+    className={cn('body-medium', className)}
+    {...props}
+  />
+));
 
 const AlertDialogPortal = ({
   className,
