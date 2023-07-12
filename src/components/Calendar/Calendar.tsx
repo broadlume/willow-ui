@@ -19,7 +19,7 @@ function Calendar({
       className={cn('p-3', className)}
       classNames={{
         months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
-        month: 'space-y-4',
+        month: 'space-y-4 body-medium-base',
         caption: 'flex justify-center pt-1 relative items-center',
         caption_label: 'text-sm font-medium',
         nav: 'space-x-1 flex items-center',
@@ -28,13 +28,14 @@ function Calendar({
         nav_button_next: 'absolute right-1',
         table: 'w-full border-collapse space-y-1',
         head_row: 'flex',
-        head_cell:
-          'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]',
+        head_cell: cn(
+          'caption-1-base w-8 text-center font-normal text-muted-foreground'
+        ),
         row: 'flex w-full mt-2',
         cell: cn(
-          'relative p-0 text-center text-sm focus-within:relative focus-within:z-20',
-          '[&:has([aria-selected])]:rounded-full',
-          '[&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-full',
+          'relative p-0 text-center focus-within:relative focus-within:z-20',
+          '[&:has([aria-selected])]:rounded-full [&:has([aria-selected])]:bg-accent',
+          'first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-full',
           '[&:has([aria-selected]):has(.range-middle)]:rounded-none',
           '[&:has([aria-selected]):has(.range-start)]:rounded-r-none',
           '[&:has([aria-selected]):has(.range-end)]:rounded-l-none',
