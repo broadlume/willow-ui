@@ -112,7 +112,6 @@ const AlertDialogDescription = React.forwardRef<
     {...props}
   />
 ));
-//
 AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName;
 
