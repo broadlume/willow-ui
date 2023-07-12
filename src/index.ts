@@ -1,12 +1,31 @@
 import './assets/typekit.css';
 import './index.scss';
-export * from '@components/Label/Label';
-export * from '@components/Button/Button';
-export * from '@components/Input/Input';
-export * from '@components/Select/Select';
-export * from '@components/Card/Card';
-export * from '@components/Calendar/Calendar';
+export * from '@components/AlertDialog/AlertDialog';
+export * from '@components/DatePicker/DatePicker';
+export * from '@components/DropdownMenu/DropdownMenu';
+export * from '@components/RadioGroup/RadioGroup';
 export * from '@components/Checkbox/Checkbox';
+export * from '@components/Accordion/Accordion';
+export * from '@components/Avatar/Avatar';
+export * from '@components/Badge/Badge';
+export * from '@components/Button/Button';
+export * from '@components/Calendar/Calendar';
+export * from '@components/Card/Card';
+export * from '@components/Dialog/Dialog';
+export * from '@components/Input/Input';
+export * from '@components/Label/Label';
 export * from '@components/Popover/Popover';
-export * from '@components/Tooltip/Tooltip';
+export * from '@components/Select/Select';
 export * from '@components/Separator/Separator';
+export * from '@components/Slider/Slider';
+export * from '@components/Switch/Switch';
+export * from '@components/Table/Table';
+export * from '@components/Tabs/Tabs';
+export * from '@components/Textarea/Textarea';
+export * from '@components/Toggle/Toggle';
+export * from '@components/Tooltip/Tooltip';
+
+// Toasts are kinda a more spread out component
+export * from '@components/Toast/Toast';
+export * from '@src/hooks/useToast';
+export * from '@src/providers/Toaster';
