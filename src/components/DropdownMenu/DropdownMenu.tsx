@@ -15,6 +15,7 @@ const DropdownMenuSub = DropdownMenuPrimitive.Sub;
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
 const insetClass = 'pl-6';
+const lineHeightClass = 'leading-6';
 
 const DropdownMenuTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
@@ -22,7 +23,11 @@ const DropdownMenuTrigger = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Trigger
     ref={ref}
-    className={cn('body-medium data-[disabled]:opacity-50', className)}
+    className={cn(
+      'body-medium-base data-[disabled]:opacity-50',
+      lineHeightClass,
+      className
+    )}
     {...props}
   />
 ));
@@ -36,7 +41,8 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'body-medium flex cursor-default select-none items-center rounded-sm px-2 py-1.5 outline-none focus:bg-accent data-[state=open]:bg-accent',
+      'body-medium-base flex cursor-default select-none items-center rounded-sm px-2 py-1.5 outline-none focus:bg-accent data-[state=open]:bg-accent',
+      lineHeightClass,
       inset && insetClass,
       className
     )}
@@ -111,9 +117,10 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'body-medium relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 outline-none transition-colors',
+      'body-medium-base relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 outline-none transition-colors',
       'focus:bg-accent focus:text-accent-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      lineHeightClass,
       inset && insetClass,
       className
     )}
@@ -129,10 +136,11 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'body-medium relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-2 outline-none transition-colors',
-      insetClass,
+      'body-medium-base relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-2 outline-none transition-colors',
       'focus:bg-accent focus:text-accent-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      lineHeightClass,
+      insetClass,
       className
     )}
     checked={checked}
@@ -156,10 +164,11 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      'body-medium relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-2 outline-none transition-colors',
-      insetClass,
+      'body-medium-base relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-2 outline-none transition-colors',
       'focus:bg-accent focus:text-accent-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      lineHeightClass,
+      insetClass,
       className
     )}
     {...props}
@@ -184,6 +193,7 @@ const DropdownMenuLabel = React.forwardRef<
     ref={ref}
     className={cn(
       'body-medium-base px-2 py-1.5 font-medium',
+      lineHeightClass,
       inset && insetClass,
       className
     )}

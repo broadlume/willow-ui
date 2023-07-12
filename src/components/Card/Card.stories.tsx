@@ -44,8 +44,8 @@ export const Demo: Story = {
               <Label htmlFor='name'>Framework</Label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder='Select' />
-                  <SelectContent position='popper'>
+                  <SelectValue placeholder='Select framework' />
+                  <SelectContent>
                     <SelectItem value='next'>Next.js</SelectItem>
                     <SelectItem value='sveltekit'>SvelteKit</SelectItem>
                     <SelectItem value='astro'>Astro</SelectItem>

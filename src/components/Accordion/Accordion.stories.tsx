@@ -85,7 +85,7 @@ export const Multiple: Story = {
           What about the product's appearance?
         </AccordionTrigger>
         <AccordionContent>
-          <ul className='body-medium list-disc pl-5'>
+          <ul className='body-medium-base list-disc pl-5 leading-6'>
             <li>
               Our design team has meticulously crafted the aesthetics of the
               product, ensuring a sleek and modern look.

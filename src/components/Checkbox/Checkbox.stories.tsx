@@ -14,7 +14,7 @@ export const WithText: Story = {
   render: (_) => (
     <div className='items-top flex space-x-2'>
       <Checkbox id='terms1' />
-      <div className='grid gap-1 leading-none'>
+      <div className='grid gap-2 leading-none'>
         <Label htmlFor='terms1'>Accept terms and conditions</Label>
         <p className='text-muted-foreground'>
           You agree to our Terms of Service and Privacy Policy.

@@ -34,7 +34,7 @@ export const Demo: Story = {
       <PopoverTrigger asChild>
         <Button variant='outline'>Open popover</Button>
       </PopoverTrigger>
-      <PopoverContent className='w-80'>
+      <PopoverContent className='w-[340px]'>
         <div className='grid gap-4'>
           <div className='space-y-2'>
             <h4 className='font-medium leading-none'>Dimensions</h4>
@@ -67,7 +67,7 @@ export const Demo: Story = {
               <Input id='height' defaultValue='25px' className='col-span-2' />
             </div>
             <div className='grid grid-cols-3 items-center gap-4'>
-              <Label htmlFor='maxHeight'>Max. height</Label>
+              <Label htmlFor='maxHeight'>Max height</Label>
               <Input
                 id='maxHeight'
                 defaultValue='none'

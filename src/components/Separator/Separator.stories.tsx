@@ -20,8 +20,10 @@ type Story = StoryObj<typeof Separator>;
 export const Default: Story = {
   render: (args) => (
     <div className='w-max'>
-      <div className='space-y-2'>
-        <p className='body-medium-base font-medium'>Radix Primitives</p>
+      <div className='space-y-1'>
+        <p className='body-medium-base font-medium leading-8'>
+          Radix Primitives
+        </p>
         <p className='text-muted-foreground'>
           An open-source UI component library.
         </p>
