@@ -55,10 +55,10 @@ const ColorCard = (
       style={{ backgroundColor: `hsl(var(--${variableName}))` }}
     >
       <CardContent className='p-6'>
-        <p style={{ color: textColor }} className='font-medium'>
+        <p className='body-medium-base leading-6' style={{ color: textColor }}>
           {variableName}
         </p>
-        <p style={{ color: textColor }}>
+        <p className='body-medium-base leading-6' style={{ color: textColor }}>
           {(matchedColor && `--${matchedColor}`) || computedColor}
         </p>
       </CardContent>
