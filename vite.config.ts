@@ -19,10 +19,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve('src', 'index.ts'),
-      name: 'broadlume-ui',
+      name: 'willow-ui',
       formats: ['es', 'cjs'],
-      fileName: (format) =>
-        `broadlume-ui.${format === 'cjs' ? 'cjs' : 'es.js'}`,
+      fileName: (format) => `willow-ui.${format === 'cjs' ? 'cjs' : 'es.js'}`,
     },
     rollupOptions: {
       external: Object.keys(peerDependencies),
