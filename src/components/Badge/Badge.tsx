@@ -29,9 +29,9 @@ const badgeVariants = cva(
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {
-  /** Specific background color of the badge */
+  /** Arbitrary background color of the badge */
   background?: string;
-  /** Specific text color of the badge */
+  /** Arbitrary text color of the badge */
   color?: string;
 }
 

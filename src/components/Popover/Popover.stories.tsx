@@ -34,7 +34,7 @@ export const Demo: Story = {
       <PopoverTrigger asChild>
         <Button variant='outline'>Open popover</Button>
       </PopoverTrigger>
-      <PopoverContent className='w-96'>
+      <PopoverContent className='w-80'>
         <div className='grid gap-4'>
           <div className='space-y-2'>
             <h4 className='font-medium leading-none'>Dimensions</h4>
@@ -48,7 +48,7 @@ export const Demo: Story = {
               <Input id='width' defaultValue='100%' className='col-span-2' />
             </div>
             <div className='grid grid-cols-3 items-center gap-4'>
-              <Label htmlFor='maxWidth'>Max. width</Label>
+              <Label htmlFor='maxWidth'>Max width</Label>
               <Select defaultValue='min-content'>
                 <SelectTrigger id='maxWidth' className='col-span-2'>
                   <SelectValue />

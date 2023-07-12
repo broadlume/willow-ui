@@ -22,3 +22,32 @@ export const Demo: Story = {
   },
   render: (args) => <Badge {...args} />,
 };
+
+export const Variants: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'A badge can have different variants.',
+      },
+    },
+  },
+  render: (args) => (
+    <div className='flex gap-2'>
+      <Badge {...args} variant='default'>
+        Default
+      </Badge>
+      <Badge {...args} variant='secondary'>
+        Secondary
+      </Badge>
+      <Badge {...args} variant='success'>
+        Success
+      </Badge>
+      <Badge {...args} variant='destructive'>
+        Destructive
+      </Badge>
+      <Badge {...args} variant='outline'>
+        Outline
+      </Badge>
+    </div>
+  ),
+};
