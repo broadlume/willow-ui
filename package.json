@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/milestone-components.cjs",
-      "import": "./dist/milestone-components.es.js",
+      "require": "./dist/willow-ui.cjs",
+      "import": "./dist/willow-ui.es.js",
       "types": "./dist/index.d.ts"
     },
     "./style.css": {
