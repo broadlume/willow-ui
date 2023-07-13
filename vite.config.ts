@@ -30,9 +30,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@components': '/src/components',
-      '@src': '/src',
-      '@': './*',
+      '@components': resolve(__dirname, './src/components'),
+      '@src': resolve(__dirname, './src'),
+      '@': resolve(__dirname, '.'),
     },
   },
 });

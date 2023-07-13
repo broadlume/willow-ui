@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
+/* h1 {
   color: theme('colors.ash.DEFAULT');
   font-family: Moret, serif;
   font-size: 44px;
@@ -71,7 +71,7 @@ p {
   color: theme('colors.ash.DEFAULT');
 
   @apply body-medium;
-}
+} */
 
 // Shadcn/ui
 @layer base {
@@ -144,7 +144,7 @@ p {
 }
 
 @layer base {
-  * {
+  /* * {
     @apply border-border;
   }
 
@@ -152,7 +152,7 @@ p {
     @apply bg-background text-foreground;
 
     font-feature-settings: 'rlig' 1, 'calt' 1;
-  }
+  } */
 }
 
 @layer utilities {

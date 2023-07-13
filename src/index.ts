@@ -25,7 +25,7 @@ export * from '@components/Textarea/Textarea';
 export * from '@components/Toggle/Toggle';
 export * from '@components/Tooltip/Tooltip';
 
-// Toasts are kinda a more spread out component
+// Toasts are a bit of a more spread out component
 export * from '@components/Toast/Toast';
 export * from '@src/hooks/useToast';
 export * from '@src/providers/Toaster';
