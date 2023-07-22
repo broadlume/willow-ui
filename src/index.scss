@@ -1,83 +1,91 @@
+@import '../src/assets/custom-preflight';
+@import '../src/assets/custom-preflight-2';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Moret, serif;
-  font-size: 44px;
-  font-weight: 700;
-  line-height: 48px;
-  letter-spacing: 0;
-}
+@layer base {
+  h1 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 48px;
+    letter-spacing: 0;
+  }
 
-h2 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Moret, serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 36px;
-  letter-spacing: 0;
-}
+  h2 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0;
+  }
 
-h3 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Moret, serif;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 30px;
-  letter-spacing: 0;
-}
+  h3 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0;
+  }
 
-h4 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Filson-Pro, sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 28px;
-  letter-spacing: 0;
-}
+  h4 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: 0;
+  }
 
-h5 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Filson-Pro, sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
+  h5 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 
-h6 {
-  color: theme('colors.ash.DEFAULT');
-  font-family: Filson-Pro, sans-serif;
-  font-size: 18px;
-  font-weight: 425;
-  line-height: 30px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
+  h6 {
+    color: theme('colors.ash.DEFAULT');
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 425;
+    line-height: 30px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 
-a {
-  color: theme('colors.ribbon');
-  font-family: Filson-Pro, sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-  letter-spacing: 0;
-}
+  a {
+    color: theme('colors.ribbon');
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0;
+  }
 
-p {
-  color: theme('colors.ash.DEFAULT');
+  p {
+    color: theme('colors.ash.DEFAULT');
 
-  @apply body-medium;
+    @apply body-medium;
+  }
 }
 
 // Shadcn/ui
 @layer base {
   :root {
-    // NOTE: ALL COLORS ARE HSL
-    // color palette, not shadcn/ui
+    --font-sans: filson-pro, sans-serif;
+    --font-serif: moret, serif;
+
+    /* NOTE: ALL COLORS ARE HSL */
+
+    /* color palette */
     --wool: 43 100% 95%;
     --wool-dark: 43 47% 97%;
     --wool-light: 43 100% 99%;
@@ -94,7 +102,7 @@ p {
     --danger: 0 78% 40%;
     --junglegreen: 166 68% 38%;
 
-    // shadcn/ui theme colors
+    // theme colors
     --background: 0 0% 100%;
     --foreground: var(--ash);
     --muted: var(--ash-lighter);
@@ -118,46 +126,23 @@ p {
     --ring: var(--heart);
     --radius: 0.5rem;
   }
-
-  .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --ring: 216 34% 17%;
-    --radius: 0.5rem;
-  }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply ~border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply ~bg-background ~text-foreground;
 
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
 
-@layer utilities {
+@layer components {
   .body-large {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 18px;
     font-weight: 425;
     line-height: 24px;
@@ -165,20 +150,15 @@ p {
   }
 
   .body-medium {
-    @apply body-medium-base;
-
-    font-weight: 300;
-    line-height: 16px;
-  }
-
-  .body-medium-base {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
     letter-spacing: 0;
   }
 
   .body-small {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 700;
     line-height: 20px;
@@ -186,7 +166,7 @@ p {
   }
 
   .body-x-small {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 425;
     line-height: 16px;
@@ -194,21 +174,16 @@ p {
   }
 
   .caption-1 {
-    @apply caption-1-base;
-
-    font-weight: 800;
-  }
-
-  .caption-1-base {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
+    font-weight: 800;
     line-height: 20px;
     letter-spacing: 0.02em;
     text-transform: uppercase;
   }
 
   .caption-2 {
-    font-family: Filson-Pro, sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 425;
     line-height: 20px;

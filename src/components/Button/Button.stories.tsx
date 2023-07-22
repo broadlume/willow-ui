@@ -5,6 +5,7 @@ import { HomeIcon } from '@radix-ui/react-icons';
 
 const meta: Meta<typeof Button> = {
   component: Button,
+  title: 'Components/Button',
   tags: ['autodocs'],
 };
 
@@ -61,6 +62,7 @@ export const Demo: Story = {
       },
     },
   },
+  render: (args) => <Button {...args} />,
 };
 
 export const Variants: Story = {
@@ -75,8 +77,8 @@ export const Variants: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='flex flex-col space-y-2'>
-      <div className='flex gap-1'>
+    <div className='~flex ~flex-col ~space-y-2'>
+      <div className='~flex ~gap-1'>
         <Button {...args}>Primary</Button>
         <Button {...args} variant='secondary'>
           Secondary
@@ -109,8 +111,8 @@ export const Sizes: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='flex flex-col space-y-2'>
-      <div className='flex gap-1'>
+    <div className='~flex ~flex-col ~space-y-2'>
+      <div className='~flex ~gap-1'>
         <Button {...args} size='lg'>
           Primary (lg)
         </Button>

@@ -30,11 +30,11 @@ export const DatePickerSingle = ({
         <Button
           variant={'outline'}
           className={cn(
-            'w-[240px] justify-start text-left font-normal',
-            !date && 'text-muted-foreground'
+            '~w-[240px] ~justify-start ~text-left ~font-normal',
+            !date && '~text-muted-foreground'
           )}
         >
-          <CalendarIcon className='mr-2 h-4 w-4' />
+          <CalendarIcon className='~mr-2 ~h-4 ~w-4' />
           {date && date instanceof Date ? (
             format(date, 'PPP')
           ) : (
@@ -42,7 +42,7 @@ export const DatePickerSingle = ({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
+      <PopoverContent className='~w-auto ~p-0' align='start'>
         <Calendar
           mode='single'
           selected={date}

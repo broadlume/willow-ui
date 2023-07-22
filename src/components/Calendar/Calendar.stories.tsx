@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 const meta: Meta<typeof Calendar> = {
   component: Calendar,
+  title: 'Components/Calendar',
   tags: ['autodocs'],
 };
 
@@ -19,7 +20,7 @@ const CalendarDemo = () => {
       mode='single'
       selected={date}
       onSelect={setDate}
-      className='inline-flex rounded-md border shadow'
+      className='~inline-flex ~rounded-md ~border ~shadow'
     />
   );
 };

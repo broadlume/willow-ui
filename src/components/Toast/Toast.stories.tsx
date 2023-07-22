@@ -1,11 +1,12 @@
 import { Meta } from '@storybook/react';
 import { Toast, ToastProps } from './Toast';
-import { useToast } from '@src/hooks/useToast';
+import { Toaster } from './Toaster';
+import { useToast } from './useToast';
 import { Button } from '@src/components/Button/Button';
-import { Toaster } from '@src/providers/Toaster';
 
 const meta: Meta = {
   component: Toast,
+  title: 'Components/Toast',
   tags: ['autodocs'],
   decorators: [
     (Story) => (

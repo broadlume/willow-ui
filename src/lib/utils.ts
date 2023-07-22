@@ -1,8 +1,9 @@
 import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { extendTailwindMerge } from 'tailwind-merge';
 
+const customTailwindMerge = extendTailwindMerge({ prefix: '~' });
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return customTailwindMerge(clsx(inputs));
 }
 
 // literally just for dev in case you want class sorting can be used in a variable

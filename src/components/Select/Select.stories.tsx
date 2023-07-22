@@ -12,6 +12,7 @@ import {
 
 const meta: Meta<typeof Select> = {
   component: Select,
+  title: 'Components/Select',
   tags: ['autodocs'],
 };
 
@@ -38,7 +39,7 @@ export const Demo: Story = {
 
   render: (args) => (
     <Select {...args}>
-      <SelectTrigger className='w-[180px]'>
+      <SelectTrigger className='~w-[180px]'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
       <SelectContent>
@@ -62,7 +63,7 @@ export const WithGroups: StoryObj = {
   },
   render: (_) => (
     <Select>
-      <SelectTrigger className='w-[180px]'>
+      <SelectTrigger className='~w-[180px]'>
         <SelectValue placeholder='Select a food' />
       </SelectTrigger>
       <SelectContent>
@@ -97,7 +98,7 @@ export const DisabledItems: StoryObj = {
   },
   render: (_) => (
     <Select>
-      <SelectTrigger className='w-[180px]'>
+      <SelectTrigger className='~w-[180px]'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
       <SelectContent>

@@ -11,14 +11,12 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  [
-    'relative inline-flex h-9 items-center justify-center bg-background text-muted-foreground',
-  ],
+  '~relative ~inline-flex ~h-9 ~items-center ~justify-center ~bg-background ~text-muted-foreground',
   {
     variants: {
       variant: {
         default: '',
-        pills: 'rounded-full border border-black p-1',
+        pills: '~rounded-full ~border ~border-black ~p-1',
       },
     },
     defaultVariants: {
@@ -28,12 +26,12 @@ const tabListVariants = cva(
 );
 
 const sliderVariants = cva(
-  ['absolute transition-all duration-300 ease-in-out'],
+  '~pointer-events-none ~absolute ~transition-all ~duration-300 ~ease-in-out',
   {
     variants: {
       variant: {
-        default: 'z-10 h-full border-b-2 border-primary',
-        pills: 'bottom-1 top-1 rounded-full bg-black',
+        default: '~z-10 ~h-full ~border-b-2 ~border-primary',
+        pills: '~bottom-1 ~top-1 ~rounded-full ~bg-black',
       },
     },
     defaultVariants: {
@@ -44,16 +42,16 @@ const sliderVariants = cva(
 
 const tabTriggerVariants = cva(
   [
-    'caption-1 inline-flex min-h-0 items-center justify-center whitespace-nowrap px-3 py-1 ring-offset-background transition-all',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-    'disabled:pointer-events-none disabled:opacity-50',
-    'data-[state=active]:text-foreground',
+    'caption-1 ~inline-flex ~min-h-0 ~items-center ~justify-center ~whitespace-nowrap ~px-3 ~py-1 ~ring-offset-background ~transition-all',
+    'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
+    'disabled:~pointer-events-none disabled:~opacity-50',
+    'data-[state=inactive]:~font-normal data-[state=active]:~text-foreground',
   ],
   {
     variants: {
       variant: {
-        default: 'h-full border-b border-border',
-        pills: 'z-10 rounded-full data-[state=active]:text-white',
+        default: '~h-full ~border-b ~border-border',
+        pills: '~z-10 ~rounded-full data-[state=active]:~text-white',
       },
     },
     defaultVariants: {
@@ -73,7 +71,7 @@ interface TabsProps
 // Tabs component provides the variant to context
 const Tabs = ({ variant = 'default', ...props }: TabsProps) => (
   <TabsContext.Provider value={{ variant }}>
-    <TabsPrimitive.Root {...props} />
+    <TabsPrimitive.Root {...props} className='tw-reset' />
   </TabsContext.Provider>
 );
 
@@ -92,6 +90,7 @@ const TabsList = React.forwardRef<
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   useLayoutEffect(() => {
+    // technically doesn't run on window resize, but we're ignoring that
     function updateSlider() {
       const container = ref.current;
       const activeTab = container?.querySelector('[data-state="active"]');
@@ -124,7 +123,7 @@ const TabsList = React.forwardRef<
         ref={sliderRef}
         className={cn(
           sliderVariants({ variant }),
-          isFirstRender ? 'transition-none' : ''
+          isFirstRender ? '~transition-none' : ''
         )}
       />
       {children}
@@ -157,8 +156,8 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      'mt-2 ring-offset-background',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      '~mt-2 ~ring-offset-background',
+      'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
       className
     )}
     {...props}

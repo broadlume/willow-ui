@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
-// this type error should be fixed by the tailwindcss-animate team in the next week
+// this type error should be fixed by the tailwindcss-animate team soon
 import twAnimate from 'tailwindcss-animate';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export const colorPalette = {
   wool: {
@@ -66,6 +67,10 @@ export const themeColors = {
 
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  prefix: '~',
+  corePlugins: {
+    preflight: false,
+  },
   theme: {
     container: {
       center: true,
@@ -83,6 +88,11 @@ export default {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+        serif: ['var(--font-serif)', ...fontFamily.serif],
+        mono: ['var(--font-mono)', ...fontFamily.mono],
       },
       keyframes: {
         'accordion-down': {

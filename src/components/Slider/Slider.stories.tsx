@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Slider } from './Slider';
-import { Multiple } from '../Accordion/Accordion.stories';
 
 const meta: Meta<typeof Slider> = {
   component: Slider,
+  title: 'Components/Slider',
   tags: ['autodocs'],
 };
 
@@ -25,10 +25,10 @@ export const Default: Story = {
   },
   render: (args) => (
     <Slider
+      className='~w-[300px]'
       defaultValue={[20]}
       max={100}
       step={1}
-      className='w-[50%]'
       {...args}
     />
   ),
@@ -37,7 +37,7 @@ export const Default: Story = {
 export const Disabled: Story = {
   render: (_) => (
     <Slider
-      className='w-[50%]'
+      className='~w-[300px]'
       defaultValue={[50]}
       max={100}
       step={1}
@@ -48,8 +48,6 @@ export const Disabled: Story = {
 
 export const RangeSlider: Story = {
   render: (_) => (
-    <div className='flex gap-4'>
-      <Slider className='w-[50%]' defaultValue={[20, 60]} max={100} step={1} />
-    </div>
+    <Slider className='~w-[300px]' defaultValue={[20, 60]} max={100} step={1} />
   ),
 };

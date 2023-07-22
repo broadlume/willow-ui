@@ -27,5 +27,5 @@ export * from '@components/Tooltip/Tooltip';
 
 // Toasts are a bit of a more spread out component
 export * from '@components/Toast/Toast';
-export * from '@src/hooks/useToast';
-export * from '@src/providers/Toaster';
+export * from '@components/Toast/useToast';
+export * from '@components/Toast/Toaster';

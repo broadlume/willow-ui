@@ -14,6 +14,7 @@ import {
 
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
+  title: 'Components/Tabs',
   tags: ['autodocs'],
   argTypes: {
     asChild: {
@@ -44,7 +45,7 @@ export const Default: Story = {
 
   render: (args) => (
     <Tabs defaultValue='contacts' {...args}>
-      <TabsList className='grid grid-cols-4'>
+      <TabsList className='~grid ~grid-cols-4'>
         <TabsTrigger value='leads'>Leads</TabsTrigger>
         <TabsTrigger value='contacts'>Contacts</TabsTrigger>
         <TabsTrigger value='stores'>Stores</TabsTrigger>
@@ -63,8 +64,8 @@ export const WithContent: Story = {
     },
   },
   render: (args) => (
-    <Tabs defaultValue='account' className='w-[400px]' {...args}>
-      <TabsList className='grid grid-cols-2'>
+    <Tabs defaultValue='account' className='~w-[400px]' {...args}>
+      <TabsList className='~grid ~grid-cols-2'>
         <TabsTrigger value='account'>Account</TabsTrigger>
         <TabsTrigger value='password'>Password</TabsTrigger>
       </TabsList>
@@ -76,12 +77,12 @@ export const WithContent: Story = {
               Make changes to your account here. Click save when you're done.
             </CardDescription>
           </CardHeader>
-          <CardContent className='space-y-2'>
-            <div className='space-y-1'>
+          <CardContent className='~space-y-2'>
+            <div className='~space-y-1'>
               <Label htmlFor='name'>Name</Label>
               <Input id='name' defaultValue='Scott Hetrick' />
             </div>
-            <div className='space-y-1'>
+            <div className='~space-y-1'>
               <Label htmlFor='username'>Username</Label>
               <Input id='username' defaultValue='@dreadhalor' />
             </div>
@@ -99,12 +100,12 @@ export const WithContent: Story = {
               Change your password here. After saving, you'll be logged out.
             </CardDescription>
           </CardHeader>
-          <CardContent className='space-y-2'>
-            <div className='space-y-1'>
+          <CardContent className='~space-y-2'>
+            <div className='~space-y-1'>
               <Label htmlFor='current'>Current password</Label>
               <Input id='current' type='password' />
             </div>
-            <div className='space-y-1'>
+            <div className='~space-y-1'>
               <Label htmlFor='new'>New password</Label>
               <Input id='new' type='password' />
             </div>
