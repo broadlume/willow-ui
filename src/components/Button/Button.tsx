@@ -6,7 +6,7 @@ import { cn } from '@src/lib/utils';
 
 const buttonVariants = cva(
   [
-    'tw-reset caption-1 ~inline-flex ~items-center ~justify-center ~rounded-full ~transition-colors',
+    'tw-reset caption-1 ~inline-flex ~h-12 ~items-center ~justify-center ~rounded-full ~px-6 ~transition-colors',
     'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring focus-visible:~ring-offset-2',
     'disabled:~pointer-events-none disabled:~opacity-50',
   ],
@@ -25,10 +25,10 @@ const buttonVariants = cva(
         link: '~text-primary ~underline-offset-4 hover:~underline',
       },
       size: {
-        default: '~h-12 ~px-6 ~py-2',
-        sm: '~h-8 ~px-3',
-        lg: '~h-10 ~px-8',
-        icon: '~h-9 ~w-9',
+        default: '',
+        sm: '~text-[10px]',
+        lg: '~text-base',
+        icon: '~h-12 ~w-12 ~p-0',
       },
     },
     compoundVariants: [
