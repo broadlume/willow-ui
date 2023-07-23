@@ -69,9 +69,9 @@ interface TabsProps
 }
 
 // Tabs component provides the variant to context
-const Tabs = ({ variant = 'default', ...props }: TabsProps) => (
+const Tabs = ({ variant = 'default', className, ...props }: TabsProps) => (
   <TabsContext.Provider value={{ variant }}>
-    <TabsPrimitive.Root {...props} className='tw-reset' />
+    <TabsPrimitive.Root {...props} className={cn('tw-reset', className)} />
   </TabsContext.Provider>
 );
 
