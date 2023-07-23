@@ -32,7 +32,7 @@ export const DatePickerRange = ({
             !dateRange && '~text-muted-foreground'
           )}
         >
-          <CalendarIcon className='~mr-2 ~h-4 ~w-4' />
+          <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
           {dateRange?.from ? (
             dateRange.to ? (
               <>

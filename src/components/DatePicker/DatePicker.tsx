@@ -27,7 +27,7 @@ export const DatePicker = ({ mode = 'single', ...props }: DatePickerProps) => {
     ) {
       setSelected(selected.from);
     } else if (mode === 'range' && selected instanceof Date) {
-      setSelected({ from: selected, to: selected });
+      setSelected({ from: selected });
     } else setSelected(undefined);
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 

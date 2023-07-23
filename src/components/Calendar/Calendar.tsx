@@ -24,13 +24,13 @@ function Calendar({
         caption: '~flex ~justify-center ~pt-1 ~relative ~items-center',
         caption_label: '~text-sm ~font-medium',
         nav: '~space-x-1 ~flex ~items-center',
-        nav_button: cn(buttonVariants({ variant: 'ghost' }), '~h-7 ~w-7 ~p-0'),
+        nav_button: cn(buttonVariants({ variant: 'ghost' }), '~h-9 ~w-9 ~p-0'),
         nav_button_previous: '~absolute ~left-1',
         nav_button_next: '~absolute ~right-1',
         table: '~w-full ~border-collapse ~space-y-1',
         head_row: '~flex',
         head_cell: cn(
-          'caption-1 ~w-8 ~text-center ~font-normal ~text-muted-foreground'
+          'caption-1 ~w-10 ~text-center ~font-normal ~text-muted-foreground'
         ),
         row: '~flex ~w-full ~mt-2',
         cell: cn(
@@ -44,7 +44,7 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
-          '~h-8 ~w-8 ~p-0 ~font-normal aria-selected:~opacity-100'
+          '~h-10 ~w-10 ~p-0 ~font-normal aria-selected:~opacity-100'
         ),
         day_selected: cn(
           '~bg-primary ~text-primary-foreground',
@@ -64,8 +64,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeftIcon className='~h-4 ~w-4' />,
-        IconRight: ({ ...props }) => <ChevronRightIcon className='~h-4 ~w-4' />,
+        IconLeft: ({ ...props }) => <ChevronLeftIcon className='~h-5 ~w-5' />,
+        IconRight: ({ ...props }) => <ChevronRightIcon className='~h-5 ~w-5' />,
       }}
       {...props}
     />
