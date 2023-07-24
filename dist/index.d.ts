@@ -20,7 +20,7 @@ export * from './components/Switch/Switch';
 export * from './components/Table/Table';
 export * from './components/Tabs/Tabs';
 export * from './components/Textarea/Textarea';
-export * from './components/Toggle/Toggle';
+export * as Toggle from '@radix-ui/react-toggle';
 export * from './components/Tooltip/Tooltip';
 export * from './components/Toast/Toast';
 export * from './components/Toast/useToast';
