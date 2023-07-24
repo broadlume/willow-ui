@@ -68,7 +68,7 @@ interface TabsProps
   variant?: 'default' | 'pills';
 }
 
-// Tabs component provides the variant to context
+/** A set of layered sections of content, known as tab panels, that are displayed one at a time. */
 const Tabs = ({ variant = 'default', className, ...props }: TabsProps) => (
   <TabsContext.Provider value={{ variant }}>
     <TabsPrimitive.Root {...props} className={cn('tw-reset', className)} />

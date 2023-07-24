@@ -272,12 +272,6 @@ button:where(.#{$n}),
   }
 }
 
-// equivalent to above
-// :where(img.#{$n}, video.#{$n}) {
-//   max-width: 100%;
-//   height: auto;
-// }
-
 [hidden]:where(.#{$n}) {
   display: none;
 }

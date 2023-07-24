@@ -6,7 +6,6 @@ import { cn } from '@src/lib/utils';
 /** Displays rich content in a portal, triggered by a button. */
 const Popover = PopoverPrimitive.Root;
 
-// const PopoverTrigger = PopoverPrimitive.Trigger;
 const PopoverTrigger = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>

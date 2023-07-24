@@ -4,7 +4,6 @@ import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
 
-// const Accordion = AccordionPrimitive.Root;
 const Accordion = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root>
