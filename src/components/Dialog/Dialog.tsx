@@ -6,7 +6,6 @@ import { cn } from '@src/lib/utils';
 
 const Dialog = DialogPrimitive.Root;
 
-// const DialogTrigger = DialogPrimitive.Trigger;
 const DialogTrigger = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>
@@ -103,16 +102,7 @@ const DialogFooter = ({
 );
 DialogFooter.displayName = 'DialogFooter';
 
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn('body-large ~font-semibold ~leading-none', className)}
-    {...props}
-  />
-));
+const DialogTitle = DialogPrimitive.Title;
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
 const DialogDescription = React.forwardRef<

@@ -5,75 +5,85 @@
 @tailwind utilities;
 
 @layer base {
-  h1 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-serif);
-    font-size: 44px;
-    font-weight: 700;
-    line-height: 48px;
-    letter-spacing: 0;
-  }
+  :where(.tw-reset) {
+    h1,
+    &:where(h1) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-serif);
+      font-size: 44px;
+      font-weight: 700;
+      line-height: 48px;
+      letter-spacing: 0;
+    }
 
-  h2 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-serif);
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 36px;
-    letter-spacing: 0;
-  }
+    h2,
+    &:where(h2) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 36px;
+      letter-spacing: 0;
+    }
 
-  h3 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-serif);
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 30px;
-    letter-spacing: 0;
-  }
+    h3,
+    &:where(h3) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 30px;
+      letter-spacing: 0;
+    }
 
-  h4 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-sans);
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 28px;
-    letter-spacing: 0;
-  }
+    h4,
+    &:where(h4) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-sans);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 28px;
+      letter-spacing: 0;
+    }
 
-  h5 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-sans);
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 24px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
+    h5,
+    &:where(h5) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
 
-  h6 {
-    color: theme('colors.ash.DEFAULT');
-    font-family: var(--font-sans);
-    font-size: 18px;
-    font-weight: 425;
-    line-height: 30px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
+    h6,
+    &:where(h6) {
+      color: theme('colors.ash.DEFAULT');
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 425;
+      line-height: 30px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
 
-  a {
-    color: theme('colors.ribbon');
-    font-family: var(--font-sans);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0;
-  }
+    a,
+    &:where(a) {
+      color: theme('colors.ribbon');
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 24px;
+      letter-spacing: 0;
+    }
 
-  p {
-    color: theme('colors.ash.DEFAULT');
+    p,
+    &:where(p) {
+      color: theme('colors.ash.DEFAULT');
 
-    @apply body-medium;
+      @apply body-medium;
+    }
   }
 }
 
@@ -129,13 +139,14 @@
 }
 
 @layer base {
-  * {
-    @apply ~border-border;
+  :where(.tw-reset) {
+    &,
+    * {
+      @apply ~border-border;
+    }
   }
 
   body {
-    @apply ~bg-background ~text-foreground;
-
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
