@@ -26,7 +26,8 @@ export default defineConfig({
     rollupOptions: {
       external: Object.keys(peerDependencies),
     },
-    minify: true,
+    // minify: true,
+    sourcemap: true,
   },
   resolve: {
     alias: {

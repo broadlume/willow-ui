@@ -1,5 +1,6 @@
 import './assets/typekit.css';
 import './index.scss';
+
 export * from '@components/AlertDialog/AlertDialog';
 export * from '@components/DatePicker/DatePicker';
 export * from '@components/DropdownMenu/DropdownMenu';
@@ -22,7 +23,8 @@ export * from '@components/Switch/Switch';
 export * from '@components/Table/Table';
 export * from '@components/Tabs/Tabs';
 export * from '@components/Textarea/Textarea';
-export * from '@components/Toggle/Toggle';
+export * as Toggle from '@radix-ui/react-toggle';
+// export * from '@components/Toggle/Toggle';
 export * from '@components/Tooltip/Tooltip';
 
 // Toasts are a bit of a more spread out component
