@@ -5,13 +5,14 @@ import { useState } from 'react';
 
 const meta: Meta<typeof Calendar> = {
   component: Calendar,
+  title: 'Components/Calendar',
   tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof Calendar>;
 
-const CalendarDemo = () => {
+const CalendarDemo = (_) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   return (
@@ -19,7 +20,7 @@ const CalendarDemo = () => {
       mode='single'
       selected={date}
       onSelect={setDate}
-      className='inline-flex rounded-md border shadow'
+      className='~inline-flex ~rounded-md ~border ~shadow'
     />
   );
 };

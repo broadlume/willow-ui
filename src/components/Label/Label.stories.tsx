@@ -5,6 +5,7 @@ import { Checkbox } from '@components/Checkbox/Checkbox';
 
 const meta: Meta<typeof Label> = {
   component: Label,
+  title: 'Components/Label',
   tags: ['autodocs'],
 };
 
@@ -34,7 +35,7 @@ export const Demo: Story = {
     children: 'Accept terms and conditions',
   },
   render: ({ children }) => (
-    <div className='flex items-center space-x-2'>
+    <div className='~flex ~items-center ~space-x-2'>
       <Checkbox id='terms' />
       <Label htmlFor='terms'>{children}</Label>
     </div>

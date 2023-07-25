@@ -3,5 +3,5 @@
   "useTabs": false,
   "jsxSingleQuote": true,
   "singleQuote": true,
-  "tailwindFunctions": ["tw", "cva", "cn"]
+  "tailwindFunctions": ["cva", "cn"]
 }

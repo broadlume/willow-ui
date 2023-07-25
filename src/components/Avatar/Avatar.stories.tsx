@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './Avatar';
 
 const meta: Meta<typeof Avatar> = {
   component: Avatar,
+  title: 'Components/Avatar',
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -32,6 +33,16 @@ export const Demo: Story = {
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src='https://github.com/dreadhalor.png' />
+      <AvatarFallback>SH</AvatarFallback>
+    </Avatar>
+  ),
+};
+export const Fallback: Story = {
+  args: {
+    size: 40,
+  },
+  render: (args) => (
+    <Avatar {...args}>
       <AvatarFallback>SH</AvatarFallback>
     </Avatar>
   ),

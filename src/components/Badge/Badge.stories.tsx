@@ -4,6 +4,7 @@ import { Badge } from './Badge';
 
 const meta: Meta<typeof Badge> = {
   component: Badge,
+  title: 'Components/Badge',
   tags: ['autodocs'],
   argTypes: {
     children: {
@@ -32,7 +33,7 @@ export const Variants: Story = {
     },
   },
   render: (args) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~flex-wrap ~gap-2'>
       <Badge {...args} variant='default'>
         Default
       </Badge>

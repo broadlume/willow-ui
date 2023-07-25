@@ -4,6 +4,7 @@ import { Toggle } from './Toggle';
 
 const meta: Meta<typeof Toggle> = {
   component: Toggle,
+  title: 'Components/Toggle',
   tags: ['autodocs'],
   argTypes: {
     disabled: {
@@ -44,7 +45,7 @@ export const Default: Story = {
 
 export const Styles: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle>Default</Toggle>
       <Toggle variant='outline'>Outline</Toggle>
     </div>
@@ -53,7 +54,7 @@ export const Styles: Story = {
 
 export const Shapes: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle variant='outline'>Default</Toggle>
       <Toggle variant='outline' shape='pill'>
         Pill
@@ -64,7 +65,7 @@ export const Shapes: Story = {
 
 export const Sizes: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle size='lg' variant='outline'>
         Large
       </Toggle>
@@ -78,7 +79,7 @@ export const Sizes: Story = {
 
 export const Disabled: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle disabled>Default</Toggle>
       <Toggle disabled variant='outline'>
         Outline

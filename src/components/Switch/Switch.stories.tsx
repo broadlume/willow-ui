@@ -4,6 +4,7 @@ import { Label } from '@components/Label/Label';
 
 const meta = {
   component: Switch,
+  title: 'Components/Switch',
   tags: ['autodocs'],
   argTypes: {
     disabled: {
@@ -30,7 +31,7 @@ export const Demo: Story = {
     },
   },
   render: (args) => (
-    <div className='flex items-center space-x-2'>
+    <div className='~flex ~items-center ~space-x-2'>
       <Switch id='airplane-mode' {...args} />
       <Label htmlFor='airplane-mode'>Airplane Mode</Label>
     </div>

@@ -10,6 +10,7 @@ import {
 
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
+  title: 'Components/Tooltip',
   tags: ['autodocs'],
 };
 
@@ -48,7 +49,7 @@ export const Styled: Story = {
         <TooltipTrigger asChild>
           <Button variant='outline'>Hover over me!</Button>
         </TooltipTrigger>
-        <TooltipContent className='bg-beryl'>
+        <TooltipContent className='~bg-beryl'>
           <p>You did it!</p>
         </TooltipContent>
       </Tooltip>

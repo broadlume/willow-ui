@@ -28,11 +28,11 @@ export const DatePickerRange = ({
         <Button
           variant={'outline'}
           className={cn(
-            'w-[240px] justify-start text-left font-normal',
-            !dateRange && 'text-muted-foreground'
+            '~w-[240px] ~justify-start ~text-left ~font-normal',
+            !dateRange && '~text-muted-foreground'
           )}
         >
-          <CalendarIcon className='mr-2 h-4 w-4' />
+          <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
           {dateRange?.from ? (
             dateRange.to ? (
               <>
@@ -47,7 +47,7 @@ export const DatePickerRange = ({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
+      <PopoverContent className='~w-auto ~p-0' align='start'>
         <Calendar
           initialFocus
           mode='range'

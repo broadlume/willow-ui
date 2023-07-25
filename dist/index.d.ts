@@ -23,6 +23,6 @@ export * from './components/Textarea/Textarea';
 export * from './components/Toggle/Toggle';
 export * from './components/Tooltip/Tooltip';
 export * from './components/Toast/Toast';
-export * from './hooks/useToast';
-export * from './providers/Toaster';
+export * from './components/Toast/useToast';
+export * from './components/Toast/Toaster';
 //# sourceMappingURL=index.d.ts.map

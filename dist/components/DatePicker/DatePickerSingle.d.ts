@@ -3,5 +3,5 @@ export interface DatePickerSingleProps extends Omit<DayPickerSingleProps, 'mode'
     disabled?: boolean;
     disabledDates?: DayPickerSingleProps['disabled'];
 }
-export declare const DatePickerSingle: ({ selected: date, onSelect: setDate, disabled, disabledDates, ...props }: DatePickerSingleProps) => import("react/jsx-runtime").JSX.Element;
+export declare const DatePickerSingle: ({ selected: date, onSelect: setDate, disabled, disabledDates, ...props }: DatePickerSingleProps) => JSX.Element;
 //# sourceMappingURL=DatePickerSingle.d.ts.map

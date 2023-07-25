@@ -1,5 +1,6 @@
 import './assets/typekit.css';
 import './index.scss';
+
 export * from '@components/AlertDialog/AlertDialog';
 export * from '@components/DatePicker/DatePicker';
 export * from '@components/DropdownMenu/DropdownMenu';
@@ -27,5 +28,5 @@ export * from '@components/Tooltip/Tooltip';
 
 // Toasts are a bit of a more spread out component
 export * from '@components/Toast/Toast';
-export * from '@src/hooks/useToast';
-export * from '@src/providers/Toaster';
+export * from '@components/Toast/useToast';
+export * from '@components/Toast/Toaster';

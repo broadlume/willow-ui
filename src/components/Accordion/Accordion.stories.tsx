@@ -9,6 +9,7 @@ import {
 
 const meta: Meta<typeof Accordion> = {
   component: Accordion,
+  title: 'Components/Accordion',
   tags: ['autodocs'],
 };
 
@@ -28,7 +29,7 @@ export const Demo: Story = {
     collapsible: true,
   },
   render: (args) => (
-    <Accordion {...args} className='w-full'>
+    <Accordion {...args} className='~w-full'>
       <AccordionItem value='item-1'>
         <AccordionTrigger>Is it accessible?</AccordionTrigger>
         <AccordionContent>
@@ -65,7 +66,7 @@ export const Multiple: Story = {
     type: 'multiple',
   },
   render: (args) => (
-    <Accordion {...args} className='w-full'>
+    <Accordion {...args} className='~w-full'>
       <AccordionItem value='item-1'>
         <AccordionTrigger>What are the specifications?</AccordionTrigger>
         <AccordionContent>
@@ -85,7 +86,7 @@ export const Multiple: Story = {
           What about the product's appearance?
         </AccordionTrigger>
         <AccordionContent>
-          <ul className='body-medium-base list-disc pl-5 leading-6'>
+          <ul className='~list-disc ~pl-5 ~leading-6'>
             <li>
               Our design team has meticulously crafted the aesthetics of the
               product, ensuring a sleek and modern look.
