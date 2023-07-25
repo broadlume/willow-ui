@@ -3,6 +3,9 @@ import type { Config } from 'tailwindcss';
 import twAnimate from 'tailwindcss-animate';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
+const baseRem = 16;
+const getSize = (rems: number) => `${rems * baseRem}px`;
+
 export const colorPalette = {
   wool: {
     DEFAULT: 'hsl(var(--wool))',
@@ -108,6 +111,7 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      // because consuming apps that use the stupid "font-size: 62.5%" html trick throw off rem units
       spacing: {
         '0': '0px',
         '1': '0.25em',
@@ -144,6 +148,37 @@ export default {
         '1.5': '0.375em',
         '2.5': '0.625em',
         '3.5': '0.875em',
+      },
+      lineHeight: {
+        '3': '.75em',
+        '4': '1em',
+        '5': '1.25em',
+        '6': '1.5em',
+        '7': '1.75em',
+        '8': '2em',
+        '9': '2.25em',
+        '10': '2.5em',
+        none: '1',
+        tight: '1.25',
+        snug: '1.375',
+        normal: '1.5',
+        relaxed: '1.625',
+        loose: '2',
+      },
+      fontSize: {
+        xs: [getSize(0.75), { lineHeight: getSize(1) }],
+        sm: [getSize(0.875), { lineHeight: getSize(1.25) }],
+        base: [getSize(1), { lineHeight: getSize(1.5) }],
+        lg: [getSize(1.125), { lineHeight: getSize(1.75) }],
+        xl: [getSize(1.25), { lineHeight: getSize(1.75) }],
+        '2xl': [getSize(1.5), { lineHeight: getSize(2) }],
+        '3xl': [getSize(1.875), { lineHeight: getSize(2.25) }],
+        '4xl': [getSize(2.25), { lineHeight: getSize(2.5) }],
+        '5xl': [getSize(3), { lineHeight: getSize(1) }],
+        '6xl': [getSize(3.75), { lineHeight: getSize(1) }],
+        '7xl': [getSize(4.5), { lineHeight: getSize(1) }],
+        '8xl': [getSize(6), { lineHeight: getSize(1) }],
+        '9xl': [getSize(8), { lineHeight: getSize(1) }],
       },
     },
   },

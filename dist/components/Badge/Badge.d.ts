@@ -9,6 +9,6 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, Varian
     /** Arbitrary text color of the badge */
     color?: string;
 }
-declare function Badge({ className, variant, background, color, style, ...props }: BadgeProps): import("react/jsx-runtime").JSX.Element;
+declare function Badge({ className, variant, background, color, style, ...props }: BadgeProps): JSX.Element;
 export { Badge, badgeVariants };
 //# sourceMappingURL=Badge.d.ts.map

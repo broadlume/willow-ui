@@ -12,7 +12,7 @@ const meta: Meta<typeof Calendar> = {
 export default meta;
 type Story = StoryObj<typeof Calendar>;
 
-const CalendarDemo = () => {
+const CalendarDemo = (_) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   return (

@@ -23,8 +23,7 @@ export * from '@components/Switch/Switch';
 export * from '@components/Table/Table';
 export * from '@components/Tabs/Tabs';
 export * from '@components/Textarea/Textarea';
-export * as Toggle from '@radix-ui/react-toggle';
-// export * from '@components/Toggle/Toggle';
+export * from '@components/Toggle/Toggle';
 export * from '@components/Tooltip/Tooltip';
 
 // Toasts are a bit of a more spread out component
