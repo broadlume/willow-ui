@@ -11,6 +11,7 @@ import {
   Input,
   Label,
 } from '@src/index';
+import SidebarItem from '@src/dhq/SidebarItem';
 
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
@@ -107,6 +108,125 @@ export const WithContent: Story = {
             </div>
             <div className='~space-y-1'>
               <Label htmlFor='new'>New password</Label>
+              <Input id='new' type='password' />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button>Save password</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  ),
+};
+
+// export const Vertical: Story = {
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: 'A basic tabs, with associated content.',
+//       },
+//     },
+//   },
+//   render: (args) => (
+//     <Tabs2.Root defaultValue='tab1' orientation='vertical'>
+//       <Tabs2.List aria-label='tabs example'>
+//         <Tabs2.Trigger value='tab1'>One</Tabs2.Trigger>
+//         <Tabs2.Trigger value='tab2'>Two</Tabs2.Trigger>
+//         <Tabs2.Trigger value='tab3'>Three</Tabs2.Trigger>
+//       </Tabs2.List>
+//       <Tabs2.Content value='tab1'>Tab one content</Tabs2.Content>
+//       <Tabs2.Content value='tab2'>Tab two content</Tabs2.Content>
+//       <Tabs2.Content value='tab3'>Tab three content</Tabs2.Content>
+//     </Tabs2.Root>
+//   ),
+// };
+
+export const Vertical: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'A basic tabs, with associated content.',
+      },
+    },
+  },
+  render: (args) => (
+    <Tabs
+      orientation='vertical'
+      defaultValue='account'
+      className='~flex ~flex-row'
+      {...args}
+    >
+      <TabsList className='~flex ~h-full ~w-[200px] ~min-w-[200px] ~max-w-[200px] ~flex-col'>
+        <TabsTrigger value='account' className='~w-full ~p-0'>
+          <SidebarItem>Account?</SidebarItem>
+        </TabsTrigger>
+        <TabsTrigger value='password' className='~w-full ~p-0'>
+          <SidebarItem>Password</SidebarItem>
+        </TabsTrigger>
+        <TabsTrigger value='password2' className='~w-full ~p-0'>
+          <SidebarItem>dsdfdee</SidebarItem>
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value='account'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Account</CardTitle>
+            <CardDescription>
+              Make changes to your account here. Click save when you're done.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='~space-y-2'>
+            <div className='~space-y-1'>
+              <Label htmlFor='name'>Name</Label>
+              <Input id='name' defaultValue='Scott Hetrick' />
+            </div>
+            <div className='~space-y-1'>
+              <Label htmlFor='username'>Username</Label>
+              <Input id='username' defaultValue='@dreadhalor' />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button>Save changes</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent value='password'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Password</CardTitle>
+            <CardDescription>
+              Change your password here. After saving, you'll be logged out.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='~space-y-2'>
+            <div className='~space-y-1'>
+              <Label htmlFor='current'>Current password</Label>
+              <Input id='current' type='password' />
+            </div>
+            <div className='~space-y-1'>
+              <Label htmlFor='new'>New password</Label>
+              <Input id='new' type='password' />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button>Save password</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent value='password2'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Password</CardTitle>
+            <CardDescription>Change your afewaw out.</CardDescription>
+          </CardHeader>
+          <CardContent className='~space-y-2'>
+            <div className='~space-y-1'>
+              <Label htmlFor='current'>Current eee</Label>
+              <Input id='current' type='password' />
+            </div>
+            <div className='~space-y-1'>
+              <Label htmlFor='new'>dd ssad</Label>
               <Input id='new' type='password' />
             </div>
           </CardContent>
