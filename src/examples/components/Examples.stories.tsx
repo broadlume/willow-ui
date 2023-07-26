@@ -58,7 +58,7 @@ function DemoContainer({
   return (
     <div
       className={cn(
-        '~flex ~min-w-0 ~items-center ~justify-center [&>div]:~w-full',
+        '~mb-6 ~flex ~min-w-0 ~break-inside-avoid ~items-center ~justify-center [&>div]:~w-full',
         className
       )}
       {...props}
@@ -66,39 +66,27 @@ function DemoContainer({
   );
 }
 
+const demos = [
+  CreateAccountDemo,
+  PaymentMethodDemo,
+  ShareDocumentDemo,
+  DatePickerCardDemo,
+  NotificationsDemo,
+  ReportAnIssueDemo,
+  GithubCardDemo,
+  CookieSettingsDemo,
+];
+
 function CardsPageDemo(_) {
   return (
-      <div className='~items-start ~justify-center ~gap-6 ~rounded-lg ~p-8 md:~grid lg:~grid-cols-2 xl:~grid-cols-3'>
-        <div className='~col-span-2 ~grid ~items-start ~gap-6 lg:~col-span-1'>
-          <DemoContainer>
-            <CreateAccountDemo />
+    <div className='~@container'>
+      <div className='~gap-6 ~rounded-lg ~p-8 @3xl:~columns-2 @7xl:~columns-3'>
+        {demos.map((Demo, i) => (
+          <DemoContainer key={i}>
+            <Demo />
           </DemoContainer>
-          <DemoContainer>
-            <PaymentMethodDemo />
-          </DemoContainer>
-        </div>
-        <div className='~col-span-2 ~grid ~items-start ~gap-6 lg:~col-span-1'>
-          <DemoContainer>
-            <ShareDocumentDemo />
-          </DemoContainer>
-          <DemoContainer>
-            <DatePickerCardDemo />
-          </DemoContainer>
-          <DemoContainer>
-            <NotificationsDemo />
-          </DemoContainer>
-        </div>
-        <div className='~col-span-2 ~grid ~items-start ~gap-6 lg:~col-span-1 lg:~grid-cols-2 xl:~grid-cols-1'>
-          <DemoContainer>
-            <ReportAnIssueDemo />
-          </DemoContainer>
-          <DemoContainer>
-            <GithubCardDemo />
-          </DemoContainer>
-          <DemoContainer>
-            <CookieSettingsDemo />
-          </DemoContainer>
-        </div>
+        ))}
       </div>
+    </div>
   );
 }
