@@ -120,28 +120,6 @@ export const WithContent: Story = {
   ),
 };
 
-// export const Vertical: Story = {
-//   parameters: {
-//     docs: {
-//       description: {
-//         story: 'A basic tabs, with associated content.',
-//       },
-//     },
-//   },
-//   render: (args) => (
-//     <Tabs2.Root defaultValue='tab1' orientation='vertical'>
-//       <Tabs2.List aria-label='tabs example'>
-//         <Tabs2.Trigger value='tab1'>One</Tabs2.Trigger>
-//         <Tabs2.Trigger value='tab2'>Two</Tabs2.Trigger>
-//         <Tabs2.Trigger value='tab3'>Three</Tabs2.Trigger>
-//       </Tabs2.List>
-//       <Tabs2.Content value='tab1'>Tab one content</Tabs2.Content>
-//       <Tabs2.Content value='tab2'>Tab two content</Tabs2.Content>
-//       <Tabs2.Content value='tab3'>Tab three content</Tabs2.Content>
-//     </Tabs2.Root>
-//   ),
-// };
-
 export const Vertical: Story = {
   parameters: {
     docs: {
@@ -154,7 +132,7 @@ export const Vertical: Story = {
     <Tabs
       orientation='vertical'
       defaultValue='account'
-      className='~flex ~flex-row'
+      className='~flex ~flex-row ~gap-2'
       {...args}
     >
       <TabsList className='~flex ~h-full ~w-[200px] ~min-w-[200px] ~max-w-[200px] ~flex-col'>

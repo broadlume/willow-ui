@@ -119,7 +119,6 @@ const TabsList = React.forwardRef<
       const activeTab = container?.querySelector('[data-state="active"]');
       if (activeTab && sliderRef.current) {
         const activeTabElement = activeTab as HTMLElement;
-        console.log('orientation:', orientation);
         if (orientation === 'horizontal') {
           sliderRef.current.style.transform = `translateX(${activeTabElement.offsetLeft}px)`;
           sliderRef.current.style.width = `${activeTabElement.offsetWidth}px`;
