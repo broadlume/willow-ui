@@ -8,8 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-# we can't ignore dist if we want to install the package from github
-# dist
+dist
 dist-ssr
 *.local
 
