@@ -22,7 +22,16 @@ This means you'll need to add a `.npmrc` file to your project (that you do NOT c
 
 Make sure to replace YOUR_GITHUB_TOKEN with your own GitHub Personal Access Token. You can find instructions on how to generate one [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
 
-After installation, the tricky part is over! Now to use a component from the library, simply import it in your project. Here is an example:
+After installation, the tricky part is over! Now to use components from the library, simply import the library CSS (ideally into your `index.css`) & then import any component you want into your project. Here is an example:
+
+Importing the CSS:
+
+```css
+/* index.css */
+@import '@broadlume/willow-ui/style.css';
+```
+
+then:
 
 ```js
 import { Button } from '@broadlume/willow-ui';
