@@ -69,6 +69,23 @@ export const Pills: Story = {
   ),
 };
 
+export const DisabledTabs: Story = {
+  render: (args) => (
+    <Tabs defaultValue='leads' {...args}>
+      <TabsList className='~grid ~grid-cols-4'>
+        <TabsTrigger value='leads'>Leads</TabsTrigger>
+        <TabsTrigger value='contacts'>Contacts</TabsTrigger>
+        <TabsTrigger value='stores' disabled>
+          Stores
+        </TabsTrigger>
+        <TabsTrigger value='reviews' disabled>
+          Reviews
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
+  ),
+};
+
 export const WithContent: Story = {
   parameters: {
     docs: {
