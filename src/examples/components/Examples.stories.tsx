@@ -79,7 +79,6 @@ function CardsPageDemo(_) {
           </DemoContainer>
         </div>
         <div className='~col-span-2 ~grid ~items-start ~gap-6 lg:~col-span-1'>
-          <DemoContainer>{/* <TeamMembersDemo /> */}</DemoContainer>
           <DemoContainer>
             <ShareDocumentDemo />
           </DemoContainer>
