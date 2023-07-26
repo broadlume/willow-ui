@@ -2,8 +2,17 @@
   "name": "willow-ui",
   "private": true,
   "version": "0.0.0",
+  "author": {
+    "name": "dreadhalor",
+    "url": "https://scotthetrick.com"
+  },
+  "description": "Broadlume X's UI Component Library",
   "type": "module",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/broadlume/willow-ui.git"
+  },
   "exports": {
     ".": {
       "require": "./dist/willow-ui.cjs",
