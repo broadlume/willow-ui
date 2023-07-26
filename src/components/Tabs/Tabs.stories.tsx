@@ -56,6 +56,19 @@ export const Default: Story = {
   ),
 };
 
+export const Pills: Story = {
+  render: (args) => (
+    <Tabs defaultValue='contacts' {...args} variant='pills'>
+      <TabsList className='~grid ~grid-cols-4'>
+        <TabsTrigger value='leads'>Leads</TabsTrigger>
+        <TabsTrigger value='contacts'>Contacts</TabsTrigger>
+        <TabsTrigger value='stores'>Stores</TabsTrigger>
+        <TabsTrigger value='reviews'>Reviews</TabsTrigger>
+      </TabsList>
+    </Tabs>
+  ),
+};
+
 export const WithContent: Story = {
   parameters: {
     docs: {

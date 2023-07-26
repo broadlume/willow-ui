@@ -10,7 +10,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/broadlume/willow-ui.git"
+    "url": "git+https://github.com/broadlume/willow-ui.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@broadlume"
@@ -36,7 +36,8 @@
     "build-storybook": "storybook build",
     "prepublishOnly": "npm run build",
     "bundle-analyze": "npx vite-bundle-analyzer",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "peerDependencies": {
     "@types/react": "*",
@@ -64,6 +65,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "autoprefixer": "^10.4.14",
+    "chromatic": "^6.20.0",
     "concurrently": "^8.2.0",
     "eslint": "^8.42.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -114,5 +116,11 @@
     "react-day-picker": "^8.8.0",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/broadlume/willow-ui/issues"
+  },
+  "readme": "ERROR: No README data found!",
+  "homepage": "https://github.com/broadlume/willow-ui#readme",
+  "_id": "@broadlume/willow-ui@0.0.0"
 }
