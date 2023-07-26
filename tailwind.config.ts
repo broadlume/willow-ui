@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 // this type error should be fixed by the tailwindcss-animate team soon
 import twAnimate from 'tailwindcss-animate';
+import containerQueries from '@tailwindcss/container-queries';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
 const baseRem = 16;
@@ -182,5 +183,5 @@ export default {
       },
     },
   },
-  plugins: [twAnimate],
+  plugins: [twAnimate, containerQueries],
 } satisfies Config;

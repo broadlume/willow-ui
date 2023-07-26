@@ -30,10 +30,22 @@ const sliderVariants = cva(
   {
     variants: {
       variant: {
-        default: '~z-10 ~h-full ~border-b-2 ~border-primary',
+        default: '~z-10 ~border-primary',
         pills: '~bottom-1 ~top-1 ~rounded-full ~bg-black',
       },
+      orientation: {
+        horizontal: '~left-0 ~h-full ~border-b-2',
+        vertical: '~top-0 ~w-full ~border-r-2',
+      },
     },
+    compoundVariants: [
+      {
+        variant: 'pills',
+        orientation: 'horizontal',
+        className:
+          '~bottom-1 ~top-1 ~h-auto ~rounded-full ~border-none ~bg-black',
+      },
+    ],
     defaultVariants: {
       variant: 'default',
     },
@@ -62,16 +74,27 @@ const tabTriggerVariants = cva(
 
 const TabsContext = createContext({
   variant: 'default' as TabsProps['variant'],
+  orientation: 'horizontal' as TabsProps['orientation'],
 });
 interface TabsProps
   extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
   variant?: 'default' | 'pills';
+  orientation?: 'horizontal' | 'vertical';
 }
 
 /** A set of layered sections of content, known as tab panels, that are displayed one at a time. */
-const Tabs = ({ variant = 'default', className, ...props }: TabsProps) => (
-  <TabsContext.Provider value={{ variant }}>
-    <TabsPrimitive.Root {...props} className={cn('tw-reset', className)} />
+const Tabs = ({
+  variant = 'default',
+  orientation = 'horizontal',
+  className,
+  ...props
+}: TabsProps) => (
+  <TabsContext.Provider value={{ variant, orientation }}>
+    <TabsPrimitive.Root
+      className={cn('tw-reset', className)}
+      {...props}
+      orientation={orientation}
+    />
   </TabsContext.Provider>
 );
 
@@ -84,7 +107,7 @@ const TabsList = React.forwardRef<
   const ref = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
 
   // get variant from context
-  const { variant } = useContext(TabsContext);
+  const { variant, orientation } = useContext(TabsContext);
 
   // track if it's the first render
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -96,8 +119,13 @@ const TabsList = React.forwardRef<
       const activeTab = container?.querySelector('[data-state="active"]');
       if (activeTab && sliderRef.current) {
         const activeTabElement = activeTab as HTMLElement;
-        sliderRef.current.style.transform = `translateX(${activeTabElement.offsetLeft}px)`;
-        sliderRef.current.style.width = `${activeTabElement.offsetWidth}px`;
+        if (orientation === 'horizontal') {
+          sliderRef.current.style.transform = `translateX(${activeTabElement.offsetLeft}px)`;
+          sliderRef.current.style.width = `${activeTabElement.offsetWidth}px`;
+        } else {
+          sliderRef.current.style.transform = `translateY(${activeTabElement.offsetTop}px)`;
+          sliderRef.current.style.height = `${activeTabElement.offsetHeight}px`;
+        }
         // after updating the slider position, set isFirstRender to false
         setIsFirstRender(false);
       }
@@ -122,7 +150,7 @@ const TabsList = React.forwardRef<
       <div // slider
         ref={sliderRef}
         className={cn(
-          sliderVariants({ variant }),
+          sliderVariants({ variant, orientation }),
           isFirstRender ? '~transition-none' : ''
         )}
       />

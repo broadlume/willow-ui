@@ -20,6 +20,7 @@ export const DatePickerRange = ({
   selected: dateRange,
   onSelect: setDateRange,
   disabled,
+  className,
   ...props
 }: DatePickerRangeProps) => {
   return (
@@ -27,9 +28,11 @@ export const DatePickerRange = ({
       <PopoverTrigger asChild disabled={disabled}>
         <Button
           variant={'outline'}
+          id='date'
           className={cn(
             '~w-[240px] ~justify-start ~text-left ~font-normal',
-            !dateRange && '~text-muted-foreground'
+            !dateRange && '~text-muted-foreground',
+            className
           )}
         >
           <CalendarIcon className='~mr-3 ~h-5 ~w-5' />

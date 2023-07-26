@@ -22,6 +22,7 @@ export const DatePickerSingle = ({
   onSelect: setDate,
   disabled,
   disabledDates,
+  className,
   ...props
 }: DatePickerSingleProps) => {
   return (
@@ -29,9 +30,11 @@ export const DatePickerSingle = ({
       <PopoverTrigger asChild disabled={disabled}>
         <Button
           variant={'outline'}
+          id='date'
           className={cn(
             '~w-[240px] ~justify-start ~text-left ~font-normal',
-            !date && '~text-muted-foreground'
+            !date && '~text-muted-foreground',
+            className
           )}
         >
           <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
