@@ -6,28 +6,31 @@ import { Meta } from '@storybook/blocks';
 
 Welcome to the Broadlume UI library! This library implements the Willow design system as a collection of reusable components to be used across different projects in the Broadlume X ecosystem.
 
-Each component <s>has been</s> will be meticulously designed and built to meet the needs of our various applications while ensuring consistency across different applications and platforms.
+Each component has been meticulously designed and built to meet the needs of our various applications while ensuring consistency across different applications and platforms.
 
 ## How to use this library
 
-To use a component from the library, simply import it in your project. Here is an example:
+To install the library, you'll need to grab the private package from GitHub Packages (not npm, because this was easier at 1am).
+
+This means you'll need to add a `.npmrc` file to your project wherever your package.json file is to let npm know where to look & what credentials to use. Here's the file to copy+paste:
 
 ```js
-import { Button } from 'willow-ui';
+# .npmrc
+@broadlume:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+Make sure to replace YOUR_GITHUB_TOKEN with your own GitHub Personal Access Token. You can find instructions on how to generate one [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
+
+After installation, the tricky part is over! Now to use a component from the library, simply import it in your project. Here is an example:
+
+```js
+import { Button } from '@broadlume/willow-ui';
 
 <Button>Hi, I'm a button</Button>;
 ```
 
-We will have better examples later.
-
-In addition, since the library isn't currently hosted on NPM, here's how you can test importing library components in your own projects:
-
-- Clone the repo (if you're reading this right now, you've already done that).
-- Run `npm link` in the root directory of this repo.
-- Then, in your consuming project, run `npm link willow-ui` to link this library to your project.
-- You will then be able to consume the library, as well as make changes & see them reflected in your project.\*
-
-\*Note: in my experience, you will have to re-link every time you run `npm install` in your consuming project, as it removes symlinks. As far as I can tell, this is just an issue with `npm link` & I'm not sure if there's a workaround.
+This more or less applies to every component, with the exception of Toast, which needs a provider to be added to the root of your app & to be called with a hook. I will write documentation on that later.
 
 ## Technologies
 
@@ -35,18 +38,12 @@ In terms of adding components, here are some technologies installed in this libr
 
 - Typescript
 - Tailwind
+- Shadcn/ui
 - Sass
 - SVGR
-- Shadcn/ui
 - NOT BOOTSTRAP
 
 If any of these technologies are unfamiliar to you, it's probably fine because outside of Typescript & not using Bootstrap they're all optional (but they're dope, you should check them out).
-
-## Design Organization
-
-We're adopting some principles of the Atomic Design philosophy, namely by categorizing components into Atoms, Molecules, & Organisms.
-
-One deviation from standard Atomic Design: basic utilities such as typography, colors & spacing have been exempted from this hierarchy, as they're more 'quarks' than actual atoms. As atoms should be completely independent from other atoms, it stands to reason that if typography is an atom, then buttons, labels or any other element can't be considered "atomic" since they can be affected by changing typography. So, to prevent literally everything that isn't typography or a color from being a molecule we're just considering these basics as subatomic/not necessary to categorize.
 
 ## Library File Structure
 
@@ -76,7 +73,14 @@ Here is an example of 3 files that could be added for NewComponent:
 
 ## Contribution
 
-We encourage contribution - but not QUITE yet. Once there's some security to merging in new code, you can make a PR & I can approve it.
+We encourage contribution.
+
+**If you dare.**
+
+Just kidding, it's not that bad. Here's how to contribute:
+
+- Make a PR
+- Get it approved by me
 
 #### We're officially entering the wild, wild west of a brand new, quickly scaling codebase. We're going to move fast & break things with standards established in real time, but by the end of it we'll have a Broadlume X that looks as good as the designs & works for everyone!
 
