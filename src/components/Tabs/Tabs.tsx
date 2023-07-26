@@ -57,13 +57,16 @@ const tabTriggerVariants = cva(
     'caption-1 ~inline-flex ~min-h-0 ~items-center ~justify-center ~whitespace-nowrap ~px-3 ~py-1 ~ring-offset-background ~transition-all',
     'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
     'disabled:~pointer-events-none disabled:~opacity-50',
-    'data-[state=inactive]:~font-normal data-[state=active]:~text-foreground',
   ],
   {
     variants: {
       variant: {
-        default: '~h-full ~border-b ~border-border',
-        pills: '~z-10 ~rounded-full data-[state=active]:~text-white',
+        default: cn(
+          '~h-full ~border-b ~border-border',
+          'data-[state=inactive]:~font-normal data-[state=active]:~text-foreground'
+        ),
+        pills:
+          '~z-10 ~rounded-full ~text-foreground data-[state=active]:~text-white',
       },
     },
     defaultVariants: {
