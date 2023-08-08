@@ -34,13 +34,10 @@ function Calendar({
         ),
         row: '~flex ~w-full ~mt-2',
         cell: cn(
-          '~relative ~p-0 ~text-center focus-within:~relative focus-within:~z-20',
-          '[&:has([aria-selected])]:~rounded-full [&:has([aria-selected])]:~bg-accent',
-          'first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full',
-          '[&:has([aria-selected]):has(.range-middle)]:~rounded-none',
-          '[&:has([aria-selected]):has(.range-start)]:~rounded-r-none',
-          '[&:has([aria-selected]):has(.range-end)]:~rounded-l-none',
-          '[&:has([aria-selected]):has(.range-start):has(.range-end)]:~rounded-full'
+          '~relative ~p-0 ~text-center focus-within:~relative focus-within:~z-20 [&:has([aria-selected])]:~bg-accent',
+          props.mode === 'range'
+            ? '[&:has(>.day-range-end)]:~rounded-r-full [&:has(>.day-range-start)]:~rounded-l-full first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full'
+            : '[&:has([aria-selected])]:~rounded-full'
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
@@ -55,11 +52,11 @@ function Calendar({
         day_outside: '~text-muted-foreground ~opacity-50',
         day_disabled: '~text-muted-foreground ~opacity-50',
         day_range_middle: cn(
-          'range-middle aria-selected:~bg-transparent aria-selected:~text-accent-foreground',
+          'aria-selected:~bg-transparent aria-selected:~text-accent-foreground',
           '[&.today]:~bg-accent'
         ),
-        day_range_start: 'range-start',
-        day_range_end: 'range-end',
+        day_range_start: 'day-range-start',
+        day_range_end: 'day-range-end',
         day_hidden: '~invisible',
         ...classNames,
       }}

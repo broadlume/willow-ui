@@ -5,6 +5,15 @@ import { Label } from '@src/index';
 
 const meta: Meta<typeof Checkbox> = {
   component: Checkbox,
+  title: 'Components/Checkbox',
+  tags: ['autodocs'],
+  argTypes: {
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+  },
 };
 
 export default meta;

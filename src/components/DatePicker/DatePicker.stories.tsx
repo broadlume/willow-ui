@@ -14,18 +14,16 @@ export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
 const DatePickerSingleOrRangeDemo = (props: DatePickerProps) => {
-  const [date, setDate] = useState<Date | DateRange | undefined>();
+  const [date, setDate] = useState<Date | DateRange>();
 
-  // this is very ugly typing but it doesn't break & isn't a realistic use case anyway
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <DatePicker selected={date as any} onSelect={setDate} {...props} />;
+  return <DatePicker selected={date} onSelect={setDate} {...props} />;
 };
 export const Demo: Story = {
   render: DatePickerSingleOrRangeDemo,
 };
 
 const DisabledDatesDemo = (_) => {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<Date>();
 
   return (
     <DatePicker
@@ -43,7 +41,7 @@ export const DisabledDates: Story = {
 };
 
 const DateRangePickerDemo = (_) => {
-  const [date, setDate] = useState<DateRange | undefined>();
+  const [date, setDate] = useState<DateRange>();
 
   return <DatePicker mode='range' selected={date} onSelect={setDate} />;
 };

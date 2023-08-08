@@ -49,7 +49,7 @@ export function DatePickerCardDemo(_) {
             mode={mode}
             className='~w-full'
             selected={selected}
-            setSelected={setSelected}
+            onSelect={setSelected}
           />
           <div className='~flex ~justify-between'>
             <Button variant='ghost' onClick={() => setSelected(undefined)}>
