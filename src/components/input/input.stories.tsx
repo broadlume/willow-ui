@@ -10,17 +10,20 @@ const meta: Meta<typeof Input> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A basic input. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic input.',
-      },
-    },
-  },
   args: {
     type: 'text',
     placeholder: 'Placeholder text',
     disabled: false,
+  },
+};
+
+/** A disabled input. */
+export const Disabled: Story = {
+  args: {
+    type: 'text',
+    placeholder: 'Placeholder text',
+    disabled: true,
   },
 };

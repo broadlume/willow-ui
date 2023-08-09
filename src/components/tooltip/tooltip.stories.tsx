@@ -16,14 +16,8 @@ const meta: Meta<typeof Tooltip> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A basic tooltip. */
 export const Default: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic tooltip.',
-      },
-    },
-  },
   render: (_) => (
     <TooltipProvider>
       <Tooltip>
@@ -34,14 +28,8 @@ export const Default: Story = {
   ),
 };
 
+/** A tooltip with custom styling. */
 export const Styled: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A tooltip with more styling.',
-      },
-    },
-  },
   render: (_) => (
     <TooltipProvider>
       <Tooltip>

@@ -11,14 +11,8 @@ const meta: Meta<typeof Label> = {
 export default meta;
 type Story = StoryObj<typeof Label>;
 
+/** A basic label. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic label.',
-      },
-    },
-  },
   argTypes: {
     asChild: {
       table: {
@@ -41,14 +35,8 @@ export const Demo: Story = {
   ),
 };
 
+/** A label associated with a disabled control. */
 export const Disabled: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A label associated with a disabled control.',
-      },
-    },
-  },
   argTypes: {
     asChild: {
       table: {

@@ -28,21 +28,14 @@ const meta: Meta<typeof Tabs> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A basic tabs header. */
 export const Default: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic tabs header.',
-      },
-    },
-  },
   argTypes: {
     variant: {
       control: 'select',
       options: ['default', 'pills'],
     },
   },
-
   render: (args) => (
     <Tabs defaultValue='contacts' {...args}>
       <TabsList className='~grid ~grid-cols-4'>
@@ -55,6 +48,7 @@ export const Default: Story = {
   ),
 };
 
+/** Pill-style tabs. */
 export const Pills: Story = {
   render: (args) => (
     <Tabs defaultValue='contacts' {...args} variant='pills'>
@@ -68,6 +62,7 @@ export const Pills: Story = {
   ),
 };
 
+/** Disabled tabs. */
 export const DisabledTabs: Story = {
   render: (args) => (
     <Tabs defaultValue='leads' {...args}>
@@ -85,14 +80,8 @@ export const DisabledTabs: Story = {
   ),
 };
 
+/** A basic tabs, with associated content. */
 export const WithContent: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic tabs, with associated content.',
-      },
-    },
-  },
   render: (args) => (
     <Tabs defaultValue='account' className='~w-[400px]' {...args}>
       <TabsList className='~grid ~grid-cols-2'>
@@ -149,14 +138,8 @@ export const WithContent: Story = {
   ),
 };
 
+/** Vertical tabs (WIP). */
 export const Vertical: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic tabs, with associated content.',
-      },
-    },
-  },
   render: (args) => (
     <Tabs
       orientation='vertical'

@@ -9,7 +9,8 @@ const meta: Meta = {
       description: 'Text to display',
     },
     color: {
-      control: { type: 'text' },
+      control: { type: 'color' },
+      description: 'Arbitrary text color',
     },
   },
 };

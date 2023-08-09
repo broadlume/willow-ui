@@ -60,18 +60,11 @@ const ToastDemo = ({
   );
 };
 
+/** A basic toast. */
 export const Demo = {
   args: {
     title: 'Scheduled: Catch up',
     description: 'Monday, 2:00 PM - 2:30 PM',
-  },
-
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic toast.',
-      },
-    },
   },
   render: ToastDemo,
 };

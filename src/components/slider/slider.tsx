@@ -11,7 +11,7 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      'tw-reset ~group ~relative ~flex ~w-full ~cursor-pointer ~touch-none ~select-none ~items-center',
+      'tw-reset ~group ~peer ~relative ~flex ~w-full ~cursor-pointer ~touch-none ~select-none ~items-center',
       'data-[disabled]:~cursor-not-allowed data-[disabled]:~opacity-50',
       className
     )}
