@@ -73,13 +73,13 @@ function DemoContainer({
 
 const demos = [
   ActivityGoalDemo,
-  CreateAccountDemo,
-  PaymentMethodDemo,
-  ShareDocumentDemo,
+  ReportAnIssueDemo,
   RecentSalesDemo,
+  ShareDocumentDemo,
+  PaymentMethodDemo,
   DatePickerCardDemo,
   NotificationsDemo,
-  ReportAnIssueDemo,
+  CreateAccountDemo,
   ChatDemo,
   GithubCardDemo,
   CookieSettingsDemo,
