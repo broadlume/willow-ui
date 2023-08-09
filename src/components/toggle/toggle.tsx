@@ -6,7 +6,7 @@ import { cn } from '@src/lib/utils';
 
 const toggleVariants = cva(
   [
-    'tw-reset ~inline-flex ~items-center ~justify-center ~rounded-md ~bg-transparent ~transition-none',
+    'tw-reset ~inline-flex ~h-9 ~items-center ~justify-center ~rounded-md ~bg-transparent ~px-3 ~transition-none',
     'hover:~bg-accent hover:~text-muted-foreground',
     'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
     'disabled:~pointer-events-none disabled:~opacity-50',
@@ -14,7 +14,7 @@ const toggleVariants = cva(
   ],
   {
     variants: {
-      variant: {
+      style: {
         default: '',
         outline: '~border ~border-input ~shadow-sm',
       },
@@ -23,13 +23,14 @@ const toggleVariants = cva(
         pill: '~rounded-full',
       },
       size: {
-        default: '~h-9 ~px-3',
-        sm: '~h-8 ~px-2',
-        lg: '~h-10 ~px-3',
+        default: '',
+        xs: '~text-xs',
+        sm: '~text-sm',
+        lg: '~text-lg',
       },
     },
     defaultVariants: {
-      variant: 'default',
+      style: 'default',
       size: 'default',
     },
   }
@@ -40,10 +41,10 @@ const Toggle = React.forwardRef<
   React.ElementRef<typeof TogglePrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> &
     VariantProps<typeof toggleVariants>
->(({ className, variant, size, shape, ...props }, ref) => (
+>(({ className, style, size, shape, ...props }, ref) => (
   <TogglePrimitive.Root
     ref={ref}
-    className={cn(toggleVariants({ variant, size, shape, className }))}
+    className={cn(toggleVariants({ style, size, shape, className }))}
     {...props}
   />
 ));

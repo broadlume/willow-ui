@@ -45,6 +45,7 @@ const toastVariants = cva(
   }
 );
 
+/** A succinct message that is displayed temporarily. */
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &

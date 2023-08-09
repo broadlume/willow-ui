@@ -23,8 +23,8 @@ type Story = StoryObj<typeof Toggle>;
 
 export const Default: Story = {
   argTypes: {
-    variant: {
-      description: 'The variant of the button.',
+    style: {
+      description: 'The style of the button.',
       control: 'select',
       options: ['default', 'outline'],
     },
@@ -36,51 +36,58 @@ export const Default: Story = {
     size: {
       description: 'The size of the button.',
       control: 'select',
-      options: ['sm', 'default', 'lg'],
+      options: ['xs', 'sm', 'default', 'lg'],
     },
   },
   render: (args) => <Toggle {...args}>Click me!</Toggle>,
 };
 
+/** All toggle styles. */
 export const Styles: Story = {
   render: (_) => (
     <div className='~flex ~gap-2'>
       <Toggle>Default</Toggle>
-      <Toggle variant='outline'>Outline</Toggle>
+      <Toggle style='outline'>Outline</Toggle>
     </div>
   ),
 };
 
+/** All toggle shapes. */
 export const Shapes: Story = {
   render: (_) => (
     <div className='~flex ~gap-2'>
-      <Toggle variant='outline'>Default</Toggle>
-      <Toggle variant='outline' shape='pill'>
+      <Toggle style='outline'>Default</Toggle>
+      <Toggle style='outline' shape='pill'>
         Pill
       </Toggle>
     </div>
   ),
 };
 
+/** All toggle sizes. */
 export const Sizes: Story = {
   render: (_) => (
     <div className='~flex ~gap-2'>
-      <Toggle size='lg' variant='outline'>
-        Large
+      <Toggle size='lg' style='outline'>
+        Large (lg)
       </Toggle>
-      <Toggle variant='outline'>Default</Toggle>
-      <Toggle size='sm' variant='outline'>
-        Small
+      <Toggle style='outline'>Default</Toggle>
+      <Toggle size='sm' style='outline'>
+        Small (sm)
+      </Toggle>
+      <Toggle size='xs' style='outline'>
+        X-Small (xs)
       </Toggle>
     </div>
   ),
 };
 
+/** Disabled toggles. */
 export const Disabled: Story = {
   render: (_) => (
     <div className='~flex ~gap-2'>
       <Toggle disabled>Default</Toggle>
-      <Toggle disabled variant='outline'>
+      <Toggle disabled style='outline'>
         Outline
       </Toggle>
     </div>
