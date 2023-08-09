@@ -70,7 +70,7 @@ export function ShareDocumentDemo(_) {
                 </Avatar>
                 <div>
                   <p className='~text-sm ~font-medium ~leading-none'>
-                    Pedro Duarte
+                    Arshad Chummun
                   </p>
                   <p className='~text-sm ~text-muted-foreground'>
                     shad@shadcn.com
