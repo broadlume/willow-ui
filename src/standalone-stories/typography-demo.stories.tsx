@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta = {
+/** The Willow design system's fonts. */
+const meta: Meta = {
   title: 'Quarks/Typography',
-
   argTypes: {
     input: {
       control: { type: 'text' },
@@ -12,22 +12,16 @@ const meta = {
       control: { type: 'text' },
     },
   },
-} as Meta;
+};
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+/** All typography defaults for HTML tags. */
 export const Tags: Story = {
   args: {
     input: 'Lorem ipsum & all that jazz',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'All typography defaults for HTML tags.',
-      },
-    },
   },
   render: ({ input, color }) => {
     const style = color && { style: { color } };
@@ -62,14 +56,8 @@ export const Tags: Story = {
   },
 };
 
+/** All typography defaults for different classnames. */
 export const Variants: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All typography defaults for different classnames.',
-      },
-    },
-  },
   args: {
     input:
       'Quis suspendisse laoreet adipiscing vitae. Id viverra sollicitudin enim neque, lobortis ac mauris non vestibulum.',

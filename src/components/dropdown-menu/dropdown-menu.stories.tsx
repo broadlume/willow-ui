@@ -17,6 +17,8 @@ import {
 import { useState } from 'react';
 import { Button } from '@src/index';
 
+// Let's put a description here because Storybook is buggy
+/** Displays a menu to the user — such as a set of actions or functions — triggered by a button. */
 const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
   title: 'Components/Dropdown Menu',

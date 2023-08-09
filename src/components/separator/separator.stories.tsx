@@ -5,7 +5,6 @@ import { Separator } from './separator';
 const meta: Meta<typeof Separator> = {
   component: Separator,
   title: 'Components/Separator',
-
   argTypes: {
     asChild: {
       table: {

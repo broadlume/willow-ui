@@ -13,6 +13,8 @@ import {
 } from './alert-dialog';
 import { Button } from '@src/index';
 
+// Let's put a description here because Storybook is buggy
+/** A modal dialog that interrupts the user with important content & expects a response. */
 const meta: Meta<typeof AlertDialog> = {
   component: AlertDialog,
   title: 'Components/Alert Dialog',

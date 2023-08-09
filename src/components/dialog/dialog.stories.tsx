@@ -11,6 +11,8 @@ import {
 } from './dialog';
 import { Button, Input, Label } from '@src/index';
 
+// Let's put a description here because Storybook is buggy
+/** A window overlaid on either the primary window or another dialog window, rendering the content underneath inert. */
 const meta: Meta<typeof Dialog> = {
   component: Dialog,
   title: 'Components/Dialog',

@@ -5,6 +5,7 @@ import { cn } from '@src/lib/utils';
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
+/** An adjustable, multi-line text field. */
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, ...props }, ref) => {
     return (

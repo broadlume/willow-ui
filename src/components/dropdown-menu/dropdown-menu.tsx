@@ -8,6 +8,7 @@ import {
 
 import { cn } from '@src/lib/utils';
 
+/** Displays a menu to the user — such as a set of actions or functions — triggered by a button. */
 const DropdownMenu = DropdownMenuPrimitive.Root;
 const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 const DropdownMenuPortal = DropdownMenuPrimitive.Portal;

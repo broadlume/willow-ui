@@ -7,7 +7,6 @@ import { Button } from '@components/button/button';
 const meta: Meta = {
   component: Toast,
   title: 'Components/Toast',
-
   decorators: [
     (Story) => (
       <>

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Switch } from './switch';
 import { Label } from '@components/label/label';
 
-const meta = {
+const meta: Meta<typeof Switch> = {
   component: Switch,
   title: 'Components/Switch',
   argTypes: {
@@ -16,7 +16,7 @@ const meta = {
       },
     },
   },
-} as Meta<typeof Switch>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

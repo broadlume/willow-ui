@@ -38,6 +38,7 @@ const sliderVariants = cva(
         vertical: '~top-0 ~w-full ~border-r-2',
       },
     },
+    // TODO: compound variant may make default pill variant effectively redundant
     compoundVariants: [
       {
         variant: 'pills',

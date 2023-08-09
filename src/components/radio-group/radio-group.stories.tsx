@@ -6,7 +6,6 @@ import { Label } from '@components/label/label';
 const meta: Meta<typeof RadioGroup> = {
   component: RadioGroup,
   title: 'Components/Radio Group',
-
   argTypes: {
     asChild: {
       table: {

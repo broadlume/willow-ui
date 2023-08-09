@@ -5,6 +5,7 @@ import { cn } from '@src/lib/utils';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
+/** A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it. */
 const Tooltip = TooltipPrimitive.Root;
 
 const TooltipTrigger = React.forwardRef<

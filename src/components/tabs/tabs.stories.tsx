@@ -16,7 +16,6 @@ import SidebarItem from '@src/dhq/sidebar-item';
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
   title: 'Components/Tabs',
-
   argTypes: {
     asChild: {
       table: {

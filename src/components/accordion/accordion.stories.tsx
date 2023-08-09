@@ -7,6 +7,8 @@ import {
   AccordionTrigger,
 } from './accordion';
 
+// Let's put a description here because Storybook is buggy
+/** A vertically stacked set of interactive headings that each reveal a section of content. */
 const meta: Meta<typeof Accordion> = {
   component: Accordion,
   title: 'Components/Accordion',

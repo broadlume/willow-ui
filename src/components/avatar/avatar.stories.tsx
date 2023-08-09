@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 const meta: Meta<typeof Avatar> = {
   component: Avatar,
   title: 'Components/Avatar',
-
   argTypes: {
     size: {
       control: {

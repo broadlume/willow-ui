@@ -3,9 +3,9 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { Card, CardContent, Separator } from '@src/index';
 import { colorPalette, themeColors } from '@/tailwind.config';
 
-const meta = {
+const meta: Meta = {
   title: 'Quarks/Colors',
-} as Meta;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -109,13 +109,7 @@ const ColorPaletteDemoComponent = (_) => {
   );
 };
 
+/** All design system theme colors. */
 export const Palette: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All design system theme colors.',
-      },
-    },
-  },
   render: ColorPaletteDemoComponent,
 };
