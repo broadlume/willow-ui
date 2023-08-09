@@ -59,7 +59,7 @@ export function NotificationsDemo(_) {
             <div className='~space-y-1'>
               <p className='~text-sm ~font-medium ~leading-none'>Available</p>
               <p className='~text-sm ~text-muted-foreground'>
-                Only mentions and comments.
+                Only mentions & comments.
               </p>
             </div>
           </Label>

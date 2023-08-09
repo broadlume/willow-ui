@@ -4,7 +4,7 @@ import { CheckIcon } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
 
-/** A control that allows the user to toggle between checked and not checked. */
+/** A control that allows the user to toggle between checked & not checked. */
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>

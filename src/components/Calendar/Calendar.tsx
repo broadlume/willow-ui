@@ -7,7 +7,7 @@ import { buttonVariants } from '@src/index';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-/** A calendar component that allows users to enter and edit dates. */
+/** A calendar component that allows users to enter & edit dates. */
 function Calendar({
   className,
   classNames,

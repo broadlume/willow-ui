@@ -32,7 +32,7 @@ export function GithubCardDemo(_) {
         <div className='~space-y-1'>
           <CardTitle>willow-ui</CardTitle>
           <CardDescription>
-            Beautifully designed components built with shadcn/ui, Radix UI and
+            Beautifully designed components built with shadcn/ui, Radix UI &
             Tailwind CSS.
           </CardDescription>
         </div>

@@ -57,14 +57,14 @@ export const Multiple: Story = {
         <AccordionTrigger>What are the specifications?</AccordionTrigger>
         <AccordionContent>
           Our product adheres to the highest industry standards, providing
-          unparalleled performance and quality.
+          unparalleled performance & quality.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value='item-2'>
         <AccordionTrigger>Are there customizable options?</AccordionTrigger>
         <AccordionContent>
           Absolutely. The product comes with a variety of customizable options
-          to match your specific needs and preferences.
+          to match your specific needs & preferences.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value='item-3'>
@@ -75,22 +75,22 @@ export const Multiple: Story = {
           <ul className='~list-disc ~pl-5 ~leading-6'>
             <li>
               Our design team has meticulously crafted the aesthetics of the
-              product, ensuring a sleek and modern look.
+              product, ensuring a sleek & modern look.
             </li>
             <li>
-              We understand the importance of style and that is why our product
-              is not only functional but also visually appealing.
+              We understand the importance of style & that is why our product is
+              not only functional but also visually appealing.
             </li>
             <li>
               The product's design complements any environment it's placed in,
-              adding a touch of elegance and sophistication.
+              adding a touch of elegance & sophistication.
             </li>
             <li>
               Apart from functionality, we have invested in creating an
               ergonomic design that ensures comfort during usage.
             </li>
             <li>
-              The product features a durable finish that resists wear and tear,
+              The product features a durable finish that resists wear & tear,
               maintaining its pristine appearance over time.
             </li>
             <li>
@@ -104,7 +104,7 @@ export const Multiple: Story = {
             </li>
             <li>
               Each detail on the product is carefully thought out to enhance its
-              overall aesthetic and user experience.
+              overall aesthetic & user experience.
             </li>
             <li>
               We've ensured that our product doesn't just work exceptionally
@@ -116,7 +116,7 @@ export const Multiple: Story = {
             </li>
             <li>
               Every aspect of our product's design is aimed at complementing its
-              surroundings and meeting your style needs.
+              surroundings & meeting your style needs.
             </li>
             <li>
               Our product's design not only focuses on delivering superior

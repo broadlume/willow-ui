@@ -30,8 +30,8 @@ export const Default: Story = {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. You will forfeit all of your bagels,
-            and your dog will think less of you.
+            This action cannot be undone. You will forfeit all of your bagels, &
+            dog will think less of you.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -54,8 +54,8 @@ export const CustomTrigger: Story = {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. You will forfeit all of your bagels,
-            and your dog will think less of you.
+            This action cannot be undone. You will forfeit all of your bagels, &
+            your dog will think less of you.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

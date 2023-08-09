@@ -31,7 +31,7 @@ export const Demo: Story = {
     },
   },
   args: {
-    children: 'Accept terms and conditions',
+    children: 'Accept terms & conditions',
   },
   render: ({ children }) => (
     <div className='~flex ~items-center ~space-x-2'>
@@ -61,7 +61,7 @@ export const Disabled: Story = {
     },
   },
   args: {
-    children: 'Accept terms and conditions',
+    children: 'Accept terms & conditions',
   },
   render: ({ children }) => (
     <div className='~flex ~items-center ~space-x-2'>

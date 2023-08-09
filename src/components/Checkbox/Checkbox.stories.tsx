@@ -24,9 +24,9 @@ export const WithText: Story = {
     <div className='~items-top ~flex ~space-x-2'>
       <Checkbox id='terms1' />
       <div className='tw-reset ~grid ~gap-2 ~leading-none'>
-        <Label htmlFor='terms1'>Accept terms and conditions</Label>
+        <Label htmlFor='terms1'>Accept terms & conditions</Label>
         <p className='~text-muted-foreground'>
-          You agree to our Terms of Service and Privacy Policy.
+          You agree to our Terms of Service & Privacy Policy.
         </p>
       </div>
     </div>
@@ -37,7 +37,7 @@ export const Disabled: Story = {
   render: (_) => (
     <div className='~flex ~items-center ~space-x-2'>
       <Checkbox id='terms2' disabled />
-      <Label htmlFor='terms2'>Accept terms and conditions</Label>
+      <Label htmlFor='terms2'>Accept terms & conditions</Label>
     </div>
   ),
 };

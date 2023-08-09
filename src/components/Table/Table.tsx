@@ -2,6 +2,11 @@ import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
+/**
+ * A table component with customizable styles & enhanced interactivity.
+ * Includes main Table component & subcomponents like Header, Body, Footer, Row, Header Cell, Cell, & Caption.
+ */
+
 const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>

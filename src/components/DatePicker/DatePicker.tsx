@@ -46,7 +46,7 @@ const isRange = (date: DateSelection): date is DateRange => {
 
 /**
  * A component allowing single or range date selections, presented as a button with a calendar popover.
- * Supports customizable formatting, disabled states, and date restrictions.
+ * Supports customizable formatting, disabled states, & date restrictions.
  */
 export const DatePicker = ({
   mode = 'single',

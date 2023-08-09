@@ -22,8 +22,8 @@ export function CookieSettingsDemo(_) {
           <Label htmlFor='necessary' className='~flex ~flex-col ~space-y-1'>
             <span>Strictly Necessary</span>
             <span className='~font-normal ~leading-snug ~text-muted-foreground'>
-              These cookies are essential in order to use the website and use
-              its features.
+              These cookies are essential in order to use the website & use its
+              features.
             </span>
           </Label>
           <Switch id='necessary' defaultChecked />
