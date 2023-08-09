@@ -11,6 +11,7 @@ import { GithubCardDemo } from './github-card';
 import { DatePickerCardDemo } from './date-picker-card';
 import { ChatDemo } from './chat';
 import { RecentSalesDemo } from './recent-sales';
+import { ActivityGoalDemo } from './activity-goal';
 
 const meta: Meta = {
   title: 'Examples/Examples',
@@ -51,6 +52,9 @@ export const GithubCard: StoryObj = {
 export const DatePickerCard: StoryObj = {
   render: DatePickerCardDemo,
 };
+export const ActivityGoal: StoryObj = {
+  render: ActivityGoalDemo,
+};
 
 function DemoContainer({
   className,
@@ -68,6 +72,7 @@ function DemoContainer({
 }
 
 const demos = [
+  ActivityGoalDemo,
   CreateAccountDemo,
   PaymentMethodDemo,
   ShareDocumentDemo,
