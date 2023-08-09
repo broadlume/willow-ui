@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import * as SeparatorPrimitive from '@radix-ui/react-separator';
 
 import { cn } from '@src/lib/utils';
 
+/** A component to visually or semantically separate content. */
 const Separator = React.forwardRef<
   React.ElementRef<typeof SeparatorPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>

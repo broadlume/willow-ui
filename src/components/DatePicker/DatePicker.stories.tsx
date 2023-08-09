@@ -7,7 +7,6 @@ import { DateRange } from 'react-day-picker';
 const meta: Meta<typeof DatePicker> = {
   component: DatePicker,
   title: 'Components/Date Picker',
-  tags: ['autodocs'],
 };
 
 export default meta;
@@ -22,29 +21,21 @@ export const Demo: Story = {
   render: DatePickerSingleOrRangeDemo,
 };
 
-const DisabledDatesDemo = (_) => {
-  const [date, setDate] = useState<Date>();
+export const Disabled: Story = {
+  render: (_) => <DatePicker disabled />,
+};
 
-  return (
+export const DisabledDates: Story = {
+  render: (_) => (
     <DatePicker
-      selected={date}
-      onSelect={setDate}
       disabledDates={
         // disable all days after today
         (day) => day > new Date()
       }
     />
-  );
-};
-export const DisabledDates: Story = {
-  render: DisabledDatesDemo,
+  ),
 };
 
-const DateRangePickerDemo = (_) => {
-  const [date, setDate] = useState<DateRange>();
-
-  return <DatePicker mode='range' selected={date} onSelect={setDate} />;
-};
 export const DateRangePicker: Story = {
-  render: DateRangePickerDemo,
+  render: (_) => <DatePicker mode='range' />,
 };

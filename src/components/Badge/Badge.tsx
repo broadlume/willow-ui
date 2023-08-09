@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@src/lib/utils';
@@ -37,6 +37,7 @@ export interface BadgeProps
   color?: string;
 }
 
+/** A small visual indicator used to highlight importance, status, or additional context about an item. */
 function Badge({
   className,
   variant,

@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
 
+/** A window overlaid on either the primary window or another dialog window, rendering the content underneath inert. */
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = React.forwardRef<

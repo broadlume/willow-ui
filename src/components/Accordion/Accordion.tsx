@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
 
+/** A vertically stacked set of interactive headings that each reveal a section of content. */
 const Accordion = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root>

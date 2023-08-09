@@ -13,20 +13,13 @@ import {
 const meta: Meta<typeof Select> = {
   component: Select,
   title: 'Components/Select',
-  tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A basic select. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic select.',
-      },
-    },
-  },
   argTypes: {
     disabled: {
       description: 'Whether the select is disabled.',
@@ -53,14 +46,8 @@ export const Demo: Story = {
   ),
 };
 
+/** A select with grouped options. */
 export const WithGroups: StoryObj = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic select.',
-      },
-    },
-  },
   render: (_) => (
     <Select>
       <SelectTrigger className='~w-[180px]'>
@@ -88,14 +75,26 @@ export const WithGroups: StoryObj = {
   ),
 };
 
+/** A disabled select. */
+export const Disabled: StoryObj = {
+  render: (_) => (
+    <Select disabled>
+      <SelectTrigger className='~w-[180px]'>
+        <SelectValue placeholder='Select a fruit' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value='apple'>Apple</SelectItem>
+        <SelectItem value='banana'>Banana</SelectItem>
+        <SelectItem value='blueberry'>Blueberry</SelectItem>
+        <SelectItem value='grapes'>Grapes</SelectItem>
+        <SelectItem value='pineapple'>Pineapple</SelectItem>
+      </SelectContent>
+    </Select>
+  ),
+};
+
+/** A select with some disabled items. */
 export const DisabledItems: StoryObj = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic select.',
-      },
-    },
-  },
   render: (_) => (
     <Select>
       <SelectTrigger className='~w-[180px]'>

@@ -6,7 +6,6 @@ import { useState } from 'react';
 const meta: Meta<typeof Calendar> = {
   component: Calendar,
   title: 'Components/Calendar',
-  tags: ['autodocs'],
 };
 
 export default meta;
@@ -26,12 +25,5 @@ const CalendarDemo = (_) => {
 };
 
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic calendar.',
-      },
-    },
-  },
   render: CalendarDemo,
 };

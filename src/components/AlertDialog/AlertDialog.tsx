@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 
 import { cn } from '@src/lib/utils';
 import { buttonVariants } from '@src/index';
 
+/** A modal dialog that interrupts the user with important content and expects a response. */
 const AlertDialog = AlertDialogPrimitive.Root;
 
 const AlertDialogTrigger = React.forwardRef<

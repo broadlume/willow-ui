@@ -5,22 +5,24 @@ import { Slider } from './Slider';
 const meta: Meta<typeof Slider> = {
   component: Slider,
   title: 'Components/Slider',
-  tags: ['autodocs'],
+  argTypes: {
+    asChild: {
+      table: {
+        disable: true,
+      },
+    },
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof Slider>;
 
+/** A basic slider. */
 export const Default: Story = {
   argTypes: {
     disabled: {
       description: 'Whether the slider is disabled.',
       control: 'boolean',
-    },
-    asChild: {
-      table: {
-        disable: true,
-      },
     },
   },
   render: (args) => (
@@ -34,6 +36,7 @@ export const Default: Story = {
   ),
 };
 
+/** A disabled slider. */
 export const Disabled: Story = {
   render: (_) => (
     <Slider
@@ -46,6 +49,7 @@ export const Disabled: Story = {
   ),
 };
 
+/** A range slider, with knobs for min & max. */
 export const RangeSlider: Story = {
   render: (_) => (
     <Slider className='~w-[300px]' defaultValue={[20, 60]} max={100} step={1} />

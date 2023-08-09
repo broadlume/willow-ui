@@ -21,7 +21,6 @@ import {
 const meta: Meta = {
   component: Card,
   title: 'Components/Card',
-  tags: ['autodocs'],
 };
 
 export default meta;

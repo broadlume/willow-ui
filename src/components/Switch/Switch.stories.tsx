@@ -5,7 +5,6 @@ import { Label } from '@components/Label/Label';
 const meta = {
   component: Switch,
   title: 'Components/Switch',
-  tags: ['autodocs'],
   argTypes: {
     disabled: {
       description: 'Whether the switch is disabled.',
@@ -22,17 +21,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** A basic switch. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic switch.',
-      },
-    },
-  },
   render: (args) => (
     <div className='~flex ~items-center ~space-x-2'>
       <Switch id='airplane-mode' {...args} />
+      <Label htmlFor='airplane-mode'>Airplane Mode</Label>
+    </div>
+  ),
+};
+
+/** A disabled switch. */
+export const Disable: Story = {
+  render: (_) => (
+    <div className='~flex ~items-center ~space-x-2'>
+      <Switch id='airplane-mode' disabled />
       <Label htmlFor='airplane-mode'>Airplane Mode</Label>
     </div>
   ),

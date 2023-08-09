@@ -6,20 +6,13 @@ import { HomeIcon } from '@radix-ui/react-icons';
 const meta: Meta<typeof Button> = {
   component: Button,
   title: 'Components/Button',
-  tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof Button>;
 
+/** A basic button. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic button.',
-      },
-    },
-  },
   args: {
     children: 'Button Label',
   },
@@ -65,14 +58,8 @@ export const Demo: Story = {
   render: (args) => <Button {...args} />,
 };
 
+/** All button variants. */
 export const Variants: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All button variants.',
-      },
-    },
-  },
   args: {
     children: 'Button Label',
   },
@@ -99,14 +86,9 @@ export const Variants: Story = {
     </div>
   ),
 };
+
+/** All button sizes. */
 export const Sizes: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'All button sizes.',
-      },
-    },
-  },
   args: {
     children: 'Button Label',
   },

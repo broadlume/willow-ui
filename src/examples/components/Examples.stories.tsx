@@ -12,7 +12,6 @@ import { DatePickerCardDemo } from './DatePickerCard';
 
 const meta: Meta = {
   title: 'Examples/Examples',
-  tags: ['autodocs'],
 };
 
 export default meta;

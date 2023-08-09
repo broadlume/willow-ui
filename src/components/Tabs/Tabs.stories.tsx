@@ -16,7 +16,7 @@ import SidebarItem from '@src/dhq/SidebarItem';
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
   title: 'Components/Tabs',
-  tags: ['autodocs'],
+
   argTypes: {
     asChild: {
       table: {

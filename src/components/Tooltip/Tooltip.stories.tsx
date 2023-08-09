@@ -11,7 +11,6 @@ import {
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
   title: 'Components/Tooltip',
-  tags: ['autodocs'],
 };
 
 export default meta;

@@ -6,26 +6,22 @@ import { Label } from '@components/Label/Label';
 const meta: Meta<typeof RadioGroup> = {
   component: RadioGroup,
   title: 'Components/Radio Group',
-  tags: ['autodocs'],
-};
 
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic radio group.',
-      },
-    },
-  },
   argTypes: {
     asChild: {
       table: {
         disable: true,
       },
     },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/** A basic radio group. */
+export const Demo: Story = {
+  argTypes: {
     disabled: {
       control: 'boolean',
       defaultValue: false,
@@ -39,6 +35,26 @@ export const Demo: Story = {
   },
   render: (args) => (
     <RadioGroup defaultValue='comfortable' {...args}>
+      <div className='~flex ~items-center ~space-x-2'>
+        <RadioGroupItem value='default' id='r1' />
+        <Label htmlFor='r1'>Default</Label>
+      </div>
+      <div className='~flex ~items-center ~space-x-2'>
+        <RadioGroupItem value='comfortable' id='r2' />
+        <Label htmlFor='r2'>Comfortable</Label>
+      </div>
+      <div className='~flex ~items-center ~space-x-2'>
+        <RadioGroupItem value='compact' id='r3' />
+        <Label htmlFor='r3'>Compact</Label>
+      </div>
+    </RadioGroup>
+  ),
+};
+
+/** A disabled radio group. */
+export const Disabled: Story = {
+  render: (_) => (
+    <RadioGroup defaultValue='comfortable' disabled>
       <div className='~flex ~items-center ~space-x-2'>
         <RadioGroupItem value='default' id='r1' />
         <Label htmlFor='r1'>Default</Label>

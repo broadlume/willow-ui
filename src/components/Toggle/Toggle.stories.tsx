@@ -5,7 +5,7 @@ import { Toggle } from './Toggle';
 const meta: Meta<typeof Toggle> = {
   component: Toggle,
   title: 'Components/Toggle',
-  tags: ['autodocs'],
+
   argTypes: {
     disabled: {
       description: 'Whether the toggle button is disabled.',

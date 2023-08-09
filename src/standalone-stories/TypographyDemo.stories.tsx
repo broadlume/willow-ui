@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
   title: 'Quarks/Typography',
-  tags: ['autodocs'],
+
   argTypes: {
     input: {
       control: { type: 'text' },

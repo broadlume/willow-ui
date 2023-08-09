@@ -44,6 +44,10 @@ const isRange = (date: DateSelection): date is DateRange => {
   return !!date && typeof date === 'object' && ('from' in date || 'to' in date);
 };
 
+/**
+ * A component allowing single or range date selections, presented as a button with a calendar popover.
+ * Supports customizable formatting, disabled states, and date restrictions.
+ */
 export const DatePicker = ({
   mode = 'single',
   disabled,

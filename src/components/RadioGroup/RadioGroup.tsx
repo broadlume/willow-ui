@@ -3,6 +3,7 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 
 import { cn } from '@src/lib/utils';
 
+/** A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time. */
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
@@ -25,7 +26,7 @@ const RadioGroupItem = React.forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        '~group ~aspect-square ~h-5 ~w-5 ~rounded-full ~border-2 ~border-input ~text-primary ~shadow',
+        '~group ~peer ~aspect-square ~h-5 ~w-5 ~rounded-full ~border-2 ~border-input ~text-primary ~shadow',
         'focus:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
         'disabled:~cursor-not-allowed disabled:~opacity-50',
         'data-[state="checked"]:~border-primary',

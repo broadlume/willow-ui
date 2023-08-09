@@ -2,3 +2,4 @@
 - recommended extensions
 - Look into Husky & Changesets
 - components should have comments documenting their use for consumers
+- maybe make separators draw from separator variants

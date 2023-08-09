@@ -16,12 +16,12 @@ import { Button } from '@src/index';
 const meta: Meta<typeof AlertDialog> = {
   component: AlertDialog,
   title: 'Components/Alert Dialog',
-  tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof AlertDialog>;
 
+/** A basic alert dialog. */
 export const Default: Story = {
   render: (_) => (
     <AlertDialog>
@@ -43,6 +43,7 @@ export const Default: Story = {
   ),
 };
 
+/** Using the 'asChild' prop to open the dialog with a custom trigger. */
 export const CustomTrigger: Story = {
   render: (_) => (
     <AlertDialog>

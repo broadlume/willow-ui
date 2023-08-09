@@ -10,20 +10,13 @@ import {
 const meta: Meta<typeof Accordion> = {
   component: Accordion,
   title: 'Components/Accordion',
-  tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof Accordion>;
 
+/** A basic accordion. */
 export const Demo: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A basic accordion.',
-      },
-    },
-  },
   args: {
     type: 'single',
     collapsible: true,
@@ -53,15 +46,8 @@ export const Demo: Story = {
   ),
 };
 
+/** An accordion that can have multiple panels open at the same time. */
 export const Multiple: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'An accordion that can have multiple panels open at the same time.',
-      },
-    },
-  },
   args: {
     type: 'multiple',
   },

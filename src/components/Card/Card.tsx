@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
+/** A container element presenting grouped content in a visually distinct block consisting of a header, content, and footer. */
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>

@@ -20,7 +20,6 @@ import { Button } from '@src/index';
 const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
   title: 'Components/Dropdown Menu',
-  tags: ['autodocs'],
 };
 
 export default meta;
@@ -201,7 +200,7 @@ const WithEverythingComponent = (_) => {
         <Button>Open</Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent sideOffset={5}>
+      <DropdownMenuContent>
         <DropdownMenuItem>New Tab</DropdownMenuItem>
         <DropdownMenuItem>New Window</DropdownMenuItem>
         <DropdownMenuItem disabled>New Private Window</DropdownMenuItem>

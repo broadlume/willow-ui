@@ -5,7 +5,6 @@ import { Badge } from './Badge';
 const meta: Meta<typeof Badge> = {
   component: Badge,
   title: 'Components/Badge',
-  tags: ['autodocs'],
   argTypes: {
     children: {
       control: 'text',
@@ -17,6 +16,7 @@ const meta: Meta<typeof Badge> = {
 export default meta;
 type Story = StoryObj<typeof Badge>;
 
+/** A basic badge. */
 export const Demo: Story = {
   args: {
     children: 'Badge',
@@ -24,14 +24,8 @@ export const Demo: Story = {
   render: (args) => <Badge {...args} />,
 };
 
+/** All badge variants. */
 export const Variants: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'A badge can have different variants.',
-      },
-    },
-  },
   render: (args) => (
     <div className='~flex ~flex-wrap ~gap-2'>
       <Badge {...args} variant='default'>

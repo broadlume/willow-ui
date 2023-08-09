@@ -14,7 +14,6 @@ import { Button, Input, Label } from '@src/index';
 const meta: Meta<typeof Dialog> = {
   component: Dialog,
   title: 'Components/Dialog',
-  tags: ['autodocs'],
 };
 
 export default meta;

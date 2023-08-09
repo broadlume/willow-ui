@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
+/** Displays a form input field or a component that looks like an input field. */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (

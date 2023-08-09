@@ -5,7 +5,6 @@ import { colorPalette, themeColors } from '../../tailwind.config';
 
 const meta = {
   title: 'Quarks/Colors',
-  tags: ['autodocs'],
 } as Meta;
 
 export default meta;

@@ -7,7 +7,7 @@ import { Button } from '@src/components/Button/Button';
 const meta: Meta = {
   component: Toast,
   title: 'Components/Toast',
-  tags: ['autodocs'],
+
   decorators: [
     (Story) => (
       <>

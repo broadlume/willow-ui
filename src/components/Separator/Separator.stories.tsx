@@ -5,7 +5,7 @@ import { Separator } from './Separator';
 const meta: Meta<typeof Separator> = {
   component: Separator,
   title: 'Components/Separator',
-  tags: ['autodocs'],
+
   argTypes: {
     asChild: {
       table: {
