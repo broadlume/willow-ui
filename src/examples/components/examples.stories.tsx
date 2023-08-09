@@ -10,6 +10,7 @@ import { NotificationsDemo } from './notifications';
 import { GithubCardDemo } from './github-card';
 import { DatePickerCardDemo } from './date-picker-card';
 import { ChatDemo } from './chat';
+import { RecentSalesDemo } from './recent-sales';
 
 const meta: Meta = {
   title: 'Examples/Examples',
@@ -20,31 +21,27 @@ export default meta;
 export const Page: StoryObj = {
   render: CardsPageDemo,
 };
-
 export const CreateAccount: StoryObj = {
   render: CreateAccountDemo,
 };
-
 export const PaymentMethod: StoryObj = {
   render: PaymentMethodDemo,
 };
-
 export const CookieSettings: StoryObj = {
   render: CookieSettingsDemo,
 };
-
 export const ReportAnIssue: StoryObj = {
   render: ReportAnIssueDemo,
 };
-
 export const Chat: StoryObj = {
   render: ChatDemo,
 };
-
+export const RecentSales: StoryObj = {
+  render: RecentSalesDemo,
+};
 export const ShareDocument: StoryObj = {
   render: ShareDocumentDemo,
 };
-
 export const Notifications: StoryObj = {
   render: NotificationsDemo,
 };
@@ -74,6 +71,7 @@ const demos = [
   CreateAccountDemo,
   PaymentMethodDemo,
   ShareDocumentDemo,
+  RecentSalesDemo,
   DatePickerCardDemo,
   NotificationsDemo,
   ReportAnIssueDemo,

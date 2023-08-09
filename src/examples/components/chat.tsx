@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 
-import { cn } from '@src/lib/utils';
+import { cn, getRandomAvatar } from '@src/lib/utils';
 import {
   Avatar,
   AvatarFallback,
@@ -14,7 +14,7 @@ import {
   Input,
 } from '@src/index';
 
-export function ChatDemo() {
+export function ChatDemo(_) {
   const [messages, setMessages] = React.useState([
     {
       role: 'agent',
@@ -39,12 +39,19 @@ export function ChatDemo() {
       <CardHeader className='~flex ~flex-row ~items-center'>
         <div className='~flex ~items-center ~space-x-4'>
           <Avatar>
-            <AvatarImage src='/avatars/01.png' alt='Image' />
+            <AvatarImage
+              src={getRandomAvatar('Taylor Johannson')}
+              alt='Image'
+            />
             <AvatarFallback>OM</AvatarFallback>
           </Avatar>
           <div>
-            <p className='~text-sm ~font-medium ~leading-none'>Sofia Davis</p>
-            <p className='~text-sm ~text-muted-foreground'>m@example.com</p>
+            <p className='~text-sm ~font-medium ~leading-none'>
+              Taylor Johannson
+            </p>
+            <p className='~text-sm ~text-muted-foreground'>
+              taylor.johannson@example.com
+            </p>
           </div>
         </div>
       </CardHeader>
