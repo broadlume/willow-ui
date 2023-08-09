@@ -49,7 +49,7 @@ export function PaymentMethodDemo(_) {
                 value={title.toLowerCase()}
                 className='~sr-only'
               />
-              <Icon className='~mb-3 ~h-6 ~w-6' />
+              <Icon className='~mb-3 ~h-6 ~w-6' title='test' />
               {title}
             </Label>
           ))}
