@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './AlertDialog';
+} from './alert-dialog';
 import { Button } from '@src/index';
 
 const meta: Meta<typeof AlertDialog> = {

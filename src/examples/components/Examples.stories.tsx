@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { cn } from '@src/lib/utils';
 
-import { CreateAccountDemo } from './CreateAccount';
-import { PaymentMethodDemo } from './PaymentMethod';
-import { CookieSettingsDemo } from './CookieSettings';
-import { ReportAnIssueDemo } from './ReportAnIssue';
-import { ShareDocumentDemo } from './ShareDocument';
-import { NotificationsDemo } from './Notifications';
-import { GithubCardDemo } from './GithubCard';
-import { DatePickerCardDemo } from './DatePickerCard';
+import { CreateAccountDemo } from './create-account';
+import { PaymentMethodDemo } from './payment-method';
+import { CookieSettingsDemo } from './cookie-settings';
+import { ReportAnIssueDemo } from './report-an-issue';
+import { ShareDocumentDemo } from './share-document';
+import { NotificationsDemo } from './notifications';
+import { GithubCardDemo } from './github-card';
+import { DatePickerCardDemo } from './date-picker-card';
 
 const meta: Meta = {
   title: 'Examples/Examples',

@@ -1,8 +1,8 @@
 import { Meta } from '@storybook/react';
-import { Toast, ToastProps } from './Toast';
-import { Toaster } from './Toaster';
-import { useToast } from './useToast';
-import { Button } from '@src/components/Button/Button';
+import { Toast, ToastProps } from './toast';
+import { Toaster } from './toaster';
+import { useToast } from './use-toast';
+import { Button } from '@components/button/button';
 
 const meta: Meta = {
   component: Toast,

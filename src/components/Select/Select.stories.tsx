@@ -8,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from './Select';
+} from './select';
 
 const meta: Meta<typeof Select> = {
   component: Select,

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Card, CardContent, Separator } from '@src/index';
-import { colorPalette, themeColors } from '../../tailwind.config';
+import { colorPalette, themeColors } from '@/tailwind.config';
 
 const meta = {
   title: 'Quarks/Colors',

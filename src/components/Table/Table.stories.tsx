@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './Table';
+} from './table';
 
 const meta: Meta<typeof Table> = {
   component: Table,

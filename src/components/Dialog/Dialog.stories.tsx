@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './Dialog';
+} from './dialog';
 import { Button, Input, Label } from '@src/index';
 
 const meta: Meta<typeof Dialog> = {

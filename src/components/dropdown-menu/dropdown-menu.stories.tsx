@@ -13,7 +13,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from './DropdownMenu';
+} from './dropdown-menu';
 import { useState } from 'react';
 import { Button } from '@src/index';
 

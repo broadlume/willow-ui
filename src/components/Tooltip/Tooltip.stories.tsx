@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './Tooltip';
+} from './tooltip';
 
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,

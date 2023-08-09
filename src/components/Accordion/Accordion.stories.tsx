@@ -5,7 +5,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from './Accordion';
+} from './accordion';
 
 const meta: Meta<typeof Accordion> = {
   component: Accordion,

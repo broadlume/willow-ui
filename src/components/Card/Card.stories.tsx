@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './Card';
+} from './card';
 import {
   Label,
   Button,

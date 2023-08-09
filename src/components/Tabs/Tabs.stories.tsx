@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import {
   Button,
   Card,
@@ -11,7 +11,7 @@ import {
   Input,
   Label,
 } from '@src/index';
-import SidebarItem from '@src/dhq/SidebarItem';
+import SidebarItem from '@src/dhq/sidebar-item';
 
 const meta: Meta<typeof Tabs> = {
   component: Tabs,
