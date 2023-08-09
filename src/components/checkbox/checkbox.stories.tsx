@@ -18,6 +18,7 @@ const meta: Meta<typeof Checkbox> = {
 export default meta;
 type Story = StoryObj<typeof Checkbox>;
 
+/** A checkbox with some text around it. */
 export const WithText: Story = {
   render: (_) => (
     <div className='~items-top ~flex ~space-x-2'>
