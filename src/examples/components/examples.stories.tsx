@@ -9,6 +9,7 @@ import { ShareDocumentDemo } from './share-document';
 import { NotificationsDemo } from './notifications';
 import { GithubCardDemo } from './github-card';
 import { DatePickerCardDemo } from './date-picker-card';
+import { ChatDemo } from './chat';
 
 const meta: Meta = {
   title: 'Examples/Examples',
@@ -34,6 +35,10 @@ export const CookieSettings: StoryObj = {
 
 export const ReportAnIssue: StoryObj = {
   render: ReportAnIssueDemo,
+};
+
+export const Chat: StoryObj = {
+  render: ChatDemo,
 };
 
 export const ShareDocument: StoryObj = {
@@ -72,6 +77,7 @@ const demos = [
   DatePickerCardDemo,
   NotificationsDemo,
   ReportAnIssueDemo,
+  ChatDemo,
   GithubCardDemo,
   CookieSettingsDemo,
 ];
