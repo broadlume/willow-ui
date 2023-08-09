@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/react';
-import '../src/index.scss';
-import '../src/assets/typekit.css';
+import '@src/index.scss';
+import '@src/assets/typekit.css';
 
 const preview: Preview = {
   parameters: {

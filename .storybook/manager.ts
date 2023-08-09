@@ -1,6 +1,6 @@
 import { addons } from '@storybook/manager-api';
 import { create } from '@storybook/theming/create';
-import Logo from '../src/assets/willow-ui-logo.svg';
+import Logo from '../src/assets/willow-ui-logo.svg'; // must use relative path for svgs
 
 const theme = create({
   base: 'light',

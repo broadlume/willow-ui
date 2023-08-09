@@ -107,10 +107,15 @@ export default {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        'scale-up': {
+          from: { transform: 'scaleY(0)', transformOrigin: 'bottom' },
+          to: { transform: 'scaleY(1)', transformOrigin: 'bottom' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'scale-up': 'scale-up 0.5s ease-out',
       },
       // because consuming apps that use the stupid "font-size: 62.5%" html hack throw off rem units
       spacing: {
@@ -175,11 +180,11 @@ export default {
         '2xl': [getSize(1.5), { lineHeight: getSize(2) }],
         '3xl': [getSize(1.875), { lineHeight: getSize(2.25) }],
         '4xl': [getSize(2.25), { lineHeight: getSize(2.5) }],
-        '5xl': [getSize(3), { lineHeight: getSize(1) }],
-        '6xl': [getSize(3.75), { lineHeight: getSize(1) }],
-        '7xl': [getSize(4.5), { lineHeight: getSize(1) }],
-        '8xl': [getSize(6), { lineHeight: getSize(1) }],
-        '9xl': [getSize(8), { lineHeight: getSize(1) }],
+        '5xl': [getSize(3), { lineHeight: '1' }],
+        '6xl': [getSize(3.75), { lineHeight: '1' }],
+        '7xl': [getSize(4.5), { lineHeight: '1' }],
+        '8xl': [getSize(6), { lineHeight: '1' }],
+        '9xl': [getSize(8), { lineHeight: '1' }],
       },
     },
   },

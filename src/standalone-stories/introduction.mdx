@@ -1,0 +1,97 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title='Introduction' />
+
+# Broadlume UI Library
+
+Welcome to the Broadlume UI library! This library implements the Willow design system as a collection of reusable components to be used across different projects in the Broadlume X ecosystem.
+
+Each component has been meticulously designed & built to meet the needs of our various applications while ensuring consistency across different applications & platforms.
+
+## How to use this library
+
+To install the library, you'll need to grab the private package from GitHub Packages (not npm).
+
+This means you'll need to add a `.npmrc` file to your project (that you do NOT commit to GitHub, it has a private key) wherever your package.json file is to let npm know where to look & what credentials to use. Here's the file to copy+paste:
+
+```bash
+# .npmrc
+@broadlume:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+Make sure to replace YOUR_GITHUB_TOKEN with your own GitHub Personal Access Token. You can find instructions on how to generate one [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
+
+After installation, the tricky part is over! Now to use components from the library, simply import the library CSS (ideally into your `index.css`) & then import any component you want into your project. Here is an example:
+
+Importing the CSS:
+
+```css
+/* index.css */
+@import '@broadlume/willow-ui/style.css';
+```
+
+then:
+
+```js
+// App.js
+import { Button } from '@broadlume/willow-ui';
+
+<Button>Hi, I'm a button</Button>;
+```
+
+This more or less applies to every component, with the exception of Toast, which needs a provider to be added to the root of your app & to be called with a hook. I will write documentation on that later.
+
+## Technologies
+
+In terms of adding components, here are some technologies installed in this library you can leverage to make your dev experience better:
+
+- Typescript
+- Tailwind
+- Shadcn/ui
+- Sass
+- SVGR
+- NOT BOOTSTRAP
+
+If any of these technologies are unfamiliar to you, it's probably fine because outside of Typescript & not using Bootstrap they're all optional (but they're dope, you should check them out).
+
+## Library File Structure
+
+Put new components into the `src/components` directory.
+
+It is recommended that you create a folder for the component, with a `.tsx` file for the component & a `.stories.tsx` file for the [Storybook example](https://storybook.js.org/docs/react/writing-stories/introduction).
+
+It is also recommended that you use [ShadCN](https://ui.shadcn.com/) for the component template, as the code comes with accessibility built-in & really helps to shorten the development time while remaining unopinionated. This is not mandatory, but once ShadCN 'clicks' you will have a much better time making components.
+
+This library supports Sass as well as CSS, so feel free to use either. Using CSS/SCSS modules is highly encouraged, as doing so will prevent classname collisions as the library gets bigger & generally is a much better developer experience once you realize how much easier it is to write CSS when you don't have to namespace all your classes.
+
+Here is an example of 3 files that could be added for NewComponent:
+
+- src
+  - NewComponent
+    - NewComponent.tsx
+    - NewComponent.stories.tsx
+    - NewComponent.module.scss\*
+
+\*Note that the styling is highly flexible & even optional. Some extensions you can use:
+
+- .module.css
+- .module.scss
+- .scss
+- .css
+- No file for CSS at all, because Tailwind makes CSS unnecessary
+
+## Contribution
+
+We encourage contribution.
+
+**If you dare.**
+
+Just kidding, it's not that bad. Here's how to contribute:
+
+- Make a PR
+- Get it approved by me
+
+#### We're officially entering the wild, wild west of a brand new, quickly scaling codebase. We're going to move fast & break things with standards established in real time, but by the end of it we'll have a Broadlume X that looks as good as the designs & works for everyone!
+
+#### Happy coding!
