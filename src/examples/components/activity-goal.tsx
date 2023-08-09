@@ -65,7 +65,7 @@ export function ActivityGoalDemo(_) {
             <div
               key={index}
               className={cn(
-                '~w-1/12 ~bg-primary ~opacity-20',
+                '~w-1/12 ~bg-primary ~opacity-20 ~transition-[height]',
                 index === 0 && '~rounded-l-md',
                 index === bars.length - 1 && '~rounded-r-md'
               )}
