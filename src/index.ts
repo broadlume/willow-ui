@@ -9,7 +9,6 @@ export * from '@components/button';
 export * from '@components/calendar/calendar';
 export * from '@components/card/card';
 export * from '@components/checkbox/checkbox';
-export * from '@components/chip/chip';
 export * from '@components/date-picker/date-picker';
 export * from '@components/dialog/dialog';
 export * from '@components/dropdown-menu/dropdown-menu';
