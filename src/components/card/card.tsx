@@ -52,9 +52,16 @@ CardDescription.displayName = 'CardDescription';
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('~p-6 ~pt-0', className)} {...props} />
+  React.HTMLAttributes<HTMLDivElement> & {
+    /** Whether the card content should have padding at the top (for cards without a header). */
+    noHeader?: boolean;
+  }
+>(({ className, noHeader, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('~p-6', !noHeader && '~pt-0', className)}
+    {...props}
+  />
 ));
 CardContent.displayName = 'CardContent';
 

@@ -7,6 +7,7 @@ import {
 } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
+import { Caret } from '@src/index';
 
 /** Displays a menu to the user — such as a set of actions or functions — triggered by a button. */
 const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -20,17 +21,30 @@ const lineHeightClass = '~leading-6';
 
 const DropdownMenuTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger> & {
+    caret?: boolean;
+  }
+>(({ className, asChild, caret, children, ...props }, ref) => (
   <DropdownMenuPrimitive.Trigger
     ref={ref}
     className={cn(
-      'tw-reset data-[disabled]:~opacity-50',
+      'tw-reset ~cursor-pointer ~select-none data-[disabled]:~cursor-not-allowed data-[disabled]:~opacity-50',
       lineHeightClass,
       className
     )}
     {...props}
-  />
+    asChild={caret || asChild}
+  >
+    {/* if `caret` is true, render a caret but also wrap it in a button so it can be focused with the keyboard */}
+    {caret ? (
+      <button className='~group ~flex ~items-center ~gap-1'>
+        {children}
+        <Caret className='~text-base ~text-primary ~transition-transform group-data-[state=open]:~rotate-90' />
+      </button>
+    ) : (
+      children
+    )}
+  </DropdownMenuPrimitive.Trigger>
 ));
 
 const DropdownMenuSubTrigger = React.forwardRef<

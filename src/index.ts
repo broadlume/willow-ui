@@ -1,6 +1,8 @@
 import './assets/typekit.css';
 import './index.scss';
 
+export * from '@src/assets/icons';
+
 export * from '@components/accordion/accordion';
 export * from '@components/alert-dialog/alert-dialog';
 export * from '@components/avatar/avatar';
