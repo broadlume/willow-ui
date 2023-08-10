@@ -41,9 +41,9 @@ export function ChatDemo(_) {
           <Avatar>
             <AvatarImage
               src={getRandomAvatar('Taylor Johannson')}
-              alt='Image'
+              alt='Taylor Johannson'
             />
-            <AvatarFallback>OM</AvatarFallback>
+            <AvatarFallback>TJ</AvatarFallback>
           </Avatar>
           <div>
             <p className='~text-sm ~font-medium ~leading-none'>
