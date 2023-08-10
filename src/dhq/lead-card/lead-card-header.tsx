@@ -18,13 +18,6 @@ import {
 import { useState } from 'react';
 import { cn } from '@src/lib/utils';
 
-type Props = {
-  name: string;
-  phone: string;
-  email: string;
-  timestamp: string;
-};
-
 const ContactInfoBlock = ({
   info,
   icon,
@@ -150,13 +143,19 @@ const LeadActionDropdownButton = () => {
 };
 
 const LeadButtons = () => (
-  <div className='~flex ~gap-2'>
+  <div className='~ml-auto ~flex ~gap-2'>
     <AssignButton />
     <StatusButton />
     <LeadActionDropdownButton />
   </div>
 );
 
+type Props = {
+  name: string;
+  phone: string;
+  email: string;
+  timestamp: string;
+};
 const LeadCardHeader = ({ name, phone, email, timestamp }: Props) => {
   return (
     <div className='~flex ~h-full ~w-full ~flex-wrap ~gap-4'>

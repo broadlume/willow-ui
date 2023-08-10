@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Accordion,
   AccordionItem,
@@ -7,8 +6,11 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Separator,
 } from '@src/index';
 import { LeadCardHeader } from './lead-card-header';
+import { LeadCardFooter } from './lead-card-footer';
+import { P0, P1, P2, P3, P4 } from '../assets/sample-order';
 
 const lead = {
   name: 'John Doe',
@@ -27,7 +29,18 @@ const LeadCard = (_) => {
               <LeadCardHeader {...lead} />
             </AccordionTrigger>
             <AccordionContent className='~pl-7'>
-              I don't feel like coding this part! 😅
+              {/* I don't feel like coding this part! 😅 */}
+              <img src={P0} />
+              <Separator />
+              <img src={P1} />
+              <Separator />
+              <img src={P2} />
+              <Separator />
+              <img src={P3} />
+              <Separator />
+              <img src={P4} />
+              <Separator />
+              <LeadCardFooter {...lead} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
