@@ -1,9 +1,8 @@
-import { AccordionHeader, AccordionTrigger } from '@radix-ui/react-accordion';
 import {
   Accordion,
   AccordionContent,
+  AccordionHeader,
   AccordionItem,
-  // AccordionTrigger,
   Avatar,
   AvatarFallback,
   AvatarImage,
