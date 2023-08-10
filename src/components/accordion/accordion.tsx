@@ -3,6 +3,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 import { cn } from '@src/lib/utils';
 import { ChevronDown } from '@src/index';
+import { AccordionHeader } from '@radix-ui/react-accordion';
 
 /** A vertically stacked set of interactive headings that each reveal a section of content. */
 const Accordion = React.forwardRef<
@@ -37,6 +38,8 @@ const AccordionTrigger = React.forwardRef<
     caretAlign?: 'left' | 'right';
     /** Additional classes to apply to the caret. */
     caretClasses?: string;
+    /** Whether or not to omit the caret entirely. */
+    noCaret?: boolean;
   }
 >(
   (
@@ -46,6 +49,7 @@ const AccordionTrigger = React.forwardRef<
       caretOnly,
       caretAlign = 'right',
       caretClasses,
+      noCaret = false,
       ...props
     },
     ref
@@ -92,12 +96,14 @@ const AccordionTrigger = React.forwardRef<
           {...props}
         >
           {children}
-          <ChevronDown
-            className={cn(
-              '~h-4 ~w-4 ~shrink-0 ~text-primary ~transition-transform ~duration-200',
-              caretClasses
-            )}
-          />
+          {!noCaret && (
+            <ChevronDown
+              className={cn(
+                '~h-4 ~w-4 ~shrink-0 ~text-primary ~transition-transform ~duration-200',
+                caretClasses
+              )}
+            />
+          )}
         </AccordionPrimitive.Trigger>
       )}
     </AccordionPrimitive.Header>
@@ -112,14 +118,19 @@ const AccordionContent = React.forwardRef<
   <AccordionPrimitive.Content
     ref={ref}
     className={cn(
-      '~overflow-hidden data-[state=closed]:~animate-accordion-up data-[state=open]:~animate-accordion-down',
-      className
+      '~overflow-hidden data-[state=closed]:~animate-accordion-up data-[state=open]:~animate-accordion-down'
     )}
     {...props}
   >
-    <div className='~pb-4 ~pt-0'>{children}</div>
+    <div className={cn('~pb-4 ~pt-0', className)}>{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+export {
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTrigger,
+  AccordionContent,
+};

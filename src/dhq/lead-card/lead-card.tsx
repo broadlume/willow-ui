@@ -5,42 +5,43 @@ import {
   AccordionContent,
   Card,
   CardContent,
-  CardHeader,
-  Separator,
 } from '@src/index';
 import { LeadCardHeader } from './lead-card-header';
 import { LeadCardFooter } from './lead-card-footer';
-import { P0, P1, P2, P3, P4 } from '../assets/sample-order';
+import { SampleOrderBody } from './sample-order-body';
+import type { Lead } from '../data/leads';
 
-const lead = {
-  name: 'John Doe',
-  phone: '757-414-3234',
-  email: 'john.doe@email.com',
-  timestamp: '2021-07-01T12:00:00.000Z',
+type LeadCardProps = {
+  lead: Lead;
 };
-
-const LeadCard = (_) => {
+const LeadCard = ({ lead }: LeadCardProps) => {
+  const {
+    occurredAt: timestamp,
+    source: {
+      customerFirstName: firstName,
+      customerLastName: lastName,
+      customerPhoneNumber: phone,
+      customerEmail: email,
+    },
+  } = lead;
+  const headerProps = { firstName, lastName, phone, email, timestamp };
   return (
     <Card>
       <CardContent noHeader>
-        <Accordion type='single' collapsible className='border'>
-          <AccordionItem value='test' className='~border-0'>
+        <Accordion
+          type='single'
+          collapsible
+          className='border'
+          defaultValue='lead'
+        >
+          <AccordionItem value='lead' className='~border-0'>
             <AccordionTrigger className='~p-0' caretAlign='left' caretOnly>
-              <LeadCardHeader {...lead} />
+              <LeadCardHeader {...headerProps} />
             </AccordionTrigger>
+            {/* left-align content to the end of the caret */}
             <AccordionContent className='~pl-7'>
-              {/* I don't feel like coding this part! 😅 */}
-              <img src={P0} />
-              <Separator />
-              <img src={P1} />
-              <Separator />
-              <img src={P2} />
-              <Separator />
-              <img src={P3} />
-              <Separator />
-              <img src={P4} />
-              <Separator />
-              <LeadCardFooter {...lead} />
+              <SampleOrderBody lead={lead} />
+              <LeadCardFooter {...headerProps} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

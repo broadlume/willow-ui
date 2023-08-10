@@ -56,7 +56,7 @@ export function RecentSalesDemo(_) {
         {recentSales.map(({ name, initials, email, amount }) => (
           <div className='~flex ~items-center' key={initials}>
             <Avatar className='~h-9 ~w-9'>
-              <AvatarImage src={getRandomAvatar(name)} alt='Avatar' />
+              <AvatarImage src={getRandomAvatar(name)} alt={name} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <div className='~ml-4 ~space-y-1'>

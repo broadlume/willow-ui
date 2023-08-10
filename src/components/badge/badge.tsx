@@ -10,7 +10,7 @@ const badgeVariants = cva(
   ],
   {
     variants: {
-      /** Variant color of the badge */
+      /** Variant color of the badge. */
       variant: {
         default:
           '~border-transparent ~bg-primary ~text-primary-foreground ~shadow',
@@ -21,9 +21,16 @@ const badgeVariants = cva(
           '~border-transparent ~bg-destructive ~text-destructive-foreground ~shadow',
         outline: '~text-foreground',
       },
+      /** Relative size of the badge. */
+      size: {
+        default: '',
+        small: '~text-[10px]',
+        xs: '~py-0 ~text-[10px]',
+      },
     },
     defaultVariants: {
       variant: 'default',
+      size: 'default',
     },
   }
 );
@@ -41,6 +48,7 @@ export interface BadgeProps
 function Badge({
   className,
   variant,
+  size,
   background,
   color,
   style,
@@ -48,7 +56,7 @@ function Badge({
 }: BadgeProps) {
   return (
     <div
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn(badgeVariants({ variant, size }), className)}
       style={{ background, color, ...style }}
       {...props}
     />

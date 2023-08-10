@@ -1,6 +1,9 @@
 import { FaClock, FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import { format, formatDistanceToNow } from 'date-fns';
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Button,
   Caret,
   Copy,
@@ -16,7 +19,7 @@ import {
   buttonVariants,
 } from '@src/index';
 import { useState } from 'react';
-import { cn } from '@src/lib/utils';
+import { cn, getRandomAvatar } from '@src/lib/utils';
 
 const ContactInfoBlock = ({
   info,
@@ -61,7 +64,7 @@ const TimestampInfo = ({ timestamp }: { timestamp: string }) => {
         </TooltipTrigger>
         <TooltipContent>
           <span className='caption-2 ~font-light'>
-            {format(new Date(timestamp), 'MMM do, yyyy, h:mm a O')}
+            {format(new Date(timestamp), 'ccc MMM do, yyyy, h:mm a O')}
           </span>
         </TooltipContent>
       </Tooltip>
@@ -79,9 +82,36 @@ const AssignButton = () => {
         Assign
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>Andy</DropdownMenuItem>
-        <DropdownMenuItem>Jeff</DropdownMenuItem>
-        <DropdownMenuItem>Cindy</DropdownMenuItem>
+        <DropdownMenuItem className='~gap-2'>
+          <Avatar className='~h-8 ~w-8'>
+            <AvatarImage
+              src={getRandomAvatar('Cookie Monster')}
+              alt='Cookie Monster'
+            ></AvatarImage>
+            <AvatarFallback>CM</AvatarFallback>
+          </Avatar>
+          Cookie Monster
+        </DropdownMenuItem>
+        <DropdownMenuItem className='~gap-2'>
+          <Avatar className='~h-8 ~w-8'>
+            <AvatarImage
+              src={getRandomAvatar('Alex Demarco')}
+              alt='Alex Demarco'
+            ></AvatarImage>
+            <AvatarFallback>AD</AvatarFallback>
+          </Avatar>
+          Alex Demarco
+        </DropdownMenuItem>
+        <DropdownMenuItem className='~gap-2'>
+          <Avatar className='~h-8 ~w-8'>
+            <AvatarImage
+              src={getRandomAvatar('Mac Miller')}
+              alt='Mac Miller'
+            ></AvatarImage>
+            <AvatarFallback>MM</AvatarFallback>
+          </Avatar>
+          Mac Miller
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Manage Team</DropdownMenuItem>
       </DropdownMenuContent>
@@ -151,15 +181,22 @@ const LeadButtons = () => (
 );
 
 type Props = {
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email: string;
   timestamp: string;
 };
-const LeadCardHeader = ({ name, phone, email, timestamp }: Props) => {
+const LeadCardHeader = ({
+  firstName,
+  lastName,
+  phone,
+  email,
+  timestamp,
+}: Props) => {
   return (
     <div className='~flex ~h-full ~w-full ~flex-wrap ~gap-4'>
-      <NameInfo name={name} />
+      <NameInfo name={`${firstName} ${lastName}`} />
       <PhoneInfo phone={phone} />
       <EmailInfo email={email} />
       <TimestampInfo timestamp={timestamp} />

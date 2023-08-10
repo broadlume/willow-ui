@@ -40,7 +40,10 @@ export function ShareDocumentDemo(_) {
             <div className='~flex ~min-w-0 ~items-center ~justify-between ~space-x-4'>
               <div className='~flex ~min-w-0 ~items-center ~space-x-4'>
                 <Avatar>
-                  <AvatarImage src='https://github.com/dreadhalor.png' />
+                  <AvatarImage
+                    src='https://github.com/dreadhalor.png'
+                    alt='Scott Hetrick'
+                  />
                   <AvatarFallback>SH</AvatarFallback>
                 </Avatar>
                 <div className='~min-w-0'>
@@ -65,8 +68,11 @@ export function ShareDocumentDemo(_) {
             <div className='~flex ~items-center ~justify-between ~space-x-4'>
               <div className='~flex ~items-center ~space-x-4'>
                 <Avatar>
-                  <AvatarImage src='https://github.com/shadcn.png' />
-                  <AvatarFallback>PD</AvatarFallback>
+                  <AvatarImage
+                    src='https://github.com/shadcn.png'
+                    alt='Arshad Chummun'
+                  />
+                  <AvatarFallback>AC</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className='~text-sm ~font-medium ~leading-none'>
@@ -90,7 +96,10 @@ export function ShareDocumentDemo(_) {
             <div className='~flex ~items-center ~justify-between ~space-x-4'>
               <div className='~flex ~items-center ~space-x-4'>
                 <Avatar>
-                  <AvatarImage src='https://github.com/t3dotgg.png' />
+                  <AvatarImage
+                    src='https://github.com/t3dotgg.png'
+                    alt='Theo Browne'
+                  />
                   <AvatarFallback>TB</AvatarFallback>
                 </Avatar>
                 <div>

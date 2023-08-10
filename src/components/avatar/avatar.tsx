@@ -13,14 +13,17 @@ interface AvatarProps
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
   AvatarProps
->(({ className, size = 40, style, ...props }, ref) => (
+>(({ className, size, style, ...props }, ref) => (
   <AvatarPrimitive.Root
     ref={ref}
     className={cn(
-      'tw-reset ~relative ~flex ~shrink-0 ~overflow-hidden ~rounded-full',
+      'tw-reset ~relative ~flex ~h-[40px] ~w-[40px] ~shrink-0 ~overflow-hidden ~rounded-full',
       className
     )}
-    style={{ width: `${size}px`, height: `${size}px`, ...style }}
+    style={{
+      ...(size && { width: `${size}px`, height: `${size}px` }),
+      ...style,
+    }}
     {...props}
   />
 ));
@@ -28,7 +31,10 @@ Avatar.displayName = AvatarPrimitive.Root.displayName;
 
 const AvatarImage = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image> & {
+    /** The image alt text, required for accessibility. */
+    alt: string;
+  }
 >(({ className, ...props }, ref) => (
   <AvatarPrimitive.Image
     ref={ref}

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { LeadCard } from './lead-card/lead-card';
+import { LeadCard } from './lead-card';
 import { TooltipProvider } from '@src/index';
+import { lead } from '../data/leads';
 
 const meta: Meta<typeof LeadCard> = {
   component: LeadCard,
@@ -18,7 +19,7 @@ const meta: Meta<typeof LeadCard> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A basic lead card. */
+/** A typical sample order lead card in DealerHQ. */
 export const Demo: Story = {
-  render: (_) => <LeadCard />,
+  render: (_) => <LeadCard lead={lead} />,
 };
