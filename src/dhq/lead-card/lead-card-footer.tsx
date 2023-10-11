@@ -58,7 +58,7 @@ const ActivityLog = ({
 }: Props) => {
   const [value, setValue] = useState('activity-log');
   return (
-    <Accordion type='single' collapsible value={value} onValueChange={setValue}>
+    <Accordion type='single' value={value} onValueChange={setValue}>
       <AccordionHeader>
         <Button
           variant='link'
