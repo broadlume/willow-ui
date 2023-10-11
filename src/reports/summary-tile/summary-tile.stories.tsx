@@ -12,7 +12,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const data = [
-  { number: 1355003, label: 'Sessions', delta: '6%', loading: true },
+  { number: 1355003, label: 'Sessions', delta: '6%' },
   { number: 1115314, label: 'Users', delta: '7%' },
   { number: 3945916, label: 'Page Views', delta: '6%' },
   {
@@ -29,7 +29,6 @@ const stackedData = [
     label: 'Total Leads',
     delta: '-5%',
     negative: true,
-    loading: true,
   },
   {
     number: 57997,
@@ -52,7 +51,6 @@ const stackedData = [
     ),
     delta: '-7%',
     negative: true,
-    loading: true,
   },
   {
     number: 2446,
@@ -106,6 +104,25 @@ export const Stacked: Story = {
           <SummaryTile stacked {...tile} className='~col-span-2 ~h-[100px]' />
         ) : (
           <SummaryTile stacked {...tile} />
+        )
+      )}
+    </div>
+  ),
+};
+
+export const StackedLoading: Story = {
+  render: (_) => (
+    <div className='~grid ~grid-cols-2 ~gap-4'>
+      {stackedData.map((tile, index) =>
+        index === 0 ? (
+          <SummaryTile
+            stacked
+            {...tile}
+            className='~col-span-2 ~h-[100px]'
+            loading
+          />
+        ) : (
+          <SummaryTile stacked {...tile} loading />
         )
       )}
     </div>
