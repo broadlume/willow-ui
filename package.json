@@ -116,6 +116,7 @@
     "date-fns": "^2.30.0",
     "lucide-react": "^0.245.0",
     "react-day-picker": "^8.8.0",
+    "recharts": "^2.7.3",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6"
   },

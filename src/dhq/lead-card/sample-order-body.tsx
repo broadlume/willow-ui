@@ -1,4 +1,3 @@
-import React from 'react';
 import { Lead } from '../data/leads';
 import { extractOrderItems } from '../data/helpers';
 import { getShipments } from './shipment-helpers';

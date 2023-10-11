@@ -4,7 +4,6 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  Button,
   Caret,
   Copy,
   DropdownMenu,
