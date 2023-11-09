@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SummaryTile } from './summary-tile';
+import { SummaryTile, SummaryTileNumProps } from './summary-tile';
 import { FaMousePointer, FaPhoneAlt, FaShoppingCart } from 'react-icons/fa';
 import { BsChatFill } from 'react-icons/bs';
 
@@ -11,49 +11,73 @@ const meta: Meta<typeof SummaryTile> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const data = [
-  { number: 1355003, label: 'Sessions', delta: '6%' },
-  { number: 1115314, label: 'Users', delta: '7%' },
-  { number: 3945916, label: 'Page Views', delta: '6%' },
+const data: SummaryTileNumProps[] = [
   {
-    number: '1:30',
+    label: 'Users',
+    current: 18246,
+    previous: 19328,
+  },
+  {
+    label: 'Sessions',
+    current: 10311,
+    previous: 10018,
+  },
+  {
+    label: 'Lawsuits',
+    current: 19605,
+    previous: 21967,
+    negativeIsGood: true,
+  },
+  {
+    label: 'Page Views',
+    current: 11674,
+  },
+];
+
+const customData: SummaryTileNumProps[] = [
+  {
+    current: '1:30',
     label: 'Average Session Duration',
     delta: '-3 Second',
     negative: true,
   },
+  {
+    current: '0:10',
+    label: 'Average Page Load',
+    delta: '-8 Second',
+    negative: true,
+    negativeIsGood: true,
+  },
 ];
 
-const stackedData = [
+const stackedData: SummaryTileNumProps[] = [
   {
-    number: 81911,
+    current: 81911,
+    previous: 86006,
+
     label: 'Total Leads',
-    delta: '-5%',
-    negative: true,
   },
   {
-    number: 57997,
+    current: 57997,
     label: (
       <>
         <FaPhoneAlt />
         Calls
       </>
     ),
-    delta: '-4%',
-    negative: true,
   },
   {
-    number: 21257,
+    current: 21257,
+    previous: 19866,
     label: (
       <>
         <FaMousePointer />
         Forms
       </>
     ),
-    delta: '-7%',
-    negative: true,
   },
   {
-    number: 2446,
+    current: 2446,
     label: (
       <>
         <BsChatFill />
@@ -64,23 +88,31 @@ const stackedData = [
     negative: true,
   },
   {
-    number: 57997,
+    current: 57997,
+    previous: 58577,
     label: (
       <>
         <FaShoppingCart />
         Sample Orders
       </>
     ),
-    delta: '-1%',
-    negative: true,
   },
 ];
 
 export const Demo: Story = {
   render: (_) => (
     <div className='~flex ~flex-wrap ~gap-4'>
-      {data.map((tile) => (
-        <SummaryTile {...tile} />
+      {data.map((tile, index) => (
+        <SummaryTile key={index} {...tile} />
+      ))}
+    </div>
+  ),
+};
+export const CustomUnits: Story = {
+  render: (_) => (
+    <div className='~flex ~flex-wrap ~gap-4'>
+      {customData.map((tile, index) => (
+        <SummaryTile key={index} {...tile} />
       ))}
     </div>
   ),
@@ -89,8 +121,8 @@ export const Demo: Story = {
 export const Loading: Story = {
   render: (_) => (
     <div className='~flex ~flex-wrap ~gap-4'>
-      {data.map((tile) => (
-        <SummaryTile {...tile} loading />
+      {data.map((tile, index) => (
+        <SummaryTile key={index} {...tile} loading />
       ))}
     </div>
   ),
