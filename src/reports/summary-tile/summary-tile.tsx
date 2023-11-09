@@ -42,30 +42,37 @@ const DeltaDisplay = ({ loading, Arrow, deltaString, deltaClass, stacked }) => (
 );
 
 type DefaultNumProps = {
-  current?: number;
+  /** The previous value. If no value is supplied, custom formatting is used. */
   previous?: number;
 };
 type CustomNumProps = {
-  number?: number | string;
+  /** FOR CUSTOM FORMATTING: What number + unit to show as the change, i.e. "3%", "-8 second". */
   delta?: string;
+  /** FOR CUSTOM FORMATTING: Whether to show negative colors + arrows. */
   negative?: boolean;
 };
 export type SummaryTileNumProps = DefaultNumProps &
   CustomNumProps & {
+    /** The current value. */
+    current?: number | string;
+    /** Label, i.e. "Total Sales" or "Users", or a JSX component to go where the label would be. */
     label?: string | JSX.Element;
+    /** Should the colors for negative & positive be swapped? */
     negativeIsGood?: boolean;
   };
 
 export type SummaryTileProps = SummaryTileNumProps & {
+  /** Whether to display loading placeholder. */
   loading?: boolean;
+  /** Classnames for the Card container. */
   className?: string;
+  /** Whether to remove y-padding to display the tile as one of a stacked tile group. */
   stacked?: boolean;
 };
 
 const SummaryTile = ({
   current,
   previous,
-  number,
   label,
   delta,
   negative,
@@ -75,14 +82,17 @@ const SummaryTile = ({
   className,
 }: SummaryTileProps) => {
   // Determine whether to use custom or default formatting.
-  const noCustomFormatting = current !== undefined && previous !== undefined;
+  const noCustomFormatting =
+    current !== undefined &&
+    typeof current === 'number' &&
+    previous !== undefined;
 
   // Function to get the number as a string with formatting.
   const getNumberString = () => {
     if (noCustomFormatting) return current.toLocaleString('en-US');
     return (
       current?.toLocaleString('en-US') ||
-      (typeof number === 'number' ? number.toLocaleString('en-US') : number)
+      (typeof current === 'number' ? current.toLocaleString('en-US') : current)
     );
   };
 

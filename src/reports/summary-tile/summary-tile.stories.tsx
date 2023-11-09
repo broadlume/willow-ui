@@ -30,19 +30,19 @@ const data: SummaryTileNumProps[] = [
   },
   {
     label: 'Page Views',
-    number: 11674,
+    current: 11674,
   },
 ];
 
 const customData: SummaryTileNumProps[] = [
   {
-    number: '1:30',
+    current: '1:30',
     label: 'Average Session Duration',
     delta: '-3 Second',
     negative: true,
   },
   {
-    number: '0:10',
+    current: '0:10',
     label: 'Average Page Load',
     delta: '-8 Second',
     negative: true,
@@ -58,7 +58,7 @@ const stackedData: SummaryTileNumProps[] = [
     label: 'Total Leads',
   },
   {
-    number: 57997,
+    current: 57997,
     label: (
       <>
         <FaPhoneAlt />
@@ -77,7 +77,7 @@ const stackedData: SummaryTileNumProps[] = [
     ),
   },
   {
-    number: 2446,
+    current: 2446,
     label: (
       <>
         <BsChatFill />
