@@ -1,0 +1,40 @@
+/* 
+* Our file to override the default styles of the react-data-table-component 
+* https://react-data-table-component.netlify.app/?path=/docs/api-css-escape--page
+*/
+
+.rdt_TableCol {
+  font-size: normal !important;
+  text-transform: uppercase;
+}
+
+.rdt_TableHeadRow {
+  background-color: rgb(232 232 232) !important;
+  color: rgb(35 31 33) !important;
+}
+
+/* Custom badge colors */
+[class*='badge-custom-'] {
+  flex-flow: column;
+  text-align: center;
+}
+
+.badge-custom-blue {
+  background-color: #e5f4f9;
+  color: #008fbd;
+}
+
+.badge-custom-pink {
+  background-color: #f6ebf1;
+  color: #a52f76;
+}
+
+.badge-custom-green {
+  background-color: #e9f5f3;
+  color: #21a585;
+}
+
+.badge-custom-yellow {
+  background-color: #fdf2de;
+  color: #bb8011;
+}
