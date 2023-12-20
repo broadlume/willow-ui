@@ -54,7 +54,7 @@ export const UserTableRole = (role: { id: string | number; name: string }) => {
   };
 
   return (
-    <Badge variant='outline' className={`w-full ${getClassName(role.id)}`}>
+    <Badge variant='outline' className={`~w-full ${getClassName(role.id)}`}>
       {role.name.toUpperCase()}
     </Badge>
   );
