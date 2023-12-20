@@ -30,3 +30,5 @@ export * from '@components/toast';
 export * from '@components/toggle/toggle';
 export * from '@components/tooltip/tooltip';
 export * from '@src/reports/summary-tile/summary-tile';
+
+export * from '@src/misc/custom-data-table/custom-data-table';
