@@ -21,7 +21,9 @@ export const Default: Story = {
   render: (_) => (
     <div className='tw-reset ~flex ~w-[300px] ~flex-col ~gap-2 ~rounded-sm ~border-2 ~p-2'>
       <TruncatedText>This is a short text.</TruncatedText>
-      <TruncatedText>This is a long text that will be truncated.</TruncatedText>
+      <TruncatedText>
+        This is a longer text that will be truncated.
+      </TruncatedText>
     </div>
   ),
 };
@@ -43,7 +45,7 @@ const ResizableStory = (_) => {
           )}
         >
           <TruncatedText onTruncation={setIsFirstTruncated}>
-            This is a long text that may be truncated.
+            This is a longer text that may be truncated.
           </TruncatedText>
         </div>
       </ResizablePanel>
@@ -56,7 +58,7 @@ const ResizableStory = (_) => {
           )}
         >
           <TruncatedText onTruncation={setIsSecondTruncated}>
-            This is a long text that may be truncated.
+            This is a longer text that may be truncated.
           </TruncatedText>
         </div>
       </ResizablePanel>
