@@ -1,113 +1,129 @@
 import * as React from 'react';
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { cn } from '@src/lib/utils';
 import {
-  Button,
+  Checkbox,
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  selectVariants,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  TruncatedText,
 } from '@src/index';
-import { selectVariants } from '@components/select/select-variants';
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
+type Props = {
+  placeholder?: string;
+  values?: { value: string; label: string }[];
+  className?: string;
+  children?: React.ReactNode;
+};
 
-const SelectedChip = ({ children }: { children: React.ReactNode }) => (
-  <div className='~rounded-full ~bg-secondary ~px-2 ~text-secondary-foreground'>
-    {children}
-    <Button
-      variant='ghost'
-      size='icon'
-      className='~ml-2 ~h-5 ~w-5 ~shrink-0 ~rounded-full ~opacity-50'
-    >
-      x
-    </Button>
-  </div>
-);
-
-export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
-  const [values, setValues] = React.useState<string[]>([]);
+/** A multi-select combobox. */
+export function Combobox({
+  placeholder = 'Search...',
+  values = [],
+  className = '',
+  children,
+}: Props) {
+  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
+  const [truncated, setTruncated] = React.useState(false);
 
   const handleSelect = (currentValue: string) => {
-    // setValue(currentValue === value ? '' : currentValue);
-    setValues((prevValues) =>
+    setSelectedValues((prevValues) =>
       prevValues.includes(currentValue)
-        ? prevValues
+        ? prevValues.filter((v) => v !== currentValue)
         : [...prevValues, currentValue]
     );
-    setOpen(false);
   };
 
-  const unselectedValues = frameworks.filter(
-    (framework) => !values.includes(framework.value)
-  );
+  const getFullSelectedText = () => {
+    if (selectedValues.length === 0) return placeholder;
+    const count = truncated ? `(${selectedValues.length}) ` : '';
+    const names = values
+      .filter((value) => selectedValues.includes(value.value))
+      .map((value) => value.label)
+      .join(', ');
+    return `${count}${names}`;
+  };
+  const getTooltipText = () => {
+    const names = values
+      .filter((value) => selectedValues.includes(value.value))
+      .map((value) => value.label)
+      .join(', ');
+    return `${names}`;
+  };
+
+  const isSelected = (value: string) => selectedValues.includes(value);
+  const hasSelectedValues = selectedValues.length > 0;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className={cn(selectVariants(), '~justify-start ~gap-2')}>
-        {values.map((framework) => (
-          <SelectedChip>{framework}</SelectedChip>
-        ))}
-        {value
-          ? frameworks.find((framework) => framework.value === value)?.label
-          : 'Select framework...'}
-        <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
-      </PopoverTrigger>
-      <PopoverContent className='~w-[200px] ~p-0'>
-        <Command>
-          <CommandInput placeholder='Search framework...' className='h-9' />
-          <CommandEmpty>No framework found.</CommandEmpty>
-          <CommandGroup>
-            {unselectedValues.map((framework) => (
-              <CommandItem
-                key={framework.value}
-                value={framework.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
-                  handleSelect(currentValue);
-                  setOpen(false);
-                }}
-              >
-                {framework.label}
-                <CheckIcon
-                  className={cn(
-                    '~ml-auto ~h-4 ~w-4',
-                    value === framework.value ? '~opacity-100' : '~opacity-0'
-                  )}
-                />
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <TooltipProvider>
+      <Popover>
+        <Tooltip>
+          <TooltipContent
+            className={cn('tooltip-content-max', !truncated && '~hidden')}
+          >
+            {getTooltipText()}
+          </TooltipContent>
+          <TooltipTrigger asChild>
+            <PopoverTrigger
+              className={cn(
+                selectVariants(),
+                '~justify-start ~gap-1',
+                !hasSelectedValues && '~text-input',
+                className
+              )}
+            >
+              <TruncatedText
+                text={getFullSelectedText()}
+                onTruncation={setTruncated}
+              />
+              <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
+            </PopoverTrigger>
+          </TooltipTrigger>
+        </Tooltip>
+        <PopoverContent className='popover-content ~p-0'>
+          <Command className='~rounded-none'>
+            <CommandInput
+              placeholder={placeholder}
+              className='~h-9'
+              wrapperClassName={cn('~rounded-none ~border-4 ~border-b-[5px]')}
+            />
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandList>
+              <CommandGroup>
+                {values?.map((value) => (
+                  <CommandItem
+                    key={value.value}
+                    value={value.value}
+                    onSelect={handleSelect}
+                    className={cn(
+                      !isSelected(value.value) && '~text-muted-foreground'
+                    )}
+                  >
+                    <Checkbox
+                      checked={isSelected(value.value)}
+                      className='~mr-3'
+                    />
+                    {value.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+            {children}
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </TooltipProvider>
   );
 }

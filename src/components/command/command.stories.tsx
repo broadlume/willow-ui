@@ -20,7 +20,7 @@ import {
   CommandShortcut,
 } from './command';
 
-const meta: Meta = {
+const meta: Meta<typeof Command> = {
   component: Command,
   title: 'Components/Command',
 };

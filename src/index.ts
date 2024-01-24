@@ -19,7 +19,7 @@ export * from '@components/input/input';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
 export * from '@components/radio-group/radio-group';
-export * from '@components/select/select';
+export * from '@components/select';
 export * from '@components/separator/separator';
 export * from '@components/skeleton/skeleton';
 export * from '@components/slider/slider';
@@ -30,6 +30,7 @@ export * from '@components/textarea/textarea';
 export * from '@components/toast';
 export * from '@components/toggle/toggle';
 export * from '@components/tooltip/tooltip';
+export * from '@components/truncated-text/truncated-text';
 export * from '@src/reports/summary-tile/summary-tile';
 
 export * from '@src/misc/custom-data-table/custom-data-table';

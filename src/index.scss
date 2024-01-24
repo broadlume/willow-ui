@@ -149,6 +149,16 @@
   body {
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
+
+  .popover-content {
+    width: var(--radix-popover-trigger-width);
+    max-height: var(--radix-popover-content-available-height);
+  }
+
+  .tooltip-content-max {
+    max-width: calc(var(--radix-tooltip-content-available-width) - 20px);
+    max-height: var(--radix-tooltip-content-available-height);
+  }
 }
 
 @layer components {
