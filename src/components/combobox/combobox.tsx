@@ -84,10 +84,9 @@ export function Combobox({
                 className
               )}
             >
-              <TruncatedText
-                text={getFullSelectedText()}
-                onTruncation={setTruncated}
-              />
+              <TruncatedText onTruncation={setTruncated}>
+                {getFullSelectedText()}
+              </TruncatedText>
               <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
             </PopoverTrigger>
           </TooltipTrigger>

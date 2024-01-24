@@ -1,12 +1,12 @@
 import { useRef, useEffect, useCallback } from 'react';
 
 type Props = {
-  text: string;
+  children?: React.ReactNode;
   onTruncation?: (isTruncated: boolean) => void;
 };
 
 /** Text which truncates when it overflows its container, & knows when it is being truncated. */
-const TruncatedText = ({ text, onTruncation }: Props) => {
+const TruncatedText = ({ children, onTruncation }: Props) => {
   const text_ref = useRef<HTMLDivElement>(null);
 
   // Using useCallback to memoize the function
@@ -18,7 +18,7 @@ const TruncatedText = ({ text, onTruncation }: Props) => {
 
   useEffect(() => {
     checkTruncation();
-  }, [text, checkTruncation]); // Added checkTruncation to the dependency array
+  }, [children, checkTruncation]); // Added checkTruncation to the dependency array
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(checkTruncation);
@@ -33,7 +33,7 @@ const TruncatedText = ({ text, onTruncation }: Props) => {
 
   return (
     <div className='~truncate' ref={text_ref}>
-      {text}
+      {children}
     </div>
   );
 };
