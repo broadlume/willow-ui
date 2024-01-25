@@ -1,38 +1,24 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 
 type Props = {
   children?: React.ReactNode;
   onTruncation?: (isTruncated: boolean) => void;
 };
 
-/** Text which truncates when it overflows its container, & knows when it is being truncated. */
 const TruncatedText = ({ children, onTruncation }: Props) => {
-  const text_ref = useRef<HTMLDivElement>(null);
-
-  // Using useCallback to memoize the function
-  const checkTruncation = useCallback(() => {
-    if (text_ref.current && onTruncation) {
-      onTruncation(text_ref.current.offsetWidth < text_ref.current.scrollWidth);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const onResize = useCallback(() => {
+    if (targetRef.current && onTruncation) {
+      const { scrollWidth, offsetWidth } = targetRef.current;
+      onTruncation(offsetWidth < scrollWidth);
     }
-  }, [onTruncation]);
+  }, [onTruncation, targetRef]);
 
-  useEffect(() => {
-    checkTruncation();
-  }, [children, checkTruncation]); // Added checkTruncation to the dependency array
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(checkTruncation);
-
-    const currentTextRef = text_ref.current;
-    if (currentTextRef) resizeObserver.observe(currentTextRef);
-
-    return () => {
-      if (currentTextRef) resizeObserver.unobserve(currentTextRef);
-    };
-  }, [checkTruncation]); // checkTruncation is now a stable function
+  useResizeDetector({ onResize, targetRef });
 
   return (
-    <div className='~truncate' ref={text_ref}>
+    <div className='~truncate ~bg-gray-200' ref={targetRef}>
       {children}
     </div>
   );

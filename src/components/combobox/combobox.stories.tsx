@@ -127,6 +127,15 @@ export const Demo2: Story = {
   ),
 };
 
-export const Demo3: Story = {
+export const MultipleComboboxes: Story = {
+  render: (_) => (
+    <div className='~grid ~grid-flow-col ~grid-cols-2 ~gap-2'>
+      <Combobox placeholder='Select framework...' values={frameworks} />
+      <Combobox placeholder='Select framework...' values={frameworks} />
+    </div>
+  ),
+};
+
+export const LongListDemo: Story = {
   render: (_) => <Combobox values={longList} />,
 };
