@@ -34,6 +34,8 @@ type Props = {
   value?: string[];
   /** Callback function that is called when the selection changes. It receives the new array of selected option values. */
   onChange?: (selectedValues: string[]) => void;
+  /** Optional filter function to use when searching. */
+  filter?: ((value: string, search: string) => number) | undefined;
 };
 
 /** A multi-select combobox. */
@@ -42,8 +44,9 @@ export function Combobox({
   values = [],
   className = '',
   children,
-  value, // controlled value
-  onChange, // controlled change handler
+  value,
+  onChange,
+  filter,
 }: Props) {
   const [truncated, setTruncated] = React.useState(false);
 
@@ -118,7 +121,7 @@ export function Combobox({
           </TooltipTrigger>
         </Tooltip>
         <PopoverContent className='popover-content ~p-0'>
-          <Command className='~rounded-none'>
+          <Command className='~rounded-none' filter={filter}>
             <CommandInput
               placeholder={placeholder}
               className='~h-9'

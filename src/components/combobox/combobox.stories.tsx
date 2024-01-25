@@ -80,7 +80,16 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
 const LocationDemoComponent = ({ placeholder, values }: any) => {
   const [open, setOpen] = useState(false);
   return (
-    <Combobox placeholder={placeholder} values={values} className='~w-[300px]'>
+    <Combobox
+      placeholder={placeholder}
+      values={values}
+      className='~w-[300px]'
+      filter={(value, search) => {
+        if (value === 'add location') return 1;
+        if (value.includes(search)) return 1;
+        return 0;
+      }}
+    >
       <CommandGroup>
         <Dialog open={open} onOpenChange={setOpen}>
           <CommandItem
