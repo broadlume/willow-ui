@@ -18,7 +18,7 @@ const TruncatedText = ({ children, onTruncation }: Props) => {
   useResizeDetector({ onResize, targetRef });
 
   return (
-    <div className='~truncate ~bg-gray-200' ref={targetRef}>
+    <div className='~truncate' ref={targetRef}>
       {children}
     </div>
   );

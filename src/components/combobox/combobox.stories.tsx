@@ -121,7 +121,7 @@ export const Demo: Story = {
   render: (_) => <LocationDemoComponent />,
 };
 
-export const Demo2: Story = {
+export const Controlled: Story = {
   render: (_) => (
     <Combobox placeholder='Select framework...' values={frameworks} />
   ),
@@ -129,9 +129,9 @@ export const Demo2: Story = {
 
 export const MultipleComboboxes: Story = {
   render: (_) => (
-    <div className='~grid ~grid-flow-col ~grid-cols-2 ~gap-2'>
+    <div className='~mt-2 ~grid ~grid-flow-col ~grid-cols-2 ~items-center ~gap-2 md:~grid-cols-[max-content_max-content]'>
       <Combobox placeholder='Select framework...' values={frameworks} />
-      <Combobox placeholder='Select framework...' values={frameworks} />
+      <div>{/* Might want to add a clear filters button here ? */}</div>
     </div>
   ),
 };
