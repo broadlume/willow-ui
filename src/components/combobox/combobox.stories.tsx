@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Combobox } from './combobox';
 import {
   Button,
+  Checkbox,
   CommandGroup,
   CommandItem,
   Dialog,
@@ -76,10 +77,10 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
   label: `Item ${i}`,
 }));
 
-const LocationDemoComponent = () => {
+const LocationDemoComponent = ({ placeholder, values }: any) => {
   const [open, setOpen] = useState(false);
   return (
-    <Combobox placeholder='Locations' values={locations} className='~w-[300px]'>
+    <Combobox placeholder={placeholder} values={values} className='~w-[300px]'>
       <CommandGroup>
         <Dialog open={open} onOpenChange={setOpen}>
           <CommandItem
@@ -118,22 +119,49 @@ const LocationDemoComponent = () => {
 };
 
 export const Demo: Story = {
-  render: (_) => <LocationDemoComponent />,
+  render: LocationDemoComponent,
+  args: {
+    placeholder: 'Location',
+    values: locations,
+  },
 };
 
-export const Controlled: Story = {
-  render: (_) => (
-    <Combobox placeholder='Select framework...' values={frameworks} />
-  ),
-};
-
-export const MultipleComboboxes: Story = {
-  render: (_) => (
-    <div className='~mt-2 ~grid ~grid-flow-col ~grid-cols-2 ~items-center ~gap-2 md:~grid-cols-[max-content_max-content]'>
-      <Combobox placeholder='Select framework...' values={frameworks} />
-      <div>{/* Might want to add a clear filters button here ? */}</div>
+const ControlledDemoComponent = ({ placeholder, values }: any) => {
+  const [value, setValue] = useState<string[]>([]);
+  return (
+    <div className='tw-reset ~flex ~flex-col ~gap-2'>
+      <Combobox
+        placeholder={placeholder}
+        values={values}
+        value={value}
+        onChange={setValue}
+      />
+      <p>External control:</p>
+      {values.map((_value) => (
+        <div className='~flex ~gap-1' key={_value.value}>
+          <Checkbox
+            id={_value.value}
+            checked={value.includes(_value.value)}
+            onCheckedChange={(e) => {
+              if (e === true) {
+                setValue((prev) => [...prev, _value.value]);
+              } else if (e === false) {
+                setValue((prev) => prev.filter((v) => v !== _value.value));
+              }
+            }}
+          />
+          <Label htmlFor={_value.value}>{_value.label}</Label>
+        </div>
+      ))}
     </div>
-  ),
+  );
+};
+export const Controlled: Story = {
+  render: ControlledDemoComponent,
+  args: {
+    placeholder: 'Select framework...',
+    values: frameworks,
+  },
 };
 
 export const LongListDemo: Story = {

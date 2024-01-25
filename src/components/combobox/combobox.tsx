@@ -22,10 +22,18 @@ import {
 } from '@src/index';
 
 type Props = {
+  /** Placeholder text to display when no option is selected. */
   placeholder?: string;
+  /** Array of objects representing the options for the combobox. Each object should have a `value` (unique identifier) and a `label` (display text). */
   values?: { value: string; label: string }[];
+  /** Additional CSS class names to apply to the combobox for custom styling. */
   className?: string;
+  /** Children elements to be rendered at the bottom of the combobox, typically used for custom elements or additional functionality. */
   children?: React.ReactNode;
+  /** Array of selected option values. This prop is used to control the component (controlled mode). When not provided, the component works in uncontrolled mode. */
+  value?: string[];
+  /** Callback function that is called when the selection changes. It receives the new array of selected option values. */
+  onChange?: (selectedValues: string[]) => void;
 };
 
 /** A multi-select combobox. */
@@ -34,16 +42,34 @@ export function Combobox({
   values = [],
   className = '',
   children,
+  value, // controlled value
+  onChange, // controlled change handler
 }: Props) {
-  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
   const [truncated, setTruncated] = React.useState(false);
 
+  // Determine if the component is controlled
+  const isControlled = value != null;
+
+  // Internal state for uncontrolled mode
+  const [selectedValuesState, setSelectedValuesState] = React.useState<
+    string[]
+  >([]);
+
+  // Use controlled value or internal state based on the component mode
+  const selectedValues = isControlled ? value : selectedValuesState;
+
   const handleSelect = (currentValue: string) => {
-    setSelectedValues((prevValues) =>
-      prevValues.includes(currentValue)
-        ? prevValues.filter((v) => v !== currentValue)
-        : [...prevValues, currentValue]
-    );
+    const newSelectedValues = selectedValues.includes(currentValue)
+      ? selectedValues.filter((v) => v !== currentValue)
+      : [...selectedValues, currentValue];
+
+    if (isControlled && onChange) {
+      // If controlled, call the onChange prop
+      onChange(newSelectedValues);
+    } else {
+      // If uncontrolled, update the internal state
+      setSelectedValuesState(newSelectedValues);
+    }
   };
 
   const getFullSelectedText = () => {
