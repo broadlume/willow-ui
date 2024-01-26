@@ -1,6 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Combobox } from './combobox';
 import {
+  Combobox2,
+  ComboboxContent,
+  ComboboxGroup,
+  ComboboxItem,
+  ComboboxValue,
+} from './combobox2';
+import {
   Button,
   Checkbox,
   CommandGroup,
@@ -171,6 +178,40 @@ export const Controlled: Story = {
     placeholder: 'Select framework...',
     values: frameworks,
   },
+};
+
+export const Combobox2Demo: Story = {
+  render: (_) => (
+    <Combobox2>
+      <ComboboxValue className='~w-[200px]' />
+      <ComboboxContent>
+        <ComboboxGroup>
+          {frameworks.map((framework) => (
+            <ComboboxItem key={framework.value} value={framework.value}>
+              {framework.label}
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      </ComboboxContent>
+    </Combobox2>
+  ),
+};
+
+export const LongListDemo2: Story = {
+  render: (_) => (
+    <Combobox2>
+      <ComboboxValue className='~w-[200px]' />
+      <ComboboxContent>
+        <ComboboxGroup>
+          {longList.map((item) => (
+            <ComboboxItem key={item.value} value={item.label}>
+              {item.label}
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      </ComboboxContent>
+    </Combobox2>
+  ),
 };
 
 export const LongListDemo: Story = {
