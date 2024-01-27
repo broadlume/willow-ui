@@ -228,7 +228,7 @@ const Combobox2 = ({
   const isControlled = value != null;
 
   const handleSelect = (selectedValue: string) => {
-    let updatedValues;
+    let updatedValues: string[];
     if (internalValue.includes(selectedValue)) {
       updatedValues = internalValue.filter((v) => v !== selectedValue);
     } else {
