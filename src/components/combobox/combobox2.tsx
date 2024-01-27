@@ -56,7 +56,7 @@ interface ComboboxContextValue {
   /** Function to set the truncated state. */
   setTruncated?: React.Dispatch<React.SetStateAction<boolean>>;
   /** Function to handle selection of an option. */
-  handleSelect: (currentValue: ComboboxItemValue) => void;
+  handleSelect: (value: string) => void;
   /** Map of values to labels. */
   itemsMap: Map<string, string>;
   addItem: (item: ComboboxItemValue) => void;
@@ -76,33 +76,49 @@ function useComboboxContext() {
   return context;
 }
 
+// Helper function to extract items from children
+function extractItems(children: React.ReactNode): ComboboxItemValue[] {
+  return React.Children.toArray(children).flatMap((child) => {
+    // Type guard to check if the element is a valid React element
+    if (React.isValidElement(child)) {
+      // Further check if it's a ComboboxItem or has children
+      if (child.type === ComboboxItem) {
+        // Cast the child to have ComboboxItemProps
+        const comboboxItem = child as React.ReactElement<ComboboxItemProps>;
+        return [
+          {
+            value: comboboxItem.props.value,
+            label: React.Children.toArray(comboboxItem.props.children).join(''),
+          },
+        ];
+      } else if (child.props && child.props.children) {
+        // Recursively extract items from children
+        return extractItems(child.props.children);
+      }
+    }
+    return [];
+  });
+}
+
 type ComboboxValueProps = {
   /** Additional CSS class names to apply to the combobox for custom styling. */
   className?: string;
 };
 const ComboboxValue = ({ className }: ComboboxValueProps) => {
-  const { internalValue, itemsMap, placeholder, truncated, setTruncated } =
+  const { value, itemsMap, placeholder, truncated, setTruncated } =
     useComboboxContext();
 
-  const hasSelectedValues = internalValue.length > 0;
-  // const getFullSelectedText = () => {
-  //   if (internalValue.length === 0) return placeholder;
-  //   const count = truncated ? `(${internalValue.length}) ` : '';
-  //   const names = internalValue.map((v) => v.label).join(', ');
-  //   return `${count}${names}`;
-  // };
+  const hasSelectedValues = value.length > 0;
   const getFullSelectedText = () => {
-    console.log(itemsMap);
-    if (internalValue.length === 0) return placeholder;
-    const count = truncated ? `(${internalValue.length}) ` : '';
-    const names = internalValue
-      .map((v) => itemsMap.get(v.value) || v)
-      .join(', ');
+    if (value.length === 0) return placeholder;
+    const count = truncated ? `(${value.length}) ` : '';
+    const names = value.map((v) => itemsMap.get(v) || v).join(', ');
     return `${count}${names}`;
   };
   const getTooltipText = () => {
-    const names = internalValue.map((v) => v.label).join(', ');
-    return `${names}`;
+    const labels = value.map((v) => itemsMap.get(v) || v);
+    const result = labels.join(', ');
+    return `${result}`;
   };
 
   return (
@@ -136,23 +152,7 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     console.log('rendering combobox content');
-
-    const getItems = (children: React.ReactNode) => {
-      if (!React.isValidElement(children)) return null;
-      if (children.type !== ComboboxGroup) return null;
-      const { children: itemNodes } = children.props;
-      const items = React.Children.map(itemNodes, getItem);
-      return items;
-    };
-
-    const getItem = (children: React.ReactNode) => {
-      if (!React.isValidElement(children)) return null;
-      if (children.type !== ComboboxItem) return null;
-      const { value, children: label } = children.props;
-      return { value, label };
-    };
-
-    const items = getItems(children);
+    const items = extractItems(children);
 
     if (items) {
       items.forEach((item) => {
@@ -202,22 +202,15 @@ interface ComboboxItemValue {
   value: string;
   label: string;
 }
-const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
-  const { internalValue, handleSelect } = useComboboxContext();
+const ComboboxItem = ({ value: _value, children }: ComboboxItemProps) => {
+  const { value, handleSelect } = useComboboxContext();
 
-  const isSelected = internalValue.find((v) => v.value === value) != null;
-
-  const handleItemClick = () => {
-    handleSelect({
-      value,
-      label: children,
-    });
-  };
+  const isSelected = value.includes(_value);
 
   return (
     <CommandItem
-      value={value}
-      onSelect={handleItemClick}
+      value={_value}
+      onSelect={handleSelect}
       className={cn(!isSelected && '~text-muted-foreground')}
     >
       <Checkbox checked={isSelected} className='~mr-3' />
@@ -262,13 +255,13 @@ const Combobox2 = ({
     ? value
     : internalSelectedValues.map((v) => v.value);
 
-  const handleSelect = (currentValue: ComboboxItemValue) => {
-    const { value } = currentValue;
-
-    const redundant = internalSelectedValues.find((v) => v.value === value);
+  const handleSelect = (_value: string) => {
+    const label = itemsMap.get(_value);
+    if (label == null) return;
+    const redundant = internalSelectedValues.find((v) => v.value === _value);
     const newInternalSelectedValues = redundant
-      ? internalSelectedValues.filter((v) => v.value !== value)
-      : [...internalSelectedValues, currentValue];
+      ? internalSelectedValues.filter((v) => v.value !== _value)
+      : [...internalSelectedValues, { value: _value, label }];
 
     if (isControlled && onChange) {
       const newSelectedValues = newInternalSelectedValues.map((v) => v.value);
