@@ -228,20 +228,43 @@ const Combobox2 = ({
   const isControlled = value != null;
 
   const handleSelect = (selectedValue: string) => {
-    const updatedValues = internalValue.includes(selectedValue)
-      ? internalValue.filter((v) => v !== selectedValue)
-      : [...internalValue, selectedValue];
+    let updatedValues;
+    if (internalValue.includes(selectedValue)) {
+      updatedValues = internalValue.filter((v) => v !== selectedValue);
+    } else {
+      // Add new item and order by itemsMap
+      updatedValues = [...internalValue, selectedValue].sort(
+        (a, b) =>
+          Array.from(itemsMap.keys()).indexOf(a) -
+          Array.from(itemsMap.keys()).indexOf(b)
+      );
+    }
 
     setInternalValue(updatedValues);
     if (isControlled && onChange) onChange(updatedValues);
   };
 
   React.useEffect(() => {
-    if (isControlled) setInternalValue(value || []);
-  }, [value, isControlled]);
+    if (isControlled) {
+      const orderedValues = value
+        .filter((v) => itemsMap.has(v))
+        .sort(
+          (a, b) =>
+            Array.from(itemsMap.keys()).indexOf(a) -
+            Array.from(itemsMap.keys()).indexOf(b)
+        );
+      setInternalValue(orderedValues);
+      if (onChange && JSON.stringify(orderedValues) !== JSON.stringify(value))
+        onChange(orderedValues);
+    }
+  }, [value, itemsMap, isControlled, onChange]);
 
   const addItem = React.useCallback((item: ComboboxItemValue) => {
-    setItemsMap((prev) => new Map(prev).set(item.value, item.label));
+    setItemsMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(item.value, item.label);
+      return newMap;
+    });
   }, []);
   const removeItem = React.useCallback((itemValue: string) => {
     setItemsMap((prev) => {
