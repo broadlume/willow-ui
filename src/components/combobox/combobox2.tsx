@@ -20,7 +20,6 @@ import {
   TooltipTrigger,
   TruncatedText,
 } from '@src/index';
-import { useCommandState } from 'cmdk';
 
 type Props = {
   /** Placeholder text to display when no option is selected. */
@@ -58,6 +57,10 @@ interface ComboboxContextValue {
   setTruncated?: React.Dispatch<React.SetStateAction<boolean>>;
   /** Function to handle selection of an option. */
   handleSelect: (currentValue: ComboboxItemValue) => void;
+  /** Map of values to labels. */
+  itemsMap: Map<string, string>;
+  addItem: (item: ComboboxItemValue) => void;
+  removeItem: (itemValue: string) => void;
 }
 const ComboboxContext = React.createContext<ComboboxContextValue>(
   {} as ComboboxContextValue
@@ -78,14 +81,23 @@ type ComboboxValueProps = {
   className?: string;
 };
 const ComboboxValue = ({ className }: ComboboxValueProps) => {
-  const { internalValue, placeholder, truncated, setTruncated } =
+  const { internalValue, itemsMap, placeholder, truncated, setTruncated } =
     useComboboxContext();
 
   const hasSelectedValues = internalValue.length > 0;
+  // const getFullSelectedText = () => {
+  //   if (internalValue.length === 0) return placeholder;
+  //   const count = truncated ? `(${internalValue.length}) ` : '';
+  //   const names = internalValue.map((v) => v.label).join(', ');
+  //   return `${count}${names}`;
+  // };
   const getFullSelectedText = () => {
+    console.log(itemsMap);
     if (internalValue.length === 0) return placeholder;
     const count = truncated ? `(${internalValue.length}) ` : '';
-    const names = internalValue.map((v) => v.label).join(', ');
+    const names = internalValue
+      .map((v) => itemsMap.get(v.value) || v)
+      .join(', ');
     return `${count}${names}`;
   };
   const getTooltipText = () => {
@@ -120,7 +132,47 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
 };
 
 const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
-  const { placeholder, filter } = useComboboxContext();
+  const { placeholder, filter, addItem, removeItem } = useComboboxContext();
+
+  React.useEffect(() => {
+    console.log('rendering combobox content');
+
+    const getItems = (children: React.ReactNode) => {
+      if (!React.isValidElement(children)) return null;
+      if (children.type !== ComboboxGroup) return null;
+      const { children: itemNodes } = children.props;
+      const items = React.Children.map(itemNodes, getItem);
+      return items;
+    };
+
+    const getItem = (children: React.ReactNode) => {
+      if (!React.isValidElement(children)) return null;
+      if (children.type !== ComboboxItem) return null;
+      const { value, children: label } = children.props;
+      return { value, label };
+    };
+
+    const items = getItems(children);
+
+    if (items) {
+      items.forEach((item) => {
+        if (item) {
+          addItem(item);
+        }
+      });
+    }
+
+    return () => {
+      console.log('unmounting combobox content');
+      if (items) {
+        items.forEach((item) => {
+          if (item) {
+            removeItem(item.value);
+          }
+        });
+      }
+    };
+  }, [children, addItem, removeItem]);
 
   return (
     <PopoverContent className='popover-content ~p-0'>
@@ -152,6 +204,7 @@ interface ComboboxItemValue {
 }
 const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
   const { internalValue, handleSelect } = useComboboxContext();
+
   const isSelected = internalValue.find((v) => v.value === value) != null;
 
   const handleItemClick = () => {
@@ -184,6 +237,18 @@ const Combobox2 = ({
   // State to track if the combobox is truncated
   const [truncated, setTruncated] = React.useState(false);
 
+  const [itemsMap, setItemsMap] = React.useState(new Map());
+  const addItem = React.useCallback((item: ComboboxItemValue) => {
+    setItemsMap((prev) => new Map(prev).set(item.value, item.label));
+  }, []);
+  const removeItem = React.useCallback((itemValue: string) => {
+    setItemsMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(itemValue);
+      return newMap;
+    });
+  }, []);
+
   // Determine if the component is controlled
   const isControlled = value != null;
 
@@ -205,13 +270,25 @@ const Combobox2 = ({
       ? internalSelectedValues.filter((v) => v.value !== value)
       : [...internalSelectedValues, currentValue];
 
-    const newSelectedValues = newInternalSelectedValues.map((v) => v.value);
-
     if (isControlled && onChange) {
+      const newSelectedValues = newInternalSelectedValues.map((v) => v.value);
       onChange(newSelectedValues);
     }
     setInternalSelectedValues(newInternalSelectedValues);
   };
+
+  // if value changes, update internal state
+  React.useEffect(() => {
+    if (value == null) return;
+    const newMap = value
+      .map((v) => {
+        const label = itemsMap.get(v);
+        if (label == null) return null;
+        return { value: v, label };
+      })
+      .filter((v) => v != null) as ComboboxItemValue[];
+    setInternalSelectedValues(newMap);
+  }, [value, itemsMap]);
 
   return (
     <ComboboxContext.Provider
@@ -225,6 +302,9 @@ const Combobox2 = ({
         truncated,
         setTruncated,
         handleSelect,
+        itemsMap,
+        addItem,
+        removeItem,
       }}
     >
       <TooltipProvider>

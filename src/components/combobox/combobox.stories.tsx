@@ -180,6 +180,50 @@ export const Controlled: Story = {
   },
 };
 
+const ControlledDemoComponent2 = ({ placeholder, values }: any) => {
+  const [value, setValue] = useState<string[]>([]);
+  return (
+    <div className='tw-reset ~flex ~flex-col ~gap-2'>
+      <Combobox2 placeholder={placeholder} value={value} onChange={setValue}>
+        <ComboboxValue className='~w-[300px]' />
+        <ComboboxContent>
+          <ComboboxGroup>
+            {values.map((framework) => (
+              <ComboboxItem key={framework.value} value={framework.value}>
+                {framework.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxContent>
+      </Combobox2>
+      <p>External control:</p>
+      {values.map((_value) => (
+        <div className='~flex ~gap-1' key={_value.value}>
+          <Checkbox
+            id={_value.value}
+            checked={value.includes(_value.value)}
+            onCheckedChange={(e) => {
+              if (e === true) {
+                setValue((prev) => [...prev, _value.value]);
+              } else if (e === false) {
+                setValue((prev) => prev.filter((v) => v !== _value.value));
+              }
+            }}
+          />
+          <Label htmlFor={_value.value}>{_value.label}</Label>
+        </div>
+      ))}
+    </div>
+  );
+};
+export const Controlled2: Story = {
+  render: ControlledDemoComponent2,
+  args: {
+    placeholder: 'Select framework...',
+    values: frameworks,
+  },
+};
+
 export const Combobox2Demo: Story = {
   render: (_) => (
     <Combobox2>
