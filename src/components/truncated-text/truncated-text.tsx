@@ -1,12 +1,14 @@
+import { cn } from '@src/lib/utils';
 import { useRef, useCallback } from 'react';
 import { useResizeDetector } from 'react-resize-detector';
 
 type Props = {
   children?: React.ReactNode;
+  className?: string;
   onTruncation?: (isTruncated: boolean) => void;
 };
 
-const TruncatedText = ({ children, onTruncation }: Props) => {
+const TruncatedText = ({ children, className, onTruncation }: Props) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const onResize = useCallback(() => {
     if (targetRef.current && onTruncation) {
@@ -18,7 +20,7 @@ const TruncatedText = ({ children, onTruncation }: Props) => {
   useResizeDetector({ onResize, targetRef });
 
   return (
-    <div className='~truncate' ref={targetRef}>
+    <div className={cn('~truncate', className)} ref={targetRef}>
       {children}
     </div>
   );

@@ -107,11 +107,16 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
     useComboboxContext();
 
   const hasSelectedValues = value.length > 0;
-  const getFullSelectedText = () => {
+  const getDisplayText = () => {
     if (!value.length) return placeholder;
     const count = truncated ? `(${value.length}) ` : '';
-    const names = value.map((v) => itemsMap.get(v) || v).join(', ');
-    return `${count}${names}`;
+    const labels = value.map((v) => itemsMap.get(v) || v).join(', ');
+    return `${count}${labels}`;
+  };
+  const getRawSelectedText = () => {
+    const labels = value.map((v) => itemsMap.get(v) || v);
+    const result = labels.join(', ');
+    return `${result}`;
   };
   const getTooltipText = () => {
     const labels = value.map((v) => itemsMap.get(v) || v);
@@ -130,14 +135,22 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
         <PopoverTrigger
           className={cn(
             selectVariants(),
-            '~justify-start ~gap-1',
+            '~relative ~justify-start ~gap-1',
             !hasSelectedValues && '~text-input',
             className
           )}
         >
-          <TruncatedText onTruncation={setTruncated}>
-            {getFullSelectedText()}
-          </TruncatedText>
+          <div
+            className={cn(
+              selectVariants(),
+              '~invisible ~absolute ~inset-0 ~bg-red-200'
+            )}
+          >
+            <TruncatedText onTruncation={setTruncated}>
+              {getRawSelectedText()}
+            </TruncatedText>
+          </div>
+          <TruncatedText>{getDisplayText()}</TruncatedText>
           <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
         </PopoverTrigger>
       </TooltipTrigger>
