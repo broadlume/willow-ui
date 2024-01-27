@@ -248,7 +248,7 @@ export const LongListDemo2: Story = {
       <ComboboxContent>
         <ComboboxGroup>
           {longList.map((item) => (
-            <ComboboxItem key={item.value} value={item.label}>
+            <ComboboxItem key={item.value} value={item.value}>
               {item.label}
             </ComboboxItem>
           ))}

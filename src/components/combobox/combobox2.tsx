@@ -45,8 +45,6 @@ interface ComboboxContextValue {
   children?: React.ReactNode;
   /** Array of selected option values. This prop is used to control the component (controlled mode). When not provided, the component works in uncontrolled mode. */
   value: string[];
-  /** Internal value, including a mapping of values to labels. */
-  internalValue: ComboboxItemValue[];
   /** Callback function that is called when the selection changes. It receives the new array of selected option values. */
   onChange?: (selectedValues: string[]) => void;
   /** Optional filter function to use when searching. */
@@ -110,7 +108,7 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
 
   const hasSelectedValues = value.length > 0;
   const getFullSelectedText = () => {
-    if (value.length === 0) return placeholder;
+    if (!value.length) return placeholder;
     const count = truncated ? `(${value.length}) ` : '';
     const names = value.map((v) => itemsMap.get(v) || v).join(', ');
     return `${count}${names}`;
@@ -151,7 +149,6 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
   const { placeholder, filter, addItem, removeItem } = useComboboxContext();
 
   React.useEffect(() => {
-    console.log('rendering combobox content');
     const items = extractItems(children);
 
     if (items) {
@@ -163,7 +160,6 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
     }
 
     return () => {
-      console.log('unmounting combobox content');
       if (items) {
         items.forEach((item) => {
           if (item) {
@@ -202,15 +198,13 @@ interface ComboboxItemValue {
   value: string;
   label: string;
 }
-const ComboboxItem = ({ value: _value, children }: ComboboxItemProps) => {
-  const { value, handleSelect } = useComboboxContext();
-
-  const isSelected = value.includes(_value);
+const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
+  const { value: comboboxValue, handleSelect } = useComboboxContext();
+  const isSelected = comboboxValue.includes(value);
 
   return (
     <CommandItem
-      value={_value}
-      onSelect={handleSelect}
+      onSelect={() => handleSelect(value)}
       className={cn(!isSelected && '~text-muted-foreground')}
     >
       <Checkbox checked={isSelected} className='~mr-3' />
@@ -227,10 +221,25 @@ const Combobox2 = ({
   onChange,
   filter,
 }: Props) => {
-  // State to track if the combobox is truncated
   const [truncated, setTruncated] = React.useState(false);
+  const [itemsMap, setItemsMap] = React.useState(new Map<string, string>());
+  const [internalValue, setInternalValue] = React.useState<string[]>([]);
 
-  const [itemsMap, setItemsMap] = React.useState(new Map());
+  const isControlled = value != null;
+
+  const handleSelect = (selectedValue: string) => {
+    const updatedValues = internalValue.includes(selectedValue)
+      ? internalValue.filter((v) => v !== selectedValue)
+      : [...internalValue, selectedValue];
+
+    setInternalValue(updatedValues);
+    if (isControlled && onChange) onChange(updatedValues);
+  };
+
+  React.useEffect(() => {
+    if (isControlled) setInternalValue(value || []);
+  }, [value, isControlled]);
+
   const addItem = React.useCallback((item: ComboboxItemValue) => {
     setItemsMap((prev) => new Map(prev).set(item.value, item.label));
   }, []);
@@ -242,54 +251,12 @@ const Combobox2 = ({
     });
   }, []);
 
-  // Determine if the component is controlled
-  const isControlled = value != null;
-
-  // Internal state for uncontrolled mode
-  const [internalSelectedValues, setInternalSelectedValues] = React.useState<
-    ComboboxItemValue[]
-  >([]);
-
-  // Use controlled value or internal state based on the component mode
-  const selectedValues = isControlled
-    ? value
-    : internalSelectedValues.map((v) => v.value);
-
-  const handleSelect = (_value: string) => {
-    const label = itemsMap.get(_value);
-    if (label == null) return;
-    const redundant = internalSelectedValues.find((v) => v.value === _value);
-    const newInternalSelectedValues = redundant
-      ? internalSelectedValues.filter((v) => v.value !== _value)
-      : [...internalSelectedValues, { value: _value, label }];
-
-    if (isControlled && onChange) {
-      const newSelectedValues = newInternalSelectedValues.map((v) => v.value);
-      onChange(newSelectedValues);
-    }
-    setInternalSelectedValues(newInternalSelectedValues);
-  };
-
-  // if value changes, update internal state
-  React.useEffect(() => {
-    if (value == null) return;
-    const newMap = value
-      .map((v) => {
-        const label = itemsMap.get(v);
-        if (label == null) return null;
-        return { value: v, label };
-      })
-      .filter((v) => v != null) as ComboboxItemValue[];
-    setInternalSelectedValues(newMap);
-  }, [value, itemsMap]);
-
   return (
     <ComboboxContext.Provider
       value={{
         placeholder,
         children,
-        value: selectedValues,
-        internalValue: internalSelectedValues,
+        value: isControlled ? value : internalValue,
         onChange: isControlled ? onChange : undefined,
         filter,
         truncated,
