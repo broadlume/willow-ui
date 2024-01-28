@@ -2,9 +2,13 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Combobox2 } from './combobox2';
 import {
   Combobox,
+  ComboboxAddItem,
   ComboboxContent,
+  ComboboxEmpty,
   ComboboxGroup,
+  ComboboxInput,
   ComboboxItem,
+  ComboboxList,
   ComboboxValue,
 } from './combobox';
 import {
@@ -86,55 +90,60 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
 
 const LocationDemoComponent = ({ placeholder, values }: any) => {
   const [open, setOpen] = useState(false);
+
   return (
-    <Combobox2
-      placeholder={placeholder}
-      values={values}
-      className='~w-[300px]'
-      filter={(value, search) => {
-        if (value === 'add location') return 1;
-        if (value.includes(search)) return 1;
-        return 0;
-      }}
+    <Combobox
+    // filter={(value, search) => {
+    //   if (value === 'add location') return 1;
+    //   if (value.includes(search)) return 1;
+    //   return 0;
+    // }}
     >
-      <CommandGroup>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <CommandItem
-            className='caption-1 ~cursor-pointer ~gap-2 ~text-mosaic aria-selected:~text-mosaic'
-            onSelect={() => setOpen((prev) => !prev)}
-          >
-            <FaPlus />
-            Add location
-          </CommandItem>
-          <DialogContent className='sm:~max-w-[425px]'>
-            <DialogHeader>
-              <DialogTitle>Add location</DialogTitle>
-              <DialogDescription>
-                Add a new location to your list.
-              </DialogDescription>
-            </DialogHeader>
-            <div className='~grid ~grid-cols-4 ~items-center ~gap-4'>
-              <Label htmlFor='name' className='~text-right'>
-                Name
-              </Label>
-              <Input id='name' defaultValue='' className='~col-span-3' />
-            </div>
-            <DialogFooter>
-              <Button variant='secondary' onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type='submit' onClick={() => setOpen(false)}>
-                Add
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </CommandGroup>
-    </Combobox2>
+      <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
+      <ComboboxContent>
+        <ComboboxGroup>
+          {values.map((location) => (
+            <ComboboxItem key={location.value} value={location.value}>
+              {location.label}
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+        <ComboboxGroup>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <ComboboxAddItem onSelect={() => setOpen((prev) => !prev)}>
+              <FaPlus />
+              Add location
+            </ComboboxAddItem>
+            <DialogContent className='sm:~max-w-[425px]'>
+              <DialogHeader>
+                <DialogTitle>Add location</DialogTitle>
+                <DialogDescription>
+                  Add a new location to your list.
+                </DialogDescription>
+              </DialogHeader>
+              <div className='~grid ~grid-cols-4 ~items-center ~gap-4'>
+                <Label htmlFor='name' className='~text-right'>
+                  Name
+                </Label>
+                <Input id='name' defaultValue='' className='~col-span-3' />
+              </div>
+              <DialogFooter>
+                <Button variant='secondary' onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type='submit' onClick={() => setOpen(false)}>
+                  Add
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </ComboboxGroup>
+      </ComboboxContent>
+    </Combobox>
   );
 };
 
-export const Demo: Story = {
+export const Demo: StoryObj = {
   render: LocationDemoComponent,
   args: {
     placeholder: 'Location',
@@ -146,59 +155,20 @@ const ControlledDemoComponent = ({ placeholder, values }: any) => {
   const [value, setValue] = useState<string[]>([]);
   return (
     <div className='tw-reset ~flex ~flex-col ~gap-2'>
-      <Combobox2
-        placeholder={placeholder}
-        values={values}
-        value={value}
-        onChange={setValue}
-      />
-      <p>External control:</p>
-      {values.map((_value) => (
-        <div className='~flex ~gap-1' key={_value.value}>
-          <Checkbox
-            id={_value.value}
-            checked={value.includes(_value.value)}
-            onCheckedChange={(e) => {
-              if (e === true) {
-                setValue((prev) => [...prev, _value.value]);
-              } else if (e === false) {
-                setValue((prev) => prev.filter((v) => v !== _value.value));
-              }
-            }}
-          />
-          <Label htmlFor={_value.value}>{_value.label}</Label>
-        </div>
-      ))}
-    </div>
-  );
-};
-export const Controlled: Story = {
-  render: ControlledDemoComponent,
-  args: {
-    placeholder: 'Select framework...',
-    values: frameworks,
-  },
-};
-
-const ControlledDemoComponent2 = ({ placeholder, values }: any) => {
-  const [value, setValue] = useState<string[]>([]);
-  return (
-    <div className='tw-reset ~flex ~flex-col ~gap-2'>
-      <Combobox
-        placeholder={placeholder}
-        value={value}
-        onChange={setValue}
-        className='~w-[200px]'
-      >
-        <ComboboxValue className='~w-[300px]' />
+      <Combobox value={value} onChange={setValue} className='~w-[200px]'>
+        <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
         <ComboboxContent>
-          <ComboboxGroup>
-            {values.map((framework) => (
-              <ComboboxItem key={framework.value} value={framework.value}>
-                {framework.label}
-              </ComboboxItem>
-            ))}
-          </ComboboxGroup>
+          <ComboboxInput />
+          <ComboboxEmpty>No results found.</ComboboxEmpty>
+          <ComboboxList>
+            <ComboboxGroup>
+              {values.map((framework) => (
+                <ComboboxItem key={framework.value} value={framework.value}>
+                  {framework.label}
+                </ComboboxItem>
+              ))}
+            </ComboboxGroup>
+          </ComboboxList>
         </ComboboxContent>
       </Combobox>
       <p>External control:</p>
@@ -221,48 +191,52 @@ const ControlledDemoComponent2 = ({ placeholder, values }: any) => {
     </div>
   );
 };
-export const Controlled2: Story = {
-  render: ControlledDemoComponent2,
+export const Controlled: StoryObj = {
+  render: ControlledDemoComponent,
   args: {
     placeholder: 'Select framework...',
     values: frameworks,
   },
 };
 
-export const Combobox2Demo: Story = {
+export const ComboboxDemo: Story = {
   render: (_) => (
     <Combobox>
-      <ComboboxValue className='~w-[200px]' />
+      <ComboboxValue className='~w-[200px]' placeholder='Select framework...' />
       <ComboboxContent>
-        <ComboboxGroup>
-          {frameworks.map((framework) => (
-            <ComboboxItem key={framework.value} value={framework.value}>
-              {framework.label}
-            </ComboboxItem>
-          ))}
-        </ComboboxGroup>
-      </ComboboxContent>
-    </Combobox>
-  ),
-};
-
-export const LongListDemo2: Story = {
-  render: (_) => (
-    <Combobox>
-      <ComboboxValue className='~w-[200px]' />
-      <ComboboxContent>
-        <ComboboxGroup>
-          {longList.map((item) => (
-            <ComboboxItem key={item.value} value={item.value}>
-              {item.label}
-            </ComboboxItem>
-          ))}
-        </ComboboxGroup>
+        <ComboboxInput />
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+        <ComboboxList>
+          <ComboboxGroup>
+            {frameworks.map((framework) => (
+              <ComboboxItem key={framework.value} value={framework.value}>
+                {framework.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxList>
       </ComboboxContent>
     </Combobox>
   ),
 };
 
 export const LongListDemo: Story = {
-  render: (_) => <Combobox2 values={longList} />,
+  render: (_) => (
+    <Combobox>
+      <ComboboxValue className='~w-[200px]' placeholder='Select...' />
+      <ComboboxContent>
+        <ComboboxInput />
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+        <ComboboxList>
+          <ComboboxGroup>
+            {longList.map((item) => (
+              <ComboboxItem key={item.value} value={item.value}>
+                {item.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  ),
 };

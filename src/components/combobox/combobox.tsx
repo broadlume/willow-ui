@@ -22,8 +22,6 @@ import {
 } from '@src/index';
 
 type Props = {
-  /** Placeholder text to display when no option is selected. */
-  placeholder?: string;
   /** Array of objects representing the options for the combobox. Each object should have a `value` (unique identifier) and a `label` (display text). */
   values?: { value: string; label: string }[];
   /** Additional CSS class names to apply to the combobox for custom styling. */
@@ -101,10 +99,11 @@ function extractItems(children: React.ReactNode): ComboboxItemValue[] {
 type ComboboxValueProps = {
   /** Additional CSS class names to apply to the combobox for custom styling. */
   className?: string;
+  /** Placeholder string to show when no element is selected. */
+  placeholder?: string;
 };
-const ComboboxValue = ({ className }: ComboboxValueProps) => {
-  const { value, itemsMap, placeholder, truncated, setTruncated } =
-    useComboboxContext();
+const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
+  const { value, itemsMap, truncated, setTruncated } = useComboboxContext();
 
   const hasSelectedValues = value.length > 0;
   const getDisplayText = () => {
@@ -158,7 +157,7 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
 };
 
 const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
-  const { placeholder, filter, addItem, removeItem } = useComboboxContext();
+  const { filter, addItem, removeItem } = useComboboxContext();
 
   React.useEffect(() => {
     const items = extractItems(children);
@@ -185,20 +184,39 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <PopoverContent className='popover-content ~p-0'>
       <Command className='~rounded-none' filter={filter}>
-        <CommandInput
-          placeholder={placeholder}
-          className='~h-9'
-          wrapperClassName={cn('~rounded-none ~border-4 ~border-b-[5px]')}
-        />
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandList>{children}</CommandList>
+        {children}
       </Command>
     </PopoverContent>
   );
 };
 
-// const ComboboxList = CommandList;
-// ComboboxList.displayName = 'ComboboxList';
+const ComboboxInput = React.forwardRef<
+  React.ElementRef<typeof CommandInput>,
+  React.ComponentPropsWithoutRef<typeof CommandInput>
+>(({ className, wrapperClassName, ...props }, ref) => (
+  <CommandInput
+    ref={ref}
+    className={cn('~h-9', className)}
+    wrapperClassName={cn(
+      '~rounded-none ~border-4 ~border-b-[5px]',
+      wrapperClassName
+    )}
+    {...props}
+  />
+));
+ComboboxInput.displayName = 'ComboboxInput';
+
+const ComboboxEmpty = React.forwardRef<
+  React.ElementRef<typeof CommandEmpty>,
+  React.ComponentPropsWithoutRef<typeof CommandEmpty>
+>((props, ref) => <CommandEmpty ref={ref} {...props} />);
+ComboboxEmpty.displayName = 'ComboboxEmpty';
+
+const ComboboxList = React.forwardRef<
+  React.ElementRef<typeof CommandList>,
+  React.ComponentPropsWithoutRef<typeof CommandList>
+>((props, ref) => <CommandList ref={ref} {...props} />);
+ComboboxList.displayName = 'ComboboxList';
 
 const ComboboxGroup = React.forwardRef<
   React.ElementRef<typeof CommandGroup>,
@@ -215,13 +233,15 @@ type ComboboxItemProps = {
   children: string;
 };
 const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
-  const { value: comboboxValue, handleSelect } = useComboboxContext();
+  const { value: comboboxValue, itemsMap, handleSelect } = useComboboxContext();
+  const label = itemsMap.get(value) || value;
   const isSelected = comboboxValue.includes(value);
 
   return (
     <CommandItem
       onSelect={() => handleSelect(value)}
       className={cn(!isSelected && '~text-muted-foreground')}
+      value={label}
     >
       <Checkbox checked={isSelected} className='~mr-3' />
       {children}
@@ -229,14 +249,23 @@ const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
   );
 };
 
+type ComboboxAddItemProps = {
+  onSelect?: () => void;
+  children: React.ReactNode;
+};
+const ComboboxAddItem = ({ children, onSelect }: ComboboxAddItemProps) => {
+  return (
+    <CommandItem
+      className='caption-1 ~cursor-pointer ~gap-2 ~text-mosaic aria-selected:~text-mosaic'
+      onSelect={onSelect}
+    >
+      {children}
+    </CommandItem>
+  );
+};
+
 /** A multi-select combobox. */
-const Combobox = ({
-  placeholder = 'Search...',
-  children,
-  value,
-  onChange,
-  filter,
-}: Props) => {
+const Combobox = ({ children, value, onChange, filter }: Props) => {
   const [truncated, setTruncated] = React.useState(false);
   const [itemsMap, setItemsMap] = React.useState(new Map<string, string>());
   const [internalValue, setInternalValue] = React.useState<string[]>([]);
@@ -293,7 +322,6 @@ const Combobox = ({
   return (
     <ComboboxContext.Provider
       value={{
-        placeholder,
         children,
         value: isControlled ? value : internalValue,
         onChange: isControlled ? onChange : undefined,
@@ -316,7 +344,11 @@ const Combobox = ({
 export {
   ComboboxValue,
   ComboboxContent,
+  ComboboxInput,
+  ComboboxEmpty,
+  ComboboxList,
   ComboboxGroup,
   ComboboxItem,
+  ComboboxAddItem,
   Combobox,
 };
