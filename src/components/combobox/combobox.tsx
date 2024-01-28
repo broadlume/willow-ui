@@ -124,6 +124,16 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
     return `${result}`;
   };
 
+  const popoverClassNames = cn(
+    selectVariants(),
+    '~relative ~justify-start ~gap-1',
+    !hasSelectedValues && '~text-input'
+  );
+  const referenceClassNames = cn(
+    popoverClassNames,
+    '~invisible ~absolute ~inset-0'
+  );
+
   return (
     <Tooltip>
       <TooltipContent
@@ -132,24 +142,12 @@ const ComboboxValue = ({ className }: ComboboxValueProps) => {
         {getTooltipText()}
       </TooltipContent>
       <TooltipTrigger asChild>
-        <PopoverTrigger
-          className={cn(
-            selectVariants(),
-            '~relative ~justify-start ~gap-1',
-            !hasSelectedValues && '~text-input',
-            className
-          )}
-        >
-          <div
-            className={cn(
-              selectVariants(),
-              '~invisible ~absolute ~inset-0',
-              className
-            )}
-          >
+        <PopoverTrigger className={cn(popoverClassNames, className)}>
+          <div className={cn(referenceClassNames, className)}>
             <TruncatedText onTruncation={setTruncated}>
               {getRawSelectedText()}
             </TruncatedText>
+            <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
           </div>
           <TruncatedText>{getDisplayText()}</TruncatedText>
           <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
@@ -199,21 +197,23 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const ComboboxList = CommandList;
-ComboboxList.displayName = 'ComboboxList';
+// const ComboboxList = CommandList;
+// ComboboxList.displayName = 'ComboboxList';
 
-const ComboboxGroup = CommandGroup;
+const ComboboxGroup = React.forwardRef<
+  React.ElementRef<typeof CommandGroup>,
+  React.ComponentPropsWithoutRef<typeof CommandGroup>
+>((props, ref) => <CommandGroup ref={ref} {...props} />);
 ComboboxGroup.displayName = 'ComboboxGroup';
-
-type ComboboxItemProps = {
-  value: string;
-  children: string;
-};
 
 interface ComboboxItemValue {
   value: string;
   label: string;
 }
+type ComboboxItemProps = {
+  value: string;
+  children: string;
+};
 const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
   const { value: comboboxValue, handleSelect } = useComboboxContext();
   const isSelected = comboboxValue.includes(value);
