@@ -1,12 +1,12 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Combobox } from './combobox';
+import { Combobox2 } from './combobox2';
 import {
-  Combobox2,
+  Combobox,
   ComboboxContent,
   ComboboxGroup,
   ComboboxItem,
   ComboboxValue,
-} from './combobox2';
+} from './combobox';
 import {
   Button,
   Checkbox,
@@ -87,7 +87,7 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
 const LocationDemoComponent = ({ placeholder, values }: any) => {
   const [open, setOpen] = useState(false);
   return (
-    <Combobox
+    <Combobox2
       placeholder={placeholder}
       values={values}
       className='~w-[300px]'
@@ -130,7 +130,7 @@ const LocationDemoComponent = ({ placeholder, values }: any) => {
           </DialogContent>
         </Dialog>
       </CommandGroup>
-    </Combobox>
+    </Combobox2>
   );
 };
 
@@ -146,7 +146,7 @@ const ControlledDemoComponent = ({ placeholder, values }: any) => {
   const [value, setValue] = useState<string[]>([]);
   return (
     <div className='tw-reset ~flex ~flex-col ~gap-2'>
-      <Combobox
+      <Combobox2
         placeholder={placeholder}
         values={values}
         value={value}
@@ -184,7 +184,12 @@ const ControlledDemoComponent2 = ({ placeholder, values }: any) => {
   const [value, setValue] = useState<string[]>([]);
   return (
     <div className='tw-reset ~flex ~flex-col ~gap-2'>
-      <Combobox2 placeholder={placeholder} value={value} onChange={setValue}>
+      <Combobox
+        placeholder={placeholder}
+        value={value}
+        onChange={setValue}
+        className='~w-[200px]'
+      >
         <ComboboxValue className='~w-[300px]' />
         <ComboboxContent>
           <ComboboxGroup>
@@ -195,7 +200,7 @@ const ControlledDemoComponent2 = ({ placeholder, values }: any) => {
             ))}
           </ComboboxGroup>
         </ComboboxContent>
-      </Combobox2>
+      </Combobox>
       <p>External control:</p>
       {values.map((_value) => (
         <div className='~flex ~gap-1' key={_value.value}>
@@ -226,7 +231,7 @@ export const Controlled2: Story = {
 
 export const Combobox2Demo: Story = {
   render: (_) => (
-    <Combobox2>
+    <Combobox>
       <ComboboxValue className='~w-[200px]' />
       <ComboboxContent>
         <ComboboxGroup>
@@ -237,13 +242,13 @@ export const Combobox2Demo: Story = {
           ))}
         </ComboboxGroup>
       </ComboboxContent>
-    </Combobox2>
+    </Combobox>
   ),
 };
 
 export const LongListDemo2: Story = {
   render: (_) => (
-    <Combobox2>
+    <Combobox>
       <ComboboxValue className='~w-[200px]' />
       <ComboboxContent>
         <ComboboxGroup>
@@ -254,10 +259,10 @@ export const LongListDemo2: Story = {
           ))}
         </ComboboxGroup>
       </ComboboxContent>
-    </Combobox2>
+    </Combobox>
   ),
 };
 
 export const LongListDemo: Story = {
-  render: (_) => <Combobox values={longList} />,
+  render: (_) => <Combobox2 values={longList} />,
 };
