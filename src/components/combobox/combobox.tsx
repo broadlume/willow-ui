@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CaretSortIcon } from '@radix-ui/react-icons';
 
-import { cn } from '@src/lib/utils';
+import { cn, generateUntypeableId } from '@src/lib/utils';
 import {
   Checkbox,
   Command,
@@ -117,11 +117,6 @@ const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
     const result = labels.join(', ');
     return `${result}`;
   };
-  const getTooltipText = () => {
-    const labels = value.map((v) => itemsMap.get(v) || v);
-    const result = labels.join(', ');
-    return `${result}`;
-  };
 
   const popoverClassNames = cn(
     selectVariants(),
@@ -138,7 +133,7 @@ const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
       <TooltipContent
         className={cn('tooltip-content-max', !truncated && '~hidden')}
       >
-        {getTooltipText()}
+        {getRawSelectedText()}
       </TooltipContent>
       <TooltipTrigger asChild>
         <PopoverTrigger className={cn(popoverClassNames, className)}>
@@ -253,14 +248,19 @@ type ComboboxAddItemProps = {
   onSelect?: () => void;
   children: React.ReactNode;
 };
-const ComboboxAddItem = ({ children, onSelect }: ComboboxAddItemProps) => {
+const ComboboxFooter = ({ children, onSelect }: ComboboxAddItemProps) => {
+  const [id] = React.useState(generateUntypeableId(32));
   return (
-    <CommandItem
-      className='caption-1 ~cursor-pointer ~gap-2 ~text-mosaic aria-selected:~text-mosaic'
-      onSelect={onSelect}
-    >
-      {children}
-    </CommandItem>
+    <CommandGroup forceMount>
+      <CommandItem
+        className='caption-1 ~cursor-pointer ~gap-2 ~text-mosaic aria-selected:~text-mosaic'
+        onSelect={onSelect}
+        value={id}
+        forceMount
+      >
+        {children}
+      </CommandItem>
+    </CommandGroup>
   );
 };
 
@@ -349,6 +349,6 @@ export {
   ComboboxList,
   ComboboxGroup,
   ComboboxItem,
-  ComboboxAddItem,
+  ComboboxFooter,
   Combobox,
 };

@@ -1,10 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Combobox2 } from './combobox2';
 import {
   Combobox,
-  ComboboxAddItem,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxFooter,
   ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
@@ -14,8 +13,6 @@ import {
 import {
   Button,
   Checkbox,
-  CommandGroup,
-  CommandItem,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -88,62 +85,79 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
   label: `Item ${i}`,
 }));
 
+export const Demo: Story = {
+  render: (_) => (
+    <Combobox>
+      <ComboboxValue className='~w-[200px]' placeholder='Select framework...' />
+      <ComboboxContent>
+        <ComboboxInput placeholder='Search frameworks...' />
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+        <ComboboxList>
+          <ComboboxGroup>
+            {frameworks.map((framework) => (
+              <ComboboxItem key={framework.value} value={framework.value}>
+                {framework.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  ),
+};
+
 const LocationDemoComponent = ({ placeholder, values }: any) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Combobox
-    // filter={(value, search) => {
-    //   if (value === 'add location') return 1;
-    //   if (value.includes(search)) return 1;
-    //   return 0;
-    // }}
-    >
+    <Combobox>
       <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
       <ComboboxContent>
-        <ComboboxGroup>
-          {values.map((location) => (
-            <ComboboxItem key={location.value} value={location.value}>
-              {location.label}
-            </ComboboxItem>
-          ))}
-        </ComboboxGroup>
-        <ComboboxGroup>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <ComboboxAddItem onSelect={() => setOpen((prev) => !prev)}>
-              <FaPlus />
-              Add location
-            </ComboboxAddItem>
-            <DialogContent className='sm:~max-w-[425px]'>
-              <DialogHeader>
-                <DialogTitle>Add location</DialogTitle>
-                <DialogDescription>
-                  Add a new location to your list.
-                </DialogDescription>
-              </DialogHeader>
-              <div className='~grid ~grid-cols-4 ~items-center ~gap-4'>
-                <Label htmlFor='name' className='~text-right'>
-                  Name
-                </Label>
-                <Input id='name' defaultValue='' className='~col-span-3' />
-              </div>
-              <DialogFooter>
-                <Button variant='secondary' onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type='submit' onClick={() => setOpen(false)}>
-                  Add
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </ComboboxGroup>
+        <ComboboxInput placeholder='Search locations...' />
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+        <ComboboxList>
+          <ComboboxGroup>
+            {values.map((location) => (
+              <ComboboxItem key={location.value} value={location.value}>
+                {location.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxList>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <ComboboxFooter onSelect={() => setOpen((prev) => !prev)}>
+            <FaPlus />
+            Add location
+          </ComboboxFooter>
+          <DialogContent className='sm:~max-w-[425px]'>
+            <DialogHeader>
+              <DialogTitle>Add location</DialogTitle>
+              <DialogDescription>
+                Add a new location to your list.
+              </DialogDescription>
+            </DialogHeader>
+            <div className='~grid ~grid-cols-4 ~items-center ~gap-4'>
+              <Label htmlFor='name' className='~text-right'>
+                Name
+              </Label>
+              <Input id='name' defaultValue='' className='~col-span-3' />
+            </div>
+            <DialogFooter>
+              <Button variant='secondary' onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type='submit' onClick={() => setOpen(false)}>
+                Add
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </ComboboxContent>
     </Combobox>
   );
 };
 
-export const Demo: StoryObj = {
+export const FooterDemo: StoryObj = {
   render: LocationDemoComponent,
   args: {
     placeholder: 'Location',
@@ -155,10 +169,10 @@ const ControlledDemoComponent = ({ placeholder, values }: any) => {
   const [value, setValue] = useState<string[]>([]);
   return (
     <div className='tw-reset ~flex ~flex-col ~gap-2'>
-      <Combobox value={value} onChange={setValue} className='~w-[200px]'>
+      <Combobox value={value} onChange={setValue}>
         <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
         <ComboboxContent>
-          <ComboboxInput />
+          <ComboboxInput placeholder={placeholder} />
           <ComboboxEmpty>No results found.</ComboboxEmpty>
           <ComboboxList>
             <ComboboxGroup>
@@ -199,33 +213,12 @@ export const Controlled: StoryObj = {
   },
 };
 
-export const ComboboxDemo: Story = {
-  render: (_) => (
-    <Combobox>
-      <ComboboxValue className='~w-[200px]' placeholder='Select framework...' />
-      <ComboboxContent>
-        <ComboboxInput />
-        <ComboboxEmpty>No results found.</ComboboxEmpty>
-        <ComboboxList>
-          <ComboboxGroup>
-            {frameworks.map((framework) => (
-              <ComboboxItem key={framework.value} value={framework.value}>
-                {framework.label}
-              </ComboboxItem>
-            ))}
-          </ComboboxGroup>
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
-  ),
-};
-
 export const LongListDemo: Story = {
   render: (_) => (
     <Combobox>
       <ComboboxValue className='~w-[200px]' placeholder='Select...' />
       <ComboboxContent>
-        <ComboboxInput />
+        <ComboboxInput placeholder='Random placeholder' />
         <ComboboxEmpty>No results found.</ComboboxEmpty>
         <ComboboxList>
           <ComboboxGroup>
@@ -236,6 +229,7 @@ export const LongListDemo: Story = {
             ))}
           </ComboboxGroup>
         </ComboboxList>
+        <ComboboxFooter>Test</ComboboxFooter>
       </ComboboxContent>
     </Combobox>
   ),
