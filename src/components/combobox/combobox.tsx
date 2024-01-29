@@ -103,7 +103,11 @@ type ComboboxValueProps = {
   placeholder?: string;
 } & React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 // TODO: When the combobox is squished horizontally, the invisible reference element is not squished with it.
-const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
+const ComboboxValue = ({
+  className,
+  placeholder,
+  ...props
+}: ComboboxValueProps) => {
   const { value, itemsMap, truncated, setTruncated } = useComboboxContext();
 
   const hasSelectedValues = value.length > 0;
@@ -137,7 +141,7 @@ const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
         {getRawSelectedText()}
       </TooltipContent>
       <TooltipTrigger asChild>
-        <PopoverTrigger className={cn(popoverClassNames, className)}>
+        <PopoverTrigger className={cn(popoverClassNames, className)} {...props}>
           <div className={cn(referenceClassNames, className)}>
             <TruncatedText onTruncation={setTruncated}>
               {getRawSelectedText()}
