@@ -101,7 +101,8 @@ type ComboboxValueProps = {
   className?: string;
   /** Placeholder string to show when no element is selected. */
   placeholder?: string;
-};
+} & React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
+// TODO: When the combobox is squished horizontally, the invisible reference element is not squished with it.
 const ComboboxValue = ({ className, placeholder }: ComboboxValueProps) => {
   const { value, itemsMap, truncated, setTruncated } = useComboboxContext();
 
