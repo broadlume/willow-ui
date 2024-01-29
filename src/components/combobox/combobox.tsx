@@ -286,7 +286,8 @@ const Combobox = ({ children, value, onChange, filter }: Props) => {
     }
 
     setInternalValue(updatedValues);
-    if (isControlled && onChange) onChange(updatedValues);
+    // if (isControlled && onChange) onChange(updatedValues);
+    if (onChange) onChange(updatedValues);
   };
 
   React.useEffect(() => {
