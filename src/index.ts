@@ -16,6 +16,7 @@ export * from '@components/command/command';
 export * from '@components/date-picker/date-picker';
 export * from '@components/dialog/dialog';
 export * from '@components/dropdown-menu/dropdown-menu';
+export * from '@components/form/form';
 export * from '@components/input/input';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
