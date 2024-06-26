@@ -5,7 +5,7 @@ import { DragNDropFileInput } from "./drag-n-drop-file-input";
 
 const meta: Meta = {
     component: DragNDropFileInput,
-    title: 'Components/DragNDropFileInput',
+    title: 'Components/DragNDrop File Input',
 };
 
 export default meta;

@@ -5,7 +5,7 @@ import { ColorPickerInput } from "./color-picker-input";
 
 const meta: Meta = {
     component: ColorPickerInput,
-    title: 'Components/ColorPickerInput',
+    title: 'Components/Color Picker Input',
 };
 
 export default meta;
