@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 
-import { ColorPickerInput } from "./color-picker";
+import { ColorPickerInput } from "./color-picker-input";
 
 const meta: Meta = {
     component: ColorPickerInput,
-    title: 'Components/ColorPicker',
+    title: 'Components/ColorPickerInput',
 };
 
 export default meta;
