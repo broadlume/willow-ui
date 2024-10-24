@@ -22,6 +22,13 @@ const BreadCrumb = ({
   );
 };
 
+type BreadCrumbItemProps = {
+  label: string;
+  isLast?: boolean;
+  customIcon?: () => JSX.Element;
+  classNames?: { wrapper?: string[]; label?: string[] };
+} & React.HTMLAttributes<HTMLDivElement>;
+
 /**
  * Functional component for rendering a single breadcrumb item.
  *
@@ -42,14 +49,7 @@ const BreadCrumbItem = ({
   onClick,
   customIcon: CustomIcon,
   ...props
-}: React.PropsWithChildren<
-  {
-    label: string;
-    isLast?: boolean;
-    customIcon?: () => JSX.Element;
-    classNames?: { wrapper?: string[]; label?: string[] };
-  } & React.HTMLAttributes<HTMLDivElement>
->) => {
+}: React.PropsWithChildren<BreadCrumbItemProps>) => {
   return (
     <div
       id={id + 'wrapper'}
