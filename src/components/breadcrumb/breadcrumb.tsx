@@ -16,7 +16,7 @@ const BreadCrumb = ({
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
   return (
-    <div className={clsx(`flex flex-row my-4`, className)} {...props}>
+    <div className={clsx(`~my-4 ~flex ~flex-row`, className)} {...props}>
       {children}
     </div>
   );
@@ -27,7 +27,7 @@ type BreadCrumbItemProps = {
   isLast?: boolean;
   customIcon?: () => JSX.Element;
   classNames?: { wrapper?: string[]; label?: string[] };
-} & React.HTMLAttributes<HTMLDivElement>;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'classesName'>;
 
 /**
  * Functional component for rendering a single breadcrumb item.
@@ -63,8 +63,9 @@ const BreadCrumbItem = ({
         id={id}
         onClick={onClick}
         className={clsx(
-          `~text-xs ~font-bold`,
+          `~font-sans ~text-xs`,
           onClick ? '~underline hover:~cursor-pointer' : '',
+          !isLast ? '~text-gold' : '',
           classNames.label
         )}
       >
@@ -74,7 +75,7 @@ const BreadCrumbItem = ({
         CustomIcon ? (
           <CustomIcon />
         ) : (
-          <FaChevronRight className='~text-willow-ash-light ~mx-1.5 ~text-xs' />
+          <FaChevronRight className='~mx-1.5 ~text-xs ~text-ash-light' />
         )
       ) : null}
     </div>
