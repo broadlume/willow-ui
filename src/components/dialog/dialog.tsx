@@ -40,8 +40,10 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    onClose?: () => void;
+  }
+>(({ className, children, onClose = () => null, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -61,6 +63,7 @@ const DialogContent = React.forwardRef<
           '~ring-offset-background focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
           'data-[state=open]:~bg-accent data-[state=open]:~text-muted-foreground'
         )}
+        onClick={onClose}
       >
         <Cross2Icon className='~h-4 ~w-4' />
         <span className='~sr-only'>Close</span>
