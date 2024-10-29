@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActiveModifiers,
   DateRange,
@@ -24,6 +24,7 @@ interface DatePickerPropsBase {
   disabledDates?: DayPickerBase['disabled'];
   selected?: DateSelection;
   mode?: DatePickerMode;
+  trigger?: React.ReactElement;
 }
 
 export type DatePickerSingleProps = Omit<
@@ -55,6 +56,7 @@ export const DatePicker = ({
   className,
   selected,
   onSelect,
+  trigger,
   ...props
 }: DatePickerProps) => {
   const [_selected, _setSelected] = useState<DateSelection>(selected);
@@ -129,18 +131,20 @@ export const DatePicker = ({
   return (
     <Popover>
       <PopoverTrigger asChild disabled={disabled}>
-        <Button
-          variant='outline'
-          id='date'
-          className={cn(
-            '~w-[250px] ~items-center ~justify-start ~text-left ~font-normal',
-            !selected && '~text-muted-foreground',
-            className
-          )}
-        >
-          <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
-          {buttonText}
-        </Button>
+        {trigger || (
+          <Button
+            variant='outline'
+            id='date'
+            className={cn(
+              '~w-[250px] ~items-center ~justify-start ~text-left ~font-normal',
+              !selected && '~text-muted-foreground',
+              className
+            )}
+          >
+            <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
+            {buttonText}
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className='~w-auto ~p-0' align='start'>
         {mode === 'single' ? (
