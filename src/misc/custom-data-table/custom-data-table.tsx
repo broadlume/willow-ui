@@ -8,7 +8,7 @@ import DataTable, { TableProps } from 'react-data-table-component';
 import './custom-data-table.scss';
 
 //This is the custom data table component
-export const CustomDataTable = (props: TableProps<unknown>) => {
+export const CustomDataTable = <T,>(props: TableProps<T>) => {
   //This adds our own Checkbox component to use in the data table
   const CustomCheckBox = forwardRef(({ ...rest }, _ref) => (
     <Checkbox {...rest} />
