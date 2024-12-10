@@ -3,7 +3,13 @@ import React from 'react';
 import { cn } from '@src/lib/utils';
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  /**
+   * Whether to color the input changed or not
+   */
   dirty?: boolean
+  /**
+   * Whether to color the input invalid or not
+   */
   invalid?: boolean;
 };
 
