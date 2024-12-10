@@ -2,7 +2,10 @@ import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  dirty?: boolean
+  invalid?: boolean;
+};
 
 /** Displays a form input field or a component that looks like an input field. */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -15,6 +18,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           'placeholder:~text-input',
           'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
           'disabled:~cursor-not-allowed disabled:~bg-muted',
+          
+          {
+            "~bg-blue-50": props.dirty && !props.invalid,
+            "~bg-red-50": props.invalid
+          },
           className
         )}
         ref={ref}

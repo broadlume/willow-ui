@@ -2,7 +2,10 @@ import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  dirty?: boolean
+  invalid?: boolean;
+};
 
 /** A resizable, multi-line text field. */
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -14,6 +17,10 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           'placeholder:~text-input',
           'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
           'disabled:~cursor-not-allowed disabled:~opacity-50',
+          {
+            "~bg-blue-50": props.dirty && !props.invalid,
+            "~bg-red-50": props.invalid
+          },
           className
         )}
         ref={ref}
