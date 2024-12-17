@@ -15,7 +15,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 // import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import { Button } from '@components/button';
 
-const TiptapEditor: React.FC = () => {
+const WYSIWYGEditor: React.FC = () => {
   const [content, setContent] = useState('<p>Type / to insert blocks...</p>');
   const [commandMenu, setCommandMenu] = useState(false);
 
@@ -181,4 +181,4 @@ const TiptapEditor: React.FC = () => {
   );
 };
 
-export { TiptapEditor };
+export { WYSIWYGEditor };
