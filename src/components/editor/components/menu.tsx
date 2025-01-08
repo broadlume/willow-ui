@@ -18,7 +18,7 @@ export const Menu = ({
 }: MenuProps) => {
 
   return (
-    <div className='~py-1.5 ~px-4 ~flex ~gap-4 ~rounded-lg ~border-gray-300 ~bg-[#F5F7FA]'>
+    <div className='~py-1.5 ~px-4 ~flex ~gap-4 ~rounded-tl-lg ~rounded-tr-lg ~border-2 ~border-b-0 ~border-solid ~border-gray-300 ~bg-[#F5F7FA]'>
       <MenuLink title={<MdOutlineUndo size={16} />} eventHandler={() => editor.chain().undo().run()} />
       <MenuLink title={<MdOutlineRedo size={16} />} eventHandler={() => editor.chain().redo().run()} />
       <span>|</span>

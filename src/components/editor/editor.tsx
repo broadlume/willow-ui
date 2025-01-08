@@ -41,7 +41,7 @@ const TiptapEditorExtensions = [
 ]
 
 const Editor: React.FC = () => {
-  const [content, setContent] = useState<string>();
+  const [content, setContent] = useState<string>('<p>Start typing...<p>');
   const [commandMenu, setCommandMenu] = useState(false);
 
   const editor = useEditor({
@@ -70,7 +70,7 @@ const Editor: React.FC = () => {
   if (!editor) return null;
 
   return (
-    <div className='~w-full ~max-w-full ~h-[50vh] ~rounded-lg ~border-solid ~border-gray-300 ~bg-white'>
+    <div className='~w-full ~max-w-full'>
       {/* Menu */}
       <Menu editor={editor} />
 
@@ -83,7 +83,7 @@ const Editor: React.FC = () => {
       {/* Editor */}
       <EditorContent
         editor={editor}
-        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl ~m-5 focus-visible:~outline-none'
+        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-2 ~border-solid ~border-gray-300 ~p-2'
       />
       {/* Debugging Content */}
       {/* <div className='~mt-4'>
