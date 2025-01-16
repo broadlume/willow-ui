@@ -1,8 +1,7 @@
 import './assets/typekit.css';
 import './index.scss';
 
-export * from '@src/lib/icons';
-
+// Components
 export * from '@components/accordion/accordion';
 export * from '@components/alert-dialog/alert-dialog';
 export * from '@components/avatar/avatar';
@@ -16,6 +15,7 @@ export * from '@components/command/command';
 export * from '@components/date-picker/date-picker';
 export * from '@components/dialog/dialog';
 export * from '@components/dropdown-menu/dropdown-menu';
+export * from '@components/form/form';
 export * from '@components/input/input';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
@@ -34,6 +34,13 @@ export * from '@components/toast';
 export * from '@components/toggle/toggle';
 export * from '@components/tooltip/tooltip';
 export * from '@components/truncated-text/truncated-text';
-export * from '@src/reports/summary-tile/summary-tile';
+export * from '@components/breadcrumb/breadcrumb';
+export * from '@components/color-picker-input/color-picker-input';
+export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
+export * from '@components/checkbox-tree-view/checkbox-tree-view';
+export * from '@components/editor/editor';
 
+// Other stuff
+export * from '@src/lib/icons';
+export * from '@src/reports/summary-tile/summary-tile';
 export * from '@src/misc/custom-data-table/custom-data-table';

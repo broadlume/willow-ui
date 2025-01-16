@@ -118,7 +118,6 @@ export const DatePicker = ({
   }, [selected]);
 
   const newProps = {
-    ...props,
     mode,
     disabled: disabledDates,
     defaultMonth: mode === 'range' ? (_selected as DateRange)?.from : _selected,
@@ -126,6 +125,7 @@ export const DatePicker = ({
     numberOfMonths: mode === 'range' ? 2 : 1,
     selected: _selected,
     onSelect: _onSelect,
+    ...(props ?? {}),
   };
 
   return (

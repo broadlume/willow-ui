@@ -37,5 +37,5 @@ export const DisabledDates: Story = {
 };
 
 export const DateRangePicker: Story = {
-  render: (_) => <DatePicker mode='range' />,
+  render: (_) => <DatePicker mode='range' numberOfMonths={3} />,
 };

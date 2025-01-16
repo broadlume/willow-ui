@@ -6,16 +6,23 @@ import { Checkbox } from '@src/index';
 import DataTable, { TableProps } from 'react-data-table-component';
 
 import './custom-data-table.scss';
-
+type CustomDataTableProps<T> = TableProps<T> & {
+  classNames?: { root?: string[] };
+};
 //This is the custom data table component
-export const CustomDataTable = <T,>(props: TableProps<T>) => {
+export const CustomDataTable = <T extends object>({
+  classNames = { root: [] },
+  ...props
+}: CustomDataTableProps<T>) => {
   //This adds our own Checkbox component to use in the data table
   const CustomCheckBox = forwardRef(({ ...rest }, _ref) => (
     <Checkbox {...rest} />
   ));
 
   return (
-    <div className='body-medium tw-reset ~rounded-lg ~border ~shadow'>
+    <div
+      className={`body-medium tw-reset ~rounded-lg ~border ~shadow ${classNames.root}`}
+    >
       {props.selectableRows ? (
         <DataTable
           {...props}
