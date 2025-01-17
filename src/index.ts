@@ -23,6 +23,7 @@ export * from '@components/radio-group/radio-group';
 export * from '@components/resizable/resizable';
 export * from '@components/select';
 export * from '@components/separator/separator';
+export * from '@components/sheet/sheet';
 export * from '@components/skeleton/skeleton';
 export * from '@components/slider/slider';
 export * from '@components/switch/switch';
