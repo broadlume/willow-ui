@@ -10,9 +10,9 @@ type CustomDataTableProps<T> = TableProps<T> & {
   classNames?: { root?: string[] };
 };
 //This is the custom data table component
-export const CustomDataTable = <T extends object>({
+export const CustomDataTable = <T,>({
   classNames = { root: [] },
-  ...props
+  ...props  
 }: CustomDataTableProps<T>) => {
   //This adds our own Checkbox component to use in the data table
   const CustomCheckBox = forwardRef(({ ...rest }, _ref) => (
