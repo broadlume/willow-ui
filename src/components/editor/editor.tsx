@@ -40,15 +40,27 @@ const TiptapEditorExtensions = [
   }),
 ]
 
-const Editor: React.FC = () => {
-  const [content, setContent] = useState<string>('<p>Start typing...<p>');
+export type EditorProps = {
+  content?: string,
+  onChange?: (html: string) => void,
+  onBlur?: (html: string) => void,
+};
+
+const Editor: React.FC<EditorProps> = (props) => {
+  const [content, setContent] = useState<string>(props.content ?? '<p>Start typing...<p>');
   const [commandMenu, setCommandMenu] = useState(false);
 
   const editor = useEditor({
     extensions: TiptapEditorExtensions,
     content: content,
-    onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
+    onUpdate: ({ editor, }) => {
+      const html = editor.getHTML();
+      setContent(html);
+      props.onChange?.(html);
+    },
+    onBlur: ({ editor, }) => {
+      const html = editor.getHTML();
+      props.onBlur?.(html);
     },
     editorProps: {
       handleKeyDown: (_, event) => {
