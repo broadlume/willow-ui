@@ -20,7 +20,7 @@ function Calendar({
       className={cn('tw-reset ~p-3', className)}
       classNames={{
         months:
-          '~flex ~flex-col sm:~flex-row ~space-y-4 sm:~space-x-4 sm:~space-y-0',
+          '~flex ~flex-col sm:~flex-row ~space-y-4 sm:~space-x-4 sm:~space-y-0 ~w-full',
         month: cn('~space-y-4'),
         caption: '~flex ~justify-center ~pt-1 ~relative ~items-center',
         caption_label: '~text-sm ~font-medium',
@@ -28,16 +28,16 @@ function Calendar({
         nav_button: cn(buttonVariants({ variant: 'ghost' }), '~h-9 ~w-9 ~p-0'),
         nav_button_previous: '~absolute ~left-1',
         nav_button_next: '~absolute ~right-1',
-        table: '~w-full ~border-collapse ~space-y-1',
-        head_row: '~flex',
+        table: '~table-fixed ~w-full ~border-collapse ~space-y-1',
+        head_row: '',
         head_cell: cn(
           'caption-1 ~w-10 ~text-center ~font-normal ~text-muted-foreground'
         ),
-        row: '~flex ~w-full ~mt-2',
+        row: '~w-full ~mt-2',
         cell: cn(
-          '~relative ~p-0 ~text-center focus-within:~relative focus-within:~z-20 [&:has([aria-selected])]:~bg-accent',
+          '~relative ~p-0 ~text-center focus-within:~relative focus-within:~z-20 ',
           props.mode === 'range'
-            ? '[&:has(>.day-range-end)]:~rounded-r-full [&:has(>.day-range-start)]:~rounded-l-full first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full'
+            ? '[&:has(>.day-range-end)]:~rounded-r-full [&:has(>.day-range-start)]:~rounded-l-full [&:has([aria-selected])]:~bg-accent first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full'
             : '[&:has([aria-selected])]:~rounded-full'
         ),
         day: cn(
