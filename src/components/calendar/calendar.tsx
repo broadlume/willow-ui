@@ -21,9 +21,9 @@ function Calendar({
       classNames={{
         months: cn(
           '~flex ~w-full ~flex-col ~space-y-4 sm:~flex-row sm:~space-x-4 sm:~space-y-0',
-          classNames.months
+          classNames?.months
         ),
-        month: cn('~space-y-4', classNames.month),
+        month: cn('~space-y-4', classNames?.month),
         caption: cn(
           '~relative ~flex ~items-center ~justify-center ~pt-1',
           classNames?.caption
