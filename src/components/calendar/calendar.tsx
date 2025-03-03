@@ -19,6 +19,7 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn('tw-reset ~p-3', className)}
       classNames={{
+        root: cn('~w-min', classNames?.root),
         months: cn(
           '~flex ~w-full ~flex-col ~space-y-4 sm:~flex-row sm:~space-x-4 sm:~space-y-0',
           classNames?.months
