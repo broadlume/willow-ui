@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 
 // Extensions
@@ -20,6 +20,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { Menu } from './components/menu';
 import { BubbleMenu } from './components/bubble-menu';
 import { CommandMenu } from './components/command-menu';
+import Underline from '@tiptap/extension-underline';
 
 
 // List of Tiptap Editor Extensions
@@ -32,13 +33,14 @@ const TiptapEditorExtensions = [
   TableCell,
   TableHeader,
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
+  Underline,
   Highlight,
   CodeBlock,
   BulletList,
   Placeholder.configure({
-    placeholder: 'Start typing...',
+    placeholder: 'Write something …',
   }),
-]
+];
 
 export type EditorProps = {
   content?: string,
@@ -47,7 +49,7 @@ export type EditorProps = {
 };
 
 const Editor: React.FC<EditorProps> = (props) => {
-  const [content, setContent] = useState<string>(props.content ?? '<p>Start typing...<p>');
+  const [content, setContent] = useState<string>(props.content ?? '');
   const [commandMenu, setCommandMenu] = useState(false);
 
   const editor = useEditor({
@@ -95,7 +97,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       {/* Editor */}
       <EditorContent
         editor={editor}
-        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-2 ~border-solid ~border-gray-300 ~p-2'
+        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
       />
       {/* Debugging Content */}
       {/* <div className='~mt-4'>
