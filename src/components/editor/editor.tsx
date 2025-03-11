@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 
 // Extensions
@@ -18,8 +18,9 @@ import Placeholder from '@tiptap/extension-placeholder';
 
 // Components
 import { Menu } from './components/menu';
-import { BubbleMenu } from './components/bubble-menu';
-import { CommandMenu } from './components/command-menu';
+// import { BubbleMenu } from './components/bubble-menu';
+// import { CommandMenu } from './components/command-menu';
+import Underline from '@tiptap/extension-underline';
 
 
 // List of Tiptap Editor Extensions
@@ -32,13 +33,14 @@ const TiptapEditorExtensions = [
   TableCell,
   TableHeader,
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
+  Underline,
   Highlight,
   CodeBlock,
   BulletList,
   Placeholder.configure({
-    placeholder: 'Start typing...',
+    placeholder: 'Write something …',
   }),
-]
+];
 
 export type EditorProps = {
   content?: string,
@@ -47,8 +49,8 @@ export type EditorProps = {
 };
 
 const Editor: React.FC<EditorProps> = (props) => {
-  const [content, setContent] = useState<string>(props.content ?? '<p>Start typing...<p>');
-  const [commandMenu, setCommandMenu] = useState(false);
+  const [content, setContent] = useState<string>(props.content ?? '');
+  // const [commandMenu, setCommandMenu] = useState(false);
 
   const editor = useEditor({
     extensions: TiptapEditorExtensions,
@@ -63,19 +65,20 @@ const Editor: React.FC<EditorProps> = (props) => {
       props.onBlur?.(html);
     },
     editorProps: {
-      handleKeyDown: (_, event) => {
-        switch (event.key) {
-          case '/':
-            setCommandMenu(true);
-            break;
-          case 'Escape':
-          case 'Backspace':
-            setCommandMenu(false);
-            break;
-          default:
-            break;
-        }
-      }
+      // For command Menu implementation
+      // handleKeyDown: (_, event) => {
+      //   switch (event.key) {
+      //     case '/':
+      //       setCommandMenu(true);
+      //       break;
+      //     case 'Escape':
+      //     case 'Backspace':
+      //       setCommandMenu(false);
+      //       break;
+      //     default:
+      //       break;
+      //   }
+      // }
     },
   });
 
@@ -87,15 +90,15 @@ const Editor: React.FC<EditorProps> = (props) => {
       <Menu editor={editor} />
 
       {/* Floating Menu */}
-      <BubbleMenu editor={editor} />
+      {/* <BubbleMenu editor={editor} /> */}
 
       {/* Command Menu */}
-      <CommandMenu editor={editor} showCommandMenu={commandMenu} />
+      {/* <CommandMenu editor={editor} showCommandMenu={commandMenu} /> */}
 
       {/* Editor */}
       <EditorContent
         editor={editor}
-        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-2 ~border-solid ~border-gray-300 ~p-2'
+        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
       />
       {/* Debugging Content */}
       {/* <div className='~mt-4'>

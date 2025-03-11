@@ -1,8 +1,10 @@
+import clsx from "clsx"
 import { ReactNode } from "react"
 
 interface MenuLinkProps {
     title: string | ReactNode,
-    eventHandler: () => void
+    eventHandler: () => void,
+    className?: string
 }
 
 /**
@@ -15,9 +17,15 @@ interface MenuLinkProps {
  */
 export const MenuLink = ({
     eventHandler,
-    title
+    title,
+    className
 }: MenuLinkProps): JSX.Element => {
     return (
-        <a className='~no-underline ~text-black ~font-bold' href='javascript:void(0);' onClick={eventHandler}>{title}</a>
+        <a className={
+            clsx(
+                '~no-underline ~text-black ~font-bold',
+                className
+            )
+        } href='javascript:void(0);' onClick={eventHandler}>{title}</a>
     )
 }
