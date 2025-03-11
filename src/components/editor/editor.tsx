@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 
 // Extensions
@@ -18,8 +18,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 
 // Components
 import { Menu } from './components/menu';
-import { BubbleMenu } from './components/bubble-menu';
-import { CommandMenu } from './components/command-menu';
+// import { BubbleMenu } from './components/bubble-menu';
+// import { CommandMenu } from './components/command-menu';
 import Underline from '@tiptap/extension-underline';
 
 
@@ -50,7 +50,7 @@ export type EditorProps = {
 
 const Editor: React.FC<EditorProps> = (props) => {
   const [content, setContent] = useState<string>(props.content ?? '');
-  const [commandMenu, setCommandMenu] = useState(false);
+  // const [commandMenu, setCommandMenu] = useState(false);
 
   const editor = useEditor({
     extensions: TiptapEditorExtensions,
@@ -65,19 +65,20 @@ const Editor: React.FC<EditorProps> = (props) => {
       props.onBlur?.(html);
     },
     editorProps: {
-      handleKeyDown: (_, event) => {
-        switch (event.key) {
-          case '/':
-            setCommandMenu(true);
-            break;
-          case 'Escape':
-          case 'Backspace':
-            setCommandMenu(false);
-            break;
-          default:
-            break;
-        }
-      }
+      // For command Menu implementation
+      // handleKeyDown: (_, event) => {
+      //   switch (event.key) {
+      //     case '/':
+      //       setCommandMenu(true);
+      //       break;
+      //     case 'Escape':
+      //     case 'Backspace':
+      //       setCommandMenu(false);
+      //       break;
+      //     default:
+      //       break;
+      //   }
+      // }
     },
   });
 
@@ -89,10 +90,10 @@ const Editor: React.FC<EditorProps> = (props) => {
       <Menu editor={editor} />
 
       {/* Floating Menu */}
-      <BubbleMenu editor={editor} />
+      {/* <BubbleMenu editor={editor} /> */}
 
       {/* Command Menu */}
-      <CommandMenu editor={editor} showCommandMenu={commandMenu} />
+      {/* <CommandMenu editor={editor} showCommandMenu={commandMenu} /> */}
 
       {/* Editor */}
       <EditorContent

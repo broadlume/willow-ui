@@ -6,26 +6,36 @@ import { IoExpandOutline } from "react-icons/io5";
 import { LuRedo2, LuUndo2 } from "react-icons/lu";
 import { ReactComponent as AIIcon } from './ai-icon.svg'
 
+// Components
+import AIContent from "../components/AIContent";
 import { MenuLink } from "./menu-link"
 import { SelectionTypeMenuItemContent } from "./selection-menu-item";
-import { PopoverMenuItemContent } from "./popover-menu-item";
+import { DialogMenuItem } from "./dialog-menu-item";
 
 interface MenuProps {
   editor: Editor
 }
-export const Menu = ({
-  editor
-}: MenuProps) => {
 
-  const TextStyleitems = [
-    { value: 'normal', label: 'Normal' },
-    { value: 'h1', label: 'Heading 1', className: '~text-2xl' },
-    { value: 'h2', label: 'Heading 2', className: '~text-xl' },
-    { value: 'h3', label: 'Heading 3', className: '~text-lg' },
-    { value: 'h4', label: 'Heading 4', className: '~text-base' },
-    { value: 'h5', label: 'Heading 5', className: '~text-sm' },
-    { value: 'h6', label: 'Heading 6', className: '~text-xs' }
-  ]
+const TextStyleItems = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'h1', label: 'Heading 1', className: '~text-2xl' },
+  { value: 'h2', label: 'Heading 2', className: '~text-xl' },
+  { value: 'h3', label: 'Heading 3', className: '~text-lg' },
+  { value: 'h4', label: 'Heading 4', className: '~text-base' },
+  { value: 'h5', label: 'Heading 5', className: '~text-sm' },
+  { value: 'h6', label: 'Heading 6', className: '~text-xs' }
+]
+
+const AIButton = () => {
+  return (
+    <div className="~flex ~gap-1 ~items-center">
+      <AIIcon />
+      <span className="~text-[#A52F76] ~text-lg">Ai</span>
+    </div>
+  )
+}
+
+export const Menu = ({ editor }: MenuProps) => {
 
   const TextStyleOnSelection = (value: string) => {
     switch (value) {
@@ -56,20 +66,15 @@ export const Menu = ({
   }
 
   return (
-    <div className='~flex ~gap-4 ~py-2.5 ~px-4 ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg'>
+    <div className='~flex ~flex-wrap ~gap-4 ~py-2.5 ~px-4 ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full'>
       <MenuLink title={
-       <PopoverMenuItemContent title={
-        <div className="~flex ~gap-1 ~items-center">
-          <AIIcon />
-          <span className="~text-[#A52F76]">Ai</span>
-        </div>
-        } />
-      } eventHandler={() => editor.chain().undo().run()} />
+        <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-6xl !~h-5/6" content={<AIContent editor={editor} />} />
+      } eventHandler={() => {}} />
       <MenuItemDivider />
       <MenuLink 
         title={
           <SelectionTypeMenuItemContent 
-            items={TextStyleitems}
+            items={TextStyleItems}
             onSelection={TextStyleOnSelection}
             key={1}
           />
@@ -93,9 +98,9 @@ export const Menu = ({
       <MenuLink title={<LuRedo2 size={24} />} eventHandler={() => editor.chain().redo().run()} />
       <MenuItemDivider />
       <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuLink className="~ml-4" title={<MdOutlineMoreVert size={28} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+      <MenuLink className="~ml-1.5" title={<MdOutlineMoreVert size={28} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
     </div>
   )
 }
 
-const MenuItemDivider = () => <div className='~border-[0.5px] ~border-solid ~border-gray-300' />;
+const MenuItemDivider = () => <div className='~border-[0.5px] ~border-solid ~border-gray-300 ~h-6' />;
