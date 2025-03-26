@@ -72,9 +72,6 @@ export const themeColors = {
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   prefix: '~',
-  corePlugins: {
-    preflight: false,
-  },
   theme: {
     container: {
       center: true,
