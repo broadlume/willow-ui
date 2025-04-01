@@ -68,7 +68,7 @@ export const Menu = ({ editor }: MenuProps) => {
   return (
     <div className='~flex ~flex-wrap ~gap-4 ~py-2.5 ~px-4 ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full'>
       <MenuLink title={
-        <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-6xl !~h-5/6" content={<AIContent editor={editor} />} />
+        <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-5xl !~h-5/6" content={({ closeDialog }) => <AIContent editor={editor} closeDialog={closeDialog} />} />
       } eventHandler={() => {}} />
       <MenuItemDivider />
       <MenuLink 
