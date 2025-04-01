@@ -184,9 +184,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
             generatedContent && (
               <>
                 <h3>Output:</h3>
-                <p className='~overflow-y-scroll ~max-h-96'>
-                  {generatedContent}
-                </p>
+                <Textarea value={generatedContent} onChange={e => setGeneratedContent(e.target.value)} className='~w-full ~h-32' />
                 <Button
                   type='button'
                   className='~mt-4'
