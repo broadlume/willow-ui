@@ -54,7 +54,7 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const editor = useEditor({
     extensions: TiptapEditorExtensions,
-    content: content,
+    content,
     onUpdate: ({ editor, }) => {
       const html = editor.getHTML();
       setContent(html);
