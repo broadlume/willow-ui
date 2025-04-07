@@ -1,22 +1,53 @@
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
-import { Button } from "@components/button";
+import { Button } from '@components/button';
+import clsx from 'clsx';
 
 interface DragNDropFileInputProps {
   file: File;
   setFile: (updater: File) => void;
+  classNames?: {
+    root?: string;
+    label?: string;
+    button?: string;
+    wrapper?: string;
+  };
 }
-
+/**
+ * DragNDropFileInput is a React functional component that provides a drag-and-drop
+ * interface for uploading image files. It supports both drag-and-drop and manual
+ * file selection via a button click.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {File} props.file - The currently selected file.
+ * @param {function} props.setFile - A function to update the selected file.
+ * @param {Object} [props.classNames] - Optional object to customize CSS class names for different parts of the component.
+ * @param {string} [props.classNames.root] - CSS class for the root element.
+ * @param {string} [props.classNames.label] - CSS class for the label element.
+ * @param {string} [props.classNames.button] - CSS class for the button element.
+ * @param {string} [props.classNames.wrapper] - CSS class for the wrapper element.
+ *
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @example
+ * <DragNDropFileInput
+ *   file={selectedFile}
+ *   setFile={setSelectedFile}
+ *   classNames={{ root: 'custom-root', label: 'custom-label' }}
+ * />
+ */
 const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   file,
   setFile,
+  classNames = { root: '', label: '', button: '', wrapper: '' },
 }) => {
   const fileInput = useRef<HTMLInputElement>(null);
   const [onDrag, setOnDrag] = useState(false);
 
   const dropHandler = (ev: React.DragEvent<HTMLDivElement>) => {
     setOnDrag(false);
-    console.log("File(s) dropped");
+    console.log('File(s) dropped');
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -25,7 +56,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       // Use DataTransferItemList interface to access the file(s)
       [...ev.dataTransfer.items].forEach((item) => {
         // If dropped items aren't files, reject them
-        if (item.kind === "file") {
+        if (item.kind === 'file') {
           setDroppedFile(item.getAsFile());
         }
       });
@@ -38,7 +69,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   };
 
   const setDroppedFile = (file: File | undefined | null) => {
-    if (file && ["image/png", "image/jpeg"].includes(file?.type as string)) {
+    if (file && ['image/png', 'image/jpeg'].includes(file?.type as string)) {
       setFile(file);
     }
   };
@@ -47,7 +78,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
     if (!onDrag) {
       setOnDrag(true);
     }
-    console.log("File(s) in drop zone");
+    console.log('File(s) in drop zone');
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -57,7 +88,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
     if (onDrag) {
       setOnDrag(false);
     }
-    console.log("File(s) left drop zone");
+    console.log('File(s) left drop zone');
 
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
@@ -74,12 +105,28 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       onDrop={(event) => dropHandler(event)}
       onDragOver={(event) => dragOverHandler(event)}
       onDragLeave={(event) => dragLeaveHandler(event)}
-      className={`~flex ~flex-col ~justify-center ~items-center ~w-3/4 ~mx-auto ~p-8 ~bg-[#FAFAFA] ~rounded ~border-dotted ~border-2 ${onDrag ? "~border-[#1FA384]" : "~border-[#E8E8E8]"}`}
+      className={clsx(
+        `~mx-auto ~flex ~w-3/4 ~flex-col ~items-center ~justify-center ~rounded ~border-2 ~border-dotted ~bg-[#FAFAFA] ~p-8 ${
+          onDrag ? '~border-[#1FA384]' : '~border-[#E8E8E8]'
+        } `,
+        classNames.root
+      )}
     >
-      <div className="~flex ~justify-center ~items-center">
-        <p className="~text-sm ~text-[#A6A6A6] ~mr-2">Drag and Drop or</p>
+      <div
+        className={clsx(
+          '~flex ~items-center ~justify-center',
+          classNames.wrapper
+        )}
+      >
+        <p className={clsx('~mr-2 ~text-sm ~text-[#A6A6A6]', classNames.label)}>
+          Drag and Drop or
+        </p>
         <Button
-          className="~primary-type-button ~text-[0.7rem]"
+          className={clsx(
+            '~primary-type-button ~text-[0.7rem]',
+            'custom-primary-button custom-primary-font',
+            classNames.button
+          )}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -89,15 +136,15 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
           Browse
         </Button>
         <input
-          type="file"
-          accept="image/png, image/jpeg"
-          name="logo"
+          type='file'
+          accept='image/png, image/jpeg'
+          name='logo'
           hidden={true}
           onChange={(e) => onFileChange(e)}
           ref={fileInput}
         />
       </div>
-      {file?.name ? <p className="~mt-2 ~text-center">{file?.name}</p> : ''}
+      {file?.name ? <p className='~mt-2 ~text-center'>{file?.name}</p> : ''}
     </div>
   );
 };
