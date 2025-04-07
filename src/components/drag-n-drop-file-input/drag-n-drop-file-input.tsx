@@ -6,11 +6,18 @@ import clsx from 'clsx';
 interface DragNDropFileInputProps {
   file: File;
   setFile: (updater: File) => void;
+  infoMessage?: string;
   classNames?: {
     root?: string;
     label?: string;
     button?: string;
     wrapper?: string;
+  };
+  otherProps?: {
+    input?: React.DetailedHTMLProps<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >;
   };
 }
 /**
@@ -40,6 +47,12 @@ interface DragNDropFileInputProps {
 const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   file,
   setFile,
+  infoMessage,
+  otherProps = {
+    input: {
+      accept: 'image/png, image/jpeg',
+    },
+  },
   classNames = { root: '', label: '', button: '', wrapper: '' },
 }) => {
   const fileInput = useRef<HTMLInputElement>(null);
@@ -69,7 +82,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   };
 
   const setDroppedFile = (file: File | undefined | null) => {
-    if (file && ['image/png', 'image/jpeg'].includes(file?.type as string)) {
+    if (file && [otherProps?.input?.accept].includes(file?.type as string)) {
       setFile(file);
     }
   };
@@ -136,14 +149,15 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
           Browse
         </Button>
         <input
+          {...otherProps.input}
           type='file'
-          accept='image/png, image/jpeg'
           name='logo'
           hidden={true}
           onChange={(e) => onFileChange(e)}
           ref={fileInput}
         />
       </div>
+      {infoMessage ? <p className='~mt-2 ~text-center'>{infoMessage}</p> : ''}
       {file?.name ? <p className='~mt-2 ~text-center'>{file?.name}</p> : ''}
     </div>
   );
