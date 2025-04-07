@@ -29,11 +29,15 @@ interface DragNDropFileInputProps {
  * @param {Object} props - Component properties.
  * @param {File} props.file - The currently selected file.
  * @param {function} props.setFile - A function to update the selected file.
+ * @param {string} [props.infoMessage] - Optional message to display below the input.
  * @param {Object} [props.classNames] - Optional object to customize CSS class names for different parts of the component.
  * @param {string} [props.classNames.root] - CSS class for the root element.
  * @param {string} [props.classNames.label] - CSS class for the label element.
  * @param {string} [props.classNames.button] - CSS class for the button element.
  * @param {string} [props.classNames.wrapper] - CSS class for the wrapper element.
+ * @param {Object} [props.otherProps] - Additional properties for the input element.
+ * @param {Object} [props.otherProps.input] - Detailed HTML properties for the input element.
+ * @param {string} [props.otherProps.input.accept] - Accepted file types for the input.
  *
  * @returns {JSX.Element} The rendered component.
  *
@@ -41,6 +45,7 @@ interface DragNDropFileInputProps {
  * <DragNDropFileInput
  *   file={selectedFile}
  *   setFile={setSelectedFile}
+ *   infoMessage="Please upload an image file."
  *   classNames={{ root: 'custom-root', label: 'custom-label' }}
  * />
  */
