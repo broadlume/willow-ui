@@ -12,6 +12,7 @@ interface DragNDropFileInputProps {
     label?: string;
     button?: string;
     wrapper?: string;
+    infoMessage?: string;
   };
   otherProps?: {
     input?: React.DetailedHTMLProps<
@@ -58,7 +59,13 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       accept: 'image/png, image/jpeg',
     },
   },
-  classNames = { root: '', label: '', button: '', wrapper: '' },
+  classNames = {
+    root: '',
+    label: '',
+    button: '',
+    wrapper: '',
+    infoMessage: '',
+  },
 }) => {
   const fileInput = useRef<HTMLInputElement>(null);
   const [onDrag, setOnDrag] = useState(false);
@@ -163,7 +170,12 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         />
       </div>
       {infoMessage ? (
-        <p className='~text-pretty ~mt-3 ~text-center ~text-xs'>
+        <p
+          className={clsx(
+            '~mt-3 ~text-center ~text-xs',
+            classNames.infoMessage
+          )}
+        >
           {infoMessage}
         </p>
       ) : (
