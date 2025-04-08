@@ -163,7 +163,9 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         />
       </div>
       {infoMessage ? (
-        <p className='~mt-3 ~text-center ~text-xs'>{infoMessage}</p>
+        <p className='~text-pretty ~mt-3 ~text-center ~text-xs'>
+          {infoMessage}
+        </p>
       ) : (
         ''
       )}
