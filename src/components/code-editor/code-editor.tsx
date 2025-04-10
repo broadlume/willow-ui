@@ -10,8 +10,41 @@ interface CodeEditorProps {
     options?: EditorProps['options'],
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-    const [code, setCode] = useState<string>(props.code ?? '// code here...');
+/**
+ * A React functional component for a customizable code editor.
+ *
+ * @component
+ * @param {CodeEditorProps} props - The properties for the CodeEditor component.
+ * @param {string} props.code - The initial code to display in the editor. Defaults to `// code here...` if not provided.
+ * @param {(code: string) => void} [props.onChange] - Callback function triggered when the code changes.
+ * @param {string} [props.language] - The programming language for syntax highlighting. Defaults to 'typescript'.
+ * @param {string} [props.theme] - The theme for the editor. Defaults to 'vs-dark'.
+ * @param {string} [props.height] - The height of the editor. Defaults to '90vh'.
+ * @param {EditorProps['options']} [props.options] - Additional configuration options for the editor.
+ *
+ * @returns {JSX.Element} The rendered code editor component.
+ *
+ * @example
+ * ```tsx
+ * <CodeEditor
+ *   code="// Example code"
+ *   onChange={(updatedCode) => console.log(updatedCode)}
+ *   language="javascript"
+ *   theme="light"
+ *   height="500px"
+ *   options={{ fontSize: 16 }}
+ * />
+ * ```
+ */
+const CodeEditor: React.FC<CodeEditorProps> = ({
+    code: passedCode,
+    onChange: passedOnChange,
+    language,
+    theme,
+    height,
+    options
+}: CodeEditorProps) => {
+    const [code, setCode] = useState<string>(passedCode ?? '// code here...');
 
     const defaultOptions: EditorProps['options'] = {
         fontSize: 14,
@@ -25,20 +58,25 @@ const CodeEditor: React.FC<CodeEditorProps> = (props) => {
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,
         },
-        ...props.options,
+        ...options,
     }
 
     const onChange = useCallback((value: string | undefined) => {
-        setCode(value ?? '');
-        props.onChange?.(value ?? '');
-    }, [props]);
+        const updatedCode = value ?? '';
+        setCode(updatedCode);
+        passedOnChange?.(updatedCode);
+    }, [passedOnChange]);
 
-    return <Editor height={
-        props.height ?? '90vh'
-    } width='100%' options={defaultOptions} language={props.language ?? 'typescript'
-    } defaultLanguage="typescript" defaultValue={code} onChange={onChange} theme={
-        props.theme ?? 'vs-dark'
-    } />;
+    return <Editor
+        height={height ?? '90vh'}
+        width='100%'
+        options={defaultOptions}
+        language={language ?? 'typescript'}
+        defaultLanguage="typescript"
+        defaultValue={code}
+        onChange={onChange}
+        theme={theme ?? 'vs-dark'}
+    />;
 }
 
 export { CodeEditor };
