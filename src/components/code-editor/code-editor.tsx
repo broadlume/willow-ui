@@ -7,6 +7,7 @@ interface CodeEditorProps {
     language?: string,
     theme?: Theme,
     height?: string,
+    width?: string,
     options?: EditorProps['options'],
 }
 
@@ -20,6 +21,7 @@ interface CodeEditorProps {
  * @param {string} [props.language] - The programming language for syntax highlighting. Defaults to 'typescript'.
  * @param {string} [props.theme] - The theme for the editor. Defaults to 'vs-dark'.
  * @param {string} [props.height] - The height of the editor. Defaults to '90vh'.
+ * @param {string} [props.width] - The width of the editor. Defaults to '100%'.
  * @param {EditorProps['options']} [props.options] - Additional configuration options for the editor.
  *
  * @returns {JSX.Element} The rendered code editor component.
@@ -32,19 +34,21 @@ interface CodeEditorProps {
  *   language="javascript"
  *   theme="light"
  *   height="500px"
+ *   width="100%"
  *   options={{ fontSize: 16 }}
  * />
  * ```
  */
 const CodeEditor: React.FC<CodeEditorProps> = ({
-    code: passedCode,
+    code: passedCode = '// code here...',
     onChange: passedOnChange,
-    language,
-    theme,
-    height,
+    language = 'typescript',
+    theme = 'vs-dark',
+    height = '90vh',
+    width = '100%',
     options
 }: CodeEditorProps) => {
-    const [code, setCode] = useState<string>(passedCode ?? '// code here...');
+    const [code, setCode] = useState<string>(passedCode);
 
     const defaultOptions: EditorProps['options'] = {
         fontSize: 14,
@@ -68,14 +72,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     }, [passedOnChange]);
 
     return <Editor
-        height={height ?? '90vh'}
-        width='100%'
         options={defaultOptions}
-        language={language ?? 'typescript'}
-        defaultLanguage="typescript"
+        height={height}
+        width={width}
+        language={language}
+        theme={theme}
         defaultValue={code}
         onChange={onChange}
-        theme={theme ?? 'vs-dark'}
     />;
 }
 
