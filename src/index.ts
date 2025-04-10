@@ -39,6 +39,7 @@ export * from '@components/color-picker-input/color-picker-input';
 export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
 export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
+export * from '@components/code-editor/code-editor';
 
 // Other stuff
 export * from '@src/lib/icons';

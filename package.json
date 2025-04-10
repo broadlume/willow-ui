@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -95,6 +95,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-avatar": "^1.0.3",
