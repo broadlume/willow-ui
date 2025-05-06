@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -60,6 +60,7 @@
     "@storybook/testing-library": "^0.2.0",
     "@storybook/theming": "^7.6.10",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@types/prettier": "^2.7.3",
     "@types/react": "^18.0",
     "@types/react-dom": "^18.0",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
@@ -136,6 +137,7 @@
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
+    "emmet-monaco-es": "^5.5.0",
     "lucide-react": "^0.245.0",
     "openai": "^4.85.4",
     "react-data-table-component": "^7.5.4",

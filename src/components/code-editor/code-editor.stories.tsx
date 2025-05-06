@@ -15,7 +15,16 @@ export const Demo: Story = {
         const onChange = (code: string) => {
             console.log(code);
         };
-        return <CodeEditor onChange={onChange} />;
+        return <CodeEditor onChange={onChange} language='html' theme='light' />;
+    },
+};
+
+export const DemoWithSuggestions: Story = {
+    render: (_) => {
+        const onChange = (code: string) => {
+            console.log(code);
+        };
+        return <CodeEditor onChange={onChange} tokenSuggestions={['apple', 'banana', 'carrot', 'drum sticks', 'e']} />;
     },
 };
     
