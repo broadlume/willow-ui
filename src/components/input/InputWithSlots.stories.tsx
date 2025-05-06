@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { MagnifyingGlassIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { IconButton } from '@radix-ui/themes';
+import { MagnifyingGlassIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { InputWithSlots } from './InputWithSlots';
 
 const meta: Meta<typeof InputWithSlots> = {
@@ -37,9 +36,7 @@ export const WithPostfix: Story = {
     placeholder: 'Enter value...',
     postfixSlot: (
       <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
-        <IconButton size='1' variant='ghost'>
-          <DotsHorizontalIcon height='14' width='14' />
-        </IconButton>
+        <Cross2Icon height='14' width='14' />
       </div>
     ),
   },
@@ -56,9 +53,7 @@ export const WithBoth: Story = {
     ),
     postfixSlot: (
       <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
-        <IconButton size='1' variant='ghost'>
-          <DotsHorizontalIcon height='14' width='14' />
-        </IconButton>
+        <Cross2Icon height='14' width='14' />
       </div>
     ),
   },
@@ -79,9 +74,7 @@ export const WithCustomClasses: Story = {
     ),
     postfixSlot: (
       <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
-        <IconButton size='1' variant='ghost'>
-          <DotsHorizontalIcon height='14' width='14' />
-        </IconButton>
+        <Cross2Icon height='14' width='14' />
       </div>
     ),
   },
