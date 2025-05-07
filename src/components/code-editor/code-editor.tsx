@@ -174,19 +174,22 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     return (
         <div className='~border ~border-gray-300 ~rounded-lg ~shadow-md ~overflow-hidden'>
             {/* Menu Bar */}
-            <div className='~flex ~justify-end ~gap-4 ~py-2 ~px-8 ~bg-gray-100'>
-                <Button variant='ghost' onClick={formatCode}>
-                    <FaBrush fontSize={18} />
-                </Button> 
-                <Button variant='ghost' onClick={toggleTheme}>
-                    {theme === 'vs-dark' ? <FaSun fontSize={18} /> : <FaMoon fontSize={18} />}
-                </Button>
-                <Button variant='ghost' onClick={copyCode}>
-                    <FaCopy fontSize={18} />
-                </Button>
-                <Button variant='ghost' onClick={toggleHelper}>
-                    <FaQuestionCircle fontSize={18} />
-                </Button>
+            <div className='~flex ~justify-between ~items-center ~py-2 ~px-8 ~bg-gray-100'>
+                <p><b>Type: </b><span className="~capitalize">{passedLanguage}</span></p>
+                <div className="~flex ~justify-end ~gap-4">
+                    <Button type="button" variant='ghost' onClick={formatCode}>
+                        <FaBrush fontSize={18} />
+                    </Button> 
+                    <Button type="button" variant='ghost' onClick={toggleTheme}>
+                        {theme === 'vs-dark' ? <FaSun fontSize={18} /> : <FaMoon fontSize={18} />}
+                    </Button>
+                    <Button type="button" variant='ghost' onClick={copyCode}>
+                        <FaCopy fontSize={18} />
+                    </Button>
+                    <Button type="button" variant='ghost' onClick={toggleHelper}>
+                        <FaQuestionCircle fontSize={18} />
+                    </Button>
+                </div>
             </div>
 
             {statusMessage && <div className="~text-green-500 ~mb-2 ~px-4 ~py-1 ~text-right">{statusMessage}</div>}
