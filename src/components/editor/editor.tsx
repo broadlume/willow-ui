@@ -21,6 +21,7 @@ import { Menu } from './components/menu';
 // import { BubbleMenu } from './components/bubble-menu';
 // import { CommandMenu } from './components/command-menu';
 import Underline from '@tiptap/extension-underline';
+import { Video } from './extensions/video';
 
 
 // List of Tiptap Editor Extensions
@@ -40,6 +41,7 @@ const TiptapEditorExtensions = [
   Placeholder.configure({
     placeholder: 'Write something …',
   }),
+  Video,
 ];
 
 export type EditorProps = {
@@ -98,7 +100,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       {/* Editor */}
       <EditorContent
         editor={editor}
-        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
+        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
       />
       {/* Debugging Content */}
       {/* <div className='~mt-4'>
