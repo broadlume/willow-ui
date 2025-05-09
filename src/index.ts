@@ -17,6 +17,7 @@ export * from '@components/dialog/dialog';
 export * from '@components/dropdown-menu/dropdown-menu';
 export * from '@components/form/form';
 export * from '@components/input/input';
+export * from '@components/input/InputWithSlots';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
 export * from '@components/radio-group/radio-group';
@@ -39,6 +40,7 @@ export * from '@components/color-picker-input/color-picker-input';
 export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
 export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
+export * from '@components/code-editor/code-editor';
 
 // Other stuff
 export * from '@src/lib/icons';
