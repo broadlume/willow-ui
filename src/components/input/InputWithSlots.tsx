@@ -6,21 +6,21 @@ interface InputWithSlotsProps
   prefixSlot?: React.ReactNode;
   postfixSlot?: React.ReactNode;
   labelClass?: string;
-  inputWrapClass?: string;
   textFieldWrapClass?: string;
   inputClass?: string;
   label?: string;
+  wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
   ({
     prefixSlot,
     postfixSlot,
-    inputWrapClass,
     textFieldWrapClass,
     labelClass,
     inputClass,
     label,
+    wrapperProps,
     ...inputProps
   }) => {
     return (
@@ -38,9 +38,10 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         )}
 
         <div
+          {...wrapperProps}
           className={cn(
             '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
-            inputWrapClass
+            wrapperProps?.className
           )}
         >
           {prefixSlot && prefixSlot}

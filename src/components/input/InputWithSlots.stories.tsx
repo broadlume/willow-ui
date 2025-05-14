@@ -65,7 +65,6 @@ export const WithCustomClasses: Story = {
     placeholder: 'Custom styled...',
     inputClass: 'rounded-lg',
     labelClass: '',
-    inputWrapClass: '',
     textFieldWrapClass: '',
     prefixSlot: (
       <div className='~flex ~shrink-0 ~select-none ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
@@ -77,5 +76,21 @@ export const WithCustomClasses: Story = {
         <Cross2Icon height='14' width='14' />
       </div>
     ),
+  },
+};
+
+export const WithClickHandler: Story = {
+  args: {
+    placeholder: 'Click wrapper...',
+    onChange: () => {
+      console.log('onChange');
+    },
+
+    wrapperProps: {
+      onClick: () => {
+        console.log('Wrapper clicked!');
+      },
+      className: 'custom_warp_class',
+    },
   },
 };
