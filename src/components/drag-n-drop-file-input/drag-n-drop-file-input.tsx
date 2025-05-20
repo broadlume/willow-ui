@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Button } from '@components/button';
 import clsx from 'clsx';
@@ -7,6 +7,9 @@ interface DragNDropFileInputProps {
   file: File;
   setFile: (updater: File) => void;
   infoMessage?: string;
+  topIcon?: React.ReactNode;
+  label?: string;
+  button?: React.ReactNode;
   classNames?: {
     root?: string;
     label?: string;
@@ -54,6 +57,9 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   file,
   setFile,
   infoMessage,
+  topIcon,
+  label = 'Drag and drop your file here or',
+  button = 'Browse',
   otherProps = {
     input: {
       accept: 'image/png, image/jpeg',
@@ -137,6 +143,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         classNames.root
       )}
     >
+      {topIcon}
       <div
         className={clsx(
           '~flex ~items-center ~justify-center',
@@ -144,7 +151,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         )}
       >
         <p className={clsx('~mr-2 ~text-sm ~text-[#A6A6A6]', classNames.label)}>
-          Drag and Drop or
+          {label}
         </p>
         <Button
           className={clsx(
@@ -158,7 +165,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
             fileInput.current?.click();
           }}
         >
-          Browse
+          {button}
         </Button>
         <input
           {...otherProps.input}
