@@ -50,6 +50,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,
         },
+        
         ...options,
     };
 

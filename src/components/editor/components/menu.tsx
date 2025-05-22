@@ -1,19 +1,30 @@
+import { useState } from "react";
 import { Editor } from "@tiptap/react";
+import clsx from "clsx";
 
 // Icons
-import { MdFormatListBulleted, MdFormatColorText, MdFormatUnderlined, MdFormatItalic, MdFormatBold, MdStrikethroughS, MdFormatAlignLeft, MdFormatAlignRight, MdFormatAlignCenter, MdOutlineMoreVert } from "react-icons/md";
-import { IoExpandOutline } from "react-icons/io5";
+import { MdFormatListBulleted, MdFormatColorText, MdFormatUnderlined, MdFormatItalic, MdFormatBold, MdStrikethroughS, MdFormatAlignLeft, MdFormatAlignRight, MdFormatAlignCenter, MdOutlineMoreVert, MdFormatIndentDecrease, MdFormatIndentIncrease } from "react-icons/md";
+import { IoExpandOutline, IoImageOutline, IoVideocamOutline } from "react-icons/io5";
 import { LuRedo2, LuUndo2 } from "react-icons/lu";
+import { TbLineHeight } from "react-icons/tb";
+import { FaTextSlash, FaLink, FaCode } from "react-icons/fa6";
+import { AiOutlineTable } from "react-icons/ai";
 import { ReactComponent as AIIcon } from './ai-icon.svg'
 
 // Components
+import { ColorPickerInput } from "@components/color-picker-input/color-picker-input";
 import AIContent from "../components/AIContent";
 import { MenuLink } from "./menu-link"
 import { SelectionTypeMenuItemContent } from "./selection-menu-item";
 import { DialogMenuItem } from "./dialog-menu-item";
+import { PopoverMenuItemContent } from "./popover-menu-item";
 
 interface MenuProps {
   editor: Editor
+  showEditorInDialog?: boolean
+  setShowEditorInDialog?: (show: boolean) => void
+  showRawHtml?: boolean
+  toggleRawHtml?: () => void
 }
 
 const TextStyleItems = [
@@ -35,8 +46,10 @@ const AIButton = () => {
   )
 }
 
-export const Menu = ({ editor }: MenuProps) => {
-
+export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggleRawHtml }: MenuProps) => {
+  const [expandedMenu, setExpandedMenu] = useState(false);
+  const [expandedMenuL2, setExpandedMenuL2] = useState(false);
+  const [fontColor, setFontColor] = useState('#000000');
   const TextStyleOnSelection = (value: string) => {
     switch (value) {
       case 'normal':
@@ -65,40 +78,101 @@ export const Menu = ({ editor }: MenuProps) => {
     }
   }
 
+  const embedVideo = () => {
+    const url = prompt('Enter video URL:');
+    if (url) {
+      editor.chain().focus().setVideo(url).run();
+      // editor.chain().focus().insertContent(`<iframe src="${url}" width="100%" height="315" frameborder="0" allowfullscreen></iframe>`).run();
+    }
+  };
+
   return (
-    <div className='~flex ~flex-wrap ~gap-4 ~py-2.5 ~px-4 ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full'>
-      <MenuLink title={
-        <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-5xl !~h-5/6" content={({ closeDialog }) => <AIContent editor={editor} closeDialog={closeDialog} />} />
-      } eventHandler={() => {}} />
-      <MenuItemDivider />
-      <MenuLink 
-        title={
-          <SelectionTypeMenuItemContent 
-            items={TextStyleItems}
-            onSelection={TextStyleOnSelection}
-            key={1}
-          />
-        }
-        eventHandler={() => {}}
-      />
-      <MenuItemDivider />
-      <MenuLink title={<MdFormatBold size={28} />} eventHandler={() => editor.chain().focus().toggleBold().run()} />
-      <MenuLink title={<MdFormatItalic size={28} />} eventHandler={() => editor.chain().focus().toggleItalic().run()} />
-      <MenuLink title={<MdFormatUnderlined size={28} />} eventHandler={() => editor.chain().focus().toggleUnderline().run()} />
-      <MenuLink title={<MdStrikethroughS size={28} />} eventHandler={() => editor.chain().focus().toggleStrike().run()} />
-      <MenuLink title={<MdFormatColorText size={28} />} eventHandler={() => editor.chain().focus().setHeading({ level: 2 }).run()} />
-      <MenuItemDivider />
-      <MenuLink title={<MdFormatAlignLeft size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuLink title={<MdFormatAlignCenter size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuLink title={<MdFormatAlignRight size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuItemDivider />
-      <MenuLink title={<MdFormatListBulleted size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuItemDivider />
-      <MenuLink title={<LuUndo2 size={24} />} eventHandler={() => editor.chain().undo().run()} />
-      <MenuLink title={<LuRedo2 size={24} />} eventHandler={() => editor.chain().redo().run()} />
-      <MenuItemDivider />
-      <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
-      <MenuLink className="~ml-1.5" title={<MdOutlineMoreVert size={28} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+    <div >
+      <div className={
+        clsx('~flex ~flex-wrap ~p-[0.625em_1em_0.625em_1em] ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full')
+      }>
+        <div className="~flex ~w-full ~justify-between ~items-center">
+          <div className={clsx('~flex ~gap-4')}>
+            <MenuLink title={
+              <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-5xl !~h-5/6" content={({ closeDialog }) => <AIContent editor={editor} closeDialog={closeDialog} />} />
+            } eventHandler={() => { }} />
+            <MenuItemDivider />
+            <MenuLink
+              title={
+                <SelectionTypeMenuItemContent
+                  items={TextStyleItems}
+                  onSelection={TextStyleOnSelection}
+                  key={1}
+                />
+              }
+              eventHandler={() => { }}
+            />
+            <MenuItemDivider />
+            <MenuLink title={<MdFormatBold size={28} />} eventHandler={() => editor.chain().focus().toggleBold().run()} />
+            <MenuLink title={<MdFormatItalic size={28} />} eventHandler={() => editor.chain().focus().toggleItalic().run()} />
+            <MenuLink title={<MdFormatUnderlined size={28} />} eventHandler={() => editor.chain().focus().toggleUnderline().run()} />
+            <MenuLink title={<MdStrikethroughS size={28} />} eventHandler={() => editor.chain().focus().toggleStrike().run()} />
+            <MenuLink title={<PopoverMenuItemContent title={<MdFormatColorText size={28} />} content={
+              <ColorPickerInput color={fontColor} name="color-picker-demo" setColor={(color) => {
+                setFontColor(color);
+                editor.chain().focus().setColor(color).run();
+              }} key='editor-font-color-picker' />
+            } />} eventHandler={() => { }} />
+            <MenuItemDivider />
+            <MenuLink title={<MdFormatAlignLeft size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('left').run()} />
+            <MenuLink title={<MdFormatAlignCenter size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('center').run()} />
+            <MenuLink title={<MdFormatAlignRight size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('right').run()} />
+            <MenuItemDivider />
+            <MenuLink title={<MdFormatListBulleted size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+            <MenuItemDivider />
+            <MenuLink title={<LuUndo2 size={24} />} eventHandler={() => editor.chain().undo().run()} />
+            <MenuLink title={<LuRedo2 size={24} />} eventHandler={() => editor.chain().redo().run()} />
+            <MenuItemDivider />
+            {
+              setShowEditorInDialog && <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => setShowEditorInDialog(!showEditorInDialog)} />
+            }
+          </div>
+
+          <MenuLink title={<MdOutlineMoreVert size={28} />} eventHandler={() => {
+            setExpandedMenu(!expandedMenu);
+            setExpandedMenuL2(false);
+          }} />
+        </div>
+
+      </div>
+      {/* Expanded Menu */}
+      <div className={
+        clsx('~p-3 ~gap-5 ~justify-end ~w-full ~bg-[#F3F3F3] ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~hidden', {
+          '!~flex': expandedMenu,
+        })
+      }>
+        <MenuLink title={<TbLineHeight size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuLink title={<MdFormatIndentDecrease size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuLink title={<MdFormatIndentIncrease size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuLink title={<FaTextSlash size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuItemDivider />
+        <MenuLink title={<FaLink size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuLink title={<FaCode size={24} />} eventHandler={() => toggleRawHtml && toggleRawHtml()} />
+        <MenuLink title={<IoImageOutline size={24} />} eventHandler={() => editor.chain().redo().run()} />
+        <MenuLink title={<IoVideocamOutline size={24} />} eventHandler={() => embedVideo()} />
+        <MenuItemDivider />
+        <MenuLink title={<AiOutlineTable size={24} />} eventHandler={() => setExpandedMenuL2(!expandedMenuL2)} />
+      </div>
+      {/* Expanded Menu */}
+      {/* Expanded Menu L2*/}
+      <div className={
+        clsx('~p-3 ~gap-2 ~justify-end ~w-full ~bg-[#F3F3F3] ~border-t-white ~border-t-2  ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~hidden', {
+          '!~flex': expandedMenuL2,
+        })
+      }>
+        {/* <MenuLink title={<MdFormatListBulleted size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+        <MenuItemDivider />
+        <MenuLink title={<LuUndo2 size={24} />} eventHandler={() => editor.chain().undo().run()} />
+        <MenuLink title={<LuRedo2 size={24} />} eventHandler={() => editor.chain().redo().run()} />
+        <MenuItemDivider />
+        <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} /> */}
+      </div>
+      {/* Expanded Menu L2*/}
     </div>
   )
 }
