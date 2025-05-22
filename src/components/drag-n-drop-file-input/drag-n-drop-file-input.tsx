@@ -99,8 +99,22 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
     }
   };
 
+  const validateFile = (file?: File) => {
+    if (!file) {
+      return false;
+    }
+    const type = file.type.split('/')[0];
+    const validArray = otherProps?.input?.accept?.split(',') || [];
+    console.log('File type:', type, validArray);
+    return (
+      validArray.includes(`${type}/*`) ||
+      validArray.includes(`*`) ||
+      validArray.includes(file?.type as string)
+    );
+  };
+
   const setDroppedFile = (file: File | undefined | null) => {
-    if (file && [otherProps?.input?.accept].includes(file?.type as string)) {
+    if (file && validateFile(file)) {
       setFile(file);
     }
   };
@@ -126,8 +140,9 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+    if (validateFile(e?.target?.files?.[0])) {
+      console.log('File selected:', e.target.files?.[0]);
+      setFile(e.target.files?.[0]);
     }
   };
 

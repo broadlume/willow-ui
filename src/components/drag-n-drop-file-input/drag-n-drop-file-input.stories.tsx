@@ -20,6 +20,11 @@ export const Demo: Story = {
         setFile={setFile}
         key='dnd-file-input'
         infoMessage='Only Image files are supported'
+        otherProps={{
+          input: {
+            accept: '*',
+          },
+        }}
         button={
           <>
             <svg
