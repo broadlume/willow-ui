@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 
 import { cn, getRandomAvatar } from '@src/lib/utils';
