@@ -1,26 +1,23 @@
 import React from 'react';
+import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 
-export const DropdownComponent = ({ node, updateAttributes, editor }: any) => {
-  const { items } = node.attrs;
-
-  const insertItem = (item: string) => {
-    editor.chain().focus().insertContent(`@@${item}@@`).run();
-    editor.commands.deleteNode('dropdown'); // Remove the dropdown node
-  };
+export const DropdownComponent = (props: any) => {
+  const { node, updateAttributes } = props;
+  const items = node.attrs.items || [];
+  const selected = node.attrs.selected || '';
 
   return (
-    <span className="relative">
-      <ul className="absolute bg-white border border-gray-300 rounded-md shadow-md z-10">
+    <NodeViewWrapper as="span" className="inline-block">
+      <select
+        value={selected}
+        onChange={e => updateAttributes({ selected: e.target.value })}
+        className="~border ~rounded ~px-2 ~py-1"
+      >
+        <option value="">Select...</option>
         {items.map((item: string) => (
-          <li
-            key={item}
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={() => insertItem(item)}
-          >
-            {item}
-          </li>
+          <option key={item} value={item}>{item}</option>
         ))}
-      </ul>
-    </span>
+      </select>
+    </NodeViewWrapper>
   );
 };

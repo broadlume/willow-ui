@@ -15,6 +15,6 @@ export const Demo: Story = {
         const onChange = (code: string) => {
             console.log(code);
         };
-        return <CodeEditor onChange={onChange} language='liquid' theme='vs-dark' tokenSuggestions={['Token 1', 'Token 2', 'Token 3', 'Token 4']} />;
+        return <CodeEditor onChange={onChange} language='html' theme='vs-dark' tokenSuggestions={['Token 1', 'Token 2', 'Token 3', 'Token 4']} />;
     },
 };

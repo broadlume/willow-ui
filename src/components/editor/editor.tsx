@@ -18,7 +18,6 @@ import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
-import { DropdownComponent } from './components/dropdown-component';
 
 // Custom Extensions
 import { Video } from './extensions/video';
@@ -34,7 +33,9 @@ import { DropdownNode } from './nodes/dropdown-node';
 
 import prettier from 'prettier/standalone';
 import parserHtml from 'prettier/parser-html';
-
+import { LineHeight } from './extensions/line-height';
+import { Indentation } from './extensions/indentation';
+import { Textarea } from '@components/textarea/textarea';
 
 // List of Tiptap Editor Extensions
 const TiptapEditorExtensions = [
@@ -65,7 +66,16 @@ const TiptapEditorExtensions = [
   Video,
   TextStyle,
   Color,
-  DropdownNode,
+  LineHeight,
+  Indentation,
+  DropdownNode.configure({
+    dropDownItems: [
+      { value: 'apple', label: 'Apple' },
+      { value: 'banana', label: 'Banana' },
+      { value: 'grapes', label: 'Grapes' },
+    ],
+    dropdownPlaceholder: 'Pick a fruit',
+  }),
 ];
 
 export type EditorProps = {
@@ -76,12 +86,7 @@ export type EditorProps = {
 
 export const Editor: React.FC<EditorProps> = (props) => {
   const [content, setContent] = useState<string>(props.content ?? '');
-  // const [commandMenu, setCommandMenu] = useState(false);
-  const [showEditorInDialog, setShowEditorInDialog] = useState(false)
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [items] = useState(['Item1', 'Item2', 'Item3']); // List of items for the dropdown
-  const [filteredItems, setFilteredItems] = useState<string[]>([]);
+  const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
 
   const editor = useEditor({
@@ -97,45 +102,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
       props.onBlur?.(html);
     },
     editorProps: {
-      handleKeyDown: (_, event) => {
-        if (event.key === '@') {
-          editor
-            ?.chain()
-            .focus()
-            .insertContent({
-              type: 'dropdown',
-              attrs: { items },
-            })
-            .run();
-        }
-
-        if (event.key === 'Escape') {
-          editor?.commands.deleteNode('dropdown'); // Remove dropdown on Escape
-        }
-      },
     },
   });
 
-  const insertItem = (item: string) => {
-    if (!editor) return;
-
-    editor.chain().focus().insertContent(`${item}@@`).run();
-    setShowDropdown(false); // Hide dropdown after inserting
-  };
-
   if (!editor) return null;
-
-  const EditorWithMenu = () => {
-    return (
-      <div>
-        <Menu editor={editor} />
-        <EditorContent
-          editor={editor}
-          className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="relative">
@@ -147,25 +117,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
       {/* Command Menu */}
       {/* <CommandMenu editor={editor} showCommandMenu={commandMenu} /> */}
 
-
-      {/* Editor in Dialog */}
-      {/* <Dialog open={showEditorInDialog}>
-        <DialogContent className='~w-full'>
-          <Menu editor={editor} setShowEditorInDialog={setShowEditorInDialog} showEditorInDialog={showEditorInDialog} />
-          <EditorContent
-            editor={editor}
-            className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
-          />
-        </DialogContent>
-      </Dialog> */}
-
       {/* Editor */}
       <Menu editor={editor} setShowEditorInDialog={setShowEditorInDialog} showEditorInDialog={showEditorInDialog} showRawHtml={showRawHtml}
         toggleRawHtml={() => setShowRawHtml((v) => !v)} />
-      {/* <EditorContent
-        editor={editor}
-        className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
-      /> */}
 
       {!showRawHtml ? (
         <EditorContent
@@ -173,31 +127,16 @@ export const Editor: React.FC<EditorProps> = (props) => {
           className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
         />
       ) : (
-        <div className="~p-4 ~bg-gray-100 ~border ~rounded-bl-lg ~rounded-br-lg ~border-gray-300 ~font-mono ~text-sm ~overflow-auto ~min-h-[20rem]">
-          <pre>
-            {prettier.format(content, {
-              parser: 'html',
-              plugins: [parserHtml],
-            })}
-          </pre>
-        </div>
+        <Textarea value={
+          prettier.format(content, {
+            parser: 'html',
+            plugins: [parserHtml],
+          })
+        } onChange={(e) => setContent(e.target.value)} className="~w-full ~min-h-[20rem] ~border-gray-300 ~outline-none ~rounded-none ~rounded-bl-lg ~rounded-br-lg">
+          {content}
+        </Textarea>
       )}
-      {showDropdown && (
-        <ul
-          className="absolute bg-white border border-gray-300 rounded-md shadow-md z-10"
-          style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
-        >
-          {filteredItems.map((item) => (
-            <li
-              key={item}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => insertItem(item)}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
+
       {/* Debugging Content */}
       {/* <div className='~mt-4'>
         <h3>Editor Content (HTML):</h3>
