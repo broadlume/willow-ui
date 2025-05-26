@@ -41,7 +41,7 @@ export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
 export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
 export * from '@components/code-editor/code-editor';
-
+export * from '@components/Loader/Loader'
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
