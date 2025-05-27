@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 
 import { FaSun, FaMoon, FaQuestionCircle, FaBrush, FaCopy } from 'react-icons/fa';
 
@@ -36,6 +36,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     const [theme, setTheme] = useState<Theme>(passedTheme);
     const [showHelper, setShowHelper] = useState<boolean>(false);
     const [statusMessage, setStatusMessage] = useState('');
+    const [suggestionPage, setSuggestionPage] = useState(1);
     const editorRef = useRef<any>(null);
 
     const defaultOptions: EditorProps['options'] = {
@@ -50,10 +51,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,
         },
+        autoClosingBrackets: 'always',
+        autoClosingQuotes: 'always',
         ...options,
     };
 
-    const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+    const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
         editorRef.current = editor;
 
         // Enable Emmet support for all languages
@@ -108,7 +111,47 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
             }
         });
+
+        ['html', 'xml', 'liquid'].forEach(lang => {
+            monaco.languages.registerCompletionItemProvider(lang, {
+                triggerCharacters: ['<'],
+                provideCompletionItems: (model, position) => {
+                    const suggestions = [
+                        'div', 'span', 'p', 'a', 'ul', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'section', 'article', 'header', 'footer'
+                        // Add more tags as needed
+                    ].map(tag => ({
+                        label: tag,
+                        kind: monaco.languages.CompletionItemKind.Snippet,
+                        insertText: `<${tag}>$0</${tag}>`,
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                        detail: `Insert <${tag}></${tag}>`,
+                    }));
+                    return { suggestions };
+                },
+            });
+        });
     };
+
+    useEffect(() => {
+        if (!editorRef.current) return;
+        const editorDomNode = editorRef.current.getDomNode?.();
+        if (!editorDomNode) return;
+
+        // Monaco's suggest widget class
+        const suggestWidget = editorDomNode.ownerDocument.querySelector('.monaco-editor .suggest-widget .tree');
+        if (!suggestWidget) return;
+
+        const onScroll = (e: any) => {
+            if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
+                // Scrolled to bottom
+                // fetchMoreSuggestions();
+                console.log('Scrolled to bottom, fetch more suggestions');
+            }
+        };
+
+        suggestWidget.addEventListener('scroll', onScroll);
+        return () => suggestWidget.removeEventListener('scroll', onScroll);
+    }, [editorRef.current, suggestionPage]);
 
     const formatCode = () => {
         if (!editorRef.current) return;
@@ -179,7 +222,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 <div className="~flex ~justify-end ~gap-4">
                     <Button type="button" variant='ghost' onClick={formatCode}>
                         <FaBrush fontSize={18} />
-                    </Button> 
+                    </Button>
                     <Button type="button" variant='ghost' onClick={toggleTheme}>
                         {theme === 'vs-dark' ? <FaSun fontSize={18} /> : <FaMoon fontSize={18} />}
                     </Button>
