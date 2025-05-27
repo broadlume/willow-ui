@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import prettier from 'prettier/standalone';
+import parserHtml from 'prettier/parser-html';
 import { EditorContent, useEditor } from '@tiptap/react';
 
 // Extensions
@@ -21,67 +23,22 @@ import ListItem from '@tiptap/extension-list-item';
 
 // Custom Extensions
 import { Video } from './extensions/video';
+import { LineHeight } from './extensions/line-height';
+import { Indentation } from './extensions/indentation';
 
-// import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
+// Custom Nodes
+import { DropdownNode } from './nodes/dropdown-node';
 
 // Components
 import { Menu } from './components/menu';
-// import { Dialog, DialogContent, DialogTrigger } from '@components/dialog/dialog';
-import { DropdownNode } from './nodes/dropdown-node';
-// import { BubbleMenu } from './components/bubble-menu';
-// import { CommandMenu } from './components/command-menu';
-
-import prettier from 'prettier/standalone';
-import parserHtml from 'prettier/parser-html';
-import { LineHeight } from './extensions/line-height';
-import { Indentation } from './extensions/indentation';
 import { Textarea } from '@components/textarea/textarea';
-
-// List of Tiptap Editor Extensions
-const TiptapEditorExtensions = [
-  StarterKit,
-  Link.configure({ openOnClick: true }),
-  Image,
-  Table.configure({ resizable: true }),
-  TableRow,
-  TableCell,
-  TableHeader,
-  TextAlign.configure({ types: ['heading', 'paragraph'], alignments: ['left', 'center', 'right'], }),
-  Underline,
-  Highlight,
-  CodeBlock,
-  BulletList,
-  ListItem,
-  Placeholder.configure({
-    placeholder: 'Write something …',
-    // Use different placeholders depending on the node type:
-    // placeholder: ({ node }) => {
-    //   if (node.type.name === 'heading') {
-    //     return 'What’s the title?'
-    //   }
-
-    //   return 'Can you add some further context?'
-    // },
-  }),
-  Video,
-  TextStyle,
-  Color,
-  LineHeight,
-  Indentation,
-  DropdownNode.configure({
-    dropDownItems: [
-      { value: 'apple', label: 'Apple' },
-      { value: 'banana', label: 'Banana' },
-      { value: 'grapes', label: 'Grapes' },
-    ],
-    dropdownPlaceholder: 'Pick a fruit',
-  }),
-];
 
 export type EditorProps = {
   content?: string,
   onChange?: (html: string) => void,
   onBlur?: (html: string) => void,
+  dropdownItems?: { label: string, value: string }[],
+  dropdownPlaceholder?: string,
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -89,8 +46,38 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
 
+  // List of Tiptap Editor Extensions
+  const extensions = [
+    StarterKit,
+    Link.configure({ openOnClick: true }),
+    Image,
+    Table.configure({ resizable: true }),
+    TableRow,
+    TableCell,
+    TableHeader,
+    TextAlign.configure({ types: ['heading', 'paragraph'], alignments: ['left', 'center', 'right'] }),
+    Underline,
+    Highlight,
+    CodeBlock,
+    BulletList,
+    ListItem,
+    Placeholder.configure({
+      placeholder: 'Write something …',
+    }),
+    Video,
+    TextStyle,
+    Color,
+    LineHeight,
+    Indentation,
+    DropdownNode.configure({
+      dropDownItems: props?.dropdownItems?.map(item => ({ value: item.value, label: item.label })),
+      dropdownPlaceholder: props.dropdownPlaceholder || 'Select an option',
+    })
+  ];
+
+  // Initialize the Tiptap editor with the provided content and extensions
   const editor = useEditor({
-    extensions: TiptapEditorExtensions,
+    extensions,
     content,
     onUpdate: ({ editor, }) => {
       const html = editor.getHTML();
@@ -102,7 +89,57 @@ export const Editor: React.FC<EditorProps> = (props) => {
       props.onBlur?.(html);
     },
     editorProps: {
-    },
+      handleKeyDown(view, event) {
+        const { $from } = view.state.selection;
+        const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
+        // Detect "{{" typed
+        if (event.key === '{' && textBefore.endsWith('{')) {
+          // Remove "{{" (2 chars)
+          view.dispatch(
+            view.state.tr.delete(
+              $from.pos - 2,
+              $from.pos
+            )
+          );
+          // Insert dropdown node
+          editor
+            ?.chain()
+            .focus()
+            .insertContent({
+              type: 'dropdownComponent',
+              attrs: {
+                dropDownItems: props.dropdownItems,
+                dropdownPlaceholder: props.dropdownPlaceholder,
+              },
+            })
+            .run();
+          return true;
+        }
+
+        // Delete previous line on Escape
+        if (event.key === 'Escape') {
+          // Find the start of the current block
+          const lineStart = $from.before($from.depth);
+          // Only proceed if not in the first block
+          if (lineStart > 0) {
+            let prevLineStart = 0;
+            try {
+              prevLineStart = view.state.doc.resolve(lineStart).before();
+            } catch {
+              prevLineStart = 0;
+            }
+            // Only delete if prevLineStart is valid and before lineStart
+            if (prevLineStart >= 0 && prevLineStart < lineStart) {
+              view.dispatch(
+                view.state.tr.delete(prevLineStart, lineStart)
+              );
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+    }
   });
 
   if (!editor) return null;
@@ -110,17 +147,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
   return (
     <div className="relative">
       {/* Menu */}
-
-      {/* Floating Menu */}
-      {/* <BubbleMenu editor={editor} /> */}
-
-      {/* Command Menu */}
-      {/* <CommandMenu editor={editor} showCommandMenu={commandMenu} /> */}
-
-      {/* Editor */}
       <Menu editor={editor} setShowEditorInDialog={setShowEditorInDialog} showEditorInDialog={showEditorInDialog} showRawHtml={showRawHtml}
         toggleRawHtml={() => setShowRawHtml((v) => !v)} />
 
+      {/* Editor */}
       {!showRawHtml ? (
         <EditorContent
           editor={editor}

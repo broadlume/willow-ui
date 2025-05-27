@@ -50,6 +50,28 @@ const AIButton = () => {
   )
 }
 
+/**
+ * Renders the main editor menu with formatting, alignment, list, undo/redo, and advanced options.
+ *
+ * @param editor - The Tiptap editor instance used to control document editing.
+ * @param showEditorInDialog - Boolean indicating if the editor is currently displayed in a dialog.
+ * @param setShowEditorInDialog - Function to toggle the editor's dialog display state.
+ * @param toggleRawHtml - Optional function to toggle raw HTML editing mode.
+ *
+ * The menu provides:
+ * - Text style selection (headings, paragraph)
+ * - Formatting options (bold, italic, underline, strikethrough, color)
+ * - Alignment controls (left, center, right)
+ * - List toggling (bulleted)
+ * - Undo/redo actions
+ * - Indentation controls
+ * - Clear formatting
+ * - Insertion of links, images, videos, tables
+ * - Access to AI content generation
+ * - Expand/collapse advanced menu sections
+ *
+ * Advanced options are shown in expandable menus, with contextual submenus for inserting links, images, embeds, and tables.
+ */
 export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggleRawHtml }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);

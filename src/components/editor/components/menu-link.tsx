@@ -24,7 +24,7 @@ export const MenuLink = ({
     return (
         <Button
             className={clsx(
-                'hover:~no-underline ~text-black ~font-bold ~font-medium ~text-base',
+                'hover:~no-underline ~text-black ~font-bold ~text-base',
                 className
             )}
             variant='link'

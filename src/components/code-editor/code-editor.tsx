@@ -112,22 +112,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             }
         });
 
-        // ['html', 'xml', 'liquid'].forEach(lang => {
-        //     monaco.languages.setLanguageConfiguration(lang, {
-        //         onEnterRules: [
-        //             {
-        //                 // When you type <tag>| and press Enter, insert a new line and the closing tag
-        //                 beforeText: new RegExp(`<([_:\\w][_:\\w-.\\d]*)([^/>]*)>(?!.*</\\1>)`, 'i'),
-        //                 afterText: /^$/,
-        //                 action: {
-        //                     indentAction: monaco.languages.IndentAction.IndentOutdent,
-        //                     appendText: '</$1>',
-        //                 },
-        //             },
-        //         ],
-        //     });
-        // });
-
         ['html', 'xml', 'liquid'].forEach(lang => {
             monaco.languages.registerCompletionItemProvider(lang, {
                 triggerCharacters: ['<'],
