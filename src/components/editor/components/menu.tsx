@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Editor } from "@tiptap/react";
 import clsx from "clsx";
+import isURL from 'validator/lib/isURL'; // Add this import at the top
 
 // Icons
 import { MdFormatListBulleted, MdFormatColorText, MdFormatUnderlined, MdFormatItalic, MdFormatBold, MdStrikethroughS, MdFormatAlignLeft, MdFormatAlignRight, MdFormatAlignCenter, MdOutlineMoreVert, MdFormatIndentDecrease, MdFormatIndentIncrease } from "react-icons/md";
@@ -149,20 +150,36 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
       case 'link':
         return (
           <>
-            <Input type="url" placeholder="https://" value={l2Link} className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2" onChange={e => setL2Link(e.target.value)} />
-            <Button variant="default" className="~rounded-3xl ~px-8" onClick={() => {
-              editor.chain().focus().extendMarkRange('link').setLink({ href: l2Link! })
-                .run();
-              setExpandedMenuL2(false);
-            }}>
+            <Input
+              type="url"
+              placeholder="https://"
+              value={l2Link}
+              className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2"
+              onChange={e => setL2Link(e.target.value)}
+            />
+            <Button
+              variant="default"
+              className="~rounded-3xl ~px-8"
+              disabled={!l2Link || !isURL(l2Link, { require_protocol: true })}
+              onClick={() => {
+                if (l2Link && isURL(l2Link, { require_protocol: true })) {
+                  editor.chain().focus().extendMarkRange('link').setLink({ href: l2Link }).run();
+                  setL2Link(''); // Reset value
+                  setExpandedMenuL2(false);
+                }
+              }}
+            >
               Submit
             </Button>
-            <Button variant="secondary" className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8" onClick={() => {
-              editor.chain().focus().extendMarkRange('link').unsetLink()
-                .run();
-              setL2Link('');
-              setExpandedMenuL2(false);
-            }}>
+            <Button
+              variant="secondary"
+              className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
+              onClick={() => {
+                editor.chain().focus().extendMarkRange('link').unsetLink().run();
+                setL2Link(''); // Reset value
+                setExpandedMenuL2(false);
+              }}
+            >
               Cancel
             </Button>
           </>
@@ -170,17 +187,35 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
       case 'embed':
         return (
           <>
-            <Input type="url" placeholder="https://" value={l2EmbedLink} className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2" onChange={e => setL2EmbedLink(e.target.value)} />
-            <Button variant="default" className="~rounded-3xl ~px-8" onClick={() => {
-              editor.chain().focus().setVideo(l2EmbedLink!).run();
-              setExpandedMenuL2(false);
-            }}>
+            <Input
+              type="url"
+              placeholder="https://"
+              value={l2EmbedLink}
+              className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2"
+              onChange={e => setL2EmbedLink(e.target.value)}
+            />
+            <Button
+              variant="default"
+              className="~rounded-3xl ~px-8"
+              disabled={!l2EmbedLink || !isURL(l2EmbedLink, { require_protocol: true })}
+              onClick={() => {
+                if (l2EmbedLink && isURL(l2EmbedLink, { require_protocol: true })) {
+                  editor.chain().focus().setVideo(l2EmbedLink).run();
+                  setL2EmbedLink(''); // Reset value
+                  setExpandedMenuL2(false);
+                }
+              }}
+            >
               Submit
             </Button>
-            <Button variant="secondary" className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8" onClick={() => {
-              setL2EmbedLink('');
-              setExpandedMenuL2(false);
-            }}>
+            <Button
+              variant="secondary"
+              className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
+              onClick={() => {
+                setL2EmbedLink(''); // Reset value
+                setExpandedMenuL2(false);
+              }}
+            >
               Cancel
             </Button>
           </>
@@ -188,17 +223,35 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
       case 'image':
         return (
           <>
-            <Input type="url" placeholder="https://" value={l2Image} className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2" onChange={e => setL2Image(e.target.value)} />
-            <Button variant="default" className="~rounded-3xl ~px-8" onClick={() => {
-              editor.commands.setImage({ src: l2Image! })
-              setExpandedMenuL2(false);
-            }}>
+            <Input
+              type="url"
+              placeholder="https://"
+              value={l2Image}
+              className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2"
+              onChange={e => setL2Image(e.target.value)}
+            />
+            <Button
+              variant="default"
+              className="~rounded-3xl ~px-8"
+              disabled={!l2Image || !isURL(l2Image, { require_protocol: true })}
+              onClick={() => {
+                if (l2Image && isURL(l2Image, { require_protocol: true })) {
+                  editor.commands.setImage({ src: l2Image });
+                  setL2Image(''); // Reset value
+                  setExpandedMenuL2(false);
+                }
+              }}
+            >
               Submit
             </Button>
-            <Button variant="secondary" className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8" onClick={() => {
-              setL2EmbedLink('');
-              setExpandedMenuL2(false);
-            }}>
+            <Button
+              variant="secondary"
+              className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
+              onClick={() => {
+                setL2Image(''); // Reset value
+                setExpandedMenuL2(false);
+              }}
+            >
               Cancel
             </Button>
           </>
@@ -215,7 +268,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
         clsx('~flex ~flex-wrap ~p-[0.625em_1em_0.625em_1em] ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full')
       }>
         <div className="~flex ~w-full ~justify-between ~items-center">
-          <div className={clsx('~flex ~gap-4')}>
+          <div className={clsx('~flex ~gap-4 ~flex-wrap')}>
             <MenuLink title={
               <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-5xl !~h-5/6" content={({ closeDialog }) => <AIContent editor={editor} closeDialog={closeDialog} />} />
             } eventHandler={() => { }} />
@@ -256,14 +309,12 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
             {
               setShowEditorInDialog && <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => setShowEditorInDialog(!showEditorInDialog)} />
             }
+            <MenuLink className="~ml-4" title={<MdOutlineMoreVert size={28} />} eventHandler={() => {
+              setExpandedMenu(!expandedMenu);
+              setExpandedMenuL2(false);
+            }} />
           </div>
-
-          <MenuLink title={<MdOutlineMoreVert size={28} />} eventHandler={() => {
-            setExpandedMenu(!expandedMenu);
-            setExpandedMenuL2(false);
-          }} />
         </div>
-
       </div>
       {/* Expanded Menu */}
       <div className={
@@ -293,7 +344,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
         <MenuLink title={<IoImageOutline size={24} />} eventHandler={() => setL2MenuType('image')} />
         <MenuLink title={<IoVideocamOutline size={24} />} eventHandler={() => setL2MenuType('embed')} />
         <MenuItemDivider />
-        <MenuLink title={<AiOutlineTable size={24} />} eventHandler={() => setL2MenuType('table')} />
+        <MenuLink title={<AiOutlineTable size={24} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
       </div>
       {/* Expanded Menu */}
       {/* Expanded Menu L2*/}
