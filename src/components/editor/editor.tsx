@@ -13,13 +13,11 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
-import BulletList from '@tiptap/extension-bullet-list';
 import CodeBlock from '@tiptap/extension-code-block';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
-import ListItem from '@tiptap/extension-list-item';
 
 // Custom Extensions
 import { Video } from './extensions/video';
@@ -59,8 +57,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Underline,
     Highlight,
     CodeBlock,
-    BulletList,
-    ListItem,
     Placeholder.configure({
       placeholder: 'Write something …',
     }),
@@ -74,6 +70,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
       dropdownPlaceholder: props.dropdownPlaceholder || 'Select an option',
     })
   ];
+
 
   // Initialize the Tiptap editor with the provided content and extensions
   const editor = useEditor({
@@ -89,6 +86,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
       props.onBlur?.(html);
     },
     editorProps: {
+      attributes: {
+        class: 'focus:~outline-none',
+      },
       handleKeyDown(view, event) {
         const { $from } = view.state.selection;
         const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
@@ -145,7 +145,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   if (!editor) return null;
 
   return (
-    <div className="relative">
+    <div className="~relative">
       {/* Menu */}
       <Menu editor={editor} setShowEditorInDialog={setShowEditorInDialog} showEditorInDialog={showEditorInDialog} showRawHtml={showRawHtml}
         toggleRawHtml={() => setShowRawHtml((v) => !v)} />

@@ -3,7 +3,7 @@ import { Extension } from '@tiptap/core';
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     indentation: {
-      setIndentation: (level: number) => ReturnType;
+      setIndentation: (value: number) => ReturnType;
       unsetIndentation: () => ReturnType;
     };
   }
@@ -14,9 +14,8 @@ export const Indentation = Extension.create({
 
   addOptions() {
     return {
-      types: ['paragraph'],
-      maxLevel: 8,
-      minLevel: 0,
+      // Add 'bulletList' and 'orderedList' to support UL/OL indentation
+      types: ['paragraph', 'heading', 'bulletList', 'orderedList'],
     };
   },
 
@@ -29,13 +28,19 @@ export const Indentation = Extension.create({
             default: 0,
             parseHTML: element => {
               const margin = element.style.marginLeft;
-              return margin ? parseInt(margin, 10) / 2 : 0;
+              if (margin && margin.endsWith('em')) {
+                return parseFloat(margin);
+              }
+              if (margin && margin.endsWith('px')) {
+                return parseFloat(margin) / 16;
+              }
+              return 0;
             },
             renderHTML: attributes => {
               if (!attributes.indent || attributes.indent === 0) {
                 return {};
               }
-              return { style: `margin-left: ${attributes.indent * 2}em;` };
+              return { style: `margin-left: ${attributes.indent}em;` };
             },
           },
         },
@@ -46,16 +51,22 @@ export const Indentation = Extension.create({
   addCommands() {
     return {
       setIndentation:
-        (level: number) =>
-        ({ chain, state }) => {
-          const { maxLevel, minLevel } = this.options;
-          const safeLevel = Math.max(minLevel, Math.min(maxLevel, level));
-          return chain().updateAttributes('paragraph', { indent: safeLevel }).run();
+        (value: number) =>
+        ({ chain }) => {
+          let c = chain();
+          this.options.types.forEach(type => {
+            c = c.updateAttributes(type, { indent: value });
+          });
+          return c.run();
         },
       unsetIndentation:
         () =>
         ({ chain }) => {
-          return chain().updateAttributes('paragraph', { indent: 0 }).run();
+          let c = chain();
+          this.options.types.forEach(type => {
+            c = c.updateAttributes(type, { indent: 0 });
+          });
+          return c.run();
         },
     };
   },
