@@ -1,7 +1,7 @@
 import { useState } from "react";
+import isURL from 'validator/lib/isURL';
 import { Editor } from "@tiptap/react";
 import clsx from "clsx";
-import isURL from 'validator/lib/isURL'; // Add this import at the top
 
 // Icons
 import { MdFormatListBulleted, MdFormatColorText, MdFormatUnderlined, MdFormatItalic, MdFormatBold, MdStrikethroughS, MdFormatAlignLeft, MdFormatAlignRight, MdFormatAlignCenter, MdOutlineMoreVert, MdFormatIndentDecrease, MdFormatIndentIncrease } from "react-icons/md";
@@ -164,7 +164,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onClick={() => {
                 if (l2Link && isURL(l2Link, { require_protocol: true })) {
                   editor.chain().focus().extendMarkRange('link').setLink({ href: l2Link }).run();
-                  setL2Link(''); // Reset value
+                  setL2Link('');
                   setExpandedMenuL2(false);
                 }
               }}
@@ -176,7 +176,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
                 editor.chain().focus().extendMarkRange('link').unsetLink().run();
-                setL2Link(''); // Reset value
+                setL2Link('');
                 setExpandedMenuL2(false);
               }}
             >
@@ -201,7 +201,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onClick={() => {
                 if (l2EmbedLink && isURL(l2EmbedLink, { require_protocol: true })) {
                   editor.chain().focus().setVideo(l2EmbedLink).run();
-                  setL2EmbedLink(''); // Reset value
+                  setL2EmbedLink('');
                   setExpandedMenuL2(false);
                 }
               }}
@@ -212,7 +212,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               variant="secondary"
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
-                setL2EmbedLink(''); // Reset value
+                setL2EmbedLink('');
                 setExpandedMenuL2(false);
               }}
             >
@@ -237,7 +237,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onClick={() => {
                 if (l2Image && isURL(l2Image, { require_protocol: true })) {
                   editor.commands.setImage({ src: l2Image });
-                  setL2Image(''); // Reset value
+                  setL2Image('');
                   setExpandedMenuL2(false);
                 }
               }}
@@ -248,7 +248,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               variant="secondary"
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
-                setL2Image(''); // Reset value
+                setL2Image('');
                 setExpandedMenuL2(false);
               }}
             >
