@@ -24,11 +24,12 @@ export const MenuLink = ({
     return (
         <Button
             className={clsx(
-                'hover:~no-underline ~text-black ~font-bold ~text-base',
+                'hover:~no-underline ~text-black ~font-bold ~text-base active:~scale-95 transition-transform duration-500',
                 className
             )}
             variant='link'
             onClick={eventHandler}
+            type="button"
         >
             {title}
         </Button>

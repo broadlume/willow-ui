@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import prettier from 'prettier/standalone';
-import parserHtml from 'prettier/parser-html';
-import { EditorContent, useEditor } from '@tiptap/react';
+import React, { useEffect, useState } from 'react';
+import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
+import clsx from "clsx";
 
 // Extensions
 import StarterKit from '@tiptap/starter-kit';
@@ -29,7 +28,9 @@ import { DropdownNode } from './nodes/dropdown-node';
 
 // Components
 import { Menu } from './components/menu';
-import { Textarea } from '@components/textarea/textarea';
+import { EditorContent } from './components/editor-content';
+import { Dialog, DialogContent } from '@components/dialog/dialog';
+import { BubbleMenu } from './components/bubble-menu';
 
 export type EditorProps = {
   content?: string,
@@ -43,6 +44,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [content, setContent] = useState<string>(props.content ?? '');
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const handleUpdate = (editor: TiptapEditor) => {
+    const html = editor.getHTML();
+    setContent(html);
+    props.onChange?.(html);
+  };
 
   // List of Tiptap Editor Extensions
   const extensions = [
@@ -71,16 +79,11 @@ export const Editor: React.FC<EditorProps> = (props) => {
     })
   ];
 
-
   // Initialize the Tiptap editor with the provided content and extensions
-  const editor = useEditor({
+  const EditorConfig: UseEditorOptions = {
     extensions,
     content,
-    onUpdate: ({ editor, }) => {
-      const html = editor.getHTML();
-      setContent(html);
-      props.onChange?.(html);
-    },
+    onUpdate: ({ editor, }) => handleUpdate(editor),
     onBlur: ({ editor, }) => {
       const html = editor.getHTML();
       props.onBlur?.(html);
@@ -137,35 +140,103 @@ export const Editor: React.FC<EditorProps> = (props) => {
             }
           }
         }
+
         return false;
       },
     }
+  };
+
+  const editor = useEditor(EditorConfig);
+  const dialogEditor = useEditor({
+    ...EditorConfig,
+    onUpdate: ({ editor }) => handleUpdate(editor),
   });
 
-  if (!editor) return null;
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(content);
+    }
+    if (dialogEditor) {
+      dialogEditor.commands.setContent(content);
+    }
+  }, [content, editor, dialogEditor]);
+
+  if (!editor || !dialogEditor) return null;
 
   return (
-    <div className="~relative">
-      {/* Menu */}
-      <Menu editor={editor} setShowEditorInDialog={setShowEditorInDialog} showEditorInDialog={showEditorInDialog} showRawHtml={showRawHtml}
-        toggleRawHtml={() => setShowRawHtml((v) => !v)} />
+    <div
+      onClick={e => e.stopPropagation()}
+      onKeyDown={e => e.stopPropagation()}
+    >
+      {
+        showEditorInDialog && (
+          <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
+            <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10'>
+              {/* Menu */}
+              <Menu editor={dialogEditor}
+                showRawHtml={showRawHtml}
+                toggleRawHtml={() => setShowRawHtml((v) => !v)}
+                darkMode={darkMode}
+                toggleDarkMode={() => setDarkMode((v) => !v)}
+                className={
+                  clsx({
+                    '~bg-gray-100': !darkMode,
+                    '~text-gray-800': !darkMode,
+                    '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                  })
+                }
+              />
 
-      {/* Editor */}
-      {!showRawHtml ? (
-        <EditorContent
-          editor={editor}
-          className='~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
-        />
-      ) : (
-        <Textarea value={
-          prettier.format(content, {
-            parser: 'html',
-            plugins: [parserHtml],
-          })
-        } onChange={(e) => setContent(e.target.value)} className="~w-full ~min-h-[20rem] ~border-gray-300 ~outline-none ~rounded-none ~rounded-bl-lg ~rounded-br-lg">
-          {content}
-        </Textarea>
-      )}
+              {/* Bubble Menu */}
+              {/* <BubbleMenu editor={dialogEditor} /> */}
+
+              {/* Editor */}
+              <EditorContent
+                editor={dialogEditor}
+                content={content}
+                setContent={setContent}
+                darkMode={darkMode}
+                markdownMode={showRawHtml}
+              />
+            </DialogContent>
+          </Dialog>
+        )
+      }
+
+      {
+        !showEditorInDialog && (
+          <>
+            {/* Menu */}
+            <Menu editor={editor}
+              setShowEditorInDialog={setShowEditorInDialog}
+              showEditorInDialog={showEditorInDialog}
+              showRawHtml={showRawHtml}
+              toggleRawHtml={() => setShowRawHtml((v) => !v)}
+              darkMode={darkMode}
+              toggleDarkMode={() => setDarkMode((v) => !v)}
+              className={
+                clsx({
+                  '~bg-gray-100': !darkMode,
+                  '~text-gray-800': !darkMode,
+                  '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                })
+              }
+            />
+
+            {/* Bubble Menu */}
+            {/* <BubbleMenu editor={editor} /> */}
+
+            {/* Editor */}
+            <EditorContent
+              editor={editor}
+              content={content}
+              setContent={setContent}
+              darkMode={darkMode}
+              markdownMode={showRawHtml}
+            />
+          </>
+        )
+      }
 
       {/* Debugging Content */}
       {/* <div className='~mt-4'>
