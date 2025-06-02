@@ -17,7 +17,7 @@ export const Basic: Story = {
   render: () => (
     <div className='~flex ~items-center ~space-x-2'>
       <Loader
-        name='asfasfasf'
+        name='loading-indicator'
         data-testid='loading-icon'
         className='~h-6 ~w-6'
       />
