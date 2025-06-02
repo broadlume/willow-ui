@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {Loader} from './Loader';
-
+import { Loader } from './Loader';
 
 const meta: Meta<typeof Loader> = {
   component: Loader,
@@ -17,8 +16,11 @@ export const Basic: Story = {
   },
   render: () => (
     <div className='~flex ~items-center ~space-x-2'>
-      <Loader className='~w-6 ~h-6' />
+      <Loader
+        name='asfasfasf'
+        data-testid='loading-icon'
+        className='~h-6 ~w-6'
+      />
     </div>
   ),
 };
-
