@@ -10,17 +10,20 @@ import { LuRedo2, LuUndo2 } from "react-icons/lu";
 import { TbLineHeight } from "react-icons/tb";
 import { FaTextSlash, FaLink, FaCode } from "react-icons/fa6";
 import { AiOutlineTable } from "react-icons/ai";
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { ReactComponent as AIIcon } from './ai-icon.svg'
 
 // Components
 import { ColorPickerInput } from "@components/color-picker-input/color-picker-input";
-import AIContent from "../components/AIContent";
+import { Button } from "@components/button";
+import { Input } from "@components/input/input";
+
+import AIContent from "./ai-content";
 import { MenuLink } from "./menu-link"
 import { SelectionTypeMenuItemContent } from "./selection-menu-item";
 import { DialogMenuItem } from "./dialog-menu-item";
 import { PopoverMenuItemContent } from "./popover-menu-item";
-import { Button } from "@components/button";
-import { Input } from "@components/input/input";
+
 
 interface MenuProps {
   editor: Editor
@@ -28,9 +31,12 @@ interface MenuProps {
   setShowEditorInDialog?: (show: boolean) => void
   showRawHtml?: boolean
   toggleRawHtml?: () => void
+  darkMode?: boolean;
+  toggleDarkMode?: () => void;
+  className?: string;
 }
 
-type L2MenuType = 'table' | 'video' | 'embed' | 'link' | 'image';
+type L2MenuType = 'video' | 'embed' | 'link' | 'image';
 
 const TextStyleItems = [
   { value: 'normal', label: 'Normal' },
@@ -46,7 +52,7 @@ const AIButton = () => {
   return (
     <div className="~flex ~gap-1 ~items-center">
       <AIIcon />
-      <span className="~text-[#A52F76] ~text-lg">Ai</span>
+      <span className="~text-[#6038E8] ~text-lg ~font-normal">Ai</span>
     </div>
   )
 }
@@ -73,7 +79,7 @@ const AIButton = () => {
  *
  * Advanced options are shown in expandable menus, with contextual submenus for inserting links, images, embeds, and tables.
  */
-export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggleRawHtml }: MenuProps) => {
+export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggleRawHtml, className, darkMode, toggleDarkMode }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
   const [expandedMenuL2Type, setExpandedMenuL2Type] = useState<L2MenuType>();
@@ -123,34 +129,15 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
 
   const getL3Menu = () => {
     switch (expandedMenuL2Type) {
-      case 'table':
-        return (
-          <>
-            <Input type="text" placeholder="Create Table" className="~border-[1px] ~border-solid ~border-gray-300 ~rounded-md ~p-2" />
-            <Button variant="default" className="~rounded-3xl ~px-8" onClick={() => {
-
-              editor
-                ?.chain()
-                .focus()
-                .insertContent({
-                  type: 'dropdown',
-                  attrs: { items: ['Item1', 'Item2', 'Item3'] },
-                })
-                .run();
-            }}>
-              Submit
-            </Button>
-            <Button variant="secondary" className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8" onClick={() => {
-              setExpandedMenuL2(false);
-            }}>
-              Cancel
-            </Button>
-          </>
-        )
       case 'link':
         return (
           <>
             <Input
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               type="url"
               placeholder="https://"
               value={l2Link}
@@ -158,6 +145,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onChange={e => setL2Link(e.target.value)}
             />
             <Button
+              type="button"
               variant="default"
               className="~rounded-3xl ~px-8"
               disabled={!l2Link || !isURL(l2Link, { require_protocol: true })}
@@ -172,6 +160,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               Submit
             </Button>
             <Button
+              type="button"
               variant="secondary"
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
@@ -188,6 +177,11 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
         return (
           <>
             <Input
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               type="url"
               placeholder="https://"
               value={l2EmbedLink}
@@ -195,6 +189,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onChange={e => setL2EmbedLink(e.target.value)}
             />
             <Button
+              type="button"
               variant="default"
               className="~rounded-3xl ~px-8"
               disabled={!l2EmbedLink || !isURL(l2EmbedLink, { require_protocol: true })}
@@ -209,6 +204,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               Submit
             </Button>
             <Button
+              type="button"
               variant="secondary"
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
@@ -224,6 +220,11 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
         return (
           <>
             <Input
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                }
+              }}
               type="url"
               placeholder="https://"
               value={l2Image}
@@ -231,6 +232,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onChange={e => setL2Image(e.target.value)}
             />
             <Button
+              type="button"
               variant="default"
               className="~rounded-3xl ~px-8"
               disabled={!l2Image || !isURL(l2Image, { require_protocol: true })}
@@ -245,6 +247,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               Submit
             </Button>
             <Button
+              type="button"
               variant="secondary"
               className="~rounded-3xl ~shadow-sm ~border-[1px] ~border-[#000] ~px-8"
               onClick={() => {
@@ -265,9 +268,9 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
   return (
     <div >
       <div className={
-        clsx('~flex ~flex-wrap ~p-[0.625em_1em_0.625em_1em] ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~max-w-full')
+        clsx('~flex ~flex-wrap ~p-[0.625em_1em_0.625em_1em] ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~text-lg ~w-full', className)
       }>
-        <div className="~flex ~w-full ~justify-between ~items-center">
+        <div className="~w-full ~flex ~justify-between ~items-center">
           <div className={clsx('~flex ~gap-4 ~flex-wrap')}>
             <MenuLink title={
               <DialogMenuItem title={<AIButton />} dialogClassName="~p-2 !~max-w-5xl !~h-5/6" content={({ closeDialog }) => <AIContent editor={editor} closeDialog={closeDialog} />} />
@@ -284,12 +287,32 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               eventHandler={() => { }}
             />
             <MenuItemDivider />
-            <MenuLink title={<MdFormatBold size={28} />} eventHandler={() => editor.chain().focus().toggleBold().run()} />
-            <MenuLink title={<MdFormatItalic size={28} />} eventHandler={() => editor.chain().focus().toggleItalic().run()} />
-            <MenuLink title={<MdFormatUnderlined size={28} />} eventHandler={() => editor.chain().focus().toggleUnderline().run()} />
-            <MenuLink title={<MdStrikethroughS size={28} />} eventHandler={() => editor.chain().focus().toggleStrike().run()} />
+            <MenuLink title={<MdFormatBold className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().toggleBold().run()} />
+            <MenuLink title={<MdFormatItalic className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().toggleItalic().run()} />
+            <MenuLink title={<MdFormatUnderlined className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().toggleUnderline().run()} />
+            <MenuLink title={<MdStrikethroughS className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().toggleStrike().run()} />
             <MenuLink title={
-              <PopoverMenuItemContent title={<MdFormatColorText size={28} />} content={
+              <PopoverMenuItemContent title={<MdFormatColorText className={
+                clsx('~text-black', {
+                  '~text-white': darkMode
+                })
+              } size={18} />} content={
                 <ColorPickerInput color={fontColor} name="color-picker-demo" setColor={(color) => {
                   setFontColor(color);
                   editor.chain().focus().setColor(color).run();
@@ -297,19 +320,62 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               } />
             } eventHandler={() => { }} />
             <MenuItemDivider />
-            <MenuLink title={<MdFormatAlignLeft size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('left').run()} />
-            <MenuLink title={<MdFormatAlignCenter size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('center').run()} />
-            <MenuLink title={<MdFormatAlignRight size={24} />} eventHandler={() => editor.chain().focus().setTextAlign('right').run()} />
+            <MenuLink title={<MdFormatAlignLeft className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().setTextAlign('left').run()} />
+            <MenuLink title={<MdFormatAlignCenter className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().setTextAlign('center').run()} />
+            <MenuLink title={<MdFormatAlignRight className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().setTextAlign('right').run()} />
             <MenuItemDivider />
-            <MenuLink title={<MdFormatListBulleted size={24} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
+            <MenuLink title={<MdFormatListBulleted className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().focus().toggleBulletList().run()} />
             <MenuItemDivider />
-            <MenuLink title={<LuUndo2 size={24} />} eventHandler={() => editor.chain().undo().run()} />
-            <MenuLink title={<LuRedo2 size={24} />} eventHandler={() => editor.chain().redo().run()} />
+            <MenuLink title={<LuUndo2 className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().undo().run()} />
+            <MenuLink title={<LuRedo2 className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => editor.chain().redo().run()} />
             <MenuItemDivider />
             {
-              setShowEditorInDialog && <MenuLink title={<IoExpandOutline size={24} />} eventHandler={() => setShowEditorInDialog(!showEditorInDialog)} />
+              setShowEditorInDialog && <MenuLink title={<IoExpandOutline className={
+                clsx('~text-black', {
+                  '~text-white': darkMode
+                })
+              } size={18} />} eventHandler={() => setShowEditorInDialog(!showEditorInDialog)} />
             }
-            <MenuLink className="~ml-4" title={<MdOutlineMoreVert size={28} />} eventHandler={() => {
+          </div>
+          <div className="~flex ~gap-2 ~items-center">
+            <MenuLink title={darkMode ? <FiSun className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } /> : <FiMoon className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } />} eventHandler={() => toggleDarkMode && toggleDarkMode()} />
+            <MenuLink className="" title={<MdOutlineMoreVert className={
+              clsx('~text-black', {
+                '~text-white': darkMode
+              })
+            } size={18} />} eventHandler={() => {
               setExpandedMenu(!expandedMenu);
               setExpandedMenuL2(false);
             }} />
@@ -320,10 +386,17 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
       <div className={
         clsx('~p-3 ~gap-5 ~justify-end ~w-full ~bg-[#F3F3F3] ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~hidden', {
           '!~flex': expandedMenu,
+          '~bg-gray-100': !darkMode,
+          '~text-gray-800': !darkMode,
+          '~bg-gray-900 ~text-gray-200': darkMode,
         })
       }>
         <MenuLink title={
-          <PopoverMenuItemContent title={<TbLineHeight size={24} />} content={
+          <PopoverMenuItemContent title={<TbLineHeight className={
+            clsx('~text-black', {
+              '~text-white': darkMode
+            })
+          } size={18} />} content={
             <SelectionTypeMenuItemContent
               items={[
                 { value: '1.0', label: '1.0' },
@@ -335,22 +408,57 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
               onSelection={(value) => editor.chain().focus().setLineHeight(value).run()} />
           } />
         } eventHandler={() => { }} />
-        <MenuLink title={<MdFormatIndentDecrease size={24} />} eventHandler={() => editor?.chain().focus().setIndentation(Math.max(getCurrentIndentLevel() - 1, 0)).run()} />
-        <MenuLink title={<MdFormatIndentIncrease size={24} />} eventHandler={() => editor?.chain().focus().setIndentation(getCurrentIndentLevel() + 1).run()} />
-        <MenuLink title={<FaTextSlash size={24} />} eventHandler={() => editor.chain().focus().clearNodes().unsetAllMarks().run()} />
+        <MenuLink title={<MdFormatIndentDecrease className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => editor?.chain().focus().setIndentation(Math.max(getCurrentIndentLevel() - 1, 0)).run()} />
+        <MenuLink title={<MdFormatIndentIncrease className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => editor?.chain().focus().setIndentation(getCurrentIndentLevel() + 1).run()} />
+        <MenuLink title={<FaTextSlash className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => editor.chain().focus().clearNodes().unsetAllMarks().run()} />
         <MenuItemDivider />
-        <MenuLink title={<FaLink size={24} />} eventHandler={() => setL2MenuType('link')} />
-        <MenuLink title={<FaCode size={24} />} eventHandler={() => toggleRawHtml && toggleRawHtml()} />
-        <MenuLink title={<IoImageOutline size={24} />} eventHandler={() => setL2MenuType('image')} />
-        <MenuLink title={<IoVideocamOutline size={24} />} eventHandler={() => setL2MenuType('embed')} />
+        <MenuLink title={<FaLink className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => setL2MenuType('link')} />
+        <MenuLink title={<FaCode className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => toggleRawHtml && toggleRawHtml()} />
+        <MenuLink title={<IoImageOutline className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => setL2MenuType('image')} />
+        <MenuLink title={<IoVideocamOutline className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => setL2MenuType('embed')} />
         <MenuItemDivider />
-        <MenuLink title={<AiOutlineTable size={24} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
+        <MenuLink title={<AiOutlineTable className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
       </div>
       {/* Expanded Menu */}
       {/* Expanded Menu L2*/}
       <div className={
         clsx('~p-3 ~gap-2 ~justify-end ~w-full ~bg-[#F3F3F3] ~border-t-white ~border-t-2  ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~hidden', {
           '!~flex': expandedMenuL2,
+          '~bg-gray-100': !darkMode,
+          '~text-gray-800': !darkMode,
+          '~bg-gray-900 ~text-gray-200': darkMode,
         })
       }>
         {
