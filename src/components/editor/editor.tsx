@@ -92,57 +92,57 @@ export const Editor: React.FC<EditorProps> = (props) => {
       attributes: {
         class: 'focus:~outline-none',
       },
-      handleKeyDown(view, event) {
-        const { $from } = view.state.selection;
-        const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
-        // Detect "{{" typed
-        if (event.key === '{' && textBefore.endsWith('{')) {
-          // Remove "{{" (2 chars)
-          view.dispatch(
-            view.state.tr.delete(
-              $from.pos - 2,
-              $from.pos
-            )
-          );
-          // Insert dropdown node
-          editor
-            ?.chain()
-            .focus()
-            .insertContent({
-              type: 'dropdownComponent',
-              attrs: {
-                dropDownItems: props.dropdownItems,
-                dropdownPlaceholder: props.dropdownPlaceholder,
-              },
-            })
-            .run();
-          return true;
-        }
+      // handleKeyDown(view, event) {
+      //   const { $from } = view.state.selection;
+      //   const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
+      //   // Detect "{{" typed
+      //   if (event.key === '{' && textBefore.endsWith('{')) {
+      //     // Remove "{{" (2 chars)
+      //     view.dispatch(
+      //       view.state.tr.delete(
+      //         $from.pos - 2,
+      //         $from.pos
+      //       )
+      //     );
+      //     // Insert dropdown node
+      //     editor
+      //       ?.chain()
+      //       .focus()
+      //       .insertContent({
+      //         type: 'dropdownComponent',
+      //         attrs: {
+      //           dropDownItems: props.dropdownItems,
+      //           dropdownPlaceholder: props.dropdownPlaceholder,
+      //         },
+      //       })
+      //       .run();
+      //     return true;
+      //   }
 
-        // Delete previous line on Escape
-        if (event.key === 'Escape') {
-          // Find the start of the current block
-          const lineStart = $from.before($from.depth);
-          // Only proceed if not in the first block
-          if (lineStart > 0) {
-            let prevLineStart = 0;
-            try {
-              prevLineStart = view.state.doc.resolve(lineStart).before();
-            } catch {
-              prevLineStart = 0;
-            }
-            // Only delete if prevLineStart is valid and before lineStart
-            if (prevLineStart >= 0 && prevLineStart < lineStart) {
-              view.dispatch(
-                view.state.tr.delete(prevLineStart, lineStart)
-              );
-              return true;
-            }
-          }
-        }
+      //   // Delete previous line on Escape
+      //   if (event.key === 'Escape') {
+      //     // Find the start of the current block
+      //     const lineStart = $from.before($from.depth);
+      //     // Only proceed if not in the first block
+      //     if (lineStart > 0) {
+      //       let prevLineStart = 0;
+      //       try {
+      //         prevLineStart = view.state.doc.resolve(lineStart).before();
+      //       } catch {
+      //         prevLineStart = 0;
+      //       }
+      //       // Only delete if prevLineStart is valid and before lineStart
+      //       if (prevLineStart >= 0 && prevLineStart < lineStart) {
+      //         view.dispatch(
+      //           view.state.tr.delete(prevLineStart, lineStart)
+      //         );
+      //         return true;
+      //       }
+      //     }
+      //   }
 
-        return false;
-      },
+      //   return false;
+      // },
     }
   };
 
