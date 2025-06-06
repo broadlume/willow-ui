@@ -55,6 +55,9 @@ export const Demo: Story = {
       onSelectedRowsChange={handleSelectedRows}
       onRowClicked={handleRowClicked}
       noDataComponent='No users'
+      paginationServerOptions={{
+        persistSelectedOnPageChange: true,
+      }}
       // progressPending={promiseInProgress}
       progressComponent={<small>Please wait...</small>}
       persistTableHead={true}
