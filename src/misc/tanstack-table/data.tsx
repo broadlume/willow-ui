@@ -35,13 +35,14 @@ export const columns: ColumnDef<Payment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+
   {
     accessorKey: 'status',
     header: 'Status',
   },
   {
     accessorKey: 'email',
-    header: ({ column }) => {
+    header: ({ column, table }) => {
       return (
         <Button
           variant='ghost'
