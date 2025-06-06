@@ -25,7 +25,7 @@ export const Default: Story = {
   render: (_) => (
     <Dialog>
       <DialogTrigger>Click me!</DialogTrigger>
-      <DialogContent className='sm:~max-w-[425px]'>
+      <DialogContent className='sm:~max-w-[425px]' showCloseIcon={true}>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>

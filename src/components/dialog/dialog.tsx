@@ -43,10 +43,18 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     onClose?: () => void;
     overlayClassName?: string;
+    showCloseIcon?: boolean;
   }
 >(
   (
-    { className, overlayClassName, children, onClose = () => null, ...props },
+    {
+      className,
+      overlayClassName,
+      children,
+      showCloseIcon = true,
+      onClose = () => null,
+      ...props
+    },
     ref
   ) => (
     <DialogPortal>
@@ -62,17 +70,19 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close
-          className={cn(
-            '~absolute ~right-4 ~top-4 ~rounded-sm ~opacity-70 ~transition-opacity hover:~opacity-100 disabled:~pointer-events-none',
-            '~ring-offset-background focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
-            'data-[state=open]:~bg-accent data-[state=open]:~text-muted-foreground'
-          )}
-          onClick={onClose}
-        >
-          <Cross2Icon className='~h-4 ~w-4' />
-          <span className='~sr-only'>Close</span>
-        </DialogPrimitive.Close>
+        {showCloseIcon && (
+          <DialogPrimitive.Close
+            className={cn(
+              '~absolute ~right-4 ~top-4 ~rounded-sm ~opacity-70 ~transition-opacity hover:~opacity-100 disabled:~pointer-events-none',
+              '~ring-offset-background focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
+              'data-[state=open]:~bg-accent data-[state=open]:~text-muted-foreground'
+            )}
+            onClick={onClose}
+          >
+            <Cross2Icon className='~h-4 ~w-4' />
+            <span className='~sr-only'>Close</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   )
