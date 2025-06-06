@@ -15,9 +15,10 @@ export const CustomDataTable = <T,>({
   ...props
 }: CustomDataTableProps<T>) => {
   //This adds our own Checkbox component to use in the data table
-  const CustomCheckBox = forwardRef(({ ...rest }, _ref) => (
-    <Checkbox {...rest} />
-  ));
+  const CustomCheckBox = forwardRef(({ ...rest }, _ref) => {
+    console.log('rest', props, rest);
+    return <Checkbox {...rest} />;
+  });
 
   return (
     <div
@@ -25,8 +26,9 @@ export const CustomDataTable = <T,>({
     >
       {props.selectableRows ? (
         <DataTable
+          selectableRowsNoSelectAll
+          // selectableRowsComponent={CustomCheckBox as unknown as ReactNode}
           {...props}
-          selectableRowsComponent={CustomCheckBox as unknown as ReactNode}
         />
       ) : (
         <DataTable {...props} />
