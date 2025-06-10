@@ -1,178 +1,309 @@
-'use client';
-
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@components/ui/table';
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import {
-  ColumnDef,
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+} from '@dnd-kit/sortable';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@radix-ui/react-select';
+import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
-import React, { useState } from 'react';
-import { columns, payments } from './data';
-import { cn } from '@src/lib/utils';
+import classNames from 'classnames';
+import React, { useMemo, useState } from 'react';
+import { Button } from 'react-day-picker';
+import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2';
+import {
+  DataTableProps,
+  DraggableColumnHeader,
+  DraggableTableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from './TableComponents';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  topChildren?: React.ReactNode;
-  bottomChildren?: React.ReactNode;
-  itemProps?: {
-    root?: React.HTMLAttributes<HTMLDivElement>;
-    tableWrapper?: React.HTMLAttributes<HTMLDivElement>;
-    table?: React.HTMLAttributes<HTMLTableElement>;
-    tableHeader?: React.HTMLAttributes<HTMLTableSectionElement>;
-    tableHeaderRow?: React.HTMLAttributes<HTMLTableRowElement>;
-    tableHead?: React.HTMLAttributes<HTMLTableCellElement>;
-    tableBody?: React.HTMLAttributes<HTMLTableSectionElement>;
-    tableBodyRow?: React.HTMLAttributes<HTMLTableRowElement>;
-    tableRow?: React.HTMLAttributes<HTMLTableRowElement>;
-    tableCell?: React.HTMLAttributes<HTMLTableCellElement>;
-  };
-}
-
-export function useDataTable<TData, TValue>({
+export function useDataTable<TData extends object, TValue>({
   columns,
   data,
-  topChildren,
-  bottomChildren,
   itemProps,
+  onRowDrop = () => undefined,
+  tableParams,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
+  // Memoize columns to prevent re-renders, and derive initial column order
+  const columnDefs = useMemo(() => columns, []);
+  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
+    columnDefs.map(
+      (c) => `col-${c.id || ('accessorKey' in c && (c.accessorKey as string))}`
+    )
+  );
   const table = useReactTable({
     data,
     columns,
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
+    ...tableParams,
     getCoreRowModel: getCoreRowModel(),
+    onColumnOrderChange: setColumnOrder,
+    enableSortingRemoval: false,
     state: {
-      sorting,
       rowSelection,
+      columnOrder,
+      ...tableParams?.state,
     },
   });
 
-  const renderTable = (
+  console.log('table sorting', table.getSortedRowModel());
+
+  // --- DND Handlers and Sensors ---
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      // Require the mouse to move by 10 pixels before activating
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {})
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    // Handle column DND
+    if (
+      activeId.startsWith('col-') &&
+      overId.startsWith('col-') &&
+      activeId !== overId
+    ) {
+      setColumnOrder((currentOrder) => {
+        const oldIndex = currentOrder.indexOf(activeId.replace('col-', ''));
+        const newIndex = currentOrder.indexOf(overId.replace('col-', ''));
+        return arrayMove(currentOrder, oldIndex, newIndex);
+      });
+      return;
+    }
+
+    // Handle row DND
+    if (activeId.startsWith('row-') && overId.startsWith('row-')) {
+      const draggedItem = active.data.current?.row as TData | undefined;
+      const dropTarget = over.data.current?.row as TData | undefined;
+
+      if (draggedItem?.type === 'file' && dropTarget?.type === 'folder') {
+        onRowDrop?.(draggedItem, dropTarget);
+      }
+    }
+  }
+
+  const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={cn('~rounded-md ~border', itemProps?.root?.className)}
+      className={classNames(
+        'cms-text-sm cms-bg-white',
+        itemProps?.root?.className
+      )}
     >
-      {topChildren}
       <div
         {...itemProps?.tableWrapper}
-        className={cn(
-          '~rounded-md ~border',
+        className={classNames(
+          'cms-rounded-md cms-border',
           itemProps?.tableWrapper?.className
         )}
       >
-        <Table {...itemProps?.table} className={itemProps?.table?.className}>
-          <TableHeader
-            {...itemProps?.tableHeader}
-            className={cn(itemProps?.tableHeader?.className)}
-          >
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                {...itemProps?.tableHeaderRow}
-                className={cn(
-                  '~bg-[#e8e8e8] ~text-[#231f21]',
-                  itemProps?.tableHeaderRow?.className
-                )}
-              >
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      {...itemProps?.tableHead}
-                      className={cn(
-                        '~px-3 ~py-1 ~uppercase',
-                        itemProps?.tableHead?.className
-                      )}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody
-            {...itemProps?.tableBody}
-            className={cn(itemProps?.tableBody?.className)}
-          >
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          sensors={sensors}
+        >
+          <Table {...itemProps?.table} className={itemProps?.table?.className}>
+            <TableHeader
+              {...itemProps?.tableHeader}
+              className={classNames(itemProps?.tableHeader?.className)}
+            >
+              {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
-                  key={row.id}
-                  {...itemProps?.tableBodyRow}
-                  className={cn(itemProps?.tableBodyRow?.className)}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      {...itemProps?.tableCell}
-                      className={cn(
-                        '~px-3 ~py-3',
-                        itemProps?.tableCell?.className
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow
-                {...itemProps?.tableBodyRow}
-                className={cn(itemProps?.tableBodyRow?.className)}
-              >
-                <TableCell
-                  colSpan={columns.length}
-                  {...itemProps?.tableCell}
-                  className={cn(
-                    '~h-24 ~text-center',
-                    itemProps?.tableCell?.className
+                  key={headerGroup.id}
+                  {...itemProps?.tableHeaderRow}
+                  className={classNames(
+                    'cms-text-[#231f21] hover:!cms-bg-transparent',
+                    itemProps?.tableHeaderRow?.className
                   )}
                 >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                  <SortableContext
+                    items={columnOrder}
+                    strategy={horizontalListSortingStrategy}
+                  >
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <DraggableColumnHeader
+                          key={header.id}
+                          header={header}
+                          itemProps={itemProps}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody
+              {...itemProps?.tableBody}
+              className={classNames(itemProps?.tableBody?.className)}
+            >
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <DraggableTableRow
+                    row={row as Row<object>}
+                    key={row.id}
+                    {...itemProps?.tableBodyRow}
+                    className={classNames(itemProps?.tableBodyRow?.className)}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        {...itemProps?.tableCell}
+                        className={classNames(
+                          'cms-px-3 cms-py-3',
+                          itemProps?.tableCell?.className
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </DraggableTableRow>
+                ))
+              ) : (
+                <TableRow
+                  {...itemProps?.tableBodyRow}
+                  className={classNames(itemProps?.tableBodyRow?.className)}
+                >
+                  <TableCell
+                    colSpan={columns.length}
+                    {...itemProps?.tableCell}
+                    className={classNames(
+                      'cms-h-24 cms-text-center',
+                      itemProps?.tableCell?.className
+                    )}
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </DndContext>
       </div>
-      {bottomChildren}
+      <div className='cms-flex cms-items-center cms-justify-between cms-my-5 cms-px-2'>
+        {/* Item per page */}
+        <div className='cms-flex cms-flex-row cms-gap-2 cms-items-center cms-justify-start cms-flex-1'>
+          <p className='cms-text-xs cms-font-normal'>Item Per page</p>
+          <Select
+            //   value={pagination.pageSize.toString()}
+            value={table.getState().pagination.pageSize.toString()}
+            defaultValue='10'
+            onValueChange={(value) =>
+              // setPagination((prevVal) => ({
+              //   ...prevVal,
+              //   pageSize: parseInt(value),
+              // }))
+              table.setPageSize(Number(value))
+            }
+          >
+            <SelectTrigger className='cms-w-fit cms-text-xs cms-font-normal [&>span]:cms-mr-2'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 50].map((opt) => (
+                <SelectItem
+                  className='cms-text-xs cms-font-normal'
+                  key={opt}
+                  value={opt.toString()}
+                >
+                  {opt}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className='cms-flex cms-items-center cms-gap-3'>
+          {/* Left chevron */}
+          <Button
+            onClick={table.previousPage}
+            disabled={!table.getCanPreviousPage()}
+            className='cms-shadow-none cms-text-white cms-rounded-md !cms-p-2 cms-font-normal cms-bg-[#1A6CFF] disabled:cms-border-none disabled:cms-bg-transparent disabled:cms-text-[#1A1A1A]'
+          >
+            <HiMiniChevronLeft className='cms-w-4 cms-h-4' />
+          </Button>
+
+          {/* Pages */}
+          {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(
+            (item) => (
+              <Button
+                type='button'
+                className={classNames(
+                  'cms-shadow-none cms-rounded-md !cms-p-2 cms-font-normal disabled:cms-bg-transparent cms-text-[#1A1A1A]  !cms-px-3',
+                  table.getState().pagination.pageIndex + 1 === item
+                    ? 'cms-border cms-border-[#CCCCCC]'
+                    : ''
+                )}
+                variant={
+                  table.getState().pagination.pageIndex + 1 === item
+                    ? 'outline'
+                    : 'ghost'
+                }
+                onClick={() => table.setPageIndex(item - 1)}
+              >
+                {item}
+              </Button>
+            )
+          )}
+          {/* Right chevron */}
+          <Button
+            onClick={table.nextPage}
+            className='cms-shadow-none cms-text-white cms-rounded-md !cms-p-2 cms-font-normal cms-bg-[#1A6CFF] disabled:cms-border-none disabled:cms-bg-transparent disabled:cms-text-[#1A1A1A]'
+            disabled={!table.getCanNextPage()}
+          >
+            <HiMiniChevronRight className='cms-w-4 cms-h-4' />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 
-  return { table, renderTable };
+  return { table, CustomDataTable };
 }
-
-export const TanStackTable = () => {
-  const { renderTable, table } = useDataTable({
-    columns,
-    data: payments,
-  });
-  console.log('selectedrows', table.getSelectedRowModel());
-  return renderTable;
-};
