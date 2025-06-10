@@ -55,7 +55,7 @@ export function useDataTable<TData extends object, TValue>({
   const columnDefs = useMemo(() => columns, []);
   const [columnOrder, setColumnOrder] = useState<string[]>(() =>
     columnDefs.map(
-      (c) => `col-${c.id || ('accessorKey' in c && (c.accessorKey as string))}`
+      (c) => c.id || ('accessorKey' in c && (c.accessorKey as string)) || ''
     )
   );
   const table = useReactTable({
@@ -102,14 +102,10 @@ export function useDataTable<TData extends object, TValue>({
     const overId = String(over.id);
 
     // Handle column DND
-    if (
-      activeId.startsWith('col-') &&
-      overId.startsWith('col-') &&
-      activeId !== overId
-    ) {
+    if (activeId !== overId) {
       setColumnOrder((currentOrder) => {
-        const oldIndex = currentOrder.indexOf(activeId.replace('col-', ''));
-        const newIndex = currentOrder.indexOf(overId.replace('col-', ''));
+        const oldIndex = currentOrder.indexOf(activeId);
+        const newIndex = currentOrder.indexOf(overId);
         return arrayMove(currentOrder, oldIndex, newIndex);
       });
       return;

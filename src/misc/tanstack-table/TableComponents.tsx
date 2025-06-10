@@ -171,7 +171,8 @@ const DraggableColumnHeader = <TData, TValue>({
     transition,
     isDragging,
   } = useSortable({
-    id: `col-${header.column.id}`,
+    id: header.column.id,
+    disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
   });
 
   console.log('header.column.getIsSorted()', header.column.getIsSorted());
