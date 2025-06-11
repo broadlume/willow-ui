@@ -141,6 +141,7 @@
     "emmet-monaco-es": "^5.5.0",
     "lucide-react": "^0.245.0",
     "openai": "^4.85.4",
+    "prosemirror-autocomplete": "^0.4.3",
     "react-data-table-component": "^7.5.4",
     "react-day-picker": "^8.8.0",
     "react-hook-form": "^7.49.3",

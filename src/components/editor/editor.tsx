@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
 import clsx from "clsx";
 
@@ -24,7 +24,10 @@ import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
 
 // Custom Nodes
-import { DropdownNode } from './nodes/dropdown-node';
+import { AutocompleteNode } from './nodes/autocomplete-node';
+
+// contexts
+import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
 
 // Components
 import { Menu } from './components/menu';
@@ -38,6 +41,7 @@ export type EditorProps = {
   onBlur?: (html: string) => void,
   dropdownItems?: { label: string, value: string }[],
   dropdownPlaceholder?: string,
+  autocompleteFetchOptions?: (query: string) => Promise<{ label: string; value: string }[]>;
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -73,10 +77,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Color,
     LineHeight,
     Indentation,
-    DropdownNode.configure({
-      dropDownItems: props?.dropdownItems?.map(item => ({ value: item.value, label: item.label })),
-      dropdownPlaceholder: props.dropdownPlaceholder || 'Select an option',
-    })
+    AutocompleteNode
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
@@ -91,58 +92,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: 'focus:~outline-none',
-      },
-      // handleKeyDown(view, event) {
-      //   const { $from } = view.state.selection;
-      //   const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
-      //   // Detect "{{" typed
-      //   if (event.key === '{' && textBefore.endsWith('{')) {
-      //     // Remove "{{" (2 chars)
-      //     view.dispatch(
-      //       view.state.tr.delete(
-      //         $from.pos - 2,
-      //         $from.pos
-      //       )
-      //     );
-      //     // Insert dropdown node
-      //     editor
-      //       ?.chain()
-      //       .focus()
-      //       .insertContent({
-      //         type: 'dropdownComponent',
-      //         attrs: {
-      //           dropDownItems: props.dropdownItems,
-      //           dropdownPlaceholder: props.dropdownPlaceholder,
-      //         },
-      //       })
-      //       .run();
-      //     return true;
-      //   }
-
-      //   // Delete previous line on Escape
-      //   if (event.key === 'Escape') {
-      //     // Find the start of the current block
-      //     const lineStart = $from.before($from.depth);
-      //     // Only proceed if not in the first block
-      //     if (lineStart > 0) {
-      //       let prevLineStart = 0;
-      //       try {
-      //         prevLineStart = view.state.doc.resolve(lineStart).before();
-      //       } catch {
-      //         prevLineStart = 0;
-      //       }
-      //       // Only delete if prevLineStart is valid and before lineStart
-      //       if (prevLineStart >= 0 && prevLineStart < lineStart) {
-      //         view.dispatch(
-      //           view.state.tr.delete(prevLineStart, lineStart)
-      //         );
-      //         return true;
-      //       }
-      //     }
-      //   }
-
-      //   return false;
-      // },
+      }
     }
   };
 
@@ -151,6 +101,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
     ...EditorConfig,
     onUpdate: ({ editor }) => handleUpdate(editor),
   });
+
+  const nodeViewContextValue = useMemo<NodeViewContextType>(() => ({
+    fetchOptions: props.autocompleteFetchOptions!,
+    darkMode,
+  }), [props.autocompleteFetchOptions, darkMode]);
+
+  const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
   useEffect(() => {
     if (editor) {
@@ -161,19 +118,54 @@ export const Editor: React.FC<EditorProps> = (props) => {
     }
   }, [content, editor, dialogEditor]);
 
-  if (!editor || !dialogEditor) return null;
+   if (!activeEditor) return null;
 
   return (
-    <div
-      onClick={e => e.stopPropagation()}
-      onKeyDown={e => e.stopPropagation()}
-    >
-      {
-        showEditorInDialog && (
-          <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-            <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10'>
+    <NodeViewContext.Provider value={nodeViewContextValue}>
+      <BubbleMenu editor={activeEditor} />
+      <div
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
+      >
+        {
+          showEditorInDialog && (
+            <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
+              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
+                {/* Menu */}
+                <Menu editor={dialogEditor!}
+                  showRawHtml={showRawHtml}
+                  toggleRawHtml={() => setShowRawHtml((v) => !v)}
+                  darkMode={darkMode}
+                  toggleDarkMode={() => setDarkMode((v) => !v)}
+                  className={
+                    clsx({
+                      '~bg-gray-100': !darkMode,
+                      '~text-gray-800': !darkMode,
+                      '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                    })
+                  }
+                />
+
+                {/* Editor */}
+                <EditorContent
+                  editor={dialogEditor!}
+                  content={content}
+                  setContent={setContent}
+                  darkMode={darkMode}
+                  markdownMode={showRawHtml}
+                />
+              </DialogContent>
+            </Dialog>
+          )
+        }
+
+        {
+          !showEditorInDialog && (
+            <>
               {/* Menu */}
-              <Menu editor={dialogEditor}
+              <Menu editor={editor!}
+                setShowEditorInDialog={setShowEditorInDialog}
+                showEditorInDialog={showEditorInDialog}
                 showRawHtml={showRawHtml}
                 toggleRawHtml={() => setShowRawHtml((v) => !v)}
                 darkMode={darkMode}
@@ -187,62 +179,24 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 }
               />
 
-              {/* Bubble Menu */}
-              {/* <BubbleMenu editor={dialogEditor} /> */}
-
               {/* Editor */}
               <EditorContent
-                editor={dialogEditor}
+                editor={editor!}
                 content={content}
                 setContent={setContent}
                 darkMode={darkMode}
                 markdownMode={showRawHtml}
               />
-            </DialogContent>
-          </Dialog>
-        )
-      }
+            </>
+          )
+        }
 
-      {
-        !showEditorInDialog && (
-          <>
-            {/* Menu */}
-            <Menu editor={editor}
-              setShowEditorInDialog={setShowEditorInDialog}
-              showEditorInDialog={showEditorInDialog}
-              showRawHtml={showRawHtml}
-              toggleRawHtml={() => setShowRawHtml((v) => !v)}
-              darkMode={darkMode}
-              toggleDarkMode={() => setDarkMode((v) => !v)}
-              className={
-                clsx({
-                  '~bg-gray-100': !darkMode,
-                  '~text-gray-800': !darkMode,
-                  '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
-                })
-              }
-            />
-
-            {/* Bubble Menu */}
-            {/* <BubbleMenu editor={editor} /> */}
-
-            {/* Editor */}
-            <EditorContent
-              editor={editor}
-              content={content}
-              setContent={setContent}
-              darkMode={darkMode}
-              markdownMode={showRawHtml}
-            />
-          </>
-        )
-      }
-
-      {/* Debugging Content */}
-      {/* <div className='~mt-4'>
+        {/* Debugging Content */}
+        {/* <div className='~mt-4'>
         <h3>Editor Content (HTML):</h3>
         <div>{content}</div>
       </div> */}
-    </div>
+      </div>
+    </NodeViewContext.Provider>
   );
 };

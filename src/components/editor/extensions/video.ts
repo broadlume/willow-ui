@@ -1,6 +1,6 @@
-import { Node, nodeInputRule } from '@tiptap/react';
-import { Plugin, PluginKey } from 'prosemirror-state';
-import clsx from 'classnames';
+import { Node, nodeInputRule } from '@tiptap/core';
+import { ReactNodeViewRenderer } from '@tiptap/react';
+import { VideoComponent } from './video-component'; // Adjust path if needed
 
 export interface VideoOptions {
   HTMLAttributes: Record<string, any>;
@@ -9,126 +9,62 @@ export interface VideoOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     video: {
-      /**
-       * Set a video node
-       */
-      setVideo: (src: string) => ReturnType;
-      /**
-       * Toggle a video
-       */
-      toggleVideo: () => ReturnType;
+      setVideo: (options: { src: string }) => ReturnType;
     };
   }
 }
 
 const VIDEO_INPUT_REGEX = /!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\)/;
 
-export const Video = Node.create({
+export const Video = Node.create<VideoOptions>({
   name: 'video',
   group: 'block',
-  selectable: true,
+  atom: true,
   draggable: true,
-  allowGapCursor: true,
 
   addAttributes() {
     return {
       src: {
         default: null,
-        parseHTML: (el) => (el as HTMLElement).getAttribute('src'),
-        renderHTML: (attrs) => ({ src: attrs.src }),
-      },
-      aspectRatio: {
-        default: 'aspect-video', // Tailwind's 16/9
-        parseHTML: (el) =>
-          (el as HTMLElement).getAttribute('data-aspect-ratio') ||
-          'aspect-video',
-        renderHTML: (attrs) => ({ 'data-aspect-ratio': attrs.aspectRatio }),
-      },
-      frameborder: {
-        default: '0',
-        parseHTML: (el) =>
-          (el as HTMLElement).getAttribute('frameborder') || '0',
-        renderHTML: (attrs) => ({ frameborder: attrs.frameborder }),
-      },
-      allow: {
-        default:
-          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-        parseHTML: (el) => (el as HTMLElement).getAttribute('allow'),
-        renderHTML: (attrs) => ({ allow: attrs.allow }),
-      },
-      allowfullscreen: {
-        default: 'true',
-        parseHTML: (el) => (el as HTMLElement).getAttribute('allowfullscreen'),
-        renderHTML: (attrs) => ({ allowfullscreen: attrs.allowfullscreen }),
-      },
-      width: {
-        default: '100%',
-        parseHTML: (el) => (el as HTMLElement).getAttribute('width') || '100%',
-        renderHTML: (attrs) => ({ width: attrs.width }),
-      },
-      height: {
-        default: '315',
-        parseHTML: (el) => (el as HTMLElement).getAttribute('height') || '315',
-        renderHTML: (attrs) => ({ height: attrs.height }),
+        // --- THE FIX IS HERE ---
+        // We must tell Tiptap how to render this attribute to HTML.
+        // This will be merged into the `HTMLAttributes` passed to the main `renderHTML` function.
+        renderHTML: attributes => {
+          if (!attributes.src) {
+            return {};
+          }
+          return {
+            src: attributes.src,
+          };
+        },
       },
     };
   },
 
   parseHTML() {
-    return [
-      {
-        tag: 'iframe[src]',
-      },
-    ];
+    return [{
+      // This selector now matches the output of `renderHTML` for consistency.
+      tag: 'div[data-video-wrapper] iframe[src]',
+      getAttrs: dom => ({
+        src: (dom as HTMLElement).getAttribute('src'),
+      }),
+    }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    // Use the width attribute if present, otherwise default to ~w-full
-    const widthClass =
-      HTMLAttributes.width && HTMLAttributes.width !== '100%'
-        ? `~w-[${HTMLAttributes.width}]`
-        : '~w-full';
-
-    return [
-      'iframe',
-      {
-        ...HTMLAttributes,
-        class: clsx(
-          HTMLAttributes.class,
-          widthClass,
-          '~border-2',
-          '~border-blue-600',
-          '~rounded-lg',
-          '~cursor-move'
-        ),
-      },
-    ];
+    // This function is now correct because `HTMLAttributes` will contain the `src`
+    // attribute thanks to our fix in `addAttributes`.
+    return ['div', { 'data-video-wrapper': '' }, ['iframe', HTMLAttributes]];
   },
 
   addCommands() {
     return {
-      setVideo:
-        (src: string) =>
-        ({ commands }) => {
-          // Detect shorts or vertical video by URL pattern
-          let aspectRatio = '~aspect-video';
-          if (
-            src.includes('shorts') ||
-            src.includes('9_16') ||
-            src.includes('vertical') ||
-            src.match(/aspect=9:16/i)
-          ) {
-            aspectRatio = '~aspect-[9/16]';
-          }
-          return commands.insertContent({
-            type: this.name,
-            attrs: { src, aspectRatio },
-          });
-        },
-      toggleVideo:
-        () =>
-        ({ commands }) =>
-          commands.toggleNode(this.name, 'paragraph'),
+      setVideo: (options) => ({ commands }) => {
+        return commands.insertContent({
+          type: this.name,
+          attrs: options,
+        });
+      },
     };
   },
 
@@ -145,18 +81,7 @@ export const Video = Node.create({
     ];
   },
 
-  addProseMirrorPlugins() {
-    return [
-      new Plugin({
-        key: new PluginKey('videoDropPlugin'),
-        props: {
-          handleDOMEvents: {
-            drop(view, event) {
-              return false;
-            },
-          },
-        },
-      }),
-    ];
+  addNodeView() {
+    return ReactNodeViewRenderer(VideoComponent);
   },
 });
