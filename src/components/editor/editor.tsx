@@ -17,9 +17,11 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
+import Gapcursor from '@tiptap/extension-gapcursor'; 
+
 
 // Custom Extensions
-import { Video } from './extensions/video';
+import IFrame from './extensions/video';
 import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
 
@@ -58,7 +60,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
   // List of Tiptap Editor Extensions
   const extensions = [
-    StarterKit,
+    StarterKit.configure({
+      gapcursor: false
+    }),
+    Gapcursor,
     Link.configure({ openOnClick: true }),
     Image,
     Table.configure({ resizable: true }),
@@ -72,7 +77,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Placeholder.configure({
       placeholder: 'Write something …',
     }),
-    Video,
+    IFrame,
     TextStyle,
     Color,
     LineHeight,

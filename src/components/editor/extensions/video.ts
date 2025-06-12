@@ -1,87 +1,76 @@
-import { Node, nodeInputRule } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
-import { VideoComponent } from './video-component'; // Adjust path if needed
+import { Node } from '@tiptap/core'
 
-export interface VideoOptions {
-  HTMLAttributes: Record<string, any>;
+export interface IframeOptions {
+  allowFullscreen: boolean,
+  HTMLAttributes: {
+    [key: string]: any
+  },
 }
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    video: {
-      setVideo: (options: { src: string }) => ReturnType;
-    };
+    iframe: {
+      /**
+       * Add an iframe
+       */
+      setIframe: (options: { src: string }) => ReturnType,
+    }
   }
 }
 
-const VIDEO_INPUT_REGEX = /!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\)/;
+export default Node.create<IframeOptions>({
+  name: 'iframe',
 
-export const Video = Node.create<VideoOptions>({
-  name: 'video',
   group: 'block',
+
   atom: true,
-  draggable: true,
+
+  addOptions() {
+    return {
+      allowFullscreen: true,
+      HTMLAttributes: {
+        class: '~w-96 h-96 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden',
+      },
+    }
+  },
 
   addAttributes() {
     return {
       src: {
         default: null,
-        // --- THE FIX IS HERE ---
-        // We must tell Tiptap how to render this attribute to HTML.
-        // This will be merged into the `HTMLAttributes` passed to the main `renderHTML` function.
-        renderHTML: attributes => {
-          if (!attributes.src) {
-            return {};
-          }
-          return {
-            src: attributes.src,
-          };
-        },
       },
-    };
+      frameborder: {
+        default: 0,
+      },
+      allowfullscreen: {
+        default: this.options.allowFullscreen,
+        parseHTML: () => this.options.allowFullscreen,
+      },
+    }
   },
 
   parseHTML() {
     return [{
-      // This selector now matches the output of `renderHTML` for consistency.
-      tag: 'div[data-video-wrapper] iframe[src]',
-      getAttrs: dom => ({
-        src: (dom as HTMLElement).getAttribute('src'),
-      }),
-    }];
+      tag: 'iframe',
+    }]
   },
 
   renderHTML({ HTMLAttributes }) {
-    // This function is now correct because `HTMLAttributes` will contain the `src`
-    // attribute thanks to our fix in `addAttributes`.
-    return ['div', { 'data-video-wrapper': '' }, ['iframe', HTMLAttributes]];
+    return ['div', this.options.HTMLAttributes, ['iframe', HTMLAttributes]]
   },
 
   addCommands() {
     return {
-      setVideo: (options) => ({ commands }) => {
-        return commands.insertContent({
-          type: this.name,
-          attrs: options,
-        });
+      setIframe: (options: { src: string }) => ({ tr, dispatch }) => {
+        const { selection } = tr
+        const node = this.type.create(options)
+
+        if (dispatch) {
+          tr.replaceRangeWith(selection.from, selection.to, node)
+        }
+
+        return true
       },
-    };
+    }
   },
-
-  addInputRules() {
-    return [
-      nodeInputRule({
-        find: VIDEO_INPUT_REGEX,
-        type: this.type,
-        getAttributes: (match) => {
-          const [, , src] = match;
-          return { src };
-        },
-      }),
-    ];
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(VideoComponent);
-  },
-});
+})
