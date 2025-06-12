@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Editor } from './editor';
+import { useCallback } from 'react';
 
 const meta: Meta = {
   component: Editor,
@@ -10,16 +11,28 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj<typeof Editor>;
 
+const EditorComponent = () => {
+  const fetchUsersFromApi = useCallback(async (query: string) => {
+    const users = [
+      { id: '1', name: 'John Doe' },
+      { id: '2', name: 'Jane Smith' },
+      { id: '3', name: 'Peter Jones' },
+    ];
+    await new Promise(resolve => setTimeout(resolve, 300));
+    return users
+      .filter(user => user.name.toLowerCase().includes(query.toLowerCase()))
+      .map(user => ({ label: user.name, value: user.id }));
+  }, []);
+
+  return (
+    <Editor
+      onChange={(html) => console.log('Content changed:', html)}
+      onBlur={(html) => console.log('Content blurred:', html)}
+      autocompleteFetchOptions={fetchUsersFromApi}
+    />
+  );
+}
+
 export const Demo: Story = {
-  render: (_) => {
-    return <Editor
-      dropdownItems={[
-        { label: 'Ferrari', value: 'option1' },
-        { label: 'Ghini', value: 'option2' },
-        { label: 'Chevy', value: 'option3' },
-        { label: 'Fiat', value: 'option4' },
-      ]}
-      dropdownPlaceholder="Select a car"
-    />;
-  },
+  render: () => <EditorComponent />,
 };
