@@ -1,10 +1,21 @@
 import {
+  Button,
+  Checkbox,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@broadlume/willow-ui';
+import {
   closestCenter,
   DndContext,
   DragEndEvent,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
+  useDraggable,
+  useDroppable,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -12,70 +23,261 @@ import {
   arrayMove,
   horizontalListSortingStrategy,
   SortableContext,
+  useSortable,
 } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@radix-ui/react-select';
-import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Header,
+  PaginationState,
   Row,
+  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import classNames from 'classnames';
-import React, { useMemo, useState } from 'react';
-import { Button } from 'react-day-picker';
-import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2';
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import {
-  DataTableProps,
-  DraggableColumnHeader,
-  DraggableTableRow,
+  HiChevronDown,
+  HiChevronUp,
+  HiMiniChevronLeft,
+  HiMiniChevronRight,
+} from 'react-icons/hi2';
+import {
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-} from './TableComponents';
+} from './test';
+
+type DataProps = Partial<{
+  'data-testid': string;
+  id: string;
+  className: string;
+}>;
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  tableParams?: Partial<Parameters<typeof useReactTable<TData>>[0]>;
+  initialColumnOrder?: string[];
+  initialSorting?: SortingState;
+  initialPagination?: PaginationState;
+  onColumnOrderChange?: (newOrder?: string[]) => void;
+  onRowDrop?: (draggedRow: TData, dropTarget: TData) => void;
+  enableSelectAllPages?: boolean;
+  enableRowSelection?: boolean;
+  itemProps?: {
+    root?: DataProps;
+    tableWrapper?: DataProps;
+    table?: DataProps;
+    tableHeader?: DataProps;
+    tableHeaderRow?: DataProps;
+    tableHead?: DataProps;
+    tableBody?: DataProps;
+    tableBodyRow?: DataProps;
+    tableRow?: DataProps;
+    tableCell?: DataProps;
+  };
+}
 
 export function useDataTable<TData extends object, TValue>({
   columns,
   data,
   itemProps,
-  onRowDrop = () => undefined,
+  initialColumnOrder,
+  initialSorting,
+  initialPagination,
+  enableSelectAllPages,
+  enableRowSelection,
+  onRowDrop = () => {},
+  onColumnOrderChange = () => {},
   tableParams,
 }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({});
+  /**
+   * Column Ordering
+   */
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
   // Memoize columns to prevent re-renders, and derive initial column order
-  const columnDefs = useMemo(() => columns, []);
-  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
-    columnDefs.map(
-      (c) => c.id || ('accessorKey' in c && (c.accessorKey as string)) || ''
-    )
+  const { draggableColumnIds } = useMemo(() => {
+    const fixedStartIds = ['select'];
+    const fixedEndIds = ['action', 'showHideCol'];
+    const draggableColumnIds =
+      initialColumnOrder?.filter(
+        (id) => !fixedStartIds.includes(id) && !fixedEndIds.includes(id)
+      ) || [];
+    setColumnOrder([...fixedStartIds, ...draggableColumnIds, ...fixedEndIds]);
+    return { fixedStartIds, fixedEndIds, draggableColumnIds };
+  }, [initialColumnOrder]);
+
+  /**
+   * Sort
+   */
+  const [sorting, setSorting] = useState<SortingState>([]);
+  useEffect(() => {
+    if (!sorting.length && initialSorting?.length) {
+      setSorting(initialSorting);
+    }
+  }, [initialSorting]);
+
+  /**
+   * Pagination
+   */
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: initialPagination?.pageIndex ?? 0,
+    pageSize: initialPagination?.pageSize ?? 10,
+  });
+
+  /**
+   * Row Selection
+   */
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [isSelectAllPages, setIsSelectAllPages] = useState(false);
+  const [excludedRowIds, setExcludedRowIds] = useState<Record<string, boolean>>(
+    {}
   );
+
+  const handleSelectionReset = () => {
+    setIsSelectAllPages(false);
+    setExcludedRowIds({});
+    setRowSelection({});
+  };
+
+  const handleSelectAll = () => {
+    setIsSelectAllPages(true);
+    setExcludedRowIds({});
+    setRowSelection({});
+  };
+
+  /**
+   * Columns
+   */
+  const memoizedColumns = useMemo(() => {
+    const selectionColumn: ColumnDef<TData, TValue> = {
+      id: 'select',
+      enableSorting: false,
+      enableHiding: false,
+      header: ({ table }) => {
+        const pageRows = table.getPaginationRowModel().rows;
+        const numPageRows = pageRows.length;
+        const numSelectedPageRows = Object.keys(rowSelection).length;
+        const isAllOnPageSelected =
+          numPageRows > 0 && numSelectedPageRows === numPageRows;
+
+        const handleHeaderCheckboxClick = () => {
+          if (isSelectAllPages) {
+            setIsSelectAllPages(false);
+            setExcludedRowIds({});
+            setRowSelection({});
+          } else if (isAllOnPageSelected) {
+            if (enableSelectAllPages) {
+              setIsSelectAllPages(false);
+              setExcludedRowIds({});
+              setRowSelection({});
+              return;
+            }
+            setIsSelectAllPages(true);
+            setExcludedRowIds({});
+            setRowSelection({});
+          } else {
+            setIsSelectAllPages(false);
+            setExcludedRowIds({});
+            const newSelection = pageRows.reduce((acc, row) => {
+              acc[row.id] = true;
+              return acc;
+            }, {} as Record<string, boolean>);
+            setRowSelection(newSelection);
+          }
+        };
+
+        const isIndeterminate =
+          (isSelectAllPages && Object.keys(excludedRowIds).length > 0) ||
+          (!isSelectAllPages && numSelectedPageRows > 0);
+
+        const isChecked = isSelectAllPages
+          ? Object.keys(excludedRowIds).length === 0
+          : isAllOnPageSelected;
+
+        return (
+          <Checkbox
+            checked={isIndeterminate ? 'indeterminate' : isChecked}
+            color='#1A6CFF'
+            className='cms-rounded-sm data-[state=checked]:cms-bg-[#1A6CFF] cms-border-[#1A6CFF]'
+            onCheckedChange={handleHeaderCheckboxClick}
+            aria-label='Select all'
+          />
+        );
+      },
+      cell: ({ row }) => {
+        const handleRowCheckboxChange = () => {
+          if (isSelectAllPages) {
+            setExcludedRowIds((prev) => {
+              const newExcluded = { ...prev };
+              if (newExcluded[row.id]) {
+                delete newExcluded[row.id];
+              } else {
+                newExcluded[row.id] = true;
+              }
+              return newExcluded;
+            });
+          } else {
+            row.toggleSelected();
+          }
+        };
+
+        const isChecked = isSelectAllPages
+          ? !excludedRowIds[row.id]
+          : row.getIsSelected();
+
+        return (
+          <Checkbox
+            checked={isChecked}
+            onCheckedChange={handleRowCheckboxChange}
+            className='cms-rounded-sm data-[state=checked]:cms-bg-[#1A6CFF] cms-border-[#1A6CFF]'
+            aria-label='Select row'
+          />
+        );
+      },
+      size: 40,
+    };
+
+    return enableRowSelection ? [selectionColumn, ...columns] : columns;
+  }, [
+    columns,
+    rowSelection,
+    isSelectAllPages,
+    excludedRowIds,
+    enableRowSelection,
+  ]);
+
   const table = useReactTable({
     data,
-    columns,
+    columns: memoizedColumns,
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection,
     ...tableParams,
     getCoreRowModel: getCoreRowModel(),
-    onColumnOrderChange: setColumnOrder,
+    onColumnOrderChange: onColumnOrderChange,
     enableSortingRemoval: false,
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    manualSorting: true,
+    manualPagination: true,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     state: {
-      rowSelection,
       columnOrder,
+      sorting,
+      pagination,
+      rowSelection,
       ...tableParams?.state,
     },
   });
-
-  console.log('table sorting', table.getSortedRowModel());
 
   // --- DND Handlers and Sensors ---
   const sensors = useSensors(
@@ -102,12 +304,21 @@ export function useDataTable<TData extends object, TValue>({
     const overId = String(over.id);
 
     // Handle column DND
-    if (activeId !== overId) {
-      setColumnOrder((currentOrder) => {
-        const oldIndex = currentOrder.indexOf(activeId);
-        const newIndex = currentOrder.indexOf(overId);
-        return arrayMove(currentOrder, oldIndex, newIndex);
-      });
+    if (activeId && overId && activeId !== overId) {
+      const activeColId = activeId;
+      const overColId = overId;
+
+      // Only allow dropping onto other draggable columns
+      if (
+        draggableColumnIds.includes(activeColId) &&
+        draggableColumnIds.includes(overColId)
+      ) {
+        setColumnOrder((currentOrder) => {
+          const oldIndex = currentOrder.indexOf(activeColId);
+          const newIndex = currentOrder.indexOf(overColId);
+          return arrayMove(currentOrder, oldIndex, newIndex);
+        });
+      }
       return;
     }
 
@@ -165,6 +376,9 @@ export function useDataTable<TData extends object, TValue>({
                         <DraggableColumnHeader
                           key={header.id}
                           header={header}
+                          isDraggable={draggableColumnIds.includes(
+                            header.column.id
+                          )}
                           itemProps={itemProps}
                         />
                       );
@@ -301,5 +515,15 @@ export function useDataTable<TData extends object, TValue>({
     </div>
   );
 
-  return { table, CustomDataTable };
+  return {
+    table,
+    CustomDataTable,
+    rowSelection: {
+      rowSelection,
+      isSelectAllPages,
+      excludedRowIds,
+      handleSelectionReset,
+      handleSelectAll,
+    },
+  };
 }

@@ -153,76 +153,6 @@ interface DataTableProps<TData, TValue> {
   };
 }
 
-// --- Draggable Header Component ---
-// --- Draggable Header Component ---
-// This component wraps your TableHead to make it draggable and sortable
-const DraggableColumnHeader = <TData, TValue>({
-  header,
-  itemProps,
-}: {
-  header: Header<TData, TValue>;
-  itemProps: DataTableProps<TData, TValue>['itemProps'];
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: header.column.id,
-    disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
-  });
-
-  console.log('header.column.getIsSorted()', header.column.getIsSorted());
-
-  const style: React.CSSProperties = {
-    opacity: isDragging ? 0.8 : 1,
-    position: 'relative',
-    transform: CSS.Translate.toString(transform),
-    whiteSpace: 'nowrap',
-    width: header.column.getSize(),
-    transition,
-    zIndex: isDragging ? 10 : 1,
-  };
-
-  return (
-    <TableHead
-      ref={setNodeRef}
-      style={style}
-      colSpan={header.colSpan}
-      {...itemProps?.tableHead}
-      className={classNames(
-        'cms-px-3 cms-py-3 cms-uppercase cms-text-[#1A1A1A]',
-        itemProps?.tableHead?.className
-      )}
-    >
-      <TableCell
-        {...attributes}
-        {...listeners}
-        onClick={header.column.getToggleSortingHandler()}
-        className={classNames('cms-flex cms-items-center cms-gap-1 !cms-p-0', {
-          'cursor-pointer select-none': header.column.getCanSort(),
-          'cursor-move': !isDragging,
-        })}
-      >
-        {header.isPlaceholder
-          ? null
-          : flexRender(header.column.columnDef.header, header.getContext())}
-        {header.column.getCanSort() && header.column.getIsSorted() ? (
-          header.column.getIsSorted() === 'asc' ? (
-            <HiChevronUp className='~ml-2 ~h-4 ~w-4' />
-          ) : (
-            <HiChevronDown className='~ml-2 ~h-4 ~w-4' />
-          )
-        ) : null}
-      </TableCell>
-    </TableHead>
-  );
-};
-
-// --- Draggable Table Row Component ---
 const DraggableTableRow = <TData extends object>({
   row,
   children,
@@ -283,6 +213,74 @@ const DraggableTableRow = <TData extends object>({
     >
       {children}
     </TableRow>
+  );
+};
+
+const DraggableColumnHeader = <TData, TValue>({
+  header,
+  itemProps,
+  isDraggable,
+}: {
+  header: Header<TData, TValue>;
+  itemProps: DataTableProps<TData, TValue>['itemProps'];
+  isDraggable: boolean;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: header.column.id,
+    disabled: !isDraggable,
+    // disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
+  });
+
+  const style: React.CSSProperties = {
+    opacity: isDragging ? 0.8 : 1,
+    position: 'relative',
+    transform: CSS.Translate.toString(transform),
+    whiteSpace: 'nowrap',
+    width: header.column.getSize(),
+    transition,
+    zIndex: isDragging ? 10 : 1,
+  };
+
+  return (
+    <TableHead
+      ref={setNodeRef}
+      style={style}
+      colSpan={header.colSpan}
+      {...itemProps?.tableHead}
+      className={classNames(
+        'cms-px-3 cms-py-3 cms-uppercase cms-text-[#1A1A1A]',
+        itemProps?.tableHead?.className
+      )}
+    >
+      <TableCell
+        {...(isDraggable ? attributes : {})}
+        {...(isDraggable ? listeners : {})}
+        onClick={header.column.getToggleSortingHandler()}
+        className={classNames('cms-flex cms-items-center cms-gap-1 !cms-p-0', {
+          'cursor-pointer select-none': header.column.getCanSort(),
+          'cursor-grab': isDraggable && !isDragging,
+          'cursor-move': !isDragging,
+        })}
+      >
+        {header.isPlaceholder
+          ? null
+          : flexRender(header.column.columnDef.header, header.getContext())}
+        {header.column.getCanSort() && header.column.getIsSorted() ? (
+          header.column.getIsSorted() === 'asc' ? (
+            <HiChevronUp className='~ml-2 ~h-4 ~w-4' />
+          ) : (
+            <HiChevronDown className='~ml-2 ~h-4 ~w-4' />
+          )
+        ) : null}
+      </TableCell>
+    </TableHead>
   );
 };
 
