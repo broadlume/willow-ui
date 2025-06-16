@@ -24,7 +24,6 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2';
 import {
@@ -46,6 +45,7 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
+import { cn } from '@src/lib/utils';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -167,7 +167,7 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             checked={isIndeterminate ? 'indeterminate' : isChecked}
             color='#1A6CFF'
-            className='cms-rounded-sm data-[state=checked]:cms-bg-[#1A6CFF] cms-border-[#1A6CFF]'
+            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             onCheckedChange={handleHeaderCheckboxClick}
             aria-label='Select all'
           />
@@ -198,7 +198,7 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             checked={isChecked}
             onCheckedChange={handleRowCheckboxChange}
-            className='cms-rounded-sm data-[state=checked]:cms-bg-[#1A6CFF] cms-border-[#1A6CFF]'
+            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
         );
@@ -306,12 +306,12 @@ export function useDataTable<TData, TValue>({
   const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={clsx('cms-text-sm cms-bg-white', itemProps?.root?.className)}
+      className={cn('~bg-white ~text-sm', itemProps?.root?.className)}
     >
       <div
         {...itemProps?.tableWrapper}
-        className={clsx(
-          'cms-rounded-md cms-border',
+        className={cn(
+          '~rounded-md ~border',
           itemProps?.tableWrapper?.className
         )}
       >
@@ -323,14 +323,14 @@ export function useDataTable<TData, TValue>({
           <Table {...itemProps?.table} className={itemProps?.table?.className}>
             <TableHeader
               {...itemProps?.tableHeader}
-              className={clsx(itemProps?.tableHeader?.className)}
+              className={cn(itemProps?.tableHeader?.className)}
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
                   {...itemProps?.tableHeaderRow}
-                  className={clsx(
-                    'cms-text-[#231f21] hover:!cms-bg-transparent',
+                  className={cn(
+                    '~text-[#231f21] hover:!~bg-transparent',
                     itemProps?.tableHeaderRow?.className
                   )}
                 >
@@ -356,7 +356,7 @@ export function useDataTable<TData, TValue>({
             </TableHeader>
             <TableBody
               {...itemProps?.tableBody}
-              className={clsx(itemProps?.tableBody?.className)}
+              className={cn(itemProps?.tableBody?.className)}
             >
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -364,15 +364,15 @@ export function useDataTable<TData, TValue>({
                     row={row as Row<object>}
                     key={row.id}
                     {...itemProps?.tableBodyRow}
-                    className={clsx(itemProps?.tableBodyRow?.className)}
+                    className={cn(itemProps?.tableBodyRow?.className)}
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         {...itemProps?.tableCell}
-                        className={clsx(
-                          'cms-px-3 cms-py-3',
+                        className={cn(
+                          '~px-3 ~py-3',
                           itemProps?.tableCell?.className
                         )}
                       >
@@ -387,13 +387,13 @@ export function useDataTable<TData, TValue>({
               ) : (
                 <TableRow
                   {...itemProps?.tableBodyRow}
-                  className={clsx(itemProps?.tableBodyRow?.className)}
+                  className={cn(itemProps?.tableBodyRow?.className)}
                 >
                   <TableCell
                     colSpan={columns.length}
                     {...itemProps?.tableCell}
-                    className={clsx(
-                      'cms-h-24 cms-text-center',
+                    className={cn(
+                      '~h-24 ~text-center',
                       itemProps?.tableCell?.className
                     )}
                   >
@@ -405,10 +405,10 @@ export function useDataTable<TData, TValue>({
           </Table>
         </DndContext>
       </div>
-      <div className='cms-flex cms-items-center cms-justify-between cms-my-5 cms-px-2'>
+      <div className='~my-5 ~flex ~items-center ~justify-between ~px-2'>
         {/* Item per page */}
-        <div className='cms-flex cms-flex-row cms-gap-2 cms-items-center cms-justify-start cms-flex-1'>
-          <p className='cms-text-xs cms-font-normal'>Item Per page</p>
+        <div className='~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-2'>
+          <p className='~text-xs ~font-normal'>Item Per page</p>
           <Select
             //   value={pagination.pageSize.toString()}
             value={table.getState().pagination.pageSize.toString()}
@@ -421,13 +421,13 @@ export function useDataTable<TData, TValue>({
               table.setPageSize(Number(value))
             }
           >
-            <SelectTrigger className='cms-w-fit cms-text-xs cms-font-normal [&>span]:cms-mr-2'>
+            <SelectTrigger className='~w-fit ~text-xs ~font-normal [&>span]:~mr-2'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {[5, 10, 20, 50].map((opt) => (
                 <SelectItem
-                  className='cms-text-xs cms-font-normal'
+                  className='~text-xs ~font-normal'
                   key={opt}
                   value={opt.toString()}
                 >
@@ -437,14 +437,14 @@ export function useDataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className='cms-flex cms-items-center cms-gap-3'>
+        <div className='~flex ~items-center ~gap-3'>
           {/* Left chevron */}
           <Button
             onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
-            className='cms-shadow-none cms-text-white cms-rounded-md !cms-p-2 cms-font-normal cms-bg-[#1A6CFF] disabled:cms-border-none disabled:cms-bg-transparent disabled:cms-text-[#1A1A1A]'
+            className='~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]'
           >
-            <HiMiniChevronLeft className='cms-w-4 cms-h-4' />
+            <HiMiniChevronLeft className='~h-4 ~w-4' />
           </Button>
 
           {/* Pages */}
@@ -452,10 +452,10 @@ export function useDataTable<TData, TValue>({
             (item) => (
               <Button
                 type='button'
-                className={clsx(
-                  'cms-shadow-none cms-rounded-md !cms-p-2 cms-font-normal disabled:cms-bg-transparent cms-text-[#1A1A1A]  !cms-px-3',
+                className={cn(
+                  '~h-fit ~rounded-md !~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
                   table.getState().pagination.pageIndex + 1 === item
-                    ? 'cms-border cms-border-[#CCCCCC]'
+                    ? '~border ~border-[#CCCCCC]'
                     : ''
                 )}
                 variant={
@@ -472,10 +472,10 @@ export function useDataTable<TData, TValue>({
           {/* Right chevron */}
           <Button
             onClick={table.nextPage}
-            className='cms-shadow-none cms-text-white cms-rounded-md !cms-p-2 cms-font-normal cms-bg-[#1A6CFF] disabled:cms-border-none disabled:cms-bg-transparent disabled:cms-text-[#1A1A1A]'
+            className='~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]'
             disabled={!table.getCanNextPage()}
           >
-            <HiMiniChevronRight className='cms-w-4 cms-h-4' />
+            <HiMiniChevronRight className='~h-4 ~w-4' />
           </Button>
         </div>
       </div>

@@ -1,4 +1,9 @@
-import { useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  PaginationState,
+  SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
 
 export type DataProps = Partial<{
   'data-testid': string;
