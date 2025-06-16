@@ -1,6 +1,6 @@
 import { Node, nodeInputRule } from '@tiptap/react';
 import { Plugin, PluginKey } from 'prosemirror-state';
-import clsx from 'classnames';
+import clsx from 'clsx';
 
 export interface VideoOptions {
   HTMLAttributes: Record<string, any>;

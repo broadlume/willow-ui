@@ -1,21 +1,10 @@
 import {
-  Button,
-  Checkbox,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@broadlume/willow-ui';
-import {
   closestCenter,
   DndContext,
   DragEndEvent,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
-  useDraggable,
-  useDroppable,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -23,70 +12,42 @@ import {
   arrayMove,
   horizontalListSortingStrategy,
   SortableContext,
-  useSortable,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  Header,
   PaginationState,
   Row,
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import classNames from 'classnames';
-import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
+import clsx from 'clsx';
+import { useEffect, useMemo, useState } from 'react';
+import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2';
 import {
-  HiChevronDown,
-  HiChevronUp,
-  HiMiniChevronLeft,
-  HiMiniChevronRight,
-} from 'react-icons/hi2';
+  Button,
+  Checkbox,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../index';
 import {
+  DraggableColumnHeader,
+  DraggableTableRow,
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
-} from './test';
+} from './TableComponents';
+import { DataTableProps } from './type';
 
-type DataProps = Partial<{
-  'data-testid': string;
-  id: string;
-  className: string;
-}>;
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  tableParams?: Partial<Parameters<typeof useReactTable<TData>>[0]>;
-  initialColumnOrder?: string[];
-  initialSorting?: SortingState;
-  initialPagination?: PaginationState;
-  onColumnOrderChange?: (newOrder?: string[]) => void;
-  onRowDrop?: (draggedRow: TData, dropTarget: TData) => void;
-  enableSelectAllPages?: boolean;
-  enableRowSelection?: boolean;
-  itemProps?: {
-    root?: DataProps;
-    tableWrapper?: DataProps;
-    table?: DataProps;
-    tableHeader?: DataProps;
-    tableHeaderRow?: DataProps;
-    tableHead?: DataProps;
-    tableBody?: DataProps;
-    tableBodyRow?: DataProps;
-    tableRow?: DataProps;
-    tableCell?: DataProps;
-  };
-}
-
-export function useDataTable<TData extends object, TValue>({
+export function useDataTable<TData, TValue>({
   columns,
   data,
   itemProps,
@@ -95,8 +56,8 @@ export function useDataTable<TData extends object, TValue>({
   initialPagination,
   enableSelectAllPages,
   enableRowSelection,
-  onRowDrop = () => {},
-  onColumnOrderChange = () => {},
+  onRowDrop = () => undefined,
+  onColumnOrderChange = () => undefined,
   tableParams,
 }: DataTableProps<TData, TValue>) {
   /**
@@ -155,9 +116,12 @@ export function useDataTable<TData extends object, TValue>({
   };
 
   /**
-   * Columns
+   * Columns(Selectable feature added)
    */
   const memoizedColumns = useMemo(() => {
+    if (!enableRowSelection) {
+      return columns;
+    }
     const selectionColumn: ColumnDef<TData, TValue> = {
       id: 'select',
       enableSorting: false,
@@ -171,14 +135,10 @@ export function useDataTable<TData extends object, TValue>({
 
         const handleHeaderCheckboxClick = () => {
           if (isSelectAllPages) {
-            setIsSelectAllPages(false);
-            setExcludedRowIds({});
-            setRowSelection({});
+            handleSelectionReset();
           } else if (isAllOnPageSelected) {
             if (enableSelectAllPages) {
-              setIsSelectAllPages(false);
-              setExcludedRowIds({});
-              setRowSelection({});
+              handleSelectionReset();
               return;
             }
             setIsSelectAllPages(true);
@@ -246,15 +206,19 @@ export function useDataTable<TData extends object, TValue>({
       size: 40,
     };
 
-    return enableRowSelection ? [selectionColumn, ...columns] : columns;
+    return [selectionColumn, ...columns];
   }, [
     columns,
     rowSelection,
     isSelectAllPages,
     excludedRowIds,
     enableRowSelection,
+    enableSelectAllPages,
   ]);
 
+  /**
+   * Main Init of data table hook
+   */
   const table = useReactTable({
     data,
     columns: memoizedColumns,
@@ -279,7 +243,9 @@ export function useDataTable<TData extends object, TValue>({
     },
   });
 
-  // --- DND Handlers and Sensors ---
+  /**
+   * DND handlers
+   */
   const sensors = useSensors(
     useSensor(MouseSensor, {
       // Require the mouse to move by 10 pixels before activating
@@ -327,23 +293,24 @@ export function useDataTable<TData extends object, TValue>({
       const draggedItem = active.data.current?.row as TData | undefined;
       const dropTarget = over.data.current?.row as TData | undefined;
 
+      // @ts-expect-error type addition pending
       if (draggedItem?.type === 'file' && dropTarget?.type === 'folder') {
         onRowDrop?.(draggedItem, dropTarget);
       }
     }
   }
 
+  /**
+   * Render Data table Component
+   */
   const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={classNames(
-        'cms-text-sm cms-bg-white',
-        itemProps?.root?.className
-      )}
+      className={clsx('cms-text-sm cms-bg-white', itemProps?.root?.className)}
     >
       <div
         {...itemProps?.tableWrapper}
-        className={classNames(
+        className={clsx(
           'cms-rounded-md cms-border',
           itemProps?.tableWrapper?.className
         )}
@@ -356,13 +323,13 @@ export function useDataTable<TData extends object, TValue>({
           <Table {...itemProps?.table} className={itemProps?.table?.className}>
             <TableHeader
               {...itemProps?.tableHeader}
-              className={classNames(itemProps?.tableHeader?.className)}
+              className={clsx(itemProps?.tableHeader?.className)}
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
                   {...itemProps?.tableHeaderRow}
-                  className={classNames(
+                  className={clsx(
                     'cms-text-[#231f21] hover:!cms-bg-transparent',
                     itemProps?.tableHeaderRow?.className
                   )}
@@ -389,7 +356,7 @@ export function useDataTable<TData extends object, TValue>({
             </TableHeader>
             <TableBody
               {...itemProps?.tableBody}
-              className={classNames(itemProps?.tableBody?.className)}
+              className={clsx(itemProps?.tableBody?.className)}
             >
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -397,14 +364,14 @@ export function useDataTable<TData extends object, TValue>({
                     row={row as Row<object>}
                     key={row.id}
                     {...itemProps?.tableBodyRow}
-                    className={classNames(itemProps?.tableBodyRow?.className)}
+                    className={clsx(itemProps?.tableBodyRow?.className)}
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         {...itemProps?.tableCell}
-                        className={classNames(
+                        className={clsx(
                           'cms-px-3 cms-py-3',
                           itemProps?.tableCell?.className
                         )}
@@ -420,12 +387,12 @@ export function useDataTable<TData extends object, TValue>({
               ) : (
                 <TableRow
                   {...itemProps?.tableBodyRow}
-                  className={classNames(itemProps?.tableBodyRow?.className)}
+                  className={clsx(itemProps?.tableBodyRow?.className)}
                 >
                   <TableCell
                     colSpan={columns.length}
                     {...itemProps?.tableCell}
-                    className={classNames(
+                    className={clsx(
                       'cms-h-24 cms-text-center',
                       itemProps?.tableCell?.className
                     )}
@@ -485,7 +452,7 @@ export function useDataTable<TData extends object, TValue>({
             (item) => (
               <Button
                 type='button'
-                className={classNames(
+                className={clsx(
                   'cms-shadow-none cms-rounded-md !cms-p-2 cms-font-normal disabled:cms-bg-transparent cms-text-[#1A1A1A]  !cms-px-3',
                   table.getState().pagination.pageIndex + 1 === item
                     ? 'cms-border cms-border-[#CCCCCC]'

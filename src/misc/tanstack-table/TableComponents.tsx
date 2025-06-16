@@ -2,15 +2,15 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
-  Header,
-  flexRender,
-  Row,
   ColumnDef,
+  flexRender,
+  Header,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import * as React from 'react';
-import { HiChevronUp, HiChevronDown } from 'react-icons/hi2';
+import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -19,10 +19,7 @@ const Table = React.forwardRef<
   <div className='cms-relative cms-w-full cms-overflow-auto'>
     <table
       ref={ref}
-      className={classNames(
-        'cms-w-full cms-caption-bottom cms-text-sm',
-        className
-      )}
+      className={clsx('cms-w-full cms-caption-bottom cms-text-sm', className)}
       {...props}
     />
   </div>
@@ -35,7 +32,7 @@ const TableHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={classNames('[&_tr]:cms-border-b', className)}
+    className={clsx('[&_tr]:cms-border-b', className)}
     {...props}
   />
 ));
@@ -47,7 +44,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={classNames('[&_tr:last-child]:cms-border-0', className)}
+    className={clsx('[&_tr:last-child]:cms-border-0', className)}
     {...props}
   />
 ));
@@ -59,7 +56,7 @@ const TableFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
-    className={classNames(
+    className={clsx(
       'cms-border-t cms-bg-muted/50 cms-font-medium [&>tr]:last:cms-border-b-0',
       className
     )}
@@ -74,7 +71,7 @@ const TableRow = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={classNames(
+    className={clsx(
       'cms-transition-colors hover:cms-bg-muted/50 data-[state=selected]:cms-bg-muted',
       className
     )}
@@ -89,7 +86,7 @@ const TableHead = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
-    className={classNames(
+    className={clsx(
       'cms-px-2 cms-py-2 cms-text-left cms-align-middle cms-text-xs cms-font-semibold cms-text-muted-foreground [&:has([role=checkbox])]:cms-pl-3 [&:has([role=checkbox])]:cms-pr-0 [&>[role=checkbox]]:cms-translate-y-[2px] cms-w-fit',
       className
     )}
@@ -104,7 +101,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={classNames(
+    className={clsx(
       'cms-p-2 cms-text-xs cms-align-middle [&:has([role=checkbox])]:cms-pr-0 [&>[role=checkbox]]:cms-translate-y-[2px]',
       className
     )}
@@ -119,7 +116,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={classNames(
+    className={clsx(
       'cms-mt-4 cms-text-sm cms-text-muted-foreground',
       className
     )}
@@ -254,7 +251,7 @@ const DraggableColumnHeader = <TData, TValue>({
       style={style}
       colSpan={header.colSpan}
       {...itemProps?.tableHead}
-      className={classNames(
+      className={clsx(
         'cms-px-3 cms-py-3 cms-uppercase cms-text-[#1A1A1A]',
         itemProps?.tableHead?.className
       )}
@@ -263,7 +260,7 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
-        className={classNames('cms-flex cms-items-center cms-gap-1 !cms-p-0', {
+        className={clsx('cms-flex cms-items-center cms-gap-1 !cms-p-0', {
           'cursor-pointer select-none': header.column.getCanSort(),
           'cursor-grab': isDraggable && !isDragging,
           'cursor-move': !isDragging,
@@ -285,16 +282,16 @@ const DraggableColumnHeader = <TData, TValue>({
 };
 
 export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
   DraggableColumnHeader,
   DraggableTableRow,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 };
 
-export type { DataTableProps, DataProps };
+export type { DataProps, DataTableProps };
