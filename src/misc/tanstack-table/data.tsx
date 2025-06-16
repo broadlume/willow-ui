@@ -42,17 +42,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: 'email',
-    header: ({ column, table }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Email
-          <HiChevronUpDown className='~ml-2 ~h-4 ~w-4' />
-        </Button>
-      );
-    },
+    header: 'Email',
   },
   {
     accessorKey: 'amount',
@@ -82,5 +72,52 @@ export const payments: Payment[] = [
     status: 'processing',
     email: 'example@gmail.com',
   },
-  // ...
+  {
+    id: 'ba32f8aa',
+    amount: 250,
+    status: 'processing',
+    email: 'john.doe@example.com',
+  },
+  {
+    id: '9dcfa231',
+    amount: 75,
+    status: 'failed',
+    email: 'jane.smith@example.com',
+  },
+  {
+    id: 'b839c102',
+    amount: 310,
+    status: 'pending',
+    email: 'lisa.brown@example.com',
+  },
+  {
+    id: 'd3419a12',
+    amount: 89.99,
+    status: 'processing',
+    email: 'kevin.lee@example.com',
+  },
+  {
+    id: '8f2391cb',
+    amount: 45.5,
+    status: 'pending',
+    email: 'olivia.james@example.com',
+  },
+  {
+    id: 'ac82e4c9',
+    amount: 600,
+    status: 'processing',
+    email: 'noah.kim@example.com',
+  },
+  {
+    id: '2bd74f39',
+    amount: 199.99,
+    status: 'pending',
+    email: 'emma.wilson@example.com',
+  },
+  {
+    id: 'c5b8fe44',
+    amount: 149.5,
+    status: 'failed',
+    email: 'liam.johnson@example.com',
+  },
 ];

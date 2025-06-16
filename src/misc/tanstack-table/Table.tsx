@@ -25,7 +25,11 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
-import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2';
+import {
+  HiChevronDown,
+  HiMiniChevronLeft,
+  HiMiniChevronRight,
+} from 'react-icons/hi2';
 import {
   Button,
   Checkbox,
@@ -372,7 +376,7 @@ export function useDataTable<TData, TValue>({
                         key={cell.id}
                         {...itemProps?.tableCell}
                         className={classNames(
-                          '~px-3 ~py-3',
+                          '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
                           itemProps?.tableCell?.className
                         )}
                       >
@@ -414,7 +418,7 @@ export function useDataTable<TData, TValue>({
         {/* Item per page */}
         <div
           className={classNames(
-            '~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-2',
+            '~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-3',
             itemProps?.itemPerPage?.className
           )}
         >
@@ -432,8 +436,9 @@ export function useDataTable<TData, TValue>({
             }
           >
             <SelectTrigger
+              icon={<HiChevronDown className='~h-4 ~w-4' />}
               className={classNames(
-                '~w-fit ~text-xs ~font-normal [&>span]:~mr-2',
+                '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-4',
                 itemProps?.itemPerPage?.selectTrigger
               )}
             >
@@ -457,7 +462,7 @@ export function useDataTable<TData, TValue>({
         </div>
         <div
           className={classNames(
-            '~flex ~items-center ~gap-3',
+            '~flex ~items-center ~gap-[12px]',
             itemProps?.pagination?.className
           )}
         >
@@ -466,11 +471,11 @@ export function useDataTable<TData, TValue>({
             onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
             className={classNames(
-              '~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
               itemProps?.pagination?.leftChevron
             )}
           >
-            <HiMiniChevronLeft className='~h-4 ~w-4' />
+            <HiMiniChevronLeft className='~h-6 ~w-6' />
           </Button>
 
           {/* Pages */}
@@ -479,7 +484,7 @@ export function useDataTable<TData, TValue>({
               <Button
                 type='button'
                 className={classNames(
-                  '~h-fit ~rounded-md !~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
+                  '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
                   table.getState().pagination.pageIndex + 1 === item
                     ? '~border ~border-[#CCCCCC]'
                     : '',
@@ -500,12 +505,12 @@ export function useDataTable<TData, TValue>({
           <Button
             onClick={table.nextPage}
             className={classNames(
-              '~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
               itemProps?.pagination?.rightChevron
             )}
             disabled={!table.getCanNextPage()}
           >
-            <HiMiniChevronRight className='~h-4 ~w-4' />
+            <HiMiniChevronRight className='~h-6 ~w-6' />
           </Button>
         </div>
       </div>

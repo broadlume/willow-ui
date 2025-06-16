@@ -82,7 +82,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={classNames(
-      '~w-fit ~px-2 ~py-2 ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground [&:has([role=checkbox])]:~pl-3 [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
+      '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~pl-[20px] [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
       className
     )}
     {...props}
@@ -227,11 +227,14 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
-        className={classNames('~flex ~items-center ~gap-1 !~p-0', {
-          'cursor-pointer select-none': header.column.getCanSort(),
-          'cursor-grab': isDraggable && !isDragging,
-          'cursor-move': !isDragging,
-        })}
+        className={classNames(
+          '~flex ~items-center ~gap-1 !~p-0 ~text-[13px] ~font-semibold ~text-[#1A1A1A]',
+          {
+            'cursor-pointer select-none': header.column.getCanSort(),
+            'cursor-grab': isDraggable && !isDragging,
+            'cursor-move': !isDragging,
+          }
+        )}
       >
         {header.isPlaceholder
           ? null
