@@ -35,5 +35,15 @@ export interface DataTableProps<TData, TValue> {
     tableBodyRow?: DataProps;
     tableRow?: DataProps;
     tableCell?: DataProps;
+    tableFooterWrapper?: DataProps;
+    itemPerPage?: DataProps & {
+      selectTrigger?: DataProps;
+      selectItem?: DataProps;
+    };
+    pagination?: DataProps & {
+      rightChevron?: DataProps;
+      leftChevron?: DataProps;
+      page?: DataProps;
+    };
   };
 }

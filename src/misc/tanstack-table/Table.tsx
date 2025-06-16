@@ -45,7 +45,7 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
-import { cn } from '@src/lib/utils';
+import classNames from 'classnames';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -306,11 +306,11 @@ export function useDataTable<TData, TValue>({
   const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={cn('~bg-white ~text-sm', itemProps?.root?.className)}
+      className={classNames('~bg-white ~text-sm', itemProps?.root?.className)}
     >
       <div
         {...itemProps?.tableWrapper}
-        className={cn(
+        className={classNames(
           '~rounded-md ~border',
           itemProps?.tableWrapper?.className
         )}
@@ -323,13 +323,13 @@ export function useDataTable<TData, TValue>({
           <Table {...itemProps?.table} className={itemProps?.table?.className}>
             <TableHeader
               {...itemProps?.tableHeader}
-              className={cn(itemProps?.tableHeader?.className)}
+              className={classNames(itemProps?.tableHeader?.className)}
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
                   {...itemProps?.tableHeaderRow}
-                  className={cn(
+                  className={classNames(
                     '~text-[#231f21] hover:!~bg-transparent',
                     itemProps?.tableHeaderRow?.className
                   )}
@@ -356,7 +356,7 @@ export function useDataTable<TData, TValue>({
             </TableHeader>
             <TableBody
               {...itemProps?.tableBody}
-              className={cn(itemProps?.tableBody?.className)}
+              className={classNames(itemProps?.tableBody?.className)}
             >
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -364,14 +364,14 @@ export function useDataTable<TData, TValue>({
                     row={row as Row<object>}
                     key={row.id}
                     {...itemProps?.tableBodyRow}
-                    className={cn(itemProps?.tableBodyRow?.className)}
+                    className={classNames(itemProps?.tableBodyRow?.className)}
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         {...itemProps?.tableCell}
-                        className={cn(
+                        className={classNames(
                           '~px-3 ~py-3',
                           itemProps?.tableCell?.className
                         )}
@@ -387,12 +387,12 @@ export function useDataTable<TData, TValue>({
               ) : (
                 <TableRow
                   {...itemProps?.tableBodyRow}
-                  className={cn(itemProps?.tableBodyRow?.className)}
+                  className={classNames(itemProps?.tableBodyRow?.className)}
                 >
                   <TableCell
                     colSpan={columns.length}
                     {...itemProps?.tableCell}
-                    className={cn(
+                    className={classNames(
                       '~h-24 ~text-center',
                       itemProps?.tableCell?.className
                     )}
@@ -405,9 +405,19 @@ export function useDataTable<TData, TValue>({
           </Table>
         </DndContext>
       </div>
-      <div className='~my-5 ~flex ~items-center ~justify-between ~px-2'>
+      <div
+        className={classNames(
+          '~my-5 ~flex ~items-center ~justify-between ~px-2',
+          itemProps?.tableFooterWrapper
+        )}
+      >
         {/* Item per page */}
-        <div className='~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-2'>
+        <div
+          className={classNames(
+            '~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-2',
+            itemProps?.itemPerPage?.className
+          )}
+        >
           <p className='~text-xs ~font-normal'>Item Per page</p>
           <Select
             //   value={pagination.pageSize.toString()}
@@ -421,13 +431,21 @@ export function useDataTable<TData, TValue>({
               table.setPageSize(Number(value))
             }
           >
-            <SelectTrigger className='~w-fit ~text-xs ~font-normal [&>span]:~mr-2'>
+            <SelectTrigger
+              className={classNames(
+                '~w-fit ~text-xs ~font-normal [&>span]:~mr-2',
+                itemProps?.itemPerPage?.selectTrigger
+              )}
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {[5, 10, 20, 50].map((opt) => (
                 <SelectItem
-                  className='~text-xs ~font-normal'
+                  className={classNames(
+                    '~text-xs ~font-normal',
+                    itemProps?.itemPerPage?.selectItem
+                  )}
                   key={opt}
                   value={opt.toString()}
                 >
@@ -437,12 +455,20 @@ export function useDataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className='~flex ~items-center ~gap-3'>
+        <div
+          className={classNames(
+            '~flex ~items-center ~gap-3',
+            itemProps?.pagination?.className
+          )}
+        >
           {/* Left chevron */}
           <Button
             onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
-            className='~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]'
+            className={classNames(
+              '~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              itemProps?.pagination?.leftChevron
+            )}
           >
             <HiMiniChevronLeft className='~h-4 ~w-4' />
           </Button>
@@ -452,11 +478,12 @@ export function useDataTable<TData, TValue>({
             (item) => (
               <Button
                 type='button'
-                className={cn(
+                className={classNames(
                   '~h-fit ~rounded-md !~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
                   table.getState().pagination.pageIndex + 1 === item
                     ? '~border ~border-[#CCCCCC]'
-                    : ''
+                    : '',
+                  itemProps?.pagination?.page
                 )}
                 variant={
                   table.getState().pagination.pageIndex + 1 === item
@@ -472,7 +499,10 @@ export function useDataTable<TData, TValue>({
           {/* Right chevron */}
           <Button
             onClick={table.nextPage}
-            className='~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]'
+            className={classNames(
+              '~h-fit ~rounded-md ~bg-[#1A6CFF] !~p-2 ~font-normal ~text-white ~shadow-none disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              itemProps?.pagination?.rightChevron
+            )}
             disabled={!table.getCanNextPage()}
           >
             <HiMiniChevronRight className='~h-4 ~w-4' />
