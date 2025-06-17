@@ -285,7 +285,9 @@ export function useDataTable<TData, TValue>({
         setColumnOrder((currentOrder) => {
           const oldIndex = currentOrder.indexOf(activeColId);
           const newIndex = currentOrder.indexOf(overColId);
-          return arrayMove(currentOrder, oldIndex, newIndex);
+          const updatedArray = arrayMove(currentOrder, oldIndex, newIndex);
+          onColumnOrderChange(updatedArray);
+          return updatedArray;
         });
       }
       return;
