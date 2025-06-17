@@ -2,10 +2,11 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header, Row } from '@tanstack/react-table';
-import classNames from 'classnames';
+
 import * as React from 'react';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { DataTableProps } from './type';
+import clsx from 'clsx';
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -14,7 +15,7 @@ const Table = React.forwardRef<
   <div className='~relative ~w-full ~overflow-auto'>
     <table
       ref={ref}
-      className={classNames('~w-full ~caption-bottom ~text-sm', className)}
+      className={clsx('~w-full ~caption-bottom ~text-sm', className)}
       {...props}
     />
   </div>
@@ -25,11 +26,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead
-    ref={ref}
-    className={classNames('[&_tr]:~border-b', className)}
-    {...props}
-  />
+  <thead ref={ref} className={clsx('[&_tr]:~border-b', className)} {...props} />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -39,7 +36,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={classNames('[&_tr:last-child]:~border-0', className)}
+    className={clsx('[&_tr:last-child]:~border-0', className)}
     {...props}
   />
 ));
@@ -51,7 +48,7 @@ const TableFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
-    className={classNames(
+    className={clsx(
       '~border-t ~bg-muted/50 ~font-medium [&>tr]:last:~border-b-0',
       className
     )}
@@ -66,7 +63,7 @@ const TableRow = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={classNames(
+    className={clsx(
       '~transition-colors hover:~bg-muted/50 data-[state=selected]:~bg-muted',
       className
     )}
@@ -81,7 +78,7 @@ const TableHead = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
-    className={classNames(
+    className={clsx(
       '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~pl-[20px] [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
       className
     )}
@@ -96,7 +93,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={classNames(
+    className={clsx(
       '~p-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
       className
     )}
@@ -111,7 +108,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={classNames('~mt-4 ~text-sm ~text-muted-foreground', className)}
+    className={clsx('~mt-4 ~text-sm ~text-muted-foreground', className)}
     {...props}
   />
 ));
@@ -218,7 +215,7 @@ const DraggableColumnHeader = <TData, TValue>({
       style={style}
       colSpan={header.colSpan}
       {...itemProps?.tableHead}
-      className={classNames(
+      className={clsx(
         '~px-3 ~py-3 ~uppercase ~text-[#1A1A1A]',
         itemProps?.tableHead?.className
       )}
@@ -227,7 +224,7 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
-        className={classNames(
+        className={clsx(
           '~flex ~items-center ~gap-1 !~p-0 ~text-[13px] ~font-semibold ~text-[#1A1A1A]',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
