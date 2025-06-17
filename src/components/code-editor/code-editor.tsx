@@ -111,25 +111,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
             }
         });
-
-        ['html', 'xml', 'liquid'].forEach(lang => {
-            monaco.languages.registerCompletionItemProvider(lang, {
-                triggerCharacters: ['<'],
-                provideCompletionItems: (model, position) => {
-                    const suggestions = [
-                        'div', 'span', 'p', 'a', 'ul', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'section', 'article', 'header', 'footer'
-                        // Add more tags as needed
-                    ].map(tag => ({
-                        label: tag,
-                        kind: monaco.languages.CompletionItemKind.Snippet,
-                        insertText: `<${tag}>$0</${tag}>`,
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        detail: `Insert <${tag}></${tag}>`,
-                    }));
-                    return { suggestions };
-                },
-            });
-        });
     };
 
     useEffect(() => {
