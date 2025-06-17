@@ -210,3 +210,37 @@
     text-transform: uppercase;
   }
 }
+
+
+/* Editor Styles */
+.ProseMirror {
+  font-size: 14px;
+}
+/*
+ * This rule targets every element inside the editor (paragraphs, tables, etc.)
+ */
+.ProseMirror > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ProseMirror ul {
+  @apply ~list-disc ~pl-5;
+}
+
+.ProseMirror ol {
+  @apply ~list-decimal ~pl-5;
+}
+
+.ProseMirror table {
+  @apply ~w-full ~border-collapse;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+  @apply ~border ~border-gray-400 ~px-4 ~py-2;
+}
+
+.ProseMirror th {
+  @apply ~font-bold ~bg-gray-100;
+}
+/* Editor Styles */

@@ -449,7 +449,7 @@ export const Menu = ({ editor, showEditorInDialog, setShowEditorInDialog, toggle
           clsx('~text-black', {
             '~text-white': darkMode
           })
-        } size={18} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
+        } size={18} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()} />
       </div>
       {/* Expanded Menu */}
       {/* Expanded Menu L2*/}
