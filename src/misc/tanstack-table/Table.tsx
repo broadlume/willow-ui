@@ -423,22 +423,16 @@ export function useDataTable<TData, TValue>({
         >
           <p className='~text-xs ~font-normal'>Item Per page</p>
           <Select
-            //   value={pagination.pageSize.toString()}
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'
-            onValueChange={(value) =>
-              // setPagination((prevVal) => ({
-              //   ...prevVal,
-              //   pageSize: parseInt(value),
-              // }))
-              table.setPageSize(Number(value))
-            }
+            onValueChange={(value) => table.setPageSize(Number(value))}
           >
             <SelectTrigger
               icon={<HiChevronDown className='~h-4 ~w-4' />}
+              {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
                 '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-4',
-                itemProps?.itemPerPage?.selectTrigger
+                itemProps?.itemPerPage?.selectTrigger?.className
               )}
             >
               <SelectValue />
@@ -446,9 +440,10 @@ export function useDataTable<TData, TValue>({
             <SelectContent>
               {[5, 10, 20, 50].map((opt) => (
                 <SelectItem
+                  {...itemProps?.itemPerPage?.selectItem}
                   className={clsx(
                     '~text-xs ~font-normal',
-                    itemProps?.itemPerPage?.selectItem
+                    itemProps?.itemPerPage?.selectItem?.className
                   )}
                   key={opt}
                   value={opt.toString()}
@@ -467,11 +462,12 @@ export function useDataTable<TData, TValue>({
         >
           {/* Left chevron */}
           <Button
+            {...itemProps?.pagination?.leftChevron}
             onClick={table.previousPage}
             disabled={!table.getCanPreviousPage()}
             className={clsx(
               '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
-              itemProps?.pagination?.leftChevron
+              itemProps?.pagination?.leftChevron?.className
             )}
           >
             <HiMiniChevronLeft className='~h-6 ~w-6' />
@@ -481,13 +477,14 @@ export function useDataTable<TData, TValue>({
           {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(
             (item) => (
               <Button
+                {...itemProps?.pagination?.page}
                 type='button'
                 className={clsx(
                   '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
                   table.getState().pagination.pageIndex + 1 === item
                     ? '~border ~border-[#CCCCCC]'
                     : '',
-                  itemProps?.pagination?.page
+                  itemProps?.pagination?.page?.className
                 )}
                 variant={
                   table.getState().pagination.pageIndex + 1 === item
@@ -502,10 +499,11 @@ export function useDataTable<TData, TValue>({
           )}
           {/* Right chevron */}
           <Button
+            {...itemProps?.pagination?.rightChevron}
             onClick={table.nextPage}
             className={clsx(
               '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
-              itemProps?.pagination?.rightChevron
+              itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}
           >

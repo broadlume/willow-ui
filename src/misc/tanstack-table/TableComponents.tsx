@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header, Row } from '@tanstack/react-table';
 
-import * as React from 'react';
+import React from 'react';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { DataTableProps } from './type';
 import clsx from 'clsx';
