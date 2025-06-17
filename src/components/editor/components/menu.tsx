@@ -28,7 +28,7 @@ import { TbLineHeight } from 'react-icons/tb';
 import { FaTextSlash, FaLink, FaCode } from 'react-icons/fa6';
 import { AiOutlineTable } from 'react-icons/ai';
 import { FiSun, FiMoon } from 'react-icons/fi';
-import AIIcon from './ai-icon.svg';
+import { ReactComponent as AIIcon } from './ai-icon.svg';
 
 // Components
 import { ColorPickerInput } from '@components/color-picker-input/color-picker-input';
