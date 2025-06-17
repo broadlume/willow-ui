@@ -116,7 +116,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
   useEffect(() => {
-    if (content && editor) {
+  if (content && editor) {
+    const currentContent = editor.getHTML();
+    if (content !== currentContent) {
       // Save cursor position
       const { from, to } = editor.state.selection;
 
@@ -132,8 +134,11 @@ export const Editor: React.FC<EditorProps> = (props) => {
       );
       editor.view.dispatch(editor.state.tr.setSelection(textSelection));
     }
+  }
 
-    if (content && dialogEditor) {
+  if (content && dialogEditor) {
+    const currentContent = dialogEditor.getHTML();
+    if (content !== currentContent) {
       // Save cursor position
       const { from, to } = dialogEditor.state.selection;
 
@@ -149,7 +154,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
       );
       dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
     }
-  }, [content, editor, dialogEditor]);
+  }
+}, [content, editor, dialogEditor]);
 
   if (!activeEditor) return null;
 
