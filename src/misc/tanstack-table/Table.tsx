@@ -146,9 +146,7 @@ export function useDataTable<TData, TValue>({
               handleSelectionReset();
               return;
             }
-            setIsSelectAllPages(true);
-            setExcludedRowIds({});
-            setRowSelection({});
+            handleSelectAll();
           } else {
             setIsSelectAllPages(false);
             setExcludedRowIds({});
