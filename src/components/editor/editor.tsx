@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
 import clsx from "clsx";
 
@@ -17,11 +17,11 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
-import Gapcursor from '@tiptap/extension-gapcursor'; 
+import Gapcursor from '@tiptap/extension-gapcursor';
 
 
 // Custom Extensions
-import IFrame from './extensions/video';
+import { Video } from './extensions/video';
 import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
 
@@ -36,6 +36,7 @@ import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { BubbleMenu } from './components/bubble-menu';
+import { TextSelection } from '@tiptap/pm/state';
 
 export type EditorProps = {
   content?: string,
@@ -77,7 +78,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Placeholder.configure({
       placeholder: 'Write something …',
     }),
-    IFrame,
+    Video,
     TextStyle,
     Color,
     LineHeight,
@@ -96,7 +97,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     },
     editorProps: {
       attributes: {
-        class: 'focus:~outline-none',
+        class: 'focus:~outline-none ~not-prose',
       }
     }
   };
@@ -115,15 +116,42 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
   useEffect(() => {
-    if (editor) {
+    if (content && editor) {
+      // Save cursor position
+      const { from, to } = editor.state.selection;
+
+      // Update content
       editor.commands.setContent(content);
+
+      // Restore cursor position
+      const newFrom = Math.min(from, editor.state.doc.content.size);
+      const newTo = Math.min(to, editor.state.doc.content.size);
+      const textSelection = new TextSelection(
+        editor.state.doc.resolve(newFrom),
+        editor.state.doc.resolve(newTo)
+      );
+      editor.view.dispatch(editor.state.tr.setSelection(textSelection));
     }
-    if (dialogEditor) {
+
+    if (content && dialogEditor) {
+      // Save cursor position
+      const { from, to } = dialogEditor.state.selection;
+
+      // Update content
       dialogEditor.commands.setContent(content);
+
+      // Restore cursor position
+      const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
+      const newTo = Math.min(to, dialogEditor.state.doc.content.size);
+      const textSelection = new TextSelection(
+        dialogEditor.state.doc.resolve(newFrom),
+        dialogEditor.state.doc.resolve(newTo)
+      );
+      dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
     }
   }, [content, editor, dialogEditor]);
 
-   if (!activeEditor) return null;
+  if (!activeEditor) return null;
 
   return (
     <NodeViewContext.Provider value={nodeViewContextValue}>
