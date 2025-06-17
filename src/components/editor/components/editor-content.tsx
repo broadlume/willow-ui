@@ -41,7 +41,7 @@ export const EditorContent: React.FC<{
                                 content={content}
                                 className={
                                     clsx(
-                                        '~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2',
+                                        '~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2 ~max-w-full',
                                         {
                                             '~bg-gray-800 ~text-gray-200': darkMode,
                                             '~border-[1px] ~border-gray-600': darkMode,

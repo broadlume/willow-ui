@@ -674,23 +674,11 @@ export const Menu = ({
           eventHandler={() => setL2MenuType('embed')}
         />
         <MenuItemDivider />
-        <MenuLink
-          title={
-            <AiOutlineTable
-              className={clsx('~text-black', {
-                '~text-white': darkMode,
-              })}
-              size={18}
-            />
-          }
-          eventHandler={() =>
-            editor
-              .chain()
-              .focus()
-              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-              .run()
-          }
-        />
+        <MenuLink title={<AiOutlineTable className={
+          clsx('~text-black', {
+            '~text-white': darkMode
+          })
+        } size={18} />} eventHandler={() => editor.chain().focus().insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()} />
       </div>
       {/* Expanded Menu */}
       {/* Expanded Menu L2*/}
@@ -712,6 +700,4 @@ export const Menu = ({
   );
 };
 
-const MenuItemDivider = () => (
-  <div className='~h-6 ~border-[0.5px] ~border-solid ~border-gray-300' />
-);
+const MenuItemDivider = () => <div className='~border-[0.5px] ~border-solid ~border-gray-300 ~h-6' />;

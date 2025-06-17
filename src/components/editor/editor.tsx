@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
 import clsx from "clsx";
 
@@ -17,6 +17,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
+import Gapcursor from '@tiptap/extension-gapcursor';
+
 
 // Custom Extensions
 import { Video } from './extensions/video';
@@ -24,13 +26,17 @@ import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
 
 // Custom Nodes
-import { DropdownNode } from './nodes/dropdown-node';
+import { AutocompleteNode } from './nodes/autocomplete-node';
+
+// contexts
+import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
 
 // Components
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { BubbleMenu } from './components/bubble-menu';
+import { TextSelection } from '@tiptap/pm/state';
 
 export type EditorProps = {
   content?: string,
@@ -38,6 +44,7 @@ export type EditorProps = {
   onBlur?: (html: string) => void,
   dropdownItems?: { label: string, value: string }[],
   dropdownPlaceholder?: string,
+  autocompleteFetchOptions?: (query: string) => Promise<{ label: string; value: string }[]>;
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -54,7 +61,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
   // List of Tiptap Editor Extensions
   const extensions = [
-    StarterKit,
+    StarterKit.configure({
+      gapcursor: false
+    }),
+    Gapcursor,
     Link.configure({ openOnClick: true }),
     Image,
     Table.configure({ resizable: true }),
@@ -73,10 +83,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Color,
     LineHeight,
     Indentation,
-    DropdownNode.configure({
-      dropDownItems: props?.dropdownItems?.map(item => ({ value: item.value, label: item.label })),
-      dropdownPlaceholder: props.dropdownPlaceholder || 'Select an option',
-    })
+    AutocompleteNode
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
@@ -90,59 +97,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
     },
     editorProps: {
       attributes: {
-        class: 'focus:~outline-none',
-      },
-      // handleKeyDown(view, event) {
-      //   const { $from } = view.state.selection;
-      //   const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
-      //   // Detect "{{" typed
-      //   if (event.key === '{' && textBefore.endsWith('{')) {
-      //     // Remove "{{" (2 chars)
-      //     view.dispatch(
-      //       view.state.tr.delete(
-      //         $from.pos - 2,
-      //         $from.pos
-      //       )
-      //     );
-      //     // Insert dropdown node
-      //     editor
-      //       ?.chain()
-      //       .focus()
-      //       .insertContent({
-      //         type: 'dropdownComponent',
-      //         attrs: {
-      //           dropDownItems: props.dropdownItems,
-      //           dropdownPlaceholder: props.dropdownPlaceholder,
-      //         },
-      //       })
-      //       .run();
-      //     return true;
-      //   }
-
-      //   // Delete previous line on Escape
-      //   if (event.key === 'Escape') {
-      //     // Find the start of the current block
-      //     const lineStart = $from.before($from.depth);
-      //     // Only proceed if not in the first block
-      //     if (lineStart > 0) {
-      //       let prevLineStart = 0;
-      //       try {
-      //         prevLineStart = view.state.doc.resolve(lineStart).before();
-      //       } catch {
-      //         prevLineStart = 0;
-      //       }
-      //       // Only delete if prevLineStart is valid and before lineStart
-      //       if (prevLineStart >= 0 && prevLineStart < lineStart) {
-      //         view.dispatch(
-      //           view.state.tr.delete(prevLineStart, lineStart)
-      //         );
-      //         return true;
-      //       }
-      //     }
-      //   }
-
-      //   return false;
-      // },
+        class: 'focus:~outline-none ~not-prose',
+      }
     }
   };
 
@@ -152,28 +108,103 @@ export const Editor: React.FC<EditorProps> = (props) => {
     onUpdate: ({ editor }) => handleUpdate(editor),
   });
 
-  useEffect(() => {
-    if (editor) {
-      editor.commands.setContent(content);
-    }
-    if (dialogEditor) {
-      dialogEditor.commands.setContent(content);
-    }
-  }, [content, editor, dialogEditor]);
+  const nodeViewContextValue = useMemo<NodeViewContextType>(() => ({
+    fetchOptions: props.autocompleteFetchOptions!,
+    darkMode,
+  }), [props.autocompleteFetchOptions, darkMode]);
 
-  if (!editor || !dialogEditor) return null;
+  const activeEditor = showEditorInDialog ? dialogEditor : editor;
+
+  useEffect(() => {
+  if (content && editor) {
+    const currentContent = editor.getHTML();
+    if (content !== currentContent) {
+      // Save cursor position
+      const { from, to } = editor.state.selection;
+
+      // Update content
+      editor.commands.setContent(content);
+
+      // Restore cursor position
+      const newFrom = Math.min(from, editor.state.doc.content.size);
+      const newTo = Math.min(to, editor.state.doc.content.size);
+      const textSelection = new TextSelection(
+        editor.state.doc.resolve(newFrom),
+        editor.state.doc.resolve(newTo)
+      );
+      editor.view.dispatch(editor.state.tr.setSelection(textSelection));
+    }
+  }
+
+  if (content && dialogEditor) {
+    const currentContent = dialogEditor.getHTML();
+    if (content !== currentContent) {
+      // Save cursor position
+      const { from, to } = dialogEditor.state.selection;
+
+      // Update content
+      dialogEditor.commands.setContent(content);
+
+      // Restore cursor position
+      const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
+      const newTo = Math.min(to, dialogEditor.state.doc.content.size);
+      const textSelection = new TextSelection(
+        dialogEditor.state.doc.resolve(newFrom),
+        dialogEditor.state.doc.resolve(newTo)
+      );
+      dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
+    }
+  }
+}, [content, editor, dialogEditor]);
+
+  if (!activeEditor) return null;
 
   return (
-    <div
-      onClick={e => e.stopPropagation()}
-      onKeyDown={e => e.stopPropagation()}
-    >
-      {
-        showEditorInDialog && (
-          <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-            <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10'>
+    <NodeViewContext.Provider value={nodeViewContextValue}>
+      <BubbleMenu editor={activeEditor} />
+      <div
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
+      >
+        {
+          showEditorInDialog && (
+            <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
+              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
+                {/* Menu */}
+                <Menu editor={dialogEditor!}
+                  showRawHtml={showRawHtml}
+                  toggleRawHtml={() => setShowRawHtml((v) => !v)}
+                  darkMode={darkMode}
+                  toggleDarkMode={() => setDarkMode((v) => !v)}
+                  className={
+                    clsx({
+                      '~bg-gray-100': !darkMode,
+                      '~text-gray-800': !darkMode,
+                      '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                    })
+                  }
+                />
+
+                {/* Editor */}
+                <EditorContent
+                  editor={dialogEditor!}
+                  content={content}
+                  setContent={setContent}
+                  darkMode={darkMode}
+                  markdownMode={showRawHtml}
+                />
+              </DialogContent>
+            </Dialog>
+          )
+        }
+
+        {
+          !showEditorInDialog && (
+            <>
               {/* Menu */}
-              <Menu editor={dialogEditor}
+              <Menu editor={editor!}
+                setShowEditorInDialog={setShowEditorInDialog}
+                showEditorInDialog={showEditorInDialog}
                 showRawHtml={showRawHtml}
                 toggleRawHtml={() => setShowRawHtml((v) => !v)}
                 darkMode={darkMode}
@@ -187,62 +218,24 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 }
               />
 
-              {/* Bubble Menu */}
-              {/* <BubbleMenu editor={dialogEditor} /> */}
-
               {/* Editor */}
               <EditorContent
-                editor={dialogEditor}
+                editor={editor!}
                 content={content}
                 setContent={setContent}
                 darkMode={darkMode}
                 markdownMode={showRawHtml}
               />
-            </DialogContent>
-          </Dialog>
-        )
-      }
+            </>
+          )
+        }
 
-      {
-        !showEditorInDialog && (
-          <>
-            {/* Menu */}
-            <Menu editor={editor}
-              setShowEditorInDialog={setShowEditorInDialog}
-              showEditorInDialog={showEditorInDialog}
-              showRawHtml={showRawHtml}
-              toggleRawHtml={() => setShowRawHtml((v) => !v)}
-              darkMode={darkMode}
-              toggleDarkMode={() => setDarkMode((v) => !v)}
-              className={
-                clsx({
-                  '~bg-gray-100': !darkMode,
-                  '~text-gray-800': !darkMode,
-                  '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
-                })
-              }
-            />
-
-            {/* Bubble Menu */}
-            {/* <BubbleMenu editor={editor} /> */}
-
-            {/* Editor */}
-            <EditorContent
-              editor={editor}
-              content={content}
-              setContent={setContent}
-              darkMode={darkMode}
-              markdownMode={showRawHtml}
-            />
-          </>
-        )
-      }
-
-      {/* Debugging Content */}
-      {/* <div className='~mt-4'>
+        {/* Debugging Content */}
+        {/* <div className='~mt-4'>
         <h3>Editor Content (HTML):</h3>
         <div>{content}</div>
       </div> */}
-    </div>
+      </div>
+    </NodeViewContext.Provider>
   );
 };

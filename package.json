@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -60,6 +60,7 @@
     "@storybook/testing-library": "^0.2.0",
     "@storybook/theming": "^7.6.10",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.0",
     "@types/react-dom": "^18.0",
@@ -124,6 +125,7 @@
     "@tiptap/extension-code-block": "^2.11.2",
     "@tiptap/extension-color": "^2.12.0",
     "@tiptap/extension-floating-menu": "^2.10.3",
+    "@tiptap/extension-gapcursor": "^2.14.0",
     "@tiptap/extension-highlight": "^2.10.3",
     "@tiptap/extension-image": "^2.12.0",
     "@tiptap/extension-link": "^2.10.3",
@@ -147,6 +149,7 @@
     "lucide-react": "^0.245.0",
     "openai": "^4.85.4",
     "react-data-table-component": "^7.7.0",
+    "prosemirror-autocomplete": "^0.4.3",
     "react-day-picker": "^8.8.0",
     "react-hook-form": "^7.49.3",
     "react-icons": "^4.10.1",

@@ -29,6 +29,7 @@ export const Video = Node.create({
   selectable: true,
   draggable: true,
   allowGapCursor: true,
+  atom: true,
 
   addAttributes() {
     return {
@@ -82,26 +83,39 @@ export const Video = Node.create({
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    // Use the width attribute if present, otherwise default to ~w-full
+  // MODIFY THIS ENTIRE FUNCTION to wrap the iframe in a div
+  renderHTML({ node, HTMLAttributes }) {
     const widthClass =
       HTMLAttributes.width && HTMLAttributes.width !== '100%'
         ? `~w-[${HTMLAttributes.width}]`
         : '~w-full';
 
+    // This outer div is the actual "node" that ProseMirror will manage.
+    // It controls the layout and dragging.
     return [
-      'iframe',
+      'div',
       {
-        ...HTMLAttributes,
         class: clsx(
-          HTMLAttributes.class,
+          'video-wrapper', // A class for our CSS to target
           widthClass,
-          '~border-2',
-          '~border-blue-600',
+          node.attrs.aspectRatio,
           '~rounded-lg',
+          '~border-2',
+          '~border-transparent', // Make border transparent by default
+          'hover:~border-blue-600', // Show border on hover
           '~cursor-move'
         ),
+        'data-drag-handle': '', // Explicitly mark this div as the drag handle
       },
+      // The iframe goes inside the wrapper
+      [
+        'iframe',
+        {
+          ...HTMLAttributes,
+          // Let the iframe fill its wrapper
+          class: '~w-full ~h-full ~rounded-lg',
+        },
+      ],
     ];
   },
 
@@ -110,7 +124,6 @@ export const Video = Node.create({
       setVideo:
         (src: string) =>
         ({ commands }) => {
-          // Detect shorts or vertical video by URL pattern
           let aspectRatio = '~aspect-video';
           if (
             src.includes('shorts') ||

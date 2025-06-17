@@ -3,6 +3,8 @@ import type { Config } from 'tailwindcss';
 import twAnimate from 'tailwindcss-animate';
 import containerQueries from '@tailwindcss/container-queries';
 import { fontFamily } from 'tailwindcss/defaultTheme';
+// for Editor's non controlling HTML elements like <h1>, <p>, <ul>, <li>, etc.
+import twTypography from '@tailwindcss/typography';
 
 const baseRem = 16;
 const getSize = (rems: number) => `${rems * baseRem}px`;
@@ -185,5 +187,5 @@ export default {
       },
     },
   },
-  plugins: [twAnimate, containerQueries],
+  plugins: [twAnimate, containerQueries, twTypography],
 } satisfies Config;
