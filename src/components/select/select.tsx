@@ -12,10 +12,16 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
+type SelectTriggerProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Trigger
+> & {
+  icon?: React.ReactNode;
+};
+
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  SelectTriggerProps
+>(({ className, children, icon, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(selectVariants({ className }))}
@@ -23,10 +29,11 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <CaretSortIcon className='~h-4 ~w-4 ~opacity-50' />
+      {icon ?? <CaretSortIcon className='~h-4 ~w-4 ~opacity-50' />}
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
+
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectContent = React.forwardRef<

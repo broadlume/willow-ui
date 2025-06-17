@@ -142,7 +142,9 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (validateFile(e?.target?.files?.[0])) {
       console.log('File selected:', e.target.files?.[0]);
-      setFile(e.target.files?.[0]);
+      if (e.target.files?.length) {
+        setFile(e.target.files?.[0]);
+      }
     }
   };
 
