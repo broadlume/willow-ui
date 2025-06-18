@@ -152,6 +152,7 @@ const DraggableTableRow = <TData extends object>({
 
   return (
     <TableRow
+      data-testid={'data-table-row-' + row.id}
       ref={setNodeRef}
       {...props}
       {...('type' in rowData && rowData.type === 'file'
@@ -211,9 +212,10 @@ const DraggableColumnHeader = <TData, TValue>({
 
   return (
     <TableHead
+      data-testid={'data-table-header-head-' + header.column.id}
       ref={setNodeRef}
       style={style}
-      colSpan={header.colSpan}
+      // colSpan={header.colSpan}
       {...itemProps?.tableHead}
       className={clsx(
         '~px-3 ~py-3 ~uppercase ~text-[#1A1A1A]',
@@ -221,6 +223,7 @@ const DraggableColumnHeader = <TData, TValue>({
       )}
     >
       <TableCell
+        data-testid={'data-table-header-cell-' + header.column.id}
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
@@ -238,9 +241,15 @@ const DraggableColumnHeader = <TData, TValue>({
           : flexRender(header.column.columnDef.header, header.getContext())}
         {header.column.getCanSort() && header.column.getIsSorted() ? (
           header.column.getIsSorted() === 'asc' ? (
-            <HiChevronUp className='~ml-2 ~h-4 ~w-4' />
+            <HiChevronUp
+              data-testid={'data-table-header-asc-' + header.column.id}
+              className='~ml-2 ~h-4 ~w-4'
+            />
           ) : (
-            <HiChevronDown className='~ml-2 ~h-4 ~w-4' />
+            <HiChevronDown
+              data-testid={'data-table-header-desc-' + header.column.id}
+              className='~ml-2 ~h-4 ~w-4'
+            />
           )
         ) : null}
       </TableCell>
