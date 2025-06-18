@@ -51,6 +51,7 @@ import {
 import { DataTableProps } from './type';
 
 import clsx from 'clsx';
+import { result } from 'lodash';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -168,6 +169,7 @@ export function useDataTable<TData, TValue>({
 
         return (
           <Checkbox
+            data-testid={'table-header-select-checkbox'}
             checked={isIndeterminate ? 'indeterminate' : isChecked}
             color='#1A6CFF'
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
@@ -200,6 +202,7 @@ export function useDataTable<TData, TValue>({
         return (
           <Checkbox
             checked={isChecked}
+            data-testid={'table-select-checkbox-' + row.id}
             onCheckedChange={handleRowCheckboxChange}
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
@@ -325,13 +328,19 @@ export function useDataTable<TData, TValue>({
           onDragEnd={handleDragEnd}
           sensors={sensors}
         >
-          <Table {...itemProps?.table} className={itemProps?.table?.className}>
+          <Table
+            data-testid='data-table'
+            {...itemProps?.table}
+            className={itemProps?.table?.className}
+          >
             <TableHeader
+              data-testid='data-table-header'
               {...itemProps?.tableHeader}
               className={clsx(itemProps?.tableHeader?.className)}
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
+                  data-testid={'data-header-row-' + headerGroup.id}
                   key={headerGroup.id}
                   {...itemProps?.tableHeaderRow}
                   className={clsx(
@@ -360,6 +369,7 @@ export function useDataTable<TData, TValue>({
               ))}
             </TableHeader>
             <TableBody
+              data-testid='data-table-body'
               {...itemProps?.tableBody}
               className={clsx(itemProps?.tableBody?.className)}
             >
@@ -374,6 +384,7 @@ export function useDataTable<TData, TValue>({
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
+                        data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
                         key={cell.id}
                         {...itemProps?.tableCell}
                         className={clsx(
@@ -391,18 +402,20 @@ export function useDataTable<TData, TValue>({
                 ))
               ) : (
                 <TableRow
+                  data-testid={'data-table-row-' + 'no-rows'}
                   {...itemProps?.tableBodyRow}
                   className={clsx(itemProps?.tableBodyRow?.className)}
                 >
                   <TableCell
-                    colSpan={columns.length}
+                    data-testid='data-table-row-cell-no-rows'
+                    // colSpan={columns.length}
                     {...itemProps?.tableCell}
                     className={clsx(
                       '~h-24 ~text-center',
                       itemProps?.tableCell?.className
                     )}
                   >
-                    No results.
+                    There are no records to display
                   </TableCell>
                 </TableRow>
               )}
@@ -410,6 +423,56 @@ export function useDataTable<TData, TValue>({
           </Table>
         </DndContext>
       </div>
+      <Pagination itemProps={itemProps} />
+    </div>
+  );
+
+  const Pagination = ({ itemProps }) => {
+    const { pageCount, state } = useMemo(
+      () => ({ pageCount: table.getPageCount(), state: table.getState() }),
+      [table]
+    );
+    const paginationButtons = useMemo(() => {
+      const totalPages = pageCount;
+      const currentPage = state.pagination.pageIndex + 1;
+      let startPage = 1;
+      let endPage = totalPages;
+
+      if (totalPages > 5) {
+        if (currentPage <= 3) {
+          startPage = 1;
+          endPage = 5;
+        } else if (currentPage + 2 >= totalPages) {
+          startPage = totalPages - 4;
+          endPage = totalPages;
+        } else {
+          startPage = currentPage - 2;
+          endPage = currentPage + 2;
+        }
+      }
+
+      return Array.from(
+        { length: endPage - startPage + 1 },
+        (_, i) => startPage + i
+      ).map((item) => (
+        <Button
+          {...itemProps?.pagination?.page}
+          type='button'
+          data-testid={'go-to-page-' + item}
+          className={clsx(
+            '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
+            currentPage === item ? '~border ~border-[#CCCCCC]' : '',
+            itemProps?.pagination?.page?.className
+          )}
+          variant={currentPage === item ? 'outline' : 'ghost'}
+          onClick={() => table.setPageIndex(item - 1)}
+          key={item}
+        >
+          {item}
+        </Button>
+      ));
+    }, [state, pageCount, itemProps?.pagination?.page]);
+    return (
       <div
         className={clsx(
           '~my-5 ~flex ~items-center ~justify-between ~px-2',
@@ -431,6 +494,7 @@ export function useDataTable<TData, TValue>({
           >
             <SelectTrigger
               icon={<HiChevronDown className='~h-4 ~w-4' />}
+              data-testid='perpage-button'
               {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
                 '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-4',
@@ -439,10 +503,11 @@ export function useDataTable<TData, TValue>({
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-testid='perpage-list'>
               {[5, 10, 20, 50].map((opt) => (
                 <SelectItem
                   {...itemProps?.itemPerPage?.selectItem}
+                  data-testid={`perpage-item-${opt}`}
                   className={clsx(
                     '~text-xs ~font-normal',
                     itemProps?.itemPerPage?.selectItem?.className
@@ -466,6 +531,7 @@ export function useDataTable<TData, TValue>({
           <Button
             {...itemProps?.pagination?.leftChevron}
             onClick={table.previousPage}
+            data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
               '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
@@ -476,33 +542,12 @@ export function useDataTable<TData, TValue>({
           </Button>
 
           {/* Pages */}
-          {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(
-            (item) => (
-              <Button
-                {...itemProps?.pagination?.page}
-                type='button'
-                className={clsx(
-                  '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
-                  table.getState().pagination.pageIndex + 1 === item
-                    ? '~border ~border-[#CCCCCC]'
-                    : '',
-                  itemProps?.pagination?.page?.className
-                )}
-                variant={
-                  table.getState().pagination.pageIndex + 1 === item
-                    ? 'outline'
-                    : 'ghost'
-                }
-                onClick={() => table.setPageIndex(item - 1)}
-              >
-                {item}
-              </Button>
-            )
-          )}
+          {paginationButtons}
           {/* Right chevron */}
           <Button
             {...itemProps?.pagination?.rightChevron}
             onClick={table.nextPage}
+            data-testid='go-to-next-page'
             className={clsx(
               '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
               itemProps?.pagination?.rightChevron?.className
@@ -513,8 +558,8 @@ export function useDataTable<TData, TValue>({
           </Button>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return {
     table,
