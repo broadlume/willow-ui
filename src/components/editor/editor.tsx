@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
+import { TextSelection } from '@tiptap/pm/state';
 import clsx from "clsx";
 
 // Extensions
@@ -32,11 +33,12 @@ import { AutocompleteNode } from './nodes/autocomplete-node';
 import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
 
 // Components
+import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
-import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { BubbleMenu } from './components/bubble-menu';
-import { TextSelection } from '@tiptap/pm/state';
+import { CommandExtension } from './extensions/command-menu';
+// import { CommandMenu } from './components/command-menu';
 
 export type EditorProps = {
   content?: string,
@@ -52,6 +54,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  // const [commandMenu, setCommandMenu] = useState(false);
 
   const handleUpdate = (editor: TiptapEditor) => {
     const html = editor.getHTML();
@@ -83,7 +86,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Color,
     LineHeight,
     Indentation,
-    AutocompleteNode
+    AutocompleteNode,
+    CommandExtension
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
@@ -98,7 +102,20 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: 'focus:~outline-none ~not-prose',
-      }
+      },
+      // handleKeyDown: (_, event) => {
+      //   switch (event.key) {
+      //     case '/':
+      //       setCommandMenu(true);
+      //       break;
+      //     case 'Escape':
+      //     case 'Backspace':
+      //       setCommandMenu(false);
+      //       break;
+      //     default:
+      //       break;
+      //   }
+      // }
     }
   };
 
@@ -162,6 +179,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   return (
     <NodeViewContext.Provider value={nodeViewContextValue}>
       <BubbleMenu editor={activeEditor} />
+      {/* <CommandMenu editor={activeEditor} showCommandMenu={commandMenu} /> */}
       <div
         onClick={e => e.stopPropagation()}
         onKeyDown={e => e.stopPropagation()}
