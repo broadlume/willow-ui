@@ -120,4 +120,35 @@ export const payments: Payment[] = [
     status: 'failed',
     email: 'liam.johnson@example.com',
   },
+  {
+    id: 'd5b8fe44',
+    amount: 149.5,
+    status: 'success',
+    email: 'liam.johnson@example.com',
+  },
+  {
+    id: 'd5b8asfasfe44',
+    amount: 149.5,
+    status: 'success',
+    email: 'liam.johnson@example.com',
+  },
+  {
+    id: 'd5b8f121e44',
+    amount: 149.5,
+    status: 'success',
+    email: 'liam.johnson@example.com',
+  },
+  {
+    id: 'd5b8sgqsfe44',
+    amount: 149.5,
+    status: 'success',
+    email: 'liam.johnson@example.com',
+  },
+
+  {
+    id: 'd5b8e4gasfe44',
+    amount: 149.5,
+    status: 'success',
+    email: 'liam.johnson@example.com',
+  },
 ];

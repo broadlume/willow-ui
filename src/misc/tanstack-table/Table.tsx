@@ -115,6 +115,18 @@ export function useDataTable<TData, TValue>({
     setRowSelection({});
   };
 
+  const handleUnselectPage = () => {
+    const pageRows = table.getPaginationRowModel().rows;
+    setIsSelectAllPages(false);
+    setExcludedRowIds({});
+
+    setRowSelection((prev) => {
+      const newSelection = structuredClone(prev);
+      pageRows.forEach((item) => delete newSelection[item.id]);
+      return newSelection;
+    });
+  };
+
   const handleSelectAll = () => {
     setIsSelectAllPages(true);
     setExcludedRowIds({});
@@ -134,20 +146,24 @@ export function useDataTable<TData, TValue>({
       enableHiding: false,
       header: ({ table }) => {
         const pageRows = table.getPaginationRowModel().rows;
-        const numPageRows = pageRows.length;
+        // const numPageRows = pageRows.length;
         const numSelectedPageRows = Object.keys(rowSelection).length;
-        const isAllOnPageSelected =
-          numPageRows > 0 && numSelectedPageRows === numPageRows;
+        const isAllOnPageSelected = table.getIsAllPageRowsSelected();
+        // numPageRows > 0 && numSelectedPageRows === numPageRows;
 
         const handleHeaderCheckboxClick = () => {
           if (isSelectAllPages) {
             handleSelectionReset();
           } else if (isAllOnPageSelected) {
-            if (enableSelectAllPages) {
-              handleSelectionReset();
-              return;
-            }
-            handleSelectAll();
+            // This logic cycles between page select -> all page select -> all page unselect
+            // if (enableSelectAllPages) {
+            //   handleSelectionReset();
+            //   return;
+            // }
+            // handleSelectAll();
+
+            // Alternate logic which switches between select all at page level and unselect all at page level.
+            handleUnselectPage();
           } else {
             setIsSelectAllPages(false);
             setExcludedRowIds({});
@@ -155,7 +171,7 @@ export function useDataTable<TData, TValue>({
               acc[row.id] = true;
               return acc;
             }, {} as Record<string, boolean>);
-            setRowSelection(newSelection);
+            setRowSelection((prev) => ({ ...prev, ...newSelection }));
           }
         };
 
