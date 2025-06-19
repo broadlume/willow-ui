@@ -4,7 +4,10 @@ import { columns, payments } from './data';
 const TanStackTable = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
-    data: payments,
+    data: payments.slice(0, 4),
+    tableParams: {
+      manualPagination: false,
+    },
   });
   console.log('selectedrows', table.getSelectedRowModel());
   return <CustomDataTable />;

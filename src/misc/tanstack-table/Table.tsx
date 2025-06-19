@@ -115,6 +115,18 @@ export function useDataTable<TData, TValue>({
     setRowSelection({});
   };
 
+  const handleUnselectPage = () => {
+    const pageRows = table.getPaginationRowModel().rows;
+    setIsSelectAllPages(false);
+    setExcludedRowIds({});
+
+    setRowSelection((prev) => {
+      const newSelection = structuredClone(prev);
+      pageRows.forEach((item) => delete newSelection[item.id]);
+      return newSelection;
+    });
+  };
+
   const handleSelectAll = () => {
     setIsSelectAllPages(true);
     setExcludedRowIds({});
@@ -134,20 +146,24 @@ export function useDataTable<TData, TValue>({
       enableHiding: false,
       header: ({ table }) => {
         const pageRows = table.getPaginationRowModel().rows;
-        const numPageRows = pageRows.length;
+        // const numPageRows = pageRows.length;
         const numSelectedPageRows = Object.keys(rowSelection).length;
-        const isAllOnPageSelected =
-          numPageRows > 0 && numSelectedPageRows === numPageRows;
+        const isAllOnPageSelected = table.getIsAllPageRowsSelected();
+        // numPageRows > 0 && numSelectedPageRows === numPageRows;
 
         const handleHeaderCheckboxClick = () => {
           if (isSelectAllPages) {
             handleSelectionReset();
           } else if (isAllOnPageSelected) {
-            if (enableSelectAllPages) {
-              handleSelectionReset();
-              return;
-            }
-            handleSelectAll();
+            // This logic cycles between page select -> all page select -> all page unselect
+            // if (enableSelectAllPages) {
+            //   handleSelectionReset();
+            //   return;
+            // }
+            // handleSelectAll();
+
+            // Alternate logic which switches between select all at page level and unselect all at page level.
+            handleUnselectPage();
           } else {
             setIsSelectAllPages(false);
             setExcludedRowIds({});
@@ -155,7 +171,7 @@ export function useDataTable<TData, TValue>({
               acc[row.id] = true;
               return acc;
             }, {} as Record<string, boolean>);
-            setRowSelection(newSelection);
+            setRowSelection((prev) => ({ ...prev, ...newSelection }));
           }
         };
 
@@ -333,41 +349,43 @@ export function useDataTable<TData, TValue>({
             {...itemProps?.table}
             className={itemProps?.table?.className}
           >
-            <TableHeader
-              data-testid='data-table-header'
-              {...itemProps?.tableHeader}
-              className={clsx(itemProps?.tableHeader?.className)}
-            >
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  data-testid={'data-header-row-' + headerGroup.id}
-                  key={headerGroup.id}
-                  {...itemProps?.tableHeaderRow}
-                  className={clsx(
-                    '~text-[#231f21] hover:!~bg-transparent',
-                    itemProps?.tableHeaderRow?.className
-                  )}
-                >
-                  <SortableContext
-                    items={columnOrder}
-                    strategy={horizontalListSortingStrategy}
+            {table.getRowModel().rows?.length ? (
+              <TableHeader
+                data-testid='data-table-header'
+                {...itemProps?.tableHeader}
+                className={clsx(itemProps?.tableHeader?.className)}
+              >
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    data-testid={'data-header-row-' + headerGroup.id}
+                    key={headerGroup.id}
+                    {...itemProps?.tableHeaderRow}
+                    className={clsx(
+                      '~text-[#231f21] hover:!~bg-transparent',
+                      itemProps?.tableHeaderRow?.className
+                    )}
                   >
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <DraggableColumnHeader
-                          key={header.id}
-                          header={header}
-                          isDraggable={draggableColumnIds.includes(
-                            header.column.id
-                          )}
-                          itemProps={itemProps}
-                        />
-                      );
-                    })}
-                  </SortableContext>
-                </TableRow>
-              ))}
-            </TableHeader>
+                    <SortableContext
+                      items={columnOrder}
+                      strategy={horizontalListSortingStrategy}
+                    >
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <DraggableColumnHeader
+                            key={header.id}
+                            header={header}
+                            isDraggable={draggableColumnIds.includes(
+                              header.column.id
+                            )}
+                            itemProps={itemProps}
+                          />
+                        );
+                      })}
+                    </SortableContext>
+                  </TableRow>
+                ))}
+              </TableHeader>
+            ) : null}
             <TableBody
               data-testid='data-table-body'
               {...itemProps?.tableBody}
@@ -423,7 +441,9 @@ export function useDataTable<TData, TValue>({
           </Table>
         </DndContext>
       </div>
-      <Pagination itemProps={itemProps} />
+      {table.getRowModel().rows?.length ? (
+        <Pagination itemProps={itemProps} />
+      ) : null}
     </div>
   );
 
