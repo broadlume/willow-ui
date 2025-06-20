@@ -37,8 +37,7 @@ import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { BubbleMenu } from './components/bubble-menu';
-import { CommandExtension } from './extensions/command-menu';
-// import { CommandMenu } from './components/command-menu';
+import {SlashCommand} from './extensions/slash-command';
 
 export type EditorProps = {
   content?: string,
@@ -54,7 +53,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  // const [commandMenu, setCommandMenu] = useState(false);
 
   const handleUpdate = (editor: TiptapEditor) => {
     const html = editor.getHTML();
@@ -87,7 +85,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     LineHeight,
     Indentation,
     AutocompleteNode,
-    CommandExtension
+    SlashCommand
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
