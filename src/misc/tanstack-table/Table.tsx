@@ -24,7 +24,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -115,18 +115,48 @@ export function useDataTable<TData, TValue>({
     setRowSelection({});
   };
 
-  const handleUnselectPage = () => {
-    const pageRows = table.getPaginationRowModel().rows;
-    setIsSelectAllPages(false);
-    setExcludedRowIds({});
+  const handleUnselectPage = useCallback(
+    (pageRows: Row<TData>[]) => {
+      if (isSelectAllPages) {
+        setExcludedRowIds((prev) => {
+          const newExcluded = { ...prev };
+          pageRows.forEach((item) => {
+            newExcluded[item.id] = true;
+          });
+          return newExcluded;
+        });
+        setRowSelection((prev) => {
+          const newSelection = structuredClone(prev);
+          pageRows.forEach((item) => delete newSelection[item.id]);
+          return newSelection;
+        });
+      } else {
+        setRowSelection((prev) => {
+          const newSelection = structuredClone(prev);
+          pageRows.forEach((item) => delete newSelection[item.id]);
+          return newSelection;
+        });
+      }
+    },
+    [isSelectAllPages]
+  );
 
-    setRowSelection((prev) => {
-      const newSelection = structuredClone(prev);
-      pageRows.forEach((item) => delete newSelection[item.id]);
-      return newSelection;
-    });
-  };
-
+  const handleSelectPage = useCallback(
+    (pageRows: Row<TData>[], isAllOnPageSelected: boolean) => {
+      if (isAllOnPageSelected) {
+        // Unselect all rows on the page
+        handleUnselectPage(pageRows);
+        return;
+      }
+      setExcludedRowIds({});
+      const newSelection = pageRows.reduce((acc, row) => {
+        acc[row.id] = true;
+        return acc;
+      }, {} as Record<string, boolean>);
+      setRowSelection((prev) => ({ ...prev, ...newSelection }));
+    },
+    [handleUnselectPage]
+  );
   const handleSelectAll = () => {
     setIsSelectAllPages(true);
     setExcludedRowIds({});
@@ -148,40 +178,65 @@ export function useDataTable<TData, TValue>({
         const pageRows = table.getPaginationRowModel().rows;
         // const numPageRows = pageRows.length;
         const numSelectedPageRows = Object.keys(rowSelection).length;
-        const isAllOnPageSelected = table.getIsAllPageRowsSelected();
+
+        const totalCount = table.getRowCount();
         // numPageRows > 0 && numSelectedPageRows === numPageRows;
+        /**
+         * DO NOT DELETE
+         * Cycling between:
+         * 1. Select all on page
+         * 2. Select all on all pages
+         * 3. Unselect all on all pages
+         */
+        // const handleHeaderCheckboxClick = () => {
+        //   if (isSelectAllPages) {
+        //     // Commenting it out to disable checkbox unselecting all records.
+        //     // handleSelectionReset();
+        //     const pageRows = table.getPaginationRowModel().rows;
+        //     setIsSelectAllPages(true);
+        //     setExcludedRowIds((prev) => {
+        //       const newExcluded = { ...prev };
+        //       pageRows.forEach((item) => {
+        //         newExcluded[item.id] = true;
+        //       });
+        //       return newExcluded;
+        //     });
+        //     setRowSelection({});
+        //     // setRowSelection((prev) => {
+        //     //   const newSelection = structuredClone(prev);
+        //     //   pageRows.forEach((item) => delete newSelection[item.id]);
+        //     //   return newSelection;
+        //     // });
+        //   } else if (isAllOnPageSelected) {
+        //     // This logic cycles between page select -> all page select -> all page unselect
+        //     // if (enableSelectAllPages) {
+        //     //   handleSelectionReset();
+        //     //   return;
+        //     // }
+        //     // handleSelectAll();
 
-        const handleHeaderCheckboxClick = () => {
-          if (isSelectAllPages) {
-            handleSelectionReset();
-          } else if (isAllOnPageSelected) {
-            // This logic cycles between page select -> all page select -> all page unselect
-            // if (enableSelectAllPages) {
-            //   handleSelectionReset();
-            //   return;
-            // }
-            // handleSelectAll();
-
-            // Alternate logic which switches between select all at page level and unselect all at page level.
-            handleUnselectPage();
-          } else {
-            setIsSelectAllPages(false);
-            setExcludedRowIds({});
-            const newSelection = pageRows.reduce((acc, row) => {
-              acc[row.id] = true;
-              return acc;
-            }, {} as Record<string, boolean>);
-            setRowSelection((prev) => ({ ...prev, ...newSelection }));
-          }
-        };
+        //     // Alternate logic which switches between select all at page level and unselect all at page level.
+        //     handleUnselectPage();
+        //   } else {
+        //     setIsSelectAllPages(false);
+        //     setExcludedRowIds({});
+        //     const newSelection = pageRows.reduce((acc, row) => {
+        //       acc[row.id] = true;
+        //       return acc;
+        //     }, {} as Record<string, boolean>);
+        //     setRowSelection((prev) => ({ ...prev, ...newSelection }));
+        //   }
+        // };
 
         const isIndeterminate =
           (isSelectAllPages && Object.keys(excludedRowIds).length > 0) ||
-          (!isSelectAllPages && numSelectedPageRows > 0);
+          (!isSelectAllPages &&
+            numSelectedPageRows > 0 &&
+            numSelectedPageRows !== totalCount);
 
         const isChecked = isSelectAllPages
           ? Object.keys(excludedRowIds).length === 0
-          : isAllOnPageSelected;
+          : numSelectedPageRows === totalCount;
 
         return (
           <Checkbox
@@ -235,7 +290,6 @@ export function useDataTable<TData, TValue>({
     isSelectAllPages,
     excludedRowIds,
     enableRowSelection,
-    enableSelectAllPages,
   ]);
 
   /**
@@ -246,7 +300,6 @@ export function useDataTable<TData, TValue>({
     columns: memoizedColumns,
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    ...tableParams,
     getCoreRowModel: getCoreRowModel(),
     onColumnOrderChange: onColumnOrderChange,
     enableSortingRemoval: false,
@@ -256,6 +309,7 @@ export function useDataTable<TData, TValue>({
     manualPagination: true,
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
+    ...tableParams,
     state: {
       columnOrder,
       sorting,
@@ -264,6 +318,19 @@ export function useDataTable<TData, TValue>({
       ...tableParams?.state,
     },
   });
+
+  const handleHeaderCheckboxClick = () => {
+    const pageRows = table.getPaginationRowModel().rows;
+    const isAllOnPageSelected =
+      (isSelectAllPages &&
+        pageRows.filter((item) => !excludedRowIds[item.id]).length) ||
+      table.getIsAllPageRowsSelected();
+    if (isAllOnPageSelected) {
+      handleUnselectPage(pageRows);
+    } else {
+      handleSelectPage(pageRows, false);
+    }
+  };
 
   /**
    * DND handlers
