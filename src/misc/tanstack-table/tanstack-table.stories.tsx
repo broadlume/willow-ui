@@ -4,7 +4,7 @@ import { columns, payments } from './data';
 const TanStackTable = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
-    data: payments.slice(0, 4),
+    data: payments,
     tableParams: {
       manualPagination: false,
     },
