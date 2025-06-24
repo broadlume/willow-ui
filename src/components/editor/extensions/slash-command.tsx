@@ -1,11 +1,15 @@
 import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
-import { createRoot, Root } from 'react-dom/client';
-import React from 'react';
+import { ReactRenderer } from '@tiptap/react';
 import { SlashCommandMenu } from '../components/slash-command-menu';
+import tippy from 'tippy.js';
 
-let container: HTMLDivElement | null = null;
-let root: Root | null = null;
+// Define the type for command items
+export interface CommandItem {
+  title: string;
+  command: ({ editor }: { editor: any }) => void;
+  icon?: React.ReactNode;
+}
 
 export const SlashCommand = Extension.create({
   name: 'slash-command',
@@ -14,8 +18,13 @@ export const SlashCommand = Extension.create({
     return {
       suggestion: {
         char: '/',
+        startOfLine: true,
+        command: ({ editor, range, props }) => {
+          editor.chain().focus().deleteRange(range).run();
+          props.command({ editor });
+        },
         items: ({ query }: { query: string }) => {
-          const commands = [
+          const commands: CommandItem[] = [
             {
               title: 'Heading 1',
               command: ({ editor }) => editor.chain().focus().toggleHeading({ level: 1 }).run(),
@@ -25,12 +34,40 @@ export const SlashCommand = Extension.create({
               command: ({ editor }) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
             },
             {
+              title: 'Heading 3',
+              command: ({ editor }) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+            },
+            {
+              title: 'Paragraph',
+              command: ({ editor }) => editor.chain().focus().setParagraph().run(),
+            },
+            {
               title: 'Bullet List',
               command: ({ editor }) => editor.chain().focus().toggleBulletList().run(),
             },
             {
+              title: 'Ordered List',
+              command: ({ editor }) => editor.chain().focus().toggleOrderedList().run(),
+            },
+            {
               title: 'Code Block',
               command: ({ editor }) => editor.chain().focus().toggleCodeBlock().run(),
+            },
+            {
+              title: 'Blockquote',
+              command: ({ editor }) => editor.chain().focus().toggleBlockquote().run(),
+            },
+            {
+              title: 'Horizontal Rule',
+              command: ({ editor }) => editor.chain().focus().setHorizontalRule().run(),
+            },
+            {
+              title: 'Hard Break',
+              command: ({ editor }) => editor.chain().focus().setHardBreak().run(),
+            },
+            {
+              title: 'Table',
+              command: ({ editor }) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
             },
           ];
 
@@ -39,86 +76,50 @@ export const SlashCommand = Extension.create({
           );
         },
         render: () => {
-          let selectedIndex = 0;
+          let component: ReactRenderer;
+          let popup: any;
 
           return {
             onStart: (props) => {
-              if (container) return;
+              component = new ReactRenderer(SlashCommandMenu, {
+                props,
+                editor: props.editor,
+              });
 
-              container = document.createElement('div');
-              container.style.position = 'absolute';
-              container.style.zIndex = '1000';
-              document.body.appendChild(container);
-
-              root = createRoot(container);
-
-              const rect = props.clientRect?.();
-              if (rect) {
-                container.style.left = `${rect.left}px`;
-                container.style.top = `${rect.bottom + window.scrollY + 4}px`;
-              }
-
-              root.render(
-                <SlashCommandMenu
-                  items={props.items}
-                  selectedIndex={selectedIndex}
-                  command={props.command}
-                />
-              );
+              // Position the menu using Tippy.js
+              popup = tippy('body', {
+                getReferenceClientRect: props.clientRect,
+                appendTo: () => document.body,
+                content: component.element,
+                showOnCreate: true,
+                interactive: true,
+                trigger: 'manual',
+                placement: 'bottom-start',
+                offset: [0, 8],
+                theme: 'light',
+                maxWidth: 'none',
+              });
             },
             onUpdate(props) {
-              if (!container || !root) return;
+              component.updateProps(props);
 
-              const rect = props.clientRect?.();
-              if (rect) {
-                container.style.left = `${rect.left}px`;
-                container.style.top = `${rect.bottom + window.scrollY + 4}px`;
-              }
-
-              root.render(
-                <SlashCommandMenu
-                  items={props.items}
-                  selectedIndex={selectedIndex}
-                  command={props.command}
-                />
-              );
+              // Update popup position if clientRect changes
+              popup[0].setProps({
+                getReferenceClientRect: props.clientRect,
+              });
             },
             onKeyDown(props) {
-              const items = props.items;
-
-              if (!items || items.length === 0) return false;
-
-              if (props.event.key === 'ArrowRight') {
-                selectedIndex = (selectedIndex + 1) % items.length;
-                return true;
-              }
-
-              if (props.event.key === 'ArrowLeft') {
-                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-                return true;
-              }
-
-              if (props.event.key === 'Enter') {
-                props.command(items[selectedIndex]);
-                return true;
-              }
-
               if (props.event.key === 'Escape') {
+                popup[0].hide();
                 return true;
               }
 
-              return false;
+              // Pass key events to the React component
+              return component.ref?.onKeyDown(props.event);
             },
             onExit() {
-              if (root && container) {
-                // Defer unmount to avoid React race condition
-                queueMicrotask(() => {
-                  root?.unmount();
-                  container?.remove();
-                  root = null;
-                  container = null;
-                });
-              }
+              popup[0].destroy();
+              component.destroy();
             },
           };
         },
@@ -127,6 +128,11 @@ export const SlashCommand = Extension.create({
   },
 
   addProseMirrorPlugins() {
-    return [Suggestion({ editor: this.editor, ...this.options.suggestion })];
+    return [
+      Suggestion({
+        editor: this.editor,
+        ...this.options.suggestion,
+      }),
+    ];
   },
 });
