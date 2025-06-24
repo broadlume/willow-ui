@@ -133,21 +133,24 @@ const DraggableTableRow = <TData extends object>({
   } = useDraggable({
     id: `row-${row.id}`,
     data: { row: rowData },
-    disabled: 'type' in rowData && rowData.type !== 'file',
+    // disabled: 'type' in rowData && rowData.type !== 'file',
+    // TODO: enable this once asset manager apis are done.
+    disabled: true,
   });
 
   // Make 'folder' rows droppable
   const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
     id: `row-${row.id}`,
     data: { row: rowData },
-    disabled: 'type' in rowData && rowData.type !== 'folder',
+    // disabled: 'type' in rowData && rowData.type !== 'file',
+    // TODO: enable this once asset manager apis are done.
+    disabled: true,
   });
 
   // Combine refs
   const setNodeRef = (node: HTMLElement | null) => {
-    if ('type' in rowData && rowData.type === 'file') setDraggableNodeRef(node);
-    if ('type' in rowData && rowData.type === 'folder')
-      setDroppableNodeRef(node);
+    if (rowData?.type === 'file') setDraggableNodeRef(node);
+    if (rowData?.type === 'folder') setDroppableNodeRef(node);
   };
 
   return (
@@ -155,7 +158,7 @@ const DraggableTableRow = <TData extends object>({
       data-testid={'data-table-row-' + row.id}
       ref={setNodeRef}
       {...props}
-      {...('type' in rowData && rowData.type === 'file'
+      {...(rowData?.type === 'file'
         ? {
             ...attributes,
             ...listeners,

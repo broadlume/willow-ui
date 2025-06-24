@@ -5,6 +5,9 @@ const TanStackTable = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
     data: payments,
+    tableParams: {
+      manualPagination: false,
+    },
   });
   console.log('selectedrows', table.getSelectedRowModel());
   return <CustomDataTable />;
