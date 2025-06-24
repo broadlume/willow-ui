@@ -242,12 +242,12 @@ const DraggableColumnHeader = <TData, TValue>({
         {header.isPlaceholder
           ? null
           : flexRender(header.column.columnDef.header, header.getContext())}
-        {header.column.getCanSort() ? (
+        {header.column.getCanSort() && header.column.getIsSorted() ? (
           <div className='~flex ~flex-col ~items-center'>
             <HiMiniChevronUp
               data-testid={'data-table-header-asc-' + header.column.id}
               className={clsx(
-                '~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
+                '~-mb-[5px] ~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
                 header.column.getIsSorted() === 'asc'
                   ? '~opacity-100'
                   : '~opacity-40'
