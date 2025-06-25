@@ -42,32 +42,13 @@ export const SlashCommand = Extension.create({
               command: ({ editor }) => editor.chain().focus().setParagraph().run(),
             },
             {
-              title: 'Bullet List',
-              command: ({ editor }) => editor.chain().focus().toggleBulletList().run(),
-            },
-            {
-              title: 'Ordered List',
-              command: ({ editor }) => editor.chain().focus().toggleOrderedList().run(),
-            },
-            {
-              title: 'Code Block',
-              command: ({ editor }) => editor.chain().focus().toggleCodeBlock().run(),
-            },
-            {
-              title: 'Blockquote',
-              command: ({ editor }) => editor.chain().focus().toggleBlockquote().run(),
-            },
-            {
-              title: 'Horizontal Rule',
-              command: ({ editor }) => editor.chain().focus().setHorizontalRule().run(),
-            },
-            {
-              title: 'Hard Break',
-              command: ({ editor }) => editor.chain().focus().setHardBreak().run(),
-            },
-            {
-              title: 'Table',
-              command: ({ editor }) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+              title: 'Embed',
+              command: ({ editor }) => {
+                const url = window.prompt('Enter video URL to embed');
+                if (url) {
+                  editor.chain().focus().setVideo(url).run();
+                }
+              },
             },
           ];
 
