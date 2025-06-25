@@ -11,7 +11,7 @@ export const MenuItemWithTooltip: React.FC<MenuItemWithTooltipProps> = ({ childr
     return (
         <TooltipProvider>
             <Tooltip key={key}>
-                <TooltipTrigger>{children}</TooltipTrigger>
+                <TooltipTrigger type="button">{children}</TooltipTrigger>
                 <TooltipContent>{tooltipContent}</TooltipContent>
             </Tooltip>
         </TooltipProvider>
