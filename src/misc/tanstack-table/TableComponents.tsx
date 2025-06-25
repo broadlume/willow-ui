@@ -3,10 +3,10 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header, Row } from '@tanstack/react-table';
 
-import React from 'react';
-import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
-import { DataTableProps } from './type';
 import clsx from 'clsx';
+import React from 'react';
+import { HiMiniChevronDown, HiMiniChevronUp } from 'react-icons/hi2';
+import { DataTableProps } from './type';
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -79,7 +79,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~pl-[20px] [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
+      '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~px-[16px]',
       className
     )}
     {...props}
@@ -94,7 +94,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={clsx(
-      '~p-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~pr-0 [&>[role=checkbox]]:~translate-y-[2px]',
+      '~p-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~px-[16px]',
       className
     )}
     {...props}
@@ -243,17 +243,26 @@ const DraggableColumnHeader = <TData, TValue>({
           ? null
           : flexRender(header.column.columnDef.header, header.getContext())}
         {header.column.getCanSort() && header.column.getIsSorted() ? (
-          header.column.getIsSorted() === 'asc' ? (
-            <HiChevronUp
+          <div className='~flex ~flex-col ~items-center'>
+            <HiMiniChevronUp
               data-testid={'data-table-header-asc-' + header.column.id}
-              className='~ml-2 ~h-4 ~w-4'
+              className={clsx(
+                '~-mb-[5px] ~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
+                header.column.getIsSorted() === 'asc'
+                  ? '~opacity-100'
+                  : '~opacity-40'
+              )}
             />
-          ) : (
-            <HiChevronDown
+            <HiMiniChevronDown
               data-testid={'data-table-header-desc-' + header.column.id}
-              className='~ml-2 ~h-4 ~w-4'
+              className={clsx(
+                '~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
+                header.column.getIsSorted() === 'desc'
+                  ? '~opacity-100'
+                  : '~opacity-40'
+              )}
             />
-          )
+          </div>
         ) : null}
       </TableCell>
     </TableHead>
