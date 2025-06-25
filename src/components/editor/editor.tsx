@@ -99,7 +99,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
     },
     editorProps: {
       attributes: {
-        class: 'focus:~outline-none ~not-prose',
+        class: clsx(
+          'focus:~outline-none ~not-prose',
+          darkMode ? '!~text-white' : '~text-black'
+        )
       },
       // handleKeyDown: (_, event) => {
       //   switch (event.key) {
