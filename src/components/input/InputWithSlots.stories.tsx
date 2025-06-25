@@ -63,9 +63,12 @@ export const WithCustomClasses: Story = {
   args: {
     label: '',
     placeholder: 'Custom styled...',
-    inputClass: 'rounded-lg',
-    labelClass: '',
-    textFieldWrapClass: '',
+    classes: {
+      inputClass: 'rounded-lg',
+
+      labelClass: '',
+      textFieldWrapClass: '',
+    },
     prefixSlot: (
       <div className='~flex ~shrink-0 ~select-none ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
         <MagnifyingGlassIcon height='16' width='16' />
