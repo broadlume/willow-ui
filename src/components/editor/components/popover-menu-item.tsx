@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { Popover, PopoverContent, PopoverTrigger } from '@src/components/popover/popover';
 
 interface PopoverMenuItemContentProps {
     title: string | React.ReactNode
@@ -8,10 +8,10 @@ interface PopoverMenuItemContentProps {
 export const PopoverMenuItemContent = ({title, content}: PopoverMenuItemContentProps) => {
     return (
         <Popover>
-            <PopoverTrigger className="~bg-transparent ~border-none ~shadow-none ~p-0 focus:~outline-none hover:~cursor-pointer">
+            <PopoverTrigger type='button' className="~bg-transparent ~border-none ~shadow-none ~p-0 focus:~outline-none hover:~cursor-pointer">
                 {title}
             </PopoverTrigger>
-            <PopoverContent align="start" alignOffset={10} side="right" className="~bg-white ~rounded-lg ~shadow-lg ~p-1 ~z-50">
+            <PopoverContent align="start" alignOffset={110} sideOffset={-30} side="right" className="~bg-white ~rounded-lg ~shadow-lg ~p-1 ~z-50">
                 {content}
             </PopoverContent>
         </Popover>

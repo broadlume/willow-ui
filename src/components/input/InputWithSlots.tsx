@@ -12,6 +12,35 @@ interface InputWithSlotsProps
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
+/**
+ * InputWithSlots component props interface.
+ *
+ * @interface InputWithSlotsProps
+ * @extends {React.InputHTMLAttributes<HTMLInputElement>}
+ * @property {React.ReactNode} [prefixSlot] - Optional prefix slot to be rendered before the input.
+ * @property {React.ReactNode} [postfixSlot] - Optional postfix slot to be rendered after the input.
+ * @property {string} [labelClass] - Optional class name for the label.
+ * @property {string} [inputWrapClass] - Optional class name for the input wrapper.
+ * @property {string} [textFieldWrapClass] - Optional class name for the text field wrapper.
+ * @property {string} [inputClass] - Optional class name for the input.
+ * @property {string} [label] - Optional label text.
+ */
+
+/**
+ * InputWithSlots component.
+ *
+ * @param {InputWithSlotsProps} props - The props for the InputWithSlots component.
+ * @returns {JSX.Element} The rendered InputWithSlots component.
+ *
+ * @example
+ * // Example usage of InputWithSlots component
+ * <InputWithSlots
+ *   prefixSlot={<span>$</span>}
+ *   postfixSlot={<span>.00</span>}
+ *   label="Price"
+ *   inputProps={{ placeholder: "Enter price" }}
+ * />
+ */
 const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
   ({
     prefixSlot,

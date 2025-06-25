@@ -19,13 +19,9 @@ const AlertDialogTrigger = React.forwardRef<
 ));
 
 const AlertDialogPortal = ({
-  className,
   ...props
 }: AlertDialogPrimitive.AlertDialogPortalProps) => (
-  <AlertDialogPrimitive.Portal
-    className={cn('tw-reset', className)}
-    {...props}
-  />
+  <AlertDialogPrimitive.Portal {...props} />
 );
 AlertDialogPortal.displayName = AlertDialogPrimitive.Portal.displayName;
 

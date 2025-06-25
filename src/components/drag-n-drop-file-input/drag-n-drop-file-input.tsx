@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Button } from '@components/button';
 import clsx from 'clsx';
@@ -7,6 +7,9 @@ interface DragNDropFileInputProps {
   file: File;
   setFile: (updater: File) => void;
   infoMessage?: string;
+  topIcon?: React.ReactNode;
+  label?: string;
+  button?: React.ReactNode;
   classNames?: {
     root?: string;
     label?: string;
@@ -54,6 +57,9 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   file,
   setFile,
   infoMessage,
+  topIcon,
+  label = 'Drag and drop your file here or',
+  button = 'Browse',
   otherProps = {
     input: {
       accept: 'image/png, image/jpeg',
@@ -93,8 +99,22 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
     }
   };
 
+  const validateFile = (file?: File) => {
+    if (!file) {
+      return false;
+    }
+    const type = file.type.split('/')[0];
+    const validArray = otherProps?.input?.accept?.split(',') || [];
+    console.log('File type:', type, validArray);
+    return (
+      validArray.includes(`${type}/*`) ||
+      validArray.includes(`*`) ||
+      validArray.includes(file?.type as string)
+    );
+  };
+
   const setDroppedFile = (file: File | undefined | null) => {
-    if (file && [otherProps?.input?.accept].includes(file?.type as string)) {
+    if (file && validateFile(file)) {
       setFile(file);
     }
   };
@@ -120,8 +140,11 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+    if (validateFile(e?.target?.files?.[0])) {
+      console.log('File selected:', e.target.files?.[0]);
+      if (e.target.files?.length) {
+        setFile(e.target.files?.[0]);
+      }
     }
   };
 
@@ -137,6 +160,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         classNames.root
       )}
     >
+      {topIcon}
       <div
         className={clsx(
           '~flex ~items-center ~justify-center',
@@ -144,7 +168,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         )}
       >
         <p className={clsx('~mr-2 ~text-sm ~text-[#A6A6A6]', classNames.label)}>
-          Drag and Drop or
+          {label}
         </p>
         <Button
           className={clsx(
@@ -158,7 +182,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
             fileInput.current?.click();
           }}
         >
-          Browse
+          {button}
         </Button>
         <input
           {...otherProps.input}

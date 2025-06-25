@@ -1,3 +1,4 @@
+import { Button } from "@components/button"
 import clsx from "clsx"
 import { ReactNode } from "react"
 
@@ -21,11 +22,16 @@ export const MenuLink = ({
     className
 }: MenuLinkProps): JSX.Element => {
     return (
-        <a className={
-            clsx(
-                '~no-underline ~text-black ~font-bold',
+        <Button
+            className={clsx(
+                'hover:~no-underline ~text-black ~font-bold ~text-base active:~scale-95 transition-transform duration-500',
                 className
-            )
-        } href='javascript:void(0);' onClick={eventHandler}>{title}</a>
+            )}
+            variant='link'
+            onClick={eventHandler}
+            type="button"
+        >
+            {title}
+        </Button>
     )
 }

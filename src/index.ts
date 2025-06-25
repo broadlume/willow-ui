@@ -41,8 +41,9 @@ export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
 export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
 export * from '@components/code-editor/code-editor';
-
+export * from '@components/Loader/Loader';
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
 export * from '@src/misc/custom-data-table/custom-data-table';
+export * from '@src/misc/tanstack-table/Table';
