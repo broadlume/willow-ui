@@ -1,10 +1,11 @@
 import { cn } from '@src/lib/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { Input } from './input';
+import { Input, InputProps } from './input';
 
 interface InputWithSlotsProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends InputProps,
+    React.InputHTMLAttributes<HTMLInputElement> {
   prefixSlot?: React.ReactNode;
   postfixSlot?: React.ReactNode;
   classes?: {
@@ -12,7 +13,6 @@ interface InputWithSlotsProps
     textFieldWrapClass?: string;
     inputClass?: string;
   };
-
   label?: string;
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
@@ -80,8 +80,10 @@ const InputWithSlots = React.forwardRef<
         <div
           {...wrapperProps}
           className={cn(
-            '~gap[12px] ~flex ~h-[32px] ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~px-[12px] ~py-[4px] ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
-            '[&:has(input:focus)]:~border-blue-500 [&:has(input:focus)]:~ring-1 [&:has(input:focus)]:~ring-ring', // Show ring and border on parent div if input is focused
+            '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
+            'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
+            '[&:has(input:focus)]:~border-blue-500 [&:has(input:focus)]:~outline-none [&:has(input:focus)]:~ring-1',
+            inputProps.error && '[&:not(:has(input:focus))]:~outline-[#E00000]',
             wrapperProps?.className
           )}
         >
@@ -97,6 +99,12 @@ const InputWithSlots = React.forwardRef<
 
           {postfixSlot && postfixSlot}
         </div>
+
+        {inputProps?.error ? (
+          <p className='~mt-1 ~text-xs ~font-normal ~text-[#E00000]'>
+            {inputProps?.error}
+          </p>
+        ) : null}
       </div>
     );
   }
