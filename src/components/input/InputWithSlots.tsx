@@ -90,7 +90,7 @@ const InputWithSlots = React.forwardRef<
             {...inputProps}
             className={clsx(
               '~flex-1 ~border-0 ~bg-transparent ~p-0',
-              'focus-visible:~outline-none focus-visible:~ring-0',
+              '~shadow-none focus-visible:~outline-none focus-visible:~ring-0',
               inputProps?.className
             )}
           />
