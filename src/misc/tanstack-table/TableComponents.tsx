@@ -246,6 +246,7 @@ const DraggableColumnHeader = <TData, TValue>({
           <div className='~flex ~flex-col ~items-center'>
             <HiMiniChevronUp
               data-testid={'data-table-header-asc-' + header.column.id}
+              data-sortactive={header.column.getIsSorted() === 'asc'}
               className={clsx(
                 '~-mb-[5px] ~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
                 header.column.getIsSorted() === 'asc'
@@ -255,6 +256,7 @@ const DraggableColumnHeader = <TData, TValue>({
             />
             <HiMiniChevronDown
               data-testid={'data-table-header-desc-' + header.column.id}
+              data-sortactive={header.column.getIsSorted() === 'desc'}
               className={clsx(
                 '~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
                 header.column.getIsSorted() === 'desc'

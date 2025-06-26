@@ -1,15 +1,20 @@
-import React from 'react';
 import { cn } from '@src/lib/utils';
+import clsx from 'clsx';
+import React from 'react';
+import { Input } from './input';
 
 interface InputWithSlotsProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   prefixSlot?: React.ReactNode;
   postfixSlot?: React.ReactNode;
-  labelClass?: string;
-  inputWrapClass?: string;
-  textFieldWrapClass?: string;
-  inputClass?: string;
+  classes?: {
+    labelClass?: string;
+    textFieldWrapClass?: string;
+    inputClass?: string;
+  };
+
   label?: string;
+  wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 /**
@@ -41,25 +46,31 @@ interface InputWithSlotsProps
  *   inputProps={{ placeholder: "Enter price" }}
  * />
  */
-const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
+const InputWithSlots = React.forwardRef<
+  Parameters<typeof Input>[0],
+  InputWithSlotsProps
+>(
   ({
     prefixSlot,
     postfixSlot,
-    inputWrapClass,
-    textFieldWrapClass,
-    labelClass,
-    inputClass,
+    classes = {
+      textFieldWrapClass: '',
+      labelClass: '',
+      inputClass: '',
+    },
+
     label,
+    wrapperProps,
     ...inputProps
   }) => {
     return (
-      <div className={cn('~flex ~flex-col', textFieldWrapClass)}>
+      <div className={cn('~flex ~flex-col', classes?.textFieldWrapClass)}>
         {label && (
           <label
             htmlFor='price'
             className={cn(
               '~mb-2 ~block ~text-sm/6 ~font-medium ~text-gray-900',
-              labelClass
+              classes?.labelClass
             )}
           >
             {label}
@@ -67,20 +78,21 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         )}
 
         <div
+          {...wrapperProps}
           className={cn(
-            '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
-            inputWrapClass
+            '~gap[12px] ~flex ~h-[32px] ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~px-[12px] ~py-[4px] ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
+            '[&:has(input:focus)]:~border-blue-500 [&:has(input:focus)]:~ring-1 [&:has(input:focus)]:~ring-ring', // Show ring and border on parent div if input is focused
+            wrapperProps?.className
           )}
         >
           {prefixSlot && prefixSlot}
-          <input
-            className={cn(
-              '~block ~h-10 ~min-w-0 ~grow ~rounded-md ~py-0.5 ~text-base ~text-gray-900 placeholder:~text-gray-400 focus:~outline-none sm:~text-sm/6',
-              ' placeholder:~text-input',
-              prefixSlot ? '~px-1' : '~px-3',
-              inputClass
-            )}
+          <Input
             {...inputProps}
+            className={clsx(
+              '~flex-1 ~border-0 ~bg-transparent ~p-0',
+              '~shadow-none focus-visible:~outline-none focus-visible:~ring-0',
+              inputProps?.className
+            )}
           />
 
           {postfixSlot && postfixSlot}
