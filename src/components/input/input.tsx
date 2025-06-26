@@ -6,11 +6,12 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /**
    * Whether to color the input changed or not
    */
-  dirty?: boolean
+  dirty?: boolean;
   /**
    * Whether to color the input invalid or not
    */
   invalid?: boolean;
+  error?: string;
 };
 
 /** Displays a form input field or a component that looks like an input field. */
@@ -24,10 +25,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           'placeholder:~text-input',
           'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
           'disabled:~cursor-not-allowed disabled:~bg-muted',
-          
+
           {
-            "~bg-blue-50": props.dirty && !props.invalid,
-            "~bg-red-50": props.invalid
+            '~bg-blue-50': props.dirty && !props.invalid,
+            '~bg-red-50': props.invalid,
           },
           className
         )}
