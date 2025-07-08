@@ -68,7 +68,6 @@ export function useDataTable<TData, TValue>({
   onColumnOrderChange = () => undefined,
   tableParams,
 }: DataTableProps<TData, TValue>) {
-  console.log('fixedEndColIds', fixedEndColIds);
   /**
    * Column Ordering
    */
