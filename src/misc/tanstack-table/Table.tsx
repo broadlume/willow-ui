@@ -51,7 +51,6 @@ import {
 import { DataTableProps } from './type';
 
 import clsx from 'clsx';
-import { result } from 'lodash';
 
 export function useDataTable<TData, TValue>({
   columns,
