@@ -61,25 +61,30 @@ export function useDataTable<TData, TValue>({
   initialSorting,
   initialPagination,
   enableSelectAllPages,
+  fixedStartColIds = ['select'],
+  fixedEndColIds = ['action', 'showHideCol'],
   enableRowSelection,
   onRowDrop = () => undefined,
   onColumnOrderChange = () => undefined,
   tableParams,
 }: DataTableProps<TData, TValue>) {
+  console.log('fixedEndColIds', fixedEndColIds);
   /**
    * Column Ordering
    */
   const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
   // Memoize columns to prevent re-renders, and derive initial column order
   const { draggableColumnIds } = useMemo(() => {
-    const fixedStartIds = ['select'];
-    const fixedEndIds = ['action', 'showHideCol'];
     const draggableColumnIds =
       initialColumnOrder?.filter(
-        (id) => !fixedStartIds.includes(id) && !fixedEndIds.includes(id)
+        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
       ) || [];
-    setColumnOrder([...fixedStartIds, ...draggableColumnIds, ...fixedEndIds]);
-    return { fixedStartIds, fixedEndIds, draggableColumnIds };
+    setColumnOrder([
+      ...fixedStartColIds,
+      ...draggableColumnIds,
+      ...fixedEndColIds,
+    ]);
+    return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
   }, [initialColumnOrder]);
 
   /**
@@ -397,7 +402,10 @@ export function useDataTable<TData, TValue>({
   const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={clsx('~bg-white ~text-sm', itemProps?.root?.className)}
+      className={clsx(
+        '~flex ~flex-col ~gap-[16px] ~bg-white ~text-sm',
+        itemProps?.root?.className
+      )}
     >
       <div
         {...itemProps?.tableWrapper}
@@ -562,7 +570,7 @@ export function useDataTable<TData, TValue>({
     return (
       <div
         className={clsx(
-          '~my-5 ~flex ~items-center ~justify-between ~px-2',
+          '~mb-[16px] ~flex ~items-center ~justify-between ~px-2',
           itemProps?.tableFooterWrapper
         )}
       >

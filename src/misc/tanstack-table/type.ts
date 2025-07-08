@@ -18,6 +18,8 @@ export interface DataTableProps<TData, TValue> {
   initialColumnOrder?: string[];
   initialSorting?: SortingState;
   initialPagination?: PaginationState;
+  fixedStartColIds?: string[];
+  fixedEndColIds?: string[];
   onColumnOrderChange?: Parameters<
     typeof useReactTable<TData>
   >[0]['onColumnOrderChange'];
