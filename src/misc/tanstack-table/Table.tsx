@@ -41,7 +41,6 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
-  DraggableTableRow,
   Table,
   TableBody,
   TableCell,
@@ -51,7 +50,11 @@ import {
 import { DataTableProps } from './type';
 
 import clsx from 'clsx';
-import { result } from 'lodash';
+import {
+  primaryButton,
+  wasMultiSelectKeyUsed,
+  wasToggleInSelectionGroupKeyUsed,
+} from './utils';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -60,11 +63,13 @@ export function useDataTable<TData, TValue>({
   initialColumnOrder,
   initialSorting,
   initialPagination,
+  showPagination = true,
   enableSelectAllPages,
   enableRowSelection,
   onRowDrop = () => undefined,
   onColumnOrderChange = () => undefined,
   tableParams,
+  customTableRow: CustomTableRow,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -250,22 +255,6 @@ export function useDataTable<TData, TValue>({
         );
       },
       cell: ({ row }) => {
-        const handleRowCheckboxChange = () => {
-          if (isSelectAllPages) {
-            setExcludedRowIds((prev) => {
-              const newExcluded = { ...prev };
-              if (newExcluded[row.id]) {
-                delete newExcluded[row.id];
-              } else {
-                newExcluded[row.id] = true;
-              }
-              return newExcluded;
-            });
-          } else {
-            row.toggleSelected();
-          }
-        };
-
         const isChecked = isSelectAllPages
           ? !excludedRowIds[row.id]
           : row.getIsSelected();
@@ -274,7 +263,7 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             checked={isChecked}
             data-testid={'table-select-checkbox-' + row.id}
-            onCheckedChange={handleRowCheckboxChange}
+            onCheckedChange={() => handleRowCheckboxChange(row)}
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
@@ -291,6 +280,22 @@ export function useDataTable<TData, TValue>({
     excludedRowIds,
     enableRowSelection,
   ]);
+
+  const handleRowCheckboxChange = (row: Row<TData>) => {
+    if (isSelectAllPages) {
+      setExcludedRowIds((prev) => {
+        const newExcluded = { ...prev };
+        if (newExcluded[row.id]) {
+          delete newExcluded[row.id];
+        } else {
+          newExcluded[row.id] = true;
+        }
+        return newExcluded;
+      });
+    } else {
+      row.toggleSelected();
+    }
+  };
 
   /**
    * Main Init of data table hook
@@ -378,18 +383,53 @@ export function useDataTable<TData, TValue>({
       }
       return;
     }
-
-    // Handle row DND
-    if (activeId.startsWith('row-') && overId.startsWith('row-')) {
-      const draggedItem = active.data.current?.row as TData | undefined;
-      const dropTarget = over.data.current?.row as TData | undefined;
-
-      // @ts-expect-error type addition pending
-      if (draggedItem?.type === 'file' && dropTarget?.type === 'folder') {
-        onRowDrop?.(draggedItem, dropTarget);
-      }
-    }
   }
+
+  const toggleSelection = (row: Row<TData>) => {
+    console.log('toggle selection', row);
+    handleRowCheckboxChange(row);
+  };
+
+  const performAction = ({
+    event,
+    row,
+  }: {
+    event: MouseEvent;
+    row: Row<TData>;
+  }) => {
+    if (wasToggleInSelectionGroupKeyUsed(event)) {
+      // toggleSelectionInGroup(row);
+      // return;
+    }
+
+    if (wasMultiSelectKeyUsed(event)) {
+      // multiSelectTo(row);
+      // return;
+    }
+
+    toggleSelection(row);
+  };
+
+  const handleRowClick = ({
+    event,
+    row,
+  }: {
+    event: MouseEvent;
+    row: Row<TData>;
+  }) => {
+    if (event.defaultPrevented) {
+      return;
+    }
+
+    if (event.button !== primaryButton) {
+      return;
+    }
+
+    // marking the event as used
+    event.preventDefault();
+
+    performAction({ event, row });
+  };
 
   /**
    * Render Data table Component
@@ -459,32 +499,32 @@ export function useDataTable<TData, TValue>({
               className={clsx(itemProps?.tableBody?.className)}
             >
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <DraggableTableRow
-                    row={row as Row<object>}
-                    key={row.id}
-                    {...itemProps?.tableBodyRow}
-                    className={clsx(itemProps?.tableBodyRow?.className)}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-                        key={cell.id}
-                        {...itemProps?.tableCell}
-                        className={clsx(
-                          '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
-                          itemProps?.tableCell?.className
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </DraggableTableRow>
-                ))
+                table.getRowModel().rows.map((row) =>
+                  CustomTableRow ? (
+                    <CustomTableRow
+                      key={row.id}
+                      onClick={(event) => handleRowClick({ event, row })}
+                      data-state={row.getIsSelected() && 'selected'}
+                      data-testid={'data-table-row-' + row.id}
+                      row={row}
+                      {...itemProps?.tableBodyRow}
+                      className={clsx(itemProps?.tableBodyRow?.className)}
+                    >
+                      <TableRowCells row={row} />
+                    </CustomTableRow>
+                  ) : (
+                    <TableRow
+                      key={row.id}
+                      onClick={(event) => handleRowClick({ event, row })}
+                      {...itemProps?.tableBodyRow}
+                      className={clsx(itemProps?.tableBodyRow?.className)}
+                      data-state={row.getIsSelected() && 'selected'}
+                      data-testid={'data-table-row-' + row.id}
+                    >
+                      <TableRowCells row={row} />
+                    </TableRow>
+                  )
+                )
               ) : (
                 <TableRow
                   data-testid={'data-table-row-' + 'no-rows'}
@@ -508,11 +548,27 @@ export function useDataTable<TData, TValue>({
           </Table>
         </DndContext>
       </div>
-      {table.getRowModel().rows?.length ? (
+      {showPagination && table.getRowModel().rows?.length ? (
         <Pagination itemProps={itemProps} />
       ) : null}
     </div>
   );
+
+  const TableRowCells = <TData,>({ row }: { row: Row<TData> }) => {
+    return row.getVisibleCells().map((cell) => (
+      <TableCell
+        data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+        key={cell.id}
+        {...itemProps?.tableCell}
+        className={clsx(
+          '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
+          itemProps?.tableCell?.className
+        )}
+      >
+        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+      </TableCell>
+    ));
+  };
 
   const Pagination = ({ itemProps }) => {
     const { pageCount, state } = useMemo(

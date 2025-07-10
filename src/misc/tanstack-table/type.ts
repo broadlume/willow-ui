@@ -1,9 +1,17 @@
 import {
+  DragLocationHistory,
+  ElementDragPayload,
+  DropTargetRecord,
+} from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+import {
   ColumnDef,
   PaginationState,
+  Row,
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
+import React from 'react';
+import { TableRow } from './TableComponents';
 
 export type DataProps = Partial<{
   'data-testid': string;
@@ -18,12 +26,22 @@ export interface DataTableProps<TData, TValue> {
   initialColumnOrder?: string[];
   initialSorting?: SortingState;
   initialPagination?: PaginationState;
+  showPagination?: boolean;
   onColumnOrderChange?: Parameters<
     typeof useReactTable<TData>
   >[0]['onColumnOrderChange'];
-  onRowDrop?: (draggedRow: TData, dropTarget: TData) => void;
   enableSelectAllPages?: boolean;
   enableRowSelection?: boolean;
+  customTableRow?: (
+    props: React.PropsWithChildren<
+      { row: Row<TData> } & Parameters<typeof TableRow>[0]
+    >
+  ) => JSX.Element;
+  onRowDrop?: (args: {
+    location: DragLocationHistory;
+    source: ElementDragPayload;
+    self: DropTargetRecord;
+  }) => void;
   itemProps?: {
     root?: DataProps;
     tableWrapper?: DataProps;
@@ -47,3 +65,12 @@ export interface DataTableProps<TData, TValue> {
     };
   };
 }
+
+export type DraggableState =
+  | { type: 'idle' }
+  | { type: 'preview'; container: HTMLElement; rect: DOMRect }
+  | { type: 'is-card-over'; closestEdge: Edge | null }
+  | { type: 'dragging' };
+
+export const idleState: DraggableState = { type: 'idle' };
+export const draggingState: DraggableState = { type: 'dragging' };
