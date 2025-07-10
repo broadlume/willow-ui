@@ -73,7 +73,6 @@ export function useDataTable<TData, TValue>({
   tableParams,
   customTableRow: CustomTableRow,
 }: DataTableProps<TData, TValue>) {
-  console.log('fixedEndColIds', fixedEndColIds);
   /**
    * Column Ordering
    */
