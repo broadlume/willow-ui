@@ -1,30 +1,12 @@
-import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { flexRender, Header, Row } from '@tanstack/react-table';
+import { flexRender, Header } from '@tanstack/react-table';
 
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { HiMiniChevronDown, HiMiniChevronUp } from 'react-icons/hi2';
 import { DataTableProps } from './type';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 
-import {
-  draggable,
-  dropTargetForElements,
-  ElementDragPayload,
-  ElementDropTargetEventBasePayload,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import {
-  attachInstruction,
-  extractInstruction,
-  Instruction,
-} from '@atlaskit/pragmatic-drag-and-drop-hitbox/list-item';
-import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
-import {
-  DragLocationHistory,
-  DropTargetRecord,
-} from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
@@ -130,98 +112,6 @@ const TableCaption = React.forwardRef<
   />
 ));
 TableCaption.displayName = 'TableCaption';
-
-// const DraggableTableRow = <TData extends object>({
-//   row,
-//   children,
-//   onRowDrop,
-//   ...props
-// }: React.PropsWithChildren<
-//   {
-//     row: Row<TData>;
-//     onRowDrop?: (args: {
-//       location: DragLocationHistory;
-//       source: ElementDragPayload;
-//       self: DropTargetRecord;
-//     }) => void;
-//   } & Parameters<typeof TableRow>[0]
-// >) => {
-//   const { original: rowData } = row;
-//   const [instruction, setInstruction] = useState<Instruction | null>(null);
-//   const rowRef = useRef<HTMLTableRowElement | null>(null);
-
-//   useEffect(() => {
-//     const el = rowRef.current;
-//     if (!el) {
-//       throw new Error('ref not set correctly');
-//     }
-
-//     function onChange({ self }: ElementDropTargetEventBasePayload) {
-//       const instruction = extractInstruction(self.data);
-
-//       setInstruction(instruction);
-//       return;
-//     }
-
-//     return combine(
-//       draggable({
-//         element: el,
-//         getInitialData: () => ({
-//           type: rowData.type,
-//           id: rowData.id,
-//         }),
-//         onDrop: (args) => {
-//           console.log('draggable dropped', args);
-//         },
-//       }),
-//       dropTargetForElements({
-//         element: el,
-//         canDrop: ({ source }) => true,
-//         // rowData.type === 'folder' && source.data.id !== rowData.id,
-//         getIsSticky: () => true,
-//         getData: ({ input, element, source }) => {
-//           const data = {
-//             type: rowData.type,
-//             id: rowData.id,
-//           };
-//           return attachInstruction(data, {
-//             input,
-//             element,
-//             operations: {
-//               combine:
-//                 rowData.type === 'folder' && source.data.id !== rowData.id
-//                   ? 'available'
-//                   : 'blocked',
-//               'reorder-before': 'not-available',
-//               // Don't allow 'reorder-after' on expanded items
-//               'reorder-after': 'not-available',
-//             },
-//           });
-//         },
-//         onDragEnter: onChange,
-//         onDrag: onChange,
-//         onDrop: (args) => {
-//           console.log('dropped targetforelements', args);
-//           onRowDrop?.(args);
-//           setInstruction(null);
-//         },
-//         onDragLeave: () => setInstruction(null),
-//       })
-//     );
-//   }, [rowData]);
-
-//   return (
-//     <TableRow
-//       ref={rowRef}
-//       data-testid={'data-table-row-' + row.id}
-//       {...props}
-//       className={clsx('~relative', props.className)}
-//     >
-//       {children}
-//       {instruction ? <DropIndicator instruction={instruction} /> : null}
-//     </TableRow>
-//   );
-// };
 
 const DraggableColumnHeader = <TData, TValue>({
   header,
