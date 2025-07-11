@@ -72,6 +72,7 @@ export function useDataTable<TData, TValue>({
   onColumnOrderChange = () => undefined,
   tableParams,
   customTableRow: CustomTableRow,
+  handleRowClick: passedHandlerRowClick,
 }: DataTableProps<TData, TValue>) {
   console.log('fixedEndColIds', fixedEndColIds);
   /**
@@ -422,6 +423,11 @@ export function useDataTable<TData, TValue>({
     event: MouseEvent;
     row: Row<TData>;
   }) => {
+    if (passedHandlerRowClick) {
+      passedHandlerRowClick({ event, row });
+      return;
+    }
+
     if (event.defaultPrevented) {
       return;
     }

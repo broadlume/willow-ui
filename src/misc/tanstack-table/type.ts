@@ -29,6 +29,13 @@ export interface DataTableProps<TData, TValue> {
   fixedStartColIds?: string[];
   fixedEndColIds?: string[];
   showPagination?: boolean;
+  handleRowClick?: ({
+    event,
+    row,
+  }: {
+    event: MouseEvent;
+    row: Row<TData>;
+  }) => void;
   onColumnOrderChange?: Parameters<
     typeof useReactTable<TData>
   >[0]['onColumnOrderChange'];
