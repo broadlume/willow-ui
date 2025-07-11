@@ -402,16 +402,16 @@ export function useDataTable<TData, TValue>({
     row: Row<TData>;
   }) => {
     if (wasToggleInSelectionGroupKeyUsed(event)) {
+      toggleSelection(row);
       // toggleSelectionInGroup(row);
       // return;
     }
 
     if (wasMultiSelectKeyUsed(event)) {
+      toggleSelection(row);
       // multiSelectTo(row);
       // return;
     }
-
-    toggleSelection(row);
   };
 
   const handleRowClick = ({
@@ -427,6 +427,10 @@ export function useDataTable<TData, TValue>({
 
     if (event.button !== primaryButton) {
       return;
+    }
+
+    if (event.detail > 1) {
+      return; // ignore double clicks or more
     }
 
     // marking the event as used
