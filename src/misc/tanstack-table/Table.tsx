@@ -55,6 +55,7 @@ import {
   wasMultiSelectKeyUsed,
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
+import { Loader } from '@components/Loader/Loader';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -73,6 +74,8 @@ export function useDataTable<TData, TValue>({
   tableParams,
   customTableRow: CustomTableRow,
   handleRowClick: passedHandlerRowClick,
+  includeLoading = true,
+  enableSingleSelection = false
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -254,7 +257,9 @@ export function useDataTable<TData, TValue>({
             checked={isIndeterminate ? 'indeterminate' : isChecked}
             color='#1A6CFF'
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
-            onCheckedChange={handleHeaderCheckboxClick}
+            onCheckedChange={() => handleHeaderCheckboxClick()}
+            // disable selecting all rows if single selection is enabled
+            disabled={enableSingleSelection}
             aria-label='Select all'
           />
         );
@@ -287,6 +292,12 @@ export function useDataTable<TData, TValue>({
   ]);
 
   const handleRowCheckboxChange = (row: Row<TData>) => {
+    if (enableSingleSelection) {
+      table.toggleAllRowsSelected(false);
+      handleSelectPage([row], false);
+      return;
+    }
+    
     if (isSelectAllPages) {
       setExcludedRowIds((prev) => {
         const newExcluded = { ...prev };
@@ -329,7 +340,17 @@ export function useDataTable<TData, TValue>({
     },
   });
 
-  const handleHeaderCheckboxClick = () => {
+  const handleHeaderCheckboxClick = (row?: Row<TData>) => {
+    // If row is provided, it means we are selecting a single row
+    // If row is not provided, it means we are selecting all rows on the page
+    if (enableSingleSelection && row) {
+      handleSelectPage([row], false);
+      return;
+    }
+    // If single selection is enabled, we don't allow selecting all pages
+    if (enableSingleSelection && !row) {
+      return;
+    }
     const pageRows = table.getPaginationRowModel().rows;
     const isAllOnPageSelected =
       (isSelectAllPages &&
@@ -391,7 +412,6 @@ export function useDataTable<TData, TValue>({
   }
 
   const toggleSelection = (row: Row<TData>) => {
-    console.log('toggle selection', row);
     handleRowCheckboxChange(row);
   };
 
@@ -456,115 +476,123 @@ export function useDataTable<TData, TValue>({
         itemProps?.root?.className
       )}
     >
-      <div
-        {...itemProps?.tableWrapper}
-        className={clsx(
-          '~rounded-md ~border',
-          itemProps?.tableWrapper?.className
-        )}
-      >
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          sensors={sensors}
-        >
-          <Table
-            data-testid='data-table'
-            {...itemProps?.table}
-            className={itemProps?.table?.className}
+      {
+        includeLoading && !data?.length ? (
+          <div className="~flex ~justify-center ~items-center ~h-40">
+            <Loader />
+          </div>
+        ) : (
+          <div
+            {...itemProps?.tableWrapper}
+            className={clsx(
+              '~rounded-md ~border',
+              itemProps?.tableWrapper?.className
+            )}
           >
-            {table.getRowModel().rows?.length ? (
-              <TableHeader
-                data-testid='data-table-header'
-                {...itemProps?.tableHeader}
-                className={clsx(itemProps?.tableHeader?.className)}
-              >
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    data-testid={'data-header-row-' + headerGroup.id}
-                    key={headerGroup.id}
-                    {...itemProps?.tableHeaderRow}
-                    className={clsx(
-                      '~text-[#231f21] hover:!~bg-transparent',
-                      itemProps?.tableHeaderRow?.className
-                    )}
-                  >
-                    <SortableContext
-                      items={columnOrder}
-                      strategy={horizontalListSortingStrategy}
-                    >
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <DraggableColumnHeader
-                            key={header.id}
-                            header={header}
-                            isDraggable={draggableColumnIds.includes(
-                              header.column.id
-                            )}
-                            itemProps={itemProps}
-                          />
-                        );
-                      })}
-                    </SortableContext>
-                  </TableRow>
-                ))}
-              </TableHeader>
-            ) : null}
-            <TableBody
-              data-testid='data-table-body'
-              {...itemProps?.tableBody}
-              className={clsx(itemProps?.tableBody?.className)}
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              sensors={sensors}
             >
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) =>
-                  CustomTableRow ? (
-                    <CustomTableRow
-                      key={row.id}
-                      onClick={(event) => handleRowClick({ event, row })}
-                      data-state={row.getIsSelected() && 'selected'}
-                      data-testid={'data-table-row-' + row.id}
-                      row={row}
-                      {...itemProps?.tableBodyRow}
-                      className={clsx(itemProps?.tableBodyRow?.className)}
-                    >
-                      <TableRowCells row={row} />
-                    </CustomTableRow>
+              <Table
+                data-testid='data-table'
+                {...itemProps?.table}
+                className={itemProps?.table?.className}
+              >
+                {table.getRowModel().rows?.length ? (
+                  <TableHeader
+                    data-testid='data-table-header'
+                    {...itemProps?.tableHeader}
+                    className={clsx(itemProps?.tableHeader?.className)}
+                  >
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        data-testid={'data-header-row-' + headerGroup.id}
+                        key={headerGroup.id}
+                        {...itemProps?.tableHeaderRow}
+                        className={clsx(
+                          '~text-[#231f21] hover:!~bg-transparent',
+                          itemProps?.tableHeaderRow?.className
+                        )}
+                      >
+                        <SortableContext
+                          items={columnOrder}
+                          strategy={horizontalListSortingStrategy}
+                        >
+                          {headerGroup.headers.map((header) => {
+                            return (
+                              <DraggableColumnHeader
+                                key={header.id}
+                                header={header}
+                                isDraggable={draggableColumnIds.includes(
+                                  header.column.id
+                                )}
+                                itemProps={itemProps}
+                              />
+                            );
+                          })}
+                        </SortableContext>
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                ) : null}
+                <TableBody
+                  data-testid='data-table-body'
+                  {...itemProps?.tableBody}
+                  className={clsx(itemProps?.tableBody?.className)}
+                >
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) =>
+                      CustomTableRow ? (
+                        <CustomTableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                          row={row}
+                          {...itemProps?.tableBodyRow}
+                          className={clsx(itemProps?.tableBodyRow?.className)}
+                        >
+                          <TableRowCells row={row} />
+                        </CustomTableRow>
+                      ) : (
+                        <TableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          {...itemProps?.tableBodyRow}
+                          className={clsx(itemProps?.tableBodyRow?.className)}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                        >
+                          <TableRowCells row={row} />
+                        </TableRow>
+                      )
+                    )
                   ) : (
                     <TableRow
-                      key={row.id}
-                      onClick={(event) => handleRowClick({ event, row })}
+                      data-testid={'data-table-row-' + 'no-rows'}
                       {...itemProps?.tableBodyRow}
                       className={clsx(itemProps?.tableBodyRow?.className)}
-                      data-state={row.getIsSelected() && 'selected'}
-                      data-testid={'data-table-row-' + row.id}
                     >
-                      <TableRowCells row={row} />
+                      <TableCell
+                        data-testid='data-table-row-cell-no-rows'
+                        // colSpan={columns.length}
+                        {...itemProps?.tableCell}
+                        className={clsx(
+                          '~h-24 ~text-center',
+                          itemProps?.tableCell?.className
+                        )}
+                      >
+                        There are no records to display
+                      </TableCell>
                     </TableRow>
-                  )
-                )
-              ) : (
-                <TableRow
-                  data-testid={'data-table-row-' + 'no-rows'}
-                  {...itemProps?.tableBodyRow}
-                  className={clsx(itemProps?.tableBodyRow?.className)}
-                >
-                  <TableCell
-                    data-testid='data-table-row-cell-no-rows'
-                    // colSpan={columns.length}
-                    {...itemProps?.tableCell}
-                    className={clsx(
-                      '~h-24 ~text-center',
-                      itemProps?.tableCell?.className
-                    )}
-                  >
-                    There are no records to display
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </DndContext>
-      </div>
+                  )}
+                </TableBody>
+              </Table>
+            </DndContext>
+          </div>
+        )
+      }
       {showPagination && table.getRowModel().rows?.length ? (
         <Pagination itemProps={itemProps} />
       ) : null}

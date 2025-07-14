@@ -36,11 +36,13 @@ export interface DataTableProps<TData, TValue> {
     event: MouseEvent;
     row: Row<TData>;
   }) => void;
+  includeLoading?: boolean;
   onColumnOrderChange?: Parameters<
     typeof useReactTable<TData>
   >[0]['onColumnOrderChange'];
   enableSelectAllPages?: boolean;
   enableRowSelection?: boolean;
+  enableSingleSelection?: boolean;
   customTableRow?: (
     props: React.PropsWithChildren<
       { row: Row<TData> } & Parameters<typeof TableRow>[0]

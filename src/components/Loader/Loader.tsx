@@ -1,5 +1,5 @@
-import { IconType } from 'react-icons';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
 const Loader = ({
   className = '',
   ...props
