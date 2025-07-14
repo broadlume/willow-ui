@@ -1,7 +1,6 @@
-import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { flexRender, Header, Row } from '@tanstack/react-table';
+import { flexRender, Header } from '@tanstack/react-table';
 
 import clsx from 'clsx';
 import React from 'react';
@@ -114,73 +113,6 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = 'TableCaption';
 
-const DraggableTableRow = <TData extends object>({
-  row,
-  children,
-  ...props
-}: {
-  row: Row<TData>;
-  children: React.ReactNode;
-} & Parameters<typeof TableRow>[0]) => {
-  const { original: rowData } = row;
-
-  // Make 'file' rows draggable
-  const {
-    isDragging,
-    setNodeRef: setDraggableNodeRef,
-    listeners,
-    attributes,
-  } = useDraggable({
-    id: `row-${row.id}`,
-    data: { row: rowData },
-    // disabled: 'type' in rowData && rowData.type !== 'file',
-    // TODO: enable this once asset manager apis are done.
-    disabled: true,
-  });
-
-  // Make 'folder' rows droppable
-  const { isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
-    id: `row-${row.id}`,
-    data: { row: rowData },
-    // disabled: 'type' in rowData && rowData.type !== 'file',
-    // TODO: enable this once asset manager apis are done.
-    disabled: true,
-  });
-
-  // Combine refs
-  const setNodeRef = (node: HTMLElement | null) => {
-    if (rowData?.type === 'file') setDraggableNodeRef(node);
-    if (rowData?.type === 'folder') setDroppableNodeRef(node);
-  };
-
-  return (
-    <TableRow
-      data-testid={'data-table-row-' + row.id}
-      ref={setNodeRef}
-      {...props}
-      {...(rowData?.type === 'file'
-        ? {
-            ...attributes,
-            ...listeners,
-            style: {
-              opacity: isDragging ? 0.5 : 1,
-              background: isOver ? '#e0f2fe' : undefined,
-              ...listeners?.style,
-              cursor: 'grab',
-            },
-          }
-        : {
-            style: {
-              opacity: isDragging ? 0.5 : 1,
-              background: isOver ? '#e0f2fe' : undefined,
-            },
-          })}
-    >
-      {children}
-    </TableRow>
-  );
-};
-
 const DraggableColumnHeader = <TData, TValue>({
   header,
   itemProps,
@@ -273,7 +205,6 @@ const DraggableColumnHeader = <TData, TValue>({
 
 export {
   DraggableColumnHeader,
-  DraggableTableRow,
   Table,
   TableBody,
   TableCaption,
