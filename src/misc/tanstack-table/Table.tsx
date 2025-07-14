@@ -24,7 +24,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -419,7 +419,7 @@ export function useDataTable<TData, TValue>({
     event,
     row,
   }: {
-    event: MouseEvent;
+    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
     row: Row<TData>;
   }) => {
     if (wasToggleInSelectionGroupKeyUsed(event)) {
@@ -439,7 +439,7 @@ export function useDataTable<TData, TValue>({
     event,
     row,
   }: {
-    event: MouseEvent;
+    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
     row: Row<TData>;
   }) => {
     if (passedHandlerRowClick) {
@@ -600,19 +600,23 @@ export function useDataTable<TData, TValue>({
   );
 
   const TableRowCells = <TData,>({ row }: { row: Row<TData> }) => {
-    return row.getVisibleCells().map((cell) => (
-      <TableCell
-        data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-        key={cell.id}
-        {...itemProps?.tableCell}
-        className={clsx(
-          '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
-          itemProps?.tableCell?.className
-        )}
-      >
-        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-      </TableCell>
-    ));
+    return (
+      <>
+        {row.getVisibleCells().map((cell) => (
+          <TableCell
+            data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+            key={cell.id}
+            {...itemProps?.tableCell}
+            className={clsx(
+              '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
+              itemProps?.tableCell?.className
+            )}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </>
+    );
   };
 
   const Pagination = ({ itemProps }) => {
