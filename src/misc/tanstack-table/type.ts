@@ -10,7 +10,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { TableRow } from './TableComponents';
 
 export type DataProps = Partial<{
@@ -33,7 +33,7 @@ export interface DataTableProps<TData, TValue> {
     event,
     row,
   }: {
-    event: MouseEvent;
+    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
     row: Row<TData>;
   }) => void;
   onColumnOrderChange?: Parameters<
