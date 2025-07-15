@@ -61,128 +61,128 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         emmetMonaco.emmetHTML(monaco);
         emmetMonaco.emmetJSX(monaco);
 
-        monaco.languages.register({ id: 'liquid' });
+        // monaco.languages.register({ id: 'liquid' });
 
-        monaco.languages.registerCompletionItemProvider('liquid', {
-            triggerCharacters: ['>', '.', '#', '*', '[', '(', '{'],
-            provideCompletionItems: (model, position) => {
-                return (emmetMonaco as any).getEmmetCompletionItems(model, position, 'html');
-            },
-        });
+        // monaco.languages.registerCompletionItemProvider('liquid', {
+        //     triggerCharacters: ['>', '.', '#', '*', '[', '(', '{'],
+        //     provideCompletionItems: (model, position) => {
+        //         return (emmetMonaco as any).getEmmetCompletionItems(model, position, 'html');
+        //     },
+        // });
 
-        monaco.languages.registerCompletionItemProvider('liquid', {
-            provideCompletionItems: () => {
-                return {
-                    suggestions: [
-                        {
-                            label: 'for loop',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% for item in collection %}\n\t{{ item }}\n{% endfor %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Loop through a collection',
-                        },
-                        {
-                            label: 'if',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% if condition %}\n\t{{ value }}\n{% endif %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Basic if statement',
-                        },
-                        {
-                            label: 'if else',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% if condition %}\n\t{{ value }}\n{% else %}\n\t{{ alt_value }}\n{% endif %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'If/Else block',
-                        },
-                        {
-                            label: 'unless',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% unless condition %}\n\t{{ value }}\n{% endunless %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Unless (negated if)',
-                        },
-                        {
-                            label: 'case',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% case variable %}\n{% when 'value1' %}\n\t{{ value1 }}\n{% when 'value2' %}\n\t{{ value2 }}\n{% else %}\n\t{{ default }}\n{% endcase %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Case statement',
-                        },
-                        {
-                            label: 'comment',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% comment %}\n\tComment text here\n{% endcomment %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Liquid comment block',
-                        },
-                        {
-                            label: 'raw',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% raw %}\n\t{{ this_will_not_be_rendered }}\n{% endraw %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Raw block to prevent Liquid rendering',
-                        },
-                        {
-                            label: 'capture',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% capture variable %}\n\tSome content here\n{% endcapture %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Capture output to a variable',
-                        },
-                        {
-                            label: 'include',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% include 'snippet-name' %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Include a snippet',
-                        },
-                        {
-                            label: 'render',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% render 'snippet-name', param1: value1, param2: value2 %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Render a snippet with parameters',
-                        },
-                        {
-                            label: 'assign',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% assign variable = 'value' %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Assign a value to a variable',
-                        },
-                        {
-                            label: 'filter | capitalize',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{{ text | capitalize }}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Capitalize filter',
-                        },
-                        {
-                            label: 'filter | date',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{{ post.published_at | date: "%Y-%m-%d" }}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Format date',
-                        },
-                        {
-                            label: 'filter | replace',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{{ text | replace: "old", "new" }}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Replace text',
-                        },
-                        {
-                            label: 'cycle',
-                            kind: monaco.languages.CompletionItemKind.Snippet,
-                            insertText: `{% cycle 'red', 'green', 'blue' %}`,
-                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                            documentation: 'Cycle through values',
-                        },
-                    ]
-                };
-            },
-        });
+        // monaco.languages.registerCompletionItemProvider('liquid', {
+        //     provideCompletionItems: () => {
+        //         return {
+        //             suggestions: [
+        //                 {
+        //                     label: 'for loop',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% for item in collection %}\n\t{{ item }}\n{% endfor %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Loop through a collection',
+        //                 },
+        //                 {
+        //                     label: 'if',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% if condition %}\n\t{{ value }}\n{% endif %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Basic if statement',
+        //                 },
+        //                 {
+        //                     label: 'if else',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% if condition %}\n\t{{ value }}\n{% else %}\n\t{{ alt_value }}\n{% endif %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'If/Else block',
+        //                 },
+        //                 {
+        //                     label: 'unless',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% unless condition %}\n\t{{ value }}\n{% endunless %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Unless (negated if)',
+        //                 },
+        //                 {
+        //                     label: 'case',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% case variable %}\n{% when 'value1' %}\n\t{{ value1 }}\n{% when 'value2' %}\n\t{{ value2 }}\n{% else %}\n\t{{ default }}\n{% endcase %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Case statement',
+        //                 },
+        //                 {
+        //                     label: 'comment',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% comment %}\n\tComment text here\n{% endcomment %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Liquid comment block',
+        //                 },
+        //                 {
+        //                     label: 'raw',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% raw %}\n\t{{ this_will_not_be_rendered }}\n{% endraw %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Raw block to prevent Liquid rendering',
+        //                 },
+        //                 {
+        //                     label: 'capture',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% capture variable %}\n\tSome content here\n{% endcapture %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Capture output to a variable',
+        //                 },
+        //                 {
+        //                     label: 'include',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% include 'snippet-name' %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Include a snippet',
+        //                 },
+        //                 {
+        //                     label: 'render',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% render 'snippet-name', param1: value1, param2: value2 %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Render a snippet with parameters',
+        //                 },
+        //                 {
+        //                     label: 'assign',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% assign variable = 'value' %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Assign a value to a variable',
+        //                 },
+        //                 {
+        //                     label: 'filter | capitalize',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{{ text | capitalize }}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Capitalize filter',
+        //                 },
+        //                 {
+        //                     label: 'filter | date',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{{ post.published_at | date: "%Y-%m-%d" }}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Format date',
+        //                 },
+        //                 {
+        //                     label: 'filter | replace',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{{ text | replace: "old", "new" }}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Replace text',
+        //                 },
+        //                 {
+        //                     label: 'cycle',
+        //                     kind: monaco.languages.CompletionItemKind.Snippet,
+        //                     insertText: `{% cycle 'red', 'green', 'blue' %}`,
+        //                     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        //                     documentation: 'Cycle through values',
+        //                 },
+        //             ]
+        //         };
+        //     },
+        // });
 
         ['html', 'liquid', 'javascript'].forEach((language) => {
             monaco.languages.registerCompletionItemProvider(language, {
