@@ -74,8 +74,8 @@ export function useDataTable<TData, TValue>({
   tableParams,
   customTableRow: CustomTableRow,
   handleRowClick: passedHandlerRowClick,
-  includeLoading = true,
-  enableSingleSelection = false
+  includeLoading = false,
+  enableSingleSelection = false,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -297,7 +297,7 @@ export function useDataTable<TData, TValue>({
       handleSelectPage([row], false);
       return;
     }
-    
+
     if (isSelectAllPages) {
       setExcludedRowIds((prev) => {
         const newExcluded = { ...prev };
@@ -423,12 +423,16 @@ export function useDataTable<TData, TValue>({
     row: Row<TData>;
   }) => {
     if (wasToggleInSelectionGroupKeyUsed(event)) {
+      // marking the event as used
+      event.preventDefault();
       toggleSelection(row);
       // toggleSelectionInGroup(row);
       // return;
     }
 
     if (wasMultiSelectKeyUsed(event)) {
+      // marking the event as used
+      event.preventDefault();
       toggleSelection(row);
       // multiSelectTo(row);
       // return;
@@ -459,9 +463,6 @@ export function useDataTable<TData, TValue>({
       return; // ignore double clicks or more
     }
 
-    // marking the event as used
-    event.preventDefault();
-
     performAction({ event, row });
   };
 
@@ -476,123 +477,121 @@ export function useDataTable<TData, TValue>({
         itemProps?.root?.className
       )}
     >
-      {
-        includeLoading && !data?.length ? (
-          <div className="~flex ~justify-center ~items-center ~h-40">
-            <Loader />
-          </div>
-        ) : (
-          <div
-            {...itemProps?.tableWrapper}
-            className={clsx(
-              '~rounded-md ~border',
-              itemProps?.tableWrapper?.className
-            )}
+      {includeLoading && !data?.length ? (
+        <div className='~flex ~h-40 ~items-center ~justify-center'>
+          <Loader />
+        </div>
+      ) : (
+        <div
+          {...itemProps?.tableWrapper}
+          className={clsx(
+            '~rounded-md ~border',
+            itemProps?.tableWrapper?.className
+          )}
+        >
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
           >
-            <DndContext
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
+            <Table
+              data-testid='data-table'
+              {...itemProps?.table}
+              className={itemProps?.table?.className}
             >
-              <Table
-                data-testid='data-table'
-                {...itemProps?.table}
-                className={itemProps?.table?.className}
+              {table.getRowModel().rows?.length ? (
+                <TableHeader
+                  data-testid='data-table-header'
+                  {...itemProps?.tableHeader}
+                  className={clsx(itemProps?.tableHeader?.className)}
+                >
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow
+                      data-testid={'data-header-row-' + headerGroup.id}
+                      key={headerGroup.id}
+                      {...itemProps?.tableHeaderRow}
+                      className={clsx(
+                        '~text-[#231f21] hover:!~bg-transparent',
+                        itemProps?.tableHeaderRow?.className
+                      )}
+                    >
+                      <SortableContext
+                        items={columnOrder}
+                        strategy={horizontalListSortingStrategy}
+                      >
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <DraggableColumnHeader
+                              key={header.id}
+                              header={header}
+                              isDraggable={draggableColumnIds.includes(
+                                header.column.id
+                              )}
+                              itemProps={itemProps}
+                            />
+                          );
+                        })}
+                      </SortableContext>
+                    </TableRow>
+                  ))}
+                </TableHeader>
+              ) : null}
+              <TableBody
+                data-testid='data-table-body'
+                {...itemProps?.tableBody}
+                className={clsx(itemProps?.tableBody?.className)}
               >
                 {table.getRowModel().rows?.length ? (
-                  <TableHeader
-                    data-testid='data-table-header'
-                    {...itemProps?.tableHeader}
-                    className={clsx(itemProps?.tableHeader?.className)}
-                  >
-                    {table.getHeaderGroups().map((headerGroup) => (
+                  table.getRowModel().rows.map((row) =>
+                    CustomTableRow ? (
+                      <CustomTableRow
+                        key={row.id}
+                        onClick={(event) => handleRowClick({ event, row })}
+                        data-state={row.getIsSelected() && 'selected'}
+                        data-testid={'data-table-row-' + row.id}
+                        row={row}
+                        {...itemProps?.tableBodyRow}
+                        className={clsx(itemProps?.tableBodyRow?.className)}
+                      >
+                        <TableRowCells row={row} />
+                      </CustomTableRow>
+                    ) : (
                       <TableRow
-                        data-testid={'data-header-row-' + headerGroup.id}
-                        key={headerGroup.id}
-                        {...itemProps?.tableHeaderRow}
-                        className={clsx(
-                          '~text-[#231f21] hover:!~bg-transparent',
-                          itemProps?.tableHeaderRow?.className
-                        )}
+                        key={row.id}
+                        onClick={(event) => handleRowClick({ event, row })}
+                        {...itemProps?.tableBodyRow}
+                        className={clsx(itemProps?.tableBodyRow?.className)}
+                        data-state={row.getIsSelected() && 'selected'}
+                        data-testid={'data-table-row-' + row.id}
                       >
-                        <SortableContext
-                          items={columnOrder}
-                          strategy={horizontalListSortingStrategy}
-                        >
-                          {headerGroup.headers.map((header) => {
-                            return (
-                              <DraggableColumnHeader
-                                key={header.id}
-                                header={header}
-                                isDraggable={draggableColumnIds.includes(
-                                  header.column.id
-                                )}
-                                itemProps={itemProps}
-                              />
-                            );
-                          })}
-                        </SortableContext>
+                        <TableRowCells row={row} />
                       </TableRow>
-                    ))}
-                  </TableHeader>
-                ) : null}
-                <TableBody
-                  data-testid='data-table-body'
-                  {...itemProps?.tableBody}
-                  className={clsx(itemProps?.tableBody?.className)}
-                >
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) =>
-                      CustomTableRow ? (
-                        <CustomTableRow
-                          key={row.id}
-                          onClick={(event) => handleRowClick({ event, row })}
-                          data-state={row.getIsSelected() && 'selected'}
-                          data-testid={'data-table-row-' + row.id}
-                          row={row}
-                          {...itemProps?.tableBodyRow}
-                          className={clsx(itemProps?.tableBodyRow?.className)}
-                        >
-                          <TableRowCells row={row} />
-                        </CustomTableRow>
-                      ) : (
-                        <TableRow
-                          key={row.id}
-                          onClick={(event) => handleRowClick({ event, row })}
-                          {...itemProps?.tableBodyRow}
-                          className={clsx(itemProps?.tableBodyRow?.className)}
-                          data-state={row.getIsSelected() && 'selected'}
-                          data-testid={'data-table-row-' + row.id}
-                        >
-                          <TableRowCells row={row} />
-                        </TableRow>
-                      )
                     )
-                  ) : (
-                    <TableRow
-                      data-testid={'data-table-row-' + 'no-rows'}
-                      {...itemProps?.tableBodyRow}
-                      className={clsx(itemProps?.tableBodyRow?.className)}
+                  )
+                ) : (
+                  <TableRow
+                    data-testid={'data-table-row-' + 'no-rows'}
+                    {...itemProps?.tableBodyRow}
+                    className={clsx(itemProps?.tableBodyRow?.className)}
+                  >
+                    <TableCell
+                      data-testid='data-table-row-cell-no-rows'
+                      // colSpan={columns.length}
+                      {...itemProps?.tableCell}
+                      className={clsx(
+                        '~h-24 ~text-center',
+                        itemProps?.tableCell?.className
+                      )}
                     >
-                      <TableCell
-                        data-testid='data-table-row-cell-no-rows'
-                        // colSpan={columns.length}
-                        {...itemProps?.tableCell}
-                        className={clsx(
-                          '~h-24 ~text-center',
-                          itemProps?.tableCell?.className
-                        )}
-                      >
-                        There are no records to display
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
-          </div>
-        )
-      }
+                      There are no records to display
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </DndContext>
+        </div>
+      )}
       {showPagination && table.getRowModel().rows?.length ? (
         <Pagination itemProps={itemProps} />
       ) : null}
