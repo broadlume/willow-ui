@@ -64,6 +64,7 @@ export interface DataTableProps<TData, TValue> {
     tableBodyRow?: DataProps;
     tableRow?: DataProps;
     tableCell?: DataProps;
+    draggable?: DataProps;
     tableFooterWrapper?: DataProps;
     itemPerPage?: DataProps & {
       selectTrigger?: DataProps;

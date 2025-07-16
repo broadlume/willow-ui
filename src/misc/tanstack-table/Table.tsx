@@ -613,14 +613,14 @@ export function useDataTable<TData, TValue>({
                 '~px-3 ~py-4',
                 // Always add padding-left to the first cell to reserve space
                 // and position the cell relatively for the absolute span.
-                isFirstCell ? 'first:~pl-[30px] cms-relative' : '', // Adjust 30px based on icon size
+                isFirstCell ? 'first:~pl-[30px] ~relative' : '', // Adjust 30px based on icon size
                 'last:~pr-[20px]',
                 itemProps?.tableCell?.className
               )}
             >
               {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
               {isFirstCell && renderDraggableIcon && (
-                <span className="cms-absolute -cms-left-[8px] cms-top-1/2 -cms-translate-y-1/2 cms-py-1 cms-px-2 cms-rounded-full cms-text-xs ">
+                <span className={clsx("~absolute ~left-[-2px] ~top-[32%] -~translate-y-[50%] ~py-[2px] ~px-[4px] ~rounded-full ~text-xs", itemProps?.draggable)}>
                   <RiDraggable />
                 </span>
               )}
