@@ -56,6 +56,7 @@ import {
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
 import { Loader } from '@components/Loader/Loader';
+import { RiDraggable } from 'react-icons/ri';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -553,7 +554,7 @@ export function useDataTable<TData, TValue>({
                         {...itemProps?.tableBodyRow}
                         className={clsx(itemProps?.tableBodyRow?.className)}
                       >
-                        <TableRowCells row={row} />
+                        <TableRowCells row={row} itemProps={itemProps}/>
                       </CustomTableRow>
                     ) : (
                       <TableRow
@@ -564,7 +565,7 @@ export function useDataTable<TData, TValue>({
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                       >
-                        <TableRowCells row={row} />
+                        <TableRowCells row={row} itemProps={itemProps}/>
                       </TableRow>
                     )
                   )
@@ -598,22 +599,35 @@ export function useDataTable<TData, TValue>({
     </div>
   );
 
-  const TableRowCells = <TData,>({ row }: { row: Row<TData> }) => {
+  const TableRowCells = <TData,>({ row, renderDraggableIcon, itemProps }: { row: Row<TData>, renderDraggableIcon?: boolean;itemProps?: DataTableProps<TData, unknown>['itemProps'] }) => {
     return (
       <>
-        {row.getVisibleCells().map((cell) => (
-          <TableCell
-            data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-            key={cell.id}
-            {...itemProps?.tableCell}
-            className={clsx(
-              '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
-              itemProps?.tableCell?.className
-            )}
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        ))}
+        {row.getVisibleCells().map((cell, index) => {
+          const isFirstCell = index === 0;
+          return (
+            <TableCell
+              data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+              key={cell.id}
+              {...itemProps?.tableCell}
+              className={clsx(
+                '~px-3 ~py-4',
+                // Always add padding-left to the first cell to reserve space
+                // and position the cell relatively for the absolute span.
+                isFirstCell ? 'first:~pl-[30px] cms-relative' : '', // Adjust 30px based on icon size
+                'last:~pr-[20px]',
+                itemProps?.tableCell?.className
+              )}
+            >
+              {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
+              {isFirstCell && renderDraggableIcon && (
+                <span className="cms-absolute -cms-left-[8px] cms-top-1/2 -cms-translate-y-1/2 cms-py-1 cms-px-2 cms-rounded-full cms-text-xs ">
+                  <RiDraggable />
+                </span>
+              )}
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          );
+        })}
       </>
     );
   };
