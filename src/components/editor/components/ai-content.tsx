@@ -55,10 +55,18 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
   });
 
   const handleFormSubmit = async (tone: string, text: string) => {
+    let finalTone = tone;
     if (tone === 'Custom') {
-      tone = form.getValues('customTone')!;
+      finalTone = form.getValues('customTone') || '';
     }
-    const prompt = `Rewrite the following text in a ${tone.toLowerCase()} tone for a ${form.getValues('targetedAudience') || 'general audience'}: "${text}"`;
+
+    const targetedAudience = form.getValues('targetedAudience') || 'general audience';
+
+    // Only include tone in prompt if a tone is selected and not empty
+    const prompt = finalTone
+      ? `Rewrite the following text in a ${finalTone.toLowerCase()} tone for a ${targetedAudience}: "${text}"`
+      : text;
+      
     setLoading(true);
 
     try {
