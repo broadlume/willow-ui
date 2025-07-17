@@ -49,7 +49,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: editor.state.doc.textBetween(from, to, ' ') || '',
-      tone: 'Friendly',
+      tone: 'Neutral',
       customTone: '',
     },
   });
@@ -61,12 +61,8 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
     }
 
     const targetedAudience = form.getValues('targetedAudience') || 'general audience';
+    const prompt = `Rewrite the following text in ${finalTone.toLowerCase()} tone for the ${targetedAudience} and make sure if the following text is a request to generate a content then do that first and then change the tone: "${text}"`
 
-    // Only include tone in prompt if a tone is selected and not empty
-    const prompt = finalTone
-      ? `Rewrite the following text in a ${finalTone.toLowerCase()} tone for a ${targetedAudience}: "${text}"`
-      : text;
-      
     setLoading(true);
 
     try {
