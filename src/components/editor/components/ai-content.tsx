@@ -49,16 +49,20 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: editor.state.doc.textBetween(from, to, ' ') || '',
-      tone: 'Friendly',
+      tone: 'Neutral',
       customTone: '',
     },
   });
 
   const handleFormSubmit = async (tone: string, text: string) => {
+    let finalTone = tone;
     if (tone === 'Custom') {
-      tone = form.getValues('customTone')!;
+      finalTone = form.getValues('customTone') || '';
     }
-    const prompt = `Rewrite the following text in a ${tone.toLowerCase()} tone for a ${form.getValues('targetedAudience') || 'general audience'}: "${text}"`;
+
+    const targetedAudience = form.getValues('targetedAudience') || 'general audience';
+    const prompt = `Rewrite the following text in ${finalTone.toLowerCase()} tone for the ${targetedAudience} and make sure if the following text is a request to generate a content then do that first and then change the tone: "${text}"`
+
     setLoading(true);
 
     try {
