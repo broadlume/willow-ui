@@ -48,7 +48,7 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
-
+import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
 import clsx from 'clsx';
 import {
   primaryButton,
@@ -540,7 +540,7 @@ export function useDataTable<TData, TValue>({
               <TableBody
                 data-testid='data-table-body'
                 {...itemProps?.tableBody}
-                className={clsx(itemProps?.tableBody?.className)}
+                className={clsx('~relative', itemProps?.tableBody?.className)}
               >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) =>
@@ -599,9 +599,12 @@ export function useDataTable<TData, TValue>({
     </div>
   );
 
-  const TableRowCells = <TData,>({ row, renderDraggableIcon, itemProps }: { row: Row<TData>, renderDraggableIcon?: boolean;itemProps?: DataTableProps<TData, unknown>['itemProps'] }) => {
+  type TableRowCellProps<TData> = { row: Row<TData>; dropIndicatorInstruction?: Parameters<typeof DropIndicator>[0]['instruction']; renderDraggableIcon?: boolean; itemProps?: DataTableProps<TData, unknown>['itemProps'] }
+
+  const TableRowCells = <TData,>({ row, renderDraggableIcon, itemProps, dropIndicatorInstruction }: TableRowCellProps<TData>) => {
     return (
       <>
+      <div style={{display: 'contents'}}>
         {row.getVisibleCells().map((cell, index) => {
           const isFirstCell = index === 0;
           return (
@@ -628,6 +631,8 @@ export function useDataTable<TData, TValue>({
             </TableCell>
           );
         })}
+      </div>
+      {dropIndicatorInstruction && <DropIndicator instruction={dropIndicatorInstruction} />}
       </>
     );
   };
