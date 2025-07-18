@@ -20,6 +20,7 @@ interface CodeEditorProps {
     width?: string,
     options?: EditorProps['options'],
     asyncTokenSuggestions?: (query: string) => Promise<string[]>;
+    enableTokenSuggestion?: boolean,
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
@@ -31,6 +32,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     width = '100%',
     options,
     asyncTokenSuggestions,
+    enableTokenSuggestion = true
 }: CodeEditorProps) => {
     const [code, setCode] = useState<string>(passedCode);
     const [theme, setTheme] = useState<Theme>(passedTheme);
@@ -62,6 +64,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         emmetMonaco.emmetJSX(monaco);
 
         ['html', 'liquid', 'javascript'].forEach((language) => {
+            if(!enableTokenSuggestion) return;
             monaco.languages.registerCompletionItemProvider(language, {
                 triggerCharacters: ['{'],
                 provideCompletionItems: async (model, position) => {
@@ -237,10 +240,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                             <span className='~flex ~items-center ~mb-1 font-medium'><FaCopy className='~mr-2' /> Copy Code</span>
                             <p className="~text-gray-600">Copy the editor content to clipboard.</p>
                         </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
-                            <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
-                        </div>
+                        {enableTokenSuggestion &&
+                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                                <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
+                                <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
+                            </div>
+                        }
                         <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
                             <span className='~font-medium'>Shortcut</span>
                             <p className="~text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
