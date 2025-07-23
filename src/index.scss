@@ -107,8 +107,47 @@
     --mosaic: 195 100% 57%;
     --heart: 324 56% 42%;
     --ribbon: 195 100% 37%;
-    --danger: 0 78% 40%;
+    --danger: 0 100% 44%;
     --junglegreen: 166 68% 38%;
+    --cta-hover: 218 93% 50%;
+
+    /* Text */
+    --text-pri: 0 0% 10%;
+    --text-sec: 0 0% 20%;
+    --text-opt: 0 0% 60%;
+    --text-brand: 254 79% 56%;
+    --text-cta: 219 100% 55%;
+    --text-cta2: 0 0% 100%;
+    --text-destructive: 0 100% 44%;
+    --text-invert: 0 0% 100%;
+
+    /* Surface */
+    --surface-pri: 0 0% 100%;
+    --surface-sec: 0 0% 95%;
+    --surface-opt: 0 0% 90%;
+    --surface-more: 0 0% 100%;
+    --surface-brand: 254 79% 56%;
+    --surface-cta: 219 100% 55%;
+    --surface-cta-bg: 219 100% 95%;
+    --surface-destructive: 0 100% 44%;
+    --surface-invert: 0 0% 10%;
+
+    /* Icon */
+    --icon-pri: 0 0% 40%;
+    --icon-sec: 0 0% 10%;
+    --icon-brand: 254 79% 56%;
+    --icon-cta: 219 100% 55%;
+    --icon-destructive: 0 100% 44%;
+    --icon-invert: 0 0% 100%;
+
+    /* Border */
+    --border-pri: 0 0% 80%;
+    --border-sec: 0 0% 90%;
+    --border-opt: 0 0% 70%;
+    --border-brand: 254 79% 56%;
+    --border-cta: 219 100% 55%;
+    --border-destructive: 0 100% 44%;
+    --border-invert: 0 0% 10%;
 
     // theme colors
     --background: 0 0% 100%;
@@ -121,7 +160,7 @@
     --input: var(--ash-light);
     --card: 0 0% 100%;
     --card-foreground: var(--ash);
-    --primary: var(--heart);
+    --primary: var(--surface-cta);
     --primary-foreground: 0 0% 100%; // white
     --secondary: var(--ash-lighter);
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -131,8 +170,52 @@
     --destructive-foreground: 0 0% 100%; // white
     --success: var(--beryl);
     --success-foreground: 0 0% 0%; // white
-    --ring: var(--heart);
+    --ring: var(--surface-cta);
     --radius: 0.5em;
+  }
+}
+
+@layer base {
+  .dark {
+    --danger: 0 100% 44%;
+
+    /* Text */
+    --text-pre: 0 0% 100%;
+    --text-sec: 0 0% 95%;
+    --text-opt: 0 0% 40%;
+    --text-brand: 254 80% 67%;
+    --text-cta: 219 100% 55%;
+    --text-cta2: 0 0% 100%;
+    --text-destructive: 0 91% 71%;
+    --text-invert: 0 0% 10%;
+
+    /* Surface */
+    --surface-pri: 0 0% 0%;
+    --surface-sec: 0 0% 10%;
+    --surface-opt: 0 0% 50%;
+    --surface-more: 0 0% 20%;
+    --surface-brand: 254 80% 67%;
+    --surface-cta: 219 100% 55%;
+    --surface-cta-bg: 219 62% 18%;
+    --surface-destructive: 0 91% 71%;
+    --surface-invert: 0 0% 100%;
+
+    /* Icon */
+    --icon-pri: 0 0% 100%;
+    --icon-sec: 0 0% 95%;
+    --icon-brand: 254 79% 56%;
+    --icon-cta: 219 100% 55%;
+    --icon-destructive: 0 91% 71%;
+    --icon-invert: 0 0% 10%;
+
+    /* Border */
+    --border-pri: 0 0% 40%;
+    --border-sec: 0 0% 30%;
+    --border-opt: 0 0% 10%;
+    --border-brand: 254 79% 56%;
+    --border-cta: 219 100% 55%;
+    --border-destructive: 0 91% 71%;
+    --border-invert: 0 0%, 100%;
   }
 }
 
@@ -215,6 +298,7 @@
 .ProseMirror {
   font-size: 14px;
 }
+
 /*
  * This rule targets every element inside the editor (paragraphs, tables, etc.)
  */
@@ -222,6 +306,7 @@
   margin-top: 0;
   margin-bottom: 0;
 }
+
 .ProseMirror ul {
   @apply ~list-disc ~pl-5;
 }
@@ -242,13 +327,15 @@
 .ProseMirror th {
   @apply ~bg-gray-100 ~font-bold;
 }
+
 /* Editor Styles */
 
 // input
+
 /* Change the white to any color */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px white inset !important;
 }
