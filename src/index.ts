@@ -12,6 +12,7 @@ export * from '@components/card/card';
 export * from '@components/checkbox/checkbox';
 export * from '@components/combobox/combobox';
 export * from '@components/command/command';
+export * from '@components/client-picker/client-picker';
 export * from '@components/date-picker/date-picker';
 export * from '@components/dialog/dialog';
 export * from '@components/dropdown-menu/dropdown-menu';
