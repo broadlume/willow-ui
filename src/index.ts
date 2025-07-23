@@ -43,6 +43,7 @@ export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
 export * from '@components/code-editor/code-editor';
 export * from '@components/Loader/Loader';
+export * from '@components/async-autocomplete/async-autocomplete';
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';

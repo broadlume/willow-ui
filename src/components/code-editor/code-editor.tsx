@@ -19,7 +19,8 @@ interface CodeEditorProps {
     height?: string,
     width?: string,
     options?: EditorProps['options'],
-    tokenSuggestions?: string[],
+    asyncTokenSuggestions?: (query: string) => Promise<string[]>;
+    enableTokenSuggestion?: boolean,
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
@@ -30,7 +31,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     height = '90vh',
     width = '100%',
     options,
-    tokenSuggestions = [],
+    asyncTokenSuggestions,
+    enableTokenSuggestion = true
 }: CodeEditorProps) => {
     const [code, setCode] = useState<string>(passedCode);
     const [theme, setTheme] = useState<Theme>(passedTheme);
@@ -43,9 +45,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         fontSize: 16,
         fontFamily: 'monospace',
         lineNumbersMinChars: 3,
-        minimap: {
-            enabled: true,
-        },
+        minimap: { enabled: true },
         scrollbar: {
             alwaysConsumeMouseWheel: false,
             verticalScrollbarSize: 8,
@@ -59,18 +59,15 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
         editorRef.current = editor;
 
-        // Enable Emmet support for all languages
         emmetMonaco.emmetCSS(monaco);
         emmetMonaco.emmetHTML(monaco);
         emmetMonaco.emmetJSX(monaco);
 
-        // List of languages to register the completion provider for
-        const supportedLanguages = ['html', 'liquid', 'javascript'];
-
-        supportedLanguages.forEach((language) => {
+        ['html', 'liquid', 'javascript'].forEach((language) => {
+            if(!enableTokenSuggestion) return;
             monaco.languages.registerCompletionItemProvider(language, {
-                triggerCharacters: ['@'], // Trigger suggestions when '@' is typed
-                provideCompletionItems: (model, position) => {
+                triggerCharacters: ['{'],
+                provideCompletionItems: async (model, position) => {
                     const textBeforeCursor = model.getValueInRange({
                         startLineNumber: position.lineNumber,
                         startColumn: 1,
@@ -78,23 +75,31 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                         endColumn: position.column,
                     });
 
-                    // Check if the user is typing '@@'
-                    if (!textBeforeCursor.endsWith('@@')) {
+                    const match = textBeforeCursor.match(/{{(\w*)$/);
+                    if (!match || !asyncTokenSuggestions) {
                         return { suggestions: [] };
                     }
-                    const suggestions = tokenSuggestions.map((token) => ({
+
+                    const query = match[1];
+                    let tokenResults: string[] = [];
+                    try {
+                        tokenResults = await asyncTokenSuggestions(query);
+                    } catch (err) {
+                        console.error('Failed to fetch async token suggestions:', err);
+                    }
+
+                    const suggestions = tokenResults.map((token) => ({
                         label: token,
                         kind: monaco.languages.CompletionItemKind.Text,
-                        insertText: `${token}@@`,
+                        insertText: `${token}`,
                         detail: `Insert ${token} token`,
                     }));
 
                     return { suggestions };
-                },
+                }
             });
         });
 
-        // Manually trigger suggestions when '@@' is typed
         editor.onDidChangeModelContent(() => {
             const position = editor.getPosition();
             const model = editor.getModel();
@@ -107,7 +112,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 endColumn: position.column,
             });
 
-            if (textBeforeCursor.endsWith('@@')) {
+            if (textBeforeCursor.endsWith('{{')) {
                 editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
             }
         });
@@ -118,14 +123,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         const editorDomNode = editorRef.current.getDomNode?.();
         if (!editorDomNode) return;
 
-        // Monaco's suggest widget class
         const suggestWidget = editorDomNode.ownerDocument.querySelector('.monaco-editor .suggest-widget .tree');
         if (!suggestWidget) return;
 
         const onScroll = (e: any) => {
             if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
-                // Scrolled to bottom
-                // fetchMoreSuggestions();
                 console.log('Scrolled to bottom, fetch more suggestions');
             }
         };
@@ -173,67 +175,85 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         passedOnChange?.(updatedCode);
     }, [passedOnChange]);
 
-    const toggleTheme = () => {
-        setTheme((prevTheme) => (prevTheme === 'vs-dark' ? 'light' : 'vs-dark'));
-    };
-
-    const toggleHelper = () => {
-        setShowHelper((prev) => !prev);
-    };
+    const toggleTheme = () => setTheme((prev) => (prev === 'vs-dark' ? 'light' : 'vs-dark'));
+    const toggleHelper = () => setShowHelper((prev) => !prev);
 
     const copyCode = () => {
-        if (editorRef.current) {
-            const currentCode = editorRef.current.getValue();
-            navigator.clipboard.writeText(currentCode).then(() => {
+        if (!editorRef.current) return;
+        const currentCode = editorRef.current.getValue();
+        navigator.clipboard.writeText(currentCode)
+            .then(() => {
                 setStatusMessage('Code copied to clipboard!');
                 setTimeout(() => setStatusMessage(''), 2000);
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 setStatusMessage('Failed to copy code.');
                 setTimeout(() => setStatusMessage(''), 2000);
-                console.error('Failed to copy code:', err);
+                console.error(err);
             });
-        }
     };
 
     return (
         <div className='~border ~border-gray-300 ~rounded-lg ~shadow-md ~overflow-hidden'>
-            {/* Menu Bar */}
-            <div className='~flex ~justify-between ~items-center ~py-2 ~px-8 ~bg-gray-100'>
-                <p><b>Type: </b><span className="~capitalize">{passedLanguage}</span></p>
-                <div className="~flex ~justify-end ~gap-4">
-                    <Button type="button" variant='ghost' onClick={formatCode}>
-                        <FaBrush fontSize={18} />
+            <div className='~flex ~justify-between ~items-center ~py-2 ~px-6 ~bg-gray-100 ~border-b ~border-gray-300'>
+                <p className="~font-medium">
+                    <b>Type: </b><span className="~capitalize ~text-indigo-600">{passedLanguage}</span>
+                </p>
+
+                {statusMessage && (
+                    <div
+                        className="~text-green-600 ~text-sm ~px-3 ~py-1"
+                    >
+                        {statusMessage}
+                    </div>
+                )}
+
+                <div className="~flex ~gap-2 ~items-center">
+                    <Button type="button" variant='ghost' title="Format Code" onClick={formatCode}>
+                        <FaBrush fontSize={18} className="hover:~text-indigo-500 transition" />
                     </Button>
-                    <Button type="button" variant='ghost' onClick={toggleTheme}>
-                        {theme === 'vs-dark' ? <FaSun fontSize={18} /> : <FaMoon fontSize={18} />}
+                    <Button type="button" variant='ghost' title="Toggle Theme" onClick={toggleTheme}>
+                        {theme === 'vs-dark' ? <FaSun fontSize={18} className="hover:~text-yellow-500 transition" /> : <FaMoon fontSize={18} className="hover:~text-gray-700 transition" />}
                     </Button>
-                    <Button type="button" variant='ghost' onClick={copyCode}>
-                        <FaCopy fontSize={18} />
+                    <Button type="button" variant='ghost' title="Copy Code" onClick={copyCode}>
+                        <FaCopy fontSize={18} className="hover:~text-green-500 transition" />
                     </Button>
-                    <Button type="button" variant='ghost' onClick={toggleHelper}>
-                        <FaQuestionCircle fontSize={18} />
+                    <Button type="button" variant='ghost' title="Toggle Help" onClick={toggleHelper}>
+                        <FaQuestionCircle fontSize={18} className="hover:~text-blue-500 transition" />
                     </Button>
                 </div>
             </div>
 
-            {statusMessage && <div className="~text-green-500 ~mb-2 ~px-4 ~py-1 ~text-right">{statusMessage}</div>}
-
-            {/* Helper Menu */}
             {showHelper && (
-                <div className="~p-4 ~bg-gray-200 ~rounded-md ~shadow-md ~mt-2">
-                    <h3 className="~font-bold ~mb-2">Code Editor Help</h3>
-                    <ul className="~list-disc ~pl-5">
-                        <li><span className='~flex ~items-center'><FaSun /> / <FaMoon />: Toggle between dark and light mode.</span></li>
-                        <li><span className='~flex ~items-center'><FaBrush />: Format the code using Prettier.</span></li>
-                        <li><span className='~flex ~items-center'><FaCopy />: Copy the current code to the clipboard.</span></li>
-                        <li><strong>Font Size:</strong> Adjust the font size using the input box.</li>
-                        <li><strong>Token Suggestions:</strong> Type `@@` to see the Tokens suggestions.</li>
-                        <li><strong>Shortcuts:</strong> Use <code>Ctrl+Space</code> to trigger suggestions manually.</li>
-                    </ul>
+                <div className="~px-6 ~py-4 ~bg-white ~rounded-md ~text-sm">
+                    <h3 className="~font-semibold ~mb-3 ~text-gray-800 text-lg">⚙️ Editor Shortcuts & Tips</h3>
+                    <div className="~grid ~grid-cols-1 sm:~grid-cols-2 ~gap-4">
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                            <span className='~flex ~items-center ~mb-1 font-medium'><FaSun className='~mr-2' /> / <FaMoon className='~ml-2' /> Theme Toggle</span>
+                            <p className="~text-gray-600">Switch between dark and light modes.</p>
+                        </div>
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                            <span className='~flex ~items-center ~mb-1 font-medium'><FaBrush className='~mr-2' /> Format Code</span>
+                            <p className="~text-gray-600">Auto-format code with Prettier.</p>
+                        </div>
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                            <span className='~flex ~items-center ~mb-1 font-medium'><FaCopy className='~mr-2' /> Copy Code</span>
+                            <p className="~text-gray-600">Copy the editor content to clipboard.</p>
+                        </div>
+                        {enableTokenSuggestion &&
+                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                                <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
+                                <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
+                            </div>
+                        }
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                            <span className='~font-medium'>Shortcut</span>
+                            <p className="~text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
+                        </div>
+                    </div>
                 </div>
             )}
 
-            {/* Code Editor */}
             <Editor
                 options={defaultOptions}
                 height={height}

@@ -24,7 +24,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -41,7 +41,6 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
-  DraggableTableRow,
   Table,
   TableBody,
   TableCell,
@@ -49,9 +48,15 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
-
+import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
 import clsx from 'clsx';
-import { result } from 'lodash';
+import {
+  primaryButton,
+  wasMultiSelectKeyUsed,
+  wasToggleInSelectionGroupKeyUsed,
+} from './utils';
+import { Loader } from '@components/Loader/Loader';
+import { RiDraggable } from 'react-icons/ri';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -60,11 +65,18 @@ export function useDataTable<TData, TValue>({
   initialColumnOrder,
   initialSorting,
   initialPagination,
+  showPagination = true,
   enableSelectAllPages,
+  fixedStartColIds = ['select'],
+  fixedEndColIds = ['action', 'showHideCol'],
   enableRowSelection,
   onRowDrop = () => undefined,
   onColumnOrderChange = () => undefined,
   tableParams,
+  customTableRow: CustomTableRow,
+  handleRowClick: passedHandlerRowClick,
+  includeLoading = false,
+  enableSingleSelection = false,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -72,14 +84,16 @@ export function useDataTable<TData, TValue>({
   const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
   // Memoize columns to prevent re-renders, and derive initial column order
   const { draggableColumnIds } = useMemo(() => {
-    const fixedStartIds = ['select'];
-    const fixedEndIds = ['action', 'showHideCol'];
     const draggableColumnIds =
       initialColumnOrder?.filter(
-        (id) => !fixedStartIds.includes(id) && !fixedEndIds.includes(id)
+        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
       ) || [];
-    setColumnOrder([...fixedStartIds, ...draggableColumnIds, ...fixedEndIds]);
-    return { fixedStartIds, fixedEndIds, draggableColumnIds };
+    setColumnOrder([
+      ...fixedStartColIds,
+      ...draggableColumnIds,
+      ...fixedEndColIds,
+    ]);
+    return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
   }, [initialColumnOrder]);
 
   /**
@@ -244,28 +258,14 @@ export function useDataTable<TData, TValue>({
             checked={isIndeterminate ? 'indeterminate' : isChecked}
             color='#1A6CFF'
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
-            onCheckedChange={handleHeaderCheckboxClick}
+            onCheckedChange={() => handleHeaderCheckboxClick()}
+            // disable selecting all rows if single selection is enabled
+            disabled={enableSingleSelection}
             aria-label='Select all'
           />
         );
       },
       cell: ({ row }) => {
-        const handleRowCheckboxChange = () => {
-          if (isSelectAllPages) {
-            setExcludedRowIds((prev) => {
-              const newExcluded = { ...prev };
-              if (newExcluded[row.id]) {
-                delete newExcluded[row.id];
-              } else {
-                newExcluded[row.id] = true;
-              }
-              return newExcluded;
-            });
-          } else {
-            row.toggleSelected();
-          }
-        };
-
         const isChecked = isSelectAllPages
           ? !excludedRowIds[row.id]
           : row.getIsSelected();
@@ -274,7 +274,7 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             checked={isChecked}
             data-testid={'table-select-checkbox-' + row.id}
-            onCheckedChange={handleRowCheckboxChange}
+            onCheckedChange={() => handleRowCheckboxChange(row)}
             className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
@@ -291,6 +291,28 @@ export function useDataTable<TData, TValue>({
     excludedRowIds,
     enableRowSelection,
   ]);
+
+  const handleRowCheckboxChange = (row: Row<TData>) => {
+    if (enableSingleSelection) {
+      table.toggleAllRowsSelected(false);
+      handleSelectPage([row], false);
+      return;
+    }
+
+    if (isSelectAllPages) {
+      setExcludedRowIds((prev) => {
+        const newExcluded = { ...prev };
+        if (newExcluded[row.id]) {
+          delete newExcluded[row.id];
+        } else {
+          newExcluded[row.id] = true;
+        }
+        return newExcluded;
+      });
+    } else {
+      row.toggleSelected();
+    }
+  };
 
   /**
    * Main Init of data table hook
@@ -319,7 +341,17 @@ export function useDataTable<TData, TValue>({
     },
   });
 
-  const handleHeaderCheckboxClick = () => {
+  const handleHeaderCheckboxClick = (row?: Row<TData>) => {
+    // If row is provided, it means we are selecting a single row
+    // If row is not provided, it means we are selecting all rows on the page
+    if (enableSingleSelection && row) {
+      handleSelectPage([row], false);
+      return;
+    }
+    // If single selection is enabled, we don't allow selecting all pages
+    if (enableSingleSelection && !row) {
+      return;
+    }
     const pageRows = table.getPaginationRowModel().rows;
     const isAllOnPageSelected =
       (isSelectAllPages &&
@@ -378,18 +410,62 @@ export function useDataTable<TData, TValue>({
       }
       return;
     }
-
-    // Handle row DND
-    if (activeId.startsWith('row-') && overId.startsWith('row-')) {
-      const draggedItem = active.data.current?.row as TData | undefined;
-      const dropTarget = over.data.current?.row as TData | undefined;
-
-      // @ts-expect-error type addition pending
-      if (draggedItem?.type === 'file' && dropTarget?.type === 'folder') {
-        onRowDrop?.(draggedItem, dropTarget);
-      }
-    }
   }
+
+  const toggleSelection = (row: Row<TData>) => {
+    handleRowCheckboxChange(row);
+  };
+
+  const performAction = ({
+    event,
+    row,
+  }: {
+    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
+    row: Row<TData>;
+  }) => {
+    if (wasToggleInSelectionGroupKeyUsed(event)) {
+      // marking the event as used
+      event.preventDefault();
+      toggleSelection(row);
+      // toggleSelectionInGroup(row);
+      // return;
+    }
+
+    if (wasMultiSelectKeyUsed(event)) {
+      // marking the event as used
+      event.preventDefault();
+      toggleSelection(row);
+      // multiSelectTo(row);
+      // return;
+    }
+  };
+
+  const handleRowClick = ({
+    event,
+    row,
+  }: {
+    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
+    row: Row<TData>;
+  }) => {
+    if (passedHandlerRowClick) {
+      passedHandlerRowClick({ event, row });
+      return;
+    }
+
+    if (event.defaultPrevented) {
+      return;
+    }
+
+    if (event.button !== primaryButton) {
+      return;
+    }
+
+    if (event.detail > 1) {
+      return; // ignore double clicks or more
+    }
+
+    performAction({ event, row });
+  };
 
   /**
    * Render Data table Component
@@ -397,122 +473,169 @@ export function useDataTable<TData, TValue>({
   const CustomDataTable = () => (
     <div
       {...itemProps?.root}
-      className={clsx('~bg-white ~text-sm', itemProps?.root?.className)}
+      className={clsx(
+        '~flex ~flex-col ~gap-[16px] ~bg-white ~text-sm',
+        itemProps?.root?.className
+      )}
     >
-      <div
-        {...itemProps?.tableWrapper}
-        className={clsx(
-          '~rounded-md ~border',
-          itemProps?.tableWrapper?.className
-        )}
-      >
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          sensors={sensors}
+      {includeLoading && !data?.length ? (
+        <div className='~flex ~h-40 ~items-center ~justify-center'>
+          <Loader />
+        </div>
+      ) : (
+        <div
+          {...itemProps?.tableWrapper}
+          className={clsx(
+            '~rounded-md ~border',
+            itemProps?.tableWrapper?.className
+          )}
         >
-          <Table
-            data-testid='data-table'
-            {...itemProps?.table}
-            className={itemProps?.table?.className}
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
           >
-            {table.getRowModel().rows?.length ? (
-              <TableHeader
-                data-testid='data-table-header'
-                {...itemProps?.tableHeader}
-                className={clsx(itemProps?.tableHeader?.className)}
-              >
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    data-testid={'data-header-row-' + headerGroup.id}
-                    key={headerGroup.id}
-                    {...itemProps?.tableHeaderRow}
-                    className={clsx(
-                      '~text-[#231f21] hover:!~bg-transparent',
-                      itemProps?.tableHeaderRow?.className
-                    )}
-                  >
-                    <SortableContext
-                      items={columnOrder}
-                      strategy={horizontalListSortingStrategy}
-                    >
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <DraggableColumnHeader
-                            key={header.id}
-                            header={header}
-                            isDraggable={draggableColumnIds.includes(
-                              header.column.id
-                            )}
-                            itemProps={itemProps}
-                          />
-                        );
-                      })}
-                    </SortableContext>
-                  </TableRow>
-                ))}
-              </TableHeader>
-            ) : null}
-            <TableBody
-              data-testid='data-table-body'
-              {...itemProps?.tableBody}
-              className={clsx(itemProps?.tableBody?.className)}
+            <Table
+              data-testid='data-table'
+              {...itemProps?.table}
+              className={itemProps?.table?.className}
             >
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <DraggableTableRow
-                    row={row as Row<object>}
-                    key={row.id}
+                <TableHeader
+                  data-testid='data-table-header'
+                  {...itemProps?.tableHeader}
+                  className={clsx(itemProps?.tableHeader?.className)}
+                >
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow
+                      data-testid={'data-header-row-' + headerGroup.id}
+                      key={headerGroup.id}
+                      {...itemProps?.tableHeaderRow}
+                      className={clsx(
+                        '~text-[#231f21] hover:!~bg-transparent',
+                        itemProps?.tableHeaderRow?.className
+                      )}
+                    >
+                      <SortableContext
+                        items={columnOrder}
+                        strategy={horizontalListSortingStrategy}
+                      >
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <DraggableColumnHeader
+                              key={header.id}
+                              header={header}
+                              isDraggable={draggableColumnIds.includes(
+                                header.column.id
+                              )}
+                              itemProps={itemProps}
+                            />
+                          );
+                        })}
+                      </SortableContext>
+                    </TableRow>
+                  ))}
+                </TableHeader>
+              ) : null}
+              <TableBody
+                data-testid='data-table-body'
+                {...itemProps?.tableBody}
+                className={clsx('~relative', itemProps?.tableBody?.className)}
+              >
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) =>
+                    CustomTableRow ? (
+                      <CustomTableRow
+                        key={row.id}
+                        onClick={(event) => handleRowClick({ event, row })}
+                        data-state={row.getIsSelected() && 'selected'}
+                        data-testid={'data-table-row-' + row.id}
+                        row={row}
+                        {...itemProps?.tableBodyRow}
+                        className={clsx(itemProps?.tableBodyRow?.className)}
+                      >
+                        <TableRowCells row={row} itemProps={itemProps}/>
+                      </CustomTableRow>
+                    ) : (
+                      <TableRow
+                        key={row.id}
+                        onClick={(event) => handleRowClick({ event, row })}
+                        {...itemProps?.tableBodyRow}
+                        className={clsx(itemProps?.tableBodyRow?.className)}
+                        data-state={row.getIsSelected() && 'selected'}
+                        data-testid={'data-table-row-' + row.id}
+                      >
+                        <TableRowCells row={row} itemProps={itemProps}/>
+                      </TableRow>
+                    )
+                  )
+                ) : (
+                  <TableRow
+                    data-testid={'data-table-row-' + 'no-rows'}
                     {...itemProps?.tableBodyRow}
                     className={clsx(itemProps?.tableBodyRow?.className)}
-                    data-state={row.getIsSelected() && 'selected'}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-                        key={cell.id}
-                        {...itemProps?.tableCell}
-                        className={clsx(
-                          '~px-3 ~py-4 first:~pl-[20px] last:~pr-[20px]',
-                          itemProps?.tableCell?.className
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </DraggableTableRow>
-                ))
-              ) : (
-                <TableRow
-                  data-testid={'data-table-row-' + 'no-rows'}
-                  {...itemProps?.tableBodyRow}
-                  className={clsx(itemProps?.tableBodyRow?.className)}
-                >
-                  <TableCell
-                    data-testid='data-table-row-cell-no-rows'
-                    // colSpan={columns.length}
-                    {...itemProps?.tableCell}
-                    className={clsx(
-                      '~h-24 ~text-center',
-                      itemProps?.tableCell?.className
-                    )}
-                  >
-                    There are no records to display
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </DndContext>
-      </div>
-      {table.getRowModel().rows?.length ? (
+                    <TableCell
+                      data-testid='data-table-row-cell-no-rows'
+                      // colSpan={columns.length}
+                      {...itemProps?.tableCell}
+                      className={clsx(
+                        '~h-24 ~text-center',
+                        itemProps?.tableCell?.className
+                      )}
+                    >
+                      There are no records to display
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </DndContext>
+        </div>
+      )}
+      {showPagination && table.getRowModel().rows?.length ? (
         <Pagination itemProps={itemProps} />
       ) : null}
     </div>
   );
+
+  type TableRowCellProps<TData> = { row: Row<TData>; dropIndicatorInstruction?: Parameters<typeof DropIndicator>[0]['instruction']; renderDraggableIcon?: boolean; itemProps?: DataTableProps<TData, unknown>['itemProps'] }
+
+  const TableRowCells = <TData,>({ row, renderDraggableIcon, itemProps, dropIndicatorInstruction }: TableRowCellProps<TData>) => {
+    return (
+      <>
+      <div style={{display: 'contents'}}>
+        {row.getVisibleCells().map((cell, index) => {
+          const isFirstCell = index === 0;
+          return (
+            <TableCell
+              data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+              key={cell.id}
+              {...itemProps?.tableCell}
+              className={clsx(
+                '~px-3 ~py-4',
+                // Always add padding-left to the first cell to reserve space
+                // and position the cell relatively for the absolute span.
+                isFirstCell ? 'first:~pl-[30px] ~relative' : '', // Adjust 30px based on icon size
+                'last:~pr-[20px]',
+                itemProps?.tableCell?.className
+              )}
+            >
+              {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
+              {isFirstCell && renderDraggableIcon && (
+                <span className={clsx("~absolute ~left-[-2px] ~top-[32%] -~translate-y-[50%] ~py-[2px] ~px-[4px] ~rounded-full ~text-xs", itemProps?.draggable)}>
+                  <RiDraggable />
+                </span>
+              )}
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          );
+        })}
+      </div>
+      {dropIndicatorInstruction && <DropIndicator instruction={dropIndicatorInstruction} />}
+      </>
+    );
+  };
 
   const Pagination = ({ itemProps }) => {
     const { pageCount, state } = useMemo(
@@ -562,7 +685,7 @@ export function useDataTable<TData, TValue>({
     return (
       <div
         className={clsx(
-          '~my-5 ~flex ~items-center ~justify-between ~px-2',
+          '~mb-[16px] ~flex ~items-center ~justify-between ~px-2',
           itemProps?.tableFooterWrapper
         )}
       >

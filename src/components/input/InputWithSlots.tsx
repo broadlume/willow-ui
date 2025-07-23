@@ -80,10 +80,11 @@ const InputWithSlots = React.forwardRef<
         <div
           {...wrapperProps}
           className={cn(
-            '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
+            '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~pl-[8px] ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
             'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
             '[&:has(input:focus)]:~border-blue-500 [&:has(input:focus)]:~outline-none [&:has(input:focus)]:~ring-1',
             inputProps.error && '[&:not(:has(input:focus))]:~outline-[#E00000]',
+            inputProps.disabled ? '~bg-gray-200' : '',
             wrapperProps?.className
           )}
         >
@@ -91,7 +92,7 @@ const InputWithSlots = React.forwardRef<
           <Input
             {...inputProps}
             className={clsx(
-              '~flex-1 ~border-0 ~bg-transparent ~p-0',
+              '~flex-1 ~border-0 ~bg-transparent ~p-0 disabled:~bg-transparent',
               '~shadow-none focus-visible:~outline-none focus-visible:~ring-0',
               inputProps?.className
             )}
