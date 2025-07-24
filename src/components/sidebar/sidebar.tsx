@@ -19,7 +19,16 @@ type SideBarProps = {
     menuLinkClass?: string;
   };
 };
-
+/**
+ * SideBar component renders the navigational sidebar with collapsible items.
+ *
+ * @param items - The list of sidebar items to display.
+ * @param location - The current active route path.
+ * @param LinkComponent - A custom link component (e.g., React Router's Link).
+ * @param rightArrow - Optional icon for collapsed state (defaults to ChevronRight).
+ * @param downArrow - Optional icon for expanded state (defaults to ChevronDown).
+ * @param className - Optional className for additional styling.
+ */
  export const  SideBar: React.FC<SideBarProps> = ({ items, location, LinkComponent, rightArrow = ChevronRight, downArrow = ChevronDown, className }) => {
   const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
     const open: Record<string, boolean> = {};
