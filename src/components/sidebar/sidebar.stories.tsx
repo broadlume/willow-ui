@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SideBar } from './side-bar';  // Adjust the import path to where your SidebarMenu component is located
+import { SideBar } from './sidebar';  // Adjust the import path to where your SidebarMenu component is located
 import { LinkComponent } from './link-component'; // Adjust if necessary (your Link component used in SidebarMenu)
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
