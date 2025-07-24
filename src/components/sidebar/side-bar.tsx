@@ -89,7 +89,7 @@ type SideBarProps = {
           <div key={item.label}>
             {/* Section Title (e.g. PRODUCTS) */}
             <div
-              className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:text-violet-600"
+              className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:~text-violet-600"
               onClick={() => toggleSection(item.label)}
             >
               <span>{item.label}</span>
@@ -114,7 +114,7 @@ type SideBarProps = {
                       ) : (
                         <>
                           <div
-                            className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:text-violet-600 ${className?.Menuclass}`}
+                            className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600 ${className?.Menuclass}`}
                             onClick={() => toggleSection(child.label)}
                           >
                             <span>{child.label}</span>
