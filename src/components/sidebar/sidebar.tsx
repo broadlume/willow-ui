@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { SideBarLink } from "./side-menu-link";
+import { SideBarLink } from "./sidemenu-link";
 
  type SidebarItem = {
   label: string;
@@ -15,8 +15,8 @@ type SideBarProps = {
   rightArrow?: any;  // Accept right arrow component (e.g., ChevronRight)
   downArrow?: any;   // Accept down arrow component (e.g., ChevronLeft)
   className?: {                         // Accept a className object for custom styling
-    Menuclass?: string;
-    menulinkClass?: string;
+    menuClass?: string;
+    menuLinkClass?: string;
   };
 };
 
@@ -80,7 +80,7 @@ type SideBarProps = {
               isActive={isActive}
               onClick={closeAllSections}
               LinkComponent={LinkComponent}
-              className={className?.menulinkClass}
+              className={className?.menuLinkClass}
             />
           );
         }
@@ -109,12 +109,12 @@ type SideBarProps = {
                           isActive={isChildActive}
                           hasChildren={true}
                           LinkComponent={LinkComponent}
-                          className={className?.menulinkClass}
+                          className={className?.menuLinkClass}
                         />
                       ) : (
                         <>
                           <div
-                            className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600 ${className?.Menuclass}`}
+                            className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600 ${className?.menuClass}`}
                             onClick={() => toggleSection(child.label)}
                           >
                             <span>{child.label}</span>
@@ -132,7 +132,7 @@ type SideBarProps = {
                                       isActive={isGrandChildActive}
                                       hasChildren={true}
                                       LinkComponent={LinkComponent}
-                                      className={className?.menulinkClass}
+                                      className={className?.menuLinkClass}
                                     />
                                   </li>
                                 );
