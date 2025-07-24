@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { SideBarLink } from "./sidemenu-link";
 
- type SidebarItem = {
+type SidebarItem = {
   label: string;
   link?: string;
   hidden?: boolean;
@@ -29,7 +29,7 @@ type SideBarProps = {
  * @param downArrow - Optional icon for expanded state (defaults to ChevronDown).
  * @param className - Optional className for additional styling.
  */
- export const  SideBar: React.FC<SideBarProps> = ({ items, location, LinkComponent, rightArrow = ChevronRight, downArrow = ChevronDown, className }) => {
+export const SideBar: React.FC<SideBarProps> = ({ items, location, LinkComponent, rightArrow = ChevronRight, downArrow = ChevronDown, className }) => {
   const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
     const open: Record<string, boolean> = {};
     for (const item of items) {
@@ -76,14 +76,13 @@ type SideBarProps = {
 
   return (
     <aside className="~w-64 ~h-screen ~border-r ~py-6 ~px-8 ~bg-neutral-100 ~text-sm ~flex ~flex-col ~gap-6 ">
-      {items.filter((item) => !item.hidden).map((item) => {
+      {items.filter((item) => !item.hidden).map((item, key) => {
         const isActive = location === item.link || location + "/" === item.link;
         const hasChildren = item.items?.length;
         if (item.link && !hasChildren) {
-          // top-level links like HOME and COMPANIES
           return (
             <SideBarLink
-              key={item.label}
+              key={item.label + key}
               to={item.link}
               label={item.label}
               isActive={isActive}
@@ -95,8 +94,7 @@ type SideBarProps = {
         }
 
         return (
-          <div key={item.label}>
-            {/* Section Title (e.g. PRODUCTS) */}
+          <div key={item.label + key}>
             <div
               className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:~text-violet-600"
               onClick={() => toggleSection(item.label)}
@@ -106,11 +104,11 @@ type SideBarProps = {
             </div>
             {openSections[item.label] && (
               <ul className="~mt-2 ~ml-1 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
-                {item.items!.map((child) => {
+                {item.items!.map((child, key) => {
                   const isChildActive = location === child.link;
                   const hasGrandchildren = child.items?.length;
                   return (
-                    <li key={child.label}>
+                    <li key={child.label + key}>
                       {child.link ? (
                         <SideBarLink
                           to={child.link}
@@ -131,10 +129,10 @@ type SideBarProps = {
                           </div>
                           {openSections[child.label] && hasGrandchildren && (
                             <ul className="~mt-2 ~ml-4 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
-                              {child.items!.map((grandchild) => {
+                              {child.items!.map((grandchild, key) => {
                                 const isGrandChildActive = location === grandchild.link;
                                 return (
-                                  <li key={grandchild.label}>
+                                  <li key={grandchild.label + key}>
                                     <SideBarLink
                                       to={grandchild.link!}
                                       label={grandchild.label}
