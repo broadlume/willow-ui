@@ -30,29 +30,31 @@ type SideBarProps = {
  * @param className - Optional className for additional styling.
  */
 export const SideBar: React.FC<SideBarProps> = ({ items, location, LinkComponent, rightArrow = ChevronRight, downArrow = ChevronDown, className }) => {
-  const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
-    const open: Record<string, boolean> = {};
-    for (const item of items) {
-      if (item.link === pathname) continue;
-      if (item.items) {
-        for (const child of item.items) {
-          if (child.link === pathname) {
-            open[item.label] = true;
-            break;
-          }
-          if (child.items) {
-            for (const grandchild of child.items) {
-              if (grandchild.link === pathname) {
-                open[child.label] = true;
-                open[item.label] = true;
-              }
-            }
-          }
+const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
+  const openSections: Record<string, boolean> = {};
+
+  const traverse = (nodes: SidebarItem[], path: string[] = []): boolean => {
+    for (const node of nodes) {
+      if (node.link === pathname) {
+        // Mark all parent labels in the path as open
+        for (const label of path) {
+          openSections[label] = true;
         }
+        return true;
+      }
+
+      if (node.items?.length) {
+        const found = traverse(node.items, [...path, node.label]);
+        if (found) return true;
       }
     }
-    return open;
+    return false;
   };
+
+  traverse(items);
+  return openSections;
+};
+
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
     getInitialOpenSections(location, items)
