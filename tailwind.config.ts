@@ -31,7 +31,6 @@ export default {
           brand: 'var(--color-primary-100)',
           cta: 'var(--color-cta-100)',
           'cta-bg': 'var(--color-cta-15)',
-          'cta-hover': 'var(--color-cta-90)',
           destructive: 'var(--color-red-500)',
           invert: 'var(--color-grey-90)',
         },

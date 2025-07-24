@@ -67,43 +67,20 @@ export const Variants: Story = {
     <div className='~flex ~flex-col ~space-y-2'>
       <div className='~flex ~gap-1'>
         <Button {...args}>Primary</Button>
-        <Button {...args} variant='secondary'>
+        <Button {...args} className='' variant='secondary'>
           Secondary
         </Button>
-        <Button {...args} variant='outline'>
+        <Button {...args} className='' variant='outline'>
           Outline
         </Button>
         <Button {...args} variant='destructive'>
           Destructive
         </Button>
-        <Button {...args} variant='ghost'>
+        <Button {...args} className='' variant='ghost'>
           Ghost
         </Button>
-        <Button {...args} variant='link'>
+        <Button {...args} className='' variant='link'>
           Link
-        </Button>
-      </div>
-    </div>
-  ),
-};
-
-/** All button sizes. */
-export const Sizes: Story = {
-  args: {
-    children: 'Button Label',
-  },
-  render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
-        <Button {...args} size='lg'>
-          Primary (lg)
-        </Button>
-        <Button {...args}>Primary (default)</Button>
-        <Button {...args} size='sm'>
-          Primary (sm)
-        </Button>
-        <Button {...args} size='icon'>
-          <HomeIcon />
         </Button>
       </div>
     </div>
