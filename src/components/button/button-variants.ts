@@ -22,6 +22,12 @@ const buttonVariants = cva(
           '~bg-transparent ~shadow-none hover:~bg-[var(--color-grey-10)] disabled:~bg-[var(--color-grey-5)]',
         link: '~bg-transparent ~text-text-cta ~underline-offset-4 ~shadow-none hover:~text-[var(--color-cta-75)] hover:~underline disabled:~text-[var(--color-cta-50)]',
       },
+      size: {
+        default: '',
+        sm: '~text-[10px]',
+        lg: '~text-base',
+        icon: '~h-12 ~w-12 ~p-0',
+      },
     },
     compoundVariants: [
       {

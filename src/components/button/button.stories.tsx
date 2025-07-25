@@ -35,13 +35,7 @@ export const Demo: Story = {
         'link',
       ],
     },
-    size: {
-      description: 'The button size.',
-      control: {
-        type: 'select',
-        options: ['default', 'sm', 'lg', 'icon'],
-      },
-    },
+
     disabled: {
       description: 'Whether the button is disabled.',
       control: {

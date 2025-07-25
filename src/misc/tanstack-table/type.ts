@@ -33,7 +33,7 @@ export interface DataTableProps<TData, TValue> {
     event,
     row,
   }: {
-    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
+    event: unknown;
     row: Row<TData>;
   }) => void;
   includeLoading?: boolean;

@@ -420,20 +420,20 @@ export function useDataTable<TData, TValue>({
     event,
     row,
   }: {
-    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
+    event: unknown;
     row: Row<TData>;
   }) => {
-    if (wasToggleInSelectionGroupKeyUsed(event)) {
+    if (wasToggleInSelectionGroupKeyUsed(event as React.MouseEvent)) {
       // marking the event as used
-      event.preventDefault();
+      (event as React.MouseEvent).preventDefault();
       toggleSelection(row);
       // toggleSelectionInGroup(row);
       // return;
     }
 
-    if (wasMultiSelectKeyUsed(event)) {
+    if (wasMultiSelectKeyUsed(event as React.MouseEvent)) {
       // marking the event as used
-      event.preventDefault();
+      (event as React.MouseEvent).preventDefault();
       toggleSelection(row);
       // multiSelectTo(row);
       // return;
@@ -444,7 +444,7 @@ export function useDataTable<TData, TValue>({
     event,
     row,
   }: {
-    event: MouseEvent<HTMLTableRowElement, MouseEvent>;
+    event: unknown;
     row: Row<TData>;
   }) => {
     if (passedHandlerRowClick) {
@@ -452,15 +452,15 @@ export function useDataTable<TData, TValue>({
       return;
     }
 
-    if (event.defaultPrevented) {
+    if ((event as React.MouseEvent).defaultPrevented) {
       return;
     }
 
-    if (event.button !== primaryButton) {
+    if ((event as React.MouseEvent).button !== primaryButton) {
       return;
     }
 
-    if (event.detail > 1) {
+    if ((event as React.MouseEvent).detail > 1) {
       return; // ignore double clicks or more
     }
 
@@ -554,7 +554,7 @@ export function useDataTable<TData, TValue>({
                         {...itemProps?.tableBodyRow}
                         className={clsx(itemProps?.tableBodyRow?.className)}
                       >
-                        <TableRowCells row={row} itemProps={itemProps}/>
+                        <TableRowCells row={row} itemProps={itemProps} />
                       </CustomTableRow>
                     ) : (
                       <TableRow
@@ -565,7 +565,7 @@ export function useDataTable<TData, TValue>({
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                       >
-                        <TableRowCells row={row} itemProps={itemProps}/>
+                        <TableRowCells row={row} itemProps={itemProps} />
                       </TableRow>
                     )
                   )
@@ -599,40 +599,59 @@ export function useDataTable<TData, TValue>({
     </div>
   );
 
-  type TableRowCellProps<TData> = { row: Row<TData>; dropIndicatorInstruction?: Parameters<typeof DropIndicator>[0]['instruction']; renderDraggableIcon?: boolean; itemProps?: DataTableProps<TData, unknown>['itemProps'] }
+  type TableRowCellProps<TData> = {
+    row: Row<TData>;
+    dropIndicatorInstruction?: Parameters<
+      typeof DropIndicator
+    >[0]['instruction'];
+    renderDraggableIcon?: boolean;
+    itemProps?: DataTableProps<TData, unknown>['itemProps'];
+  };
 
-  const TableRowCells = <TData,>({ row, renderDraggableIcon, itemProps, dropIndicatorInstruction }: TableRowCellProps<TData>) => {
+  const TableRowCells = <TData,>({
+    row,
+    renderDraggableIcon,
+    itemProps,
+    dropIndicatorInstruction,
+  }: TableRowCellProps<TData>) => {
     return (
       <>
-      <div style={{display: 'contents'}}>
-        {row.getVisibleCells().map((cell, index) => {
-          const isFirstCell = index === 0;
-          return (
-            <TableCell
-              data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-              key={cell.id}
-              {...itemProps?.tableCell}
-              className={clsx(
-                '~px-3 ~py-4',
-                // Always add padding-left to the first cell to reserve space
-                // and position the cell relatively for the absolute span.
-                isFirstCell ? 'first:~pl-[30px] ~relative' : '', // Adjust 30px based on icon size
-                'last:~pr-[20px]',
-                itemProps?.tableCell?.className
-              )}
-            >
-              {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
-              {isFirstCell && renderDraggableIcon && (
-                <span className={clsx("~absolute ~left-[-2px] ~top-[32%] -~translate-y-[50%] ~py-[2px] ~px-[4px] ~rounded-full ~text-xs", itemProps?.draggable)}>
-                  <RiDraggable />
-                </span>
-              )}
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
-          );
-        })}
-      </div>
-      {dropIndicatorInstruction && <DropIndicator instruction={dropIndicatorInstruction} />}
+        <div style={{ display: 'contents' }}>
+          {row.getVisibleCells().map((cell, index) => {
+            const isFirstCell = index === 0;
+            return (
+              <TableCell
+                data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+                key={cell.id}
+                {...itemProps?.tableCell}
+                className={clsx(
+                  '~px-3 ~py-4',
+                  // Always add padding-left to the first cell to reserve space
+                  // and position the cell relatively for the absolute span.
+                  isFirstCell ? 'first:~pl-[30px] ~relative' : '', // Adjust 30px based on icon size
+                  'last:~pr-[20px]',
+                  itemProps?.tableCell?.className
+                )}
+              >
+                {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
+                {isFirstCell && renderDraggableIcon && (
+                  <span
+                    className={clsx(
+                      '~absolute ~left-[-2px] ~top-[32%] -~translate-y-[50%] ~py-[2px] ~px-[4px] ~rounded-full ~text-xs',
+                      itemProps?.draggable
+                    )}
+                  >
+                    <RiDraggable />
+                  </span>
+                )}
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            );
+          })}
+        </div>
+        {dropIndicatorInstruction && (
+          <DropIndicator instruction={dropIndicatorInstruction} />
+        )}
       </>
     );
   };
