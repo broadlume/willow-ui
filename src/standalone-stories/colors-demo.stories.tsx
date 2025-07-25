@@ -88,7 +88,7 @@ const ColorPaletteDemoComponent = (_) => {
   return (
     <div className='tw-reset ~flex ~flex-col ~gap-4'>
       <p className='body-large'>
-        Note: All colors are defined in index.scss with HSL values, so RGB
+        Note: All colors are defined in index.css with HSL values, so RGB
         conversion may not be 100% accurate.
       </p>
       <Separator />
