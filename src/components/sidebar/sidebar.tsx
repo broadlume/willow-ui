@@ -1,48 +1,17 @@
-import React, { useState } from "react";
+import  { FC, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { SideBarLink } from "./sidemenu-link";
+import { SideBarSection } from "./sidebar-section";
+import { SidebarItem, SideBarProps } from "./types";
 
-type SidebarItem = {
-  label: string;
-  link?: string;
-  hidden?: boolean;
-  items?: SidebarItem[];
-};
-type SideBarProps = {
-  items: SidebarItem[];
-  location: string;
-  LinkComponent: React.ComponentType<any>; // allow injected LinkComponent to carry any shape
-  rightArrow?: any;  // Accept right arrow component (e.g., ChevronRight)
-  downArrow?: any;   // Accept down arrow component (e.g., ChevronLeft)
-  className?: {                         // Accept a className object for custom styling
-    menuClass?: string;
-    menuLinkClass?: string;
-  };
-};
-/**
- * SideBar component renders the navigational sidebar with collapsible items.
- *
- * @param items - The list of sidebar items to display.
- * @param location - The current active route path.
- * @param LinkComponent - A custom link component (e.g., React Router's Link).
- * @param rightArrow - Optional icon for collapsed state (defaults to ChevronRight).
- * @param downArrow - Optional icon for expanded state (defaults to ChevronDown).
- * @param className - Optional className for additional styling.
- */
-export const SideBar: React.FC<SideBarProps> = ({ items, location, LinkComponent, rightArrow = ChevronRight, downArrow = ChevronDown, className }) => {
 const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
   const openSections: Record<string, boolean> = {};
 
   const traverse = (nodes: SidebarItem[], path: string[] = []): boolean => {
     for (const node of nodes) {
       if (node.link === pathname) {
-        // Mark all parent labels in the path as open
-        for (const label of path) {
-          openSections[label] = true;
-        }
+        for (const label of path) openSections[label] = true;
         return true;
       }
-
       if (node.items?.length) {
         const found = traverse(node.items, [...path, node.label]);
         if (found) return true;
@@ -55,7 +24,14 @@ const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<
   return openSections;
 };
 
-
+export const SideBar: FC<SideBarProps> = ({
+  items,
+  location,
+  LinkComponent,
+  rightArrow = ChevronRight,
+  downArrow = ChevronDown,
+  className,
+}) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
     getInitialOpenSections(location, items)
   );
@@ -71,95 +47,24 @@ const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<
     setOpenSections({});
   };
 
-  const ToggleIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
-    const Icon = isOpen ? downArrow : rightArrow;
-    return <Icon className="~w-4 ~h-4 ~text-neutral-500" />;
-  };
-
   return (
-    <aside className="~w-64 ~h-screen ~border-r ~py-6 ~px-8 ~bg-neutral-100 ~text-sm ~flex ~flex-col ~gap-6 ">
-      {items.filter((item) => !item.hidden).map((item, key) => {
-        const isActive = location === item.link || location + "/" === item.link;
-        const hasChildren = item.items?.length;
-        if (item.link && !hasChildren) {
-          return (
-            <SideBarLink
-              key={item.label + key}
-              to={item.link}
-              label={item.label}
-              isActive={isActive}
-              onClick={closeAllSections}
-              LinkComponent={LinkComponent}
-              className={className?.menuLinkClass}
-            />
-          );
-        }
-
-        return (
-          <div key={item.label + key}>
-            <div
-              className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:~text-violet-600"
-              onClick={() => toggleSection(item.label)}
-            >
-              <span>{item.label}</span>
-              <ToggleIcon isOpen={openSections[item.label]} />
-            </div>
-            {openSections[item.label] && (
-              <ul className="~mt-2 ~ml-1 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
-                {item.items!.map((child, key) => {
-                  const isChildActive = location === child.link;
-                  const hasGrandchildren = child.items?.length;
-                  return (
-                    <li key={child.label + key}>
-                      {child.link ? (
-                        <SideBarLink
-                          to={child.link}
-                          label={child.label}
-                          isActive={isChildActive}
-                          hasChildren={true}
-                          LinkComponent={LinkComponent}
-                          className={className?.menuLinkClass}
-                        />
-                      ) : (
-                        <>
-                          <div
-                            className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600 ${className?.menuClass}`}
-                            onClick={() => toggleSection(child.label)}
-                          >
-                            <span>{child.label}</span>
-                            <ToggleIcon isOpen={openSections[child.label]} />
-                          </div>
-                          {openSections[child.label] && hasGrandchildren && (
-                            <ul className="~mt-2 ~ml-4 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
-                              {child.items!.map((grandchild, key) => {
-                                const isGrandChildActive = location === grandchild.link;
-                                return (
-                                  <li key={grandchild.label + key}>
-                                    <SideBarLink
-                                      to={grandchild.link!}
-                                      label={grandchild.label}
-                                      isActive={isGrandChildActive}
-                                      hasChildren={true}
-                                      LinkComponent={LinkComponent}
-                                      className={className?.menuLinkClass}
-                                    />
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          )}
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        );
-      })}
+    <aside className="~w-64 ~h-screen ~border-r ~py-6 ~px-8 ~bg-neutral-100 ~text-sm ~flex ~flex-col ~gap-6">
+      {items
+        .filter((item) => !item.hidden)
+        .map((item, key) => (
+          <SideBarSection
+            key={item.label + key}
+            item={item}
+            location={location}
+            openSections={openSections}
+            toggleSection={toggleSection}
+            closeAllSections={closeAllSections}
+            LinkComponent={LinkComponent}
+            className={className}
+            rightArrow={rightArrow}
+            downArrow={downArrow}
+          />
+        ))}
     </aside>
   );
 };
-
-

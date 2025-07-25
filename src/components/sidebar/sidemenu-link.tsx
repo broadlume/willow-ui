@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentType, FC } from 'react';
 import { cn } from '@src/lib/utils';
 
 type SideBarLinkProps = {
@@ -7,11 +7,11 @@ type SideBarLinkProps = {
   isActive: boolean;
   onClick?: () => void;
   hasChildren?: boolean;
-  LinkComponent: React.ComponentType<any>;
+  LinkComponent: ComponentType<any>;
   className?: string;
 };
 
-export const SideBarLink: React.FC<SideBarLinkProps> = ({
+export const SideBarLink: FC<SideBarLinkProps> = ({
   to,
   label,
   isActive,
