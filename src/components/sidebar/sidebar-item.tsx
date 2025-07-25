@@ -59,7 +59,7 @@ export const SidebarItem: FC<Props> = ({
       </div>
       {openSections[item.label] && hasGrandchildren && (
         <ul className="~mt-2 ~ml-4 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
-          {item.items!.map((grandchild, key) => {
+          {item?.items?.map((grandchild, key) => {
             const isGrandChildActive = location === grandchild.link;
             return (
               <li key={grandchild.label + key}>
