@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SideBar } from './sidebar';  // Adjust the import path to where your SidebarMenu component is located
 import { LinkComponent } from './link-component'; // Adjust if necessary (your Link component used in SidebarMenu)
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 
 const meta: Meta<typeof SideBar> = {
   component: SideBar,
@@ -10,36 +10,36 @@ const meta: Meta<typeof SideBar> = {
 
 export default meta;
 type Story = StoryObj<typeof SideBar>;
-  const base="http://localhost:6006/";
+const base = "http://localhost:6006/";
 
 /** Basic SideBar menu example */
 export const Demo: Story = {
   args: {
     items: [
       { label: "HOME", link: '#' },
-    {
-      label: "PRODUCTS",
-      items: [
-        { label: "Browse", link: `#` },
-        { label: "Assign", link:`#` },
-        { label: "Import", link:`#` },
-        { label: "Jobs", link: `#` },
-        {
-          label: "Admin",
-          items: [
-            { label: "Manufacturers", link: `#` },
-            { label: "Categories", link: `#`},
-            { label: "Import Mappings", link: `#` },
-          ],
-        },
-      ],
-    },
-    { label: "COMPANIES", link: '#' }
+      {
+        label: "PRODUCTS",
+        items: [
+          { label: "Browse", link: `#` },
+          { label: "Assign", link: `#` },
+          { label: "Import", link: `#` },
+          { label: "Jobs", link: `#` },
+          {
+            label: "Admin",
+            items: [
+              { label: "Manufacturers", link: `#` },
+              { label: "Categories", link: `#` },
+              { label: "Import Mappings", link: `#` },
+            ],
+          },
+        ],
+      },
+      { label: "COMPANIES", link: '#' }
     ],
     location: '/',
     LinkComponent: LinkComponent, // Pass your link component
-    rightArrow: ChevronRight,
-    downArrow: ChevronDown,
+    rightArrow: HiChevronRight,
+    downArrow: HiChevronDown,
   },
   argTypes: {
     items: {

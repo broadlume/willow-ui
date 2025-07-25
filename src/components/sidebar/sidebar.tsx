@@ -1,5 +1,5 @@
 import  { FC, useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 import { SideBarSection } from "./sidebar-section";
 import { SidebarItem, SideBarProps } from "./types";
 
@@ -28,8 +28,8 @@ export const SideBar: FC<SideBarProps> = ({
   items,
   location,
   LinkComponent,
-  rightArrow = ChevronRight,
-  downArrow = ChevronDown,
+  rightArrow = HiChevronRight,
+  downArrow = HiChevronDown,
   className,
 }) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>

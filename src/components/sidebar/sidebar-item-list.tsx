@@ -1,5 +1,5 @@
 import { ComponentType, FC } from "react";
-import { SidebarItem } from "./types";
+import { IconType, SidebarItem } from "./types";
 import { SideBarItem } from "./sidebar-item";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
     menuClass?: string;
     menuLinkClass?: string;
   };
-  rightArrow: any;
-  downArrow: any;
+  rightArrow: IconType;
+  downArrow: IconType
 };
 
 export const SideBarItemList: FC<Props> = ({
