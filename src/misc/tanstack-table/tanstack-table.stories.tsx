@@ -44,7 +44,7 @@ const TanstackTableWithLoading = () => {
       manualPagination: false,
     },
     enableRowSelection: true,
-    // includeLoading: true, // it's true by default, so you can omit it
+    includeLoading: true, // it's true by default, so you can omit it
   });
   return <CustomDataTable />;
 };

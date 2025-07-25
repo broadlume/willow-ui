@@ -19,7 +19,7 @@ const Loader = ({ className = '' }: { className?: string }) => {
             width='2166.67'
             height='2166.67'
           >
-            <div className='~h-full ~w-full ~opacity-100 ~animate-spin ~bg-[conic-gradient(from_90deg,_rgba(96,56,232,0)_0deg,_rgba(96,56,232,0)_0.036deg,_rgba(96,56,232,1)_360deg)]'></div>
+            <div className=' ~h-full ~w-full ~opacity-100 ~animate-spin ~bg-[conic-gradient(from_90deg,_var(--color-primary-15)_0deg,_var(--color-primary-15)_0.036deg,_var(--color-primary-100)_360deg)]'></div>
           </foreignObject>
         </g>
       </g>
