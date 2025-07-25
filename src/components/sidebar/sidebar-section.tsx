@@ -1,31 +1,31 @@
-import { ComponentType, FC } from "react";
-import { IconType, SidebarItem } from "./types";
-import { SideBarLink } from "./sidemenu-link";
+import { FC } from "react";
+import { IconType, SidebarItemProps } from "./types";
+import { SidebarLink } from "./sidemenu-link";
 import { ToggleIcon } from "./toggle-icon";
-import { SideBarItemList } from "./sidebar-item-list";
+import { SidebarItemList } from "./sidebar-item-list";
 
 type Props = {
-  item: SidebarItem;
+  item: SidebarItemProps;
   location: string;
   openSections: Record<string, boolean>;
   toggleSection: (label: string) => void;
   closeAllSections: () => void;
-  LinkComponent: ComponentType<any>;
+  onMenuClick: (props: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) => JSX.Element;
   className?: {
     menuClass?: string;
     menuLinkClass?: string;
   };
   rightArrow: IconType;
-  downArrow: IconType
+  downArrow: IconType;
 };
 
-export const SideBarSection: FC<Props> = ({
+export const SidebarSection: FC<Props> = ({
   item,
   location,
   openSections,
   toggleSection,
   closeAllSections,
-  LinkComponent,
+  onMenuClick,
   className,
   rightArrow,
   downArrow,
@@ -35,13 +35,13 @@ export const SideBarSection: FC<Props> = ({
 
   if (item.link && !hasChildren) {
     return (
-      <SideBarLink
+      <SidebarLink
         key={item.label}
         to={item.link}
         label={item.label}
         isActive={isActive}
         onClick={closeAllSections}
-        LinkComponent={LinkComponent}
+        onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
       />
     );
@@ -57,12 +57,12 @@ export const SideBarSection: FC<Props> = ({
         <ToggleIcon isOpen={openSections[item.label]} rightArrow={rightArrow} downArrow={downArrow} />
       </div>
       {openSections[item.label] && item.items && (
-        <SideBarItemList
+        <SidebarItemList
           items={item.items}
           location={location}
           openSections={openSections}
           toggleSection={toggleSection}
-          LinkComponent={LinkComponent}
+          onMenuClick={onMenuClick}
           className={className}
           rightArrow={rightArrow}
           downArrow={downArrow}

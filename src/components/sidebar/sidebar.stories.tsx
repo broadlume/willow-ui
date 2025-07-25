@@ -1,18 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { SideBar } from './sidebar';  // Adjust the import path to where your SidebarMenu component is located
-import { LinkComponent } from './link-component'; // Adjust if necessary (your Link component used in SidebarMenu)
+import { Sidebar } from './sidebar';
+import { LinkComponent } from './link-component';
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 
-const meta: Meta<typeof SideBar> = {
-  component: SideBar,
-  title: 'Components/SideBar',
+const meta: Meta<typeof Sidebar> = {
+  component: Sidebar,
+  title: 'Components/Sidebar',
 };
 
 export default meta;
-type Story = StoryObj<typeof SideBar>;
-const base = "http://localhost:6006/";
+type Story = StoryObj<typeof Sidebar>;
 
-/** Basic SideBar menu example */
 export const Demo: Story = {
   args: {
     items: [
@@ -37,7 +35,11 @@ export const Demo: Story = {
       { label: "COMPANIES", link: '#' }
     ],
     location: '/',
-    LinkComponent: LinkComponent, // Pass your link component
+    onMenuClick: ({ to, children, className, onClick }) => (
+      <LinkComponent to={to} className={className} onClick={onClick}>
+        {children}
+      </LinkComponent>
+    ),
     rightArrow: HiChevronRight,
     downArrow: HiChevronDown,
   },
@@ -50,9 +52,9 @@ export const Demo: Story = {
       description: 'The current active route.',
       control: 'text',
     },
-    LinkComponent: {
-      description: 'Custom Link component to handle navigation.',
-      control: 'object',
+    onMenuClick: {
+      description: 'Render function to create a link.',
+      control: false,
     },
     rightArrow: {
       description: 'The icon for expanding the section.',
@@ -63,9 +65,5 @@ export const Demo: Story = {
       control: 'object',
     },
   },
-  render: (args) => <SideBar {...args} />,
+  render: (args) => <Sidebar {...args} />,
 };
-
-/** Sidebar with multiple variants (active and collapsed sections) */
-
-

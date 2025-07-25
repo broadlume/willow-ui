@@ -1,16 +1,21 @@
-import { ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 
-export type SidebarItem = {
+export type SidebarItemProps = {
   label: string;
   link?: string;
   hidden?: boolean;
-  items?: SidebarItem[];
+  items?: SidebarItemProps[];
 };
 
-export type SideBarProps = {
-  items: SidebarItem[];
+export type SidebarProps = {
+  items: SidebarItemProps[];
   location: string;
-  LinkComponent: ComponentType<any>;
+  onMenuClick: (props: {
+    to: string;
+    children: ReactNode;
+    className?: string;
+    onClick?: () => void;
+  }) => JSX.Element;
   rightArrow?: ComponentType<{ className?: string }>;
   downArrow?: ComponentType<{ className?: string }>;
   className?: {

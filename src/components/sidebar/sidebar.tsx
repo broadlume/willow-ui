@@ -1,12 +1,12 @@
-import  { FC, useState } from "react";
+import { FC, useState } from "react";
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
-import { SideBarSection } from "./sidebar-section";
-import { SidebarItem, SideBarProps } from "./types";
+import { SidebarSection } from "./sidebar-section";
+import { SidebarItemProps, SidebarProps } from "./types";
 
-const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<string, boolean> => {
+const getInitialOpenSections = (pathname: string, items: SidebarItemProps[]): Record<string, boolean> => {
   const openSections: Record<string, boolean> = {};
 
-  const traverse = (nodes: SidebarItem[], path: string[] = []): boolean => {
+  const traverse = (nodes: SidebarItemProps[], path: string[] = []): boolean => {
     for (const node of nodes) {
       if (node.link === pathname) {
         for (const label of path) openSections[label] = true;
@@ -23,11 +23,24 @@ const getInitialOpenSections = (pathname: string, items: SidebarItem[]): Record<
   traverse(items);
   return openSections;
 };
-
-export const SideBar: FC<SideBarProps> = ({
+/**
+ * Sidebar navigation component that renders a hierarchical list of menu items.
+ *
+ * @component
+ * @param {SidebarProps} props - Props for the Sidebar component.
+ * @param {SidebarItem[]} props.items - The sidebar items to render (can be nested).
+ * @param {string} props.location - The current active route path.
+ * @param {(link: string) => void} [props.onMenuClick] - Callback when a menu link is clicked (useful for custom navigation logic).
+ * @param {ComponentType<{ className?: string }>} [props.rightArrow] - Icon shown when a section is collapsed (defaults to `HiChevronRight`).
+ * @param {ComponentType<{ className?: string }>} [props.downArrow] - Icon shown when a section is expanded (defaults to `HiChevronDown`).
+ * @param {{ menuClass?: string; menuLinkClass?: string }} [props.className] - Optional custom class names for styling menu and links.
+ *
+ * @returns {JSX.Element} The rendered Sidebar component.
+ */
+export const Sidebar: FC<SidebarProps> = ({
   items,
   location,
-  LinkComponent,
+  onMenuClick,
   rightArrow = HiChevronRight,
   downArrow = HiChevronDown,
   className,
@@ -52,14 +65,14 @@ export const SideBar: FC<SideBarProps> = ({
       {items
         .filter((item) => !item.hidden)
         .map((item, key) => (
-          <SideBarSection
+          <SidebarSection
             key={item.label + key}
             item={item}
             location={location}
             openSections={openSections}
             toggleSection={toggleSection}
             closeAllSections={closeAllSections}
-            LinkComponent={LinkComponent}
+            onMenuClick={onMenuClick} 
             className={className}
             rightArrow={rightArrow}
             downArrow={downArrow}

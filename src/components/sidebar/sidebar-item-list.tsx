@@ -1,27 +1,27 @@
-import { ComponentType, FC } from "react";
-import { IconType, SidebarItem } from "./types";
-import { SideBarItem } from "./sidebar-item";
+import { FC } from "react";
+import { IconType, SidebarItemProps } from "./types";
+import { SidebarItem } from "./sidebar-item";
 
 type Props = {
-  items: SidebarItem[];
+  items: SidebarItemProps[];
   location: string;
   openSections: Record<string, boolean>;
   toggleSection: (label: string) => void;
-  LinkComponent: ComponentType<any>;
+  onMenuClick: (props: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) => JSX.Element;
   className?: {
     menuClass?: string;
     menuLinkClass?: string;
   };
   rightArrow: IconType;
-  downArrow: IconType
+  downArrow: IconType;
 };
 
-export const SideBarItemList: FC<Props> = ({
+export const SidebarItemList: FC<Props> = ({
   items,
   location,
   openSections,
   toggleSection,
-  LinkComponent,
+  onMenuClick,
   className,
   rightArrow,
   downArrow,
@@ -30,12 +30,12 @@ export const SideBarItemList: FC<Props> = ({
     <ul className="~mt-2 ~ml-1 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
       {items.map((child, key) => (
         <li key={child.label + key}>
-          <SideBarItem
+          <SidebarItem
             item={child}
             location={location}
             openSections={openSections}
             toggleSection={toggleSection}
-            LinkComponent={LinkComponent}
+            onMenuClick={onMenuClick}
             className={className}
             rightArrow={rightArrow}
             downArrow={downArrow}

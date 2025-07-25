@@ -1,28 +1,33 @@
-import { ComponentType, FC } from "react";
-import { SideBarLink } from "./sidemenu-link";
-import { IconType, SidebarItem } from "./types";
+import { FC } from "react";
+import { SidebarLink } from "./sidemenu-link";
+import { IconType, SidebarItemProps } from "./types";
 import { ToggleIcon } from "./toggle-icon";
 
 type Props = {
-  item: SidebarItem;
+  item: SidebarItemProps;
   location: string;
   openSections: Record<string, boolean>;
   toggleSection: (label: string) => void;
-  LinkComponent: ComponentType<any>;
+  onMenuClick: (props: {
+    to: string;
+    children: React.ReactNode;
+    className?: string;
+    onClick?: () => void;
+  }) => JSX.Element;
   className?: {
     menuClass?: string;
     menuLinkClass?: string;
   };
   rightArrow: IconType;
-  downArrow: IconType
+  downArrow: IconType;
 };
 
-export const SideBarItem: FC<Props> = ({
+export const SidebarItem: FC<Props> = ({
   item,
   location,
   openSections,
   toggleSection,
-  LinkComponent,
+  onMenuClick,
   className,
   rightArrow,
   downArrow,
@@ -32,12 +37,12 @@ export const SideBarItem: FC<Props> = ({
 
   if (item.link) {
     return (
-      <SideBarLink
+      <SidebarLink
         to={item.link}
         label={item.label}
         isActive={isChildActive}
         hasChildren={true}
-        LinkComponent={LinkComponent}
+        onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
       />
     );
@@ -58,12 +63,12 @@ export const SideBarItem: FC<Props> = ({
             const isGrandChildActive = location === grandchild.link;
             return (
               <li key={grandchild.label + key}>
-                <SideBarLink
+                <SidebarLink
                   to={grandchild.link!}
                   label={grandchild.label}
                   isActive={isGrandChildActive}
                   hasChildren={true}
-                  LinkComponent={LinkComponent}
+                  onMenuClick={onMenuClick}
                   className={className?.menuLinkClass}
                 />
               </li>

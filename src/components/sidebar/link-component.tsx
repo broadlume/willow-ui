@@ -1,7 +1,7 @@
 // LinkComponent.tsx
 import React from 'react';
 
-export const LinkComponent: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => {
+export const LinkComponent: React.FC<{ to: string; className?: string; children: React.ReactNode;onClick?: () => void }> = ({ to, className, children, onClick }) => {
   return (
     <a
       href={to}
