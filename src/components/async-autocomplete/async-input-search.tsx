@@ -70,7 +70,7 @@ export function AsyncInputSearch<T>({
                 <div
                   key={key}
                   onClick={() => onSelect(item)}
-                  className='~hover:bg-slate-100 ~cursor-pointer ~rounded-sm ~px-2 ~py-1.5 ~text-sm'
+                  className='hover:~bg-slate-100 ~cursor-pointer ~rounded-sm ~px-2 ~py-1.5 ~text-sm'
                 >
                   {renderItem(item, Boolean(isSelected))}
                 </div>
