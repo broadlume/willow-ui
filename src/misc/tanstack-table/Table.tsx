@@ -540,7 +540,10 @@ export function useDataTable<TData, TValue>({
               <TableBody
                 data-testid='data-table-body'
                 {...itemProps?.tableBody}
-                className={clsx('~relative', itemProps?.tableBody?.className)}
+                className={clsx(
+                  '~relative ~gap-2',
+                  itemProps?.tableBody?.className
+                )}
               >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) =>
@@ -625,10 +628,9 @@ export function useDataTable<TData, TValue>({
                 key={cell.id}
                 {...itemProps?.tableCell}
                 className={clsx(
-                  '~px-3 ~py-4',
                   // Always add padding-left to the first cell to reserve space
                   // and position the cell relatively for the absolute span.
-                  isFirstCell ? 'first:~pl-[30px] ~relative' : '', // Adjust 30px based on icon size
+                  isFirstCell ? '~relative first:~pl-[30px]' : '', // Adjust 30px based on icon size
                   'last:~pr-[20px]',
                   itemProps?.tableCell?.className
                 )}
@@ -637,7 +639,7 @@ export function useDataTable<TData, TValue>({
                 {isFirstCell && renderDraggableIcon && (
                   <span
                     className={clsx(
-                      '~absolute ~left-[-2px] ~top-[32%] -~translate-y-[50%] ~py-[2px] ~px-[4px] ~rounded-full ~text-xs',
+                      '-~translate-y-[50%] ~absolute ~left-[-2px] ~top-[32%] ~rounded-full ~px-[4px] ~py-[2px] ~text-xs',
                       itemProps?.draggable
                     )}
                   >

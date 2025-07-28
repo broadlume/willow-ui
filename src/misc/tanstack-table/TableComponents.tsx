@@ -48,7 +48,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={clsx(
-      '~border-t ~bg-muted/50 ~font-medium [&>tr]:last:~border-b-0',
+      '~bg-muted/50 ~border-t ~font-medium [&>tr]:last:~border-b-0',
       className
     )}
     {...props}
@@ -63,7 +63,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={clsx(
-      '~transition-colors hover:~bg-muted/50 data-[state=selected]:~bg-muted ~relative',
+      'hover:~bg-muted/50 data-[state=selected]:~bg-muted ~relative ~h-6 ~transition-colors',
       className
     )}
     {...props}
@@ -78,7 +78,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~px-[16px]',
+      '~text-muted-foreground ~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold last:~pr-[20px] [&:has([role=checkbox])]:~px-[16px]',
       className
     )}
     {...props}
@@ -93,7 +93,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={clsx(
-      '~p-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~px-[16px]',
+      '~py-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~px-[16px]',
       className
     )}
     {...props}
@@ -107,7 +107,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={clsx('~mt-4 ~text-sm ~text-muted-foreground', className)}
+    className={clsx('~text-muted-foreground ~mt-4 ~text-sm', className)}
     {...props}
   />
 ));
