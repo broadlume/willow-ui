@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { SidebarLink } from "./sidemenu-link";
+import { SidebarLink } from "./sidebar-link";
 import { IconType, SidebarItemProps } from "../types";
 import { ToggleIcon } from "./toggle-icon";
 import clsx from "clsx";

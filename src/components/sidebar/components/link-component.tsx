@@ -21,7 +21,7 @@ export const LinkComponent: React.FC<LinkComponentProps> = ({
         "~border-l-[4px] ~border-l-indigo-600",
         "~text-indigo-600 hover:~text-violet-600",
         className
-      )}    >
+      )}>
       {children}
     </a>
   );
