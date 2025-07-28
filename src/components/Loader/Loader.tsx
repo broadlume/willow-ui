@@ -1,6 +1,13 @@
-const Loader = ({ className = '' }: { className?: string }) => {
+const Loader = ({
+  name,
+  className = '',
+}: {
+  name?: string;
+  className?: string;
+}) => {
   return (
     <svg
+      name={name}
       width='24'
       height='24'
       viewBox='0 0 24 24'
