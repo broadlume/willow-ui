@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import React from 'react';
-import { FaChevronRight } from 'react-icons/fa';
 
 /**
  * Functional component for rendering a breadcrumb.
@@ -25,8 +24,9 @@ const BreadCrumb = ({
 type BreadCrumbItemProps = {
   label: string;
   isLast?: boolean;
+  isFirst?: boolean;
   customIcon?: () => JSX.Element;
-  classNames?: { wrapper?: string[]; label?: string[] };
+  classNames?: { wrapper?: string[]; label?: string[]; separator?: string[] };
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'classesName'>;
 
 /**
@@ -43,9 +43,10 @@ type BreadCrumbItemProps = {
  */
 const BreadCrumbItem = ({
   label,
-  classNames = { wrapper: [], label: [] },
+  classNames = { wrapper: [], label: [], separator: [] },
   id,
   isLast = false,
+  isFirst = false,
   onClick,
   customIcon: CustomIcon,
   ...props
@@ -63,9 +64,10 @@ const BreadCrumbItem = ({
         id={id}
         onClick={onClick}
         className={clsx(
-          `~font-sans ~text-xs`,
-          onClick ? '~underline hover:~cursor-pointer' : '',
-          !isLast ? '~text-gold' : '',
+          '~font-sans ~text-sm ~font-normal',
+          onClick && 'hover:~cursor-pointer',
+          !classNames.label?.length &&
+            (isLast ? '~text-text-cta' : !isFirst && '~text-text-opt'),
           classNames.label
         )}
       >
@@ -75,7 +77,14 @@ const BreadCrumbItem = ({
         CustomIcon ? (
           <CustomIcon />
         ) : (
-          <FaChevronRight className='~mx-1.5 ~text-xs ~text-ash-light' />
+          <span
+            className={clsx(
+              'inline-block ~text-ash-light ~mx-2 ~text-sm',
+              classNames.separator
+            )}
+          >
+            /
+          </span>
         )
       ) : null}
     </div>
