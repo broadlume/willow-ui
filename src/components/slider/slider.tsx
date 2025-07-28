@@ -22,13 +22,13 @@ const Slider = React.forwardRef<
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb
       className={cn(
-        '~block ~h-4 ~w-4 ~rounded-full ~border ~border-primary/50 ~bg-background ~shadow ~transition-colors',
+        '~block ~h-4 ~w-4 ~rounded-full ~border ~border-primary/50 ~bg-surface-pri ~shadow ~transition-colors',
         'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring'
       )}
     />
     <SliderPrimitive.Thumb // Needed for a second thumb, somehow doesn't show up if only 1 value is given
       className={cn(
-        '~block ~h-4 ~w-4 ~rounded-full ~border ~border-primary/50 ~bg-background ~shadow ~transition-colors',
+        '~block ~h-4 ~w-4 ~rounded-full ~border ~border-primary/50 ~bg-surface-pri ~shadow ~transition-colors',
         'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring'
       )}
     />

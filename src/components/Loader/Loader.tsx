@@ -1,16 +1,62 @@
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-
 const Loader = ({
+  name,
   className = '',
-  ...props
 }: {
+  name?: string;
   className?: string;
-} & Parameters<typeof AiOutlineLoading3Quarters>[0]) => {
+}) => {
   return (
-    <AiOutlineLoading3Quarters
-      {...props}
-      className={`~h-10 ~w-10 ~animate-spin ${className}`}
-    />
+    <svg
+      name={name}
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+    >
+      <g
+        clip-path='url(#paint0_angular_6940_15411_clip_path)'
+        data-figma-skip-parse='true'
+      >
+        <g transform='matrix(0.012 0 0 0.012 12 12)'>
+          <foreignObject
+            x='-1083.33'
+            y='-1083.33'
+            width='2166.67'
+            height='2166.67'
+          >
+            <div className=' ~h-full ~w-full ~opacity-100 ~animate-spin ~bg-[conic-gradient(from_90deg,_var(--color-primary-15)_0deg,_var(--color-primary-15)_0.036deg,_var(--color-primary-100)_360deg)]'></div>
+          </foreignObject>
+        </g>
+      </g>
+      <path
+        fill-rule='evenodd'
+        clip-rule='evenodd'
+        d='M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z'
+        data-figma-gradient-fill='{&#34;type&#34;:&#34;GRADIENT_ANGULAR&#34;,&#34;stops&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:0.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:0.0},&#34;position&#34;:9.9999997473787516e-05},{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;stopsVar&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:0.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:0.0},&#34;position&#34;:9.9999997473787516e-05},{&#34;color&#34;:{&#34;r&#34;:0.37647059559822083,&#34;g&#34;:0.21960784494876862,&#34;b&#34;:0.90980392694473267,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;transform&#34;:{&#34;m00&#34;:24.0,&#34;m01&#34;:2.2785857131234905e-14,&#34;m02&#34;:-2.1316282072803006e-14,&#34;m10&#34;:-1.2127716941866349e-14,&#34;m11&#34;:24.0,&#34;m12&#34;:-5.3290705182007514e-15},&#34;opacity&#34;:1.0,&#34;blendMode&#34;:&#34;NORMAL&#34;,&#34;visible&#34;:true}'
+      />
+      <path
+        fill-rule='evenodd'
+        clip-rule='evenodd'
+        d='M22.7816 9.60062C23.3294 9.52995 23.8307 9.91669 23.9013 10.4644C23.967 10.9736 24 11.4865 24 11.9999C24 12.5522 23.5523 12.9999 23 12.9999C22.4477 12.9999 22 12.5522 22 11.9999C22 11.5721 21.9725 11.1447 21.9178 10.7204C21.8471 10.1726 22.2339 9.67128 22.7816 9.60062Z'
+        fill='#6038E8'
+      />
+      <defs>
+        <clipPath id='paint0_angular_6940_15411_clip_path'>
+          <path
+            fill-rule='evenodd'
+            clip-rule='evenodd'
+            d='M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z'
+          />
+        </clipPath>
+      </defs>
+    </svg>
+
+    // <AiOutlineLoading3Quarters
+    //   {...props}
+    //   className={`~h-10 ~w-10 ~animate-spin ${className}`}
+    // />
   );
 };
 export { Loader };
