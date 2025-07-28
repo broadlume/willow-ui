@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Sidebar } from './sidebar';
-import { LinkComponent } from './link-component';
+import { LinkComponent } from './components/link-component';
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 
 const meta: Meta<typeof Sidebar> = {
@@ -35,8 +35,8 @@ export const Demo: Story = {
       { label: "COMPANIES", link: '#' }
     ],
     location: '/',
-    onMenuClick: ({ to, children, className, onClick }) => (
-      <LinkComponent to={to} className={className} onClick={onClick}>
+    onMenuClick: ({ to, children, className }) => (
+      <LinkComponent to={to} className={className} >
         {children}
       </LinkComponent>
     ),

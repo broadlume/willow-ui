@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { SidebarLink } from "./sidemenu-link";
-import { IconType, SidebarItemProps } from "./types";
+import { IconType, SidebarItemProps } from "../types";
 import { ToggleIcon } from "./toggle-icon";
+import clsx from "clsx";
 
 type Props = {
   item: SidebarItemProps;
@@ -51,8 +52,10 @@ export const SidebarItem: FC<Props> = ({
   return (
     <>
       <div
-        className={`~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600 ${className?.menuClass}`}
-        onClick={() => toggleSection(item.label)}
+        className={clsx(
+          "~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600",
+          className?.menuClass
+        )} onClick={() => toggleSection(item.label)}
       >
         <span>{item.label}</span>
         <ToggleIcon isOpen={openSections[item.label]} rightArrow={rightArrow} downArrow={downArrow} />

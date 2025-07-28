@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import { IconType } from "./types";
+import { IconType } from "../types";
+
 export const ToggleIcon: FC<{
   isOpen: boolean;
   rightArrow: IconType;

@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
-import { SidebarSection } from "./sidebar-section";
+import { SidebarSection } from "./components/sidebar-section";
 import { SidebarItemProps, SidebarProps } from "./types";
 
 const getInitialOpenSections = (pathname: string, items: SidebarItemProps[]): Record<string, boolean> => {

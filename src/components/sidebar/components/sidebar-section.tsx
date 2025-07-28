@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconType, SidebarItemProps } from "./types";
+import { IconType, SidebarItemProps } from "../types";
 import { SidebarLink } from "./sidemenu-link";
 import { ToggleIcon } from "./toggle-icon";
 import { SidebarItemList } from "./sidebar-item-list";

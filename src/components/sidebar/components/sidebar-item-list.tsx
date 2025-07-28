@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconType, SidebarItemProps } from "./types";
+import { IconType, SidebarItemProps } from "../types";
 import { SidebarItem } from "./sidebar-item";
 
 type Props = {
