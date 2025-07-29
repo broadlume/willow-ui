@@ -256,8 +256,6 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             data-testid={'table-header-select-checkbox'}
             checked={isIndeterminate ? 'indeterminate' : isChecked}
-            color='#1A6CFF'
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             onCheckedChange={() => handleHeaderCheckboxClick()}
             // disable selecting all rows if single selection is enabled
             disabled={enableSingleSelection}
@@ -275,7 +273,6 @@ export function useDataTable<TData, TValue>({
             checked={isChecked}
             data-testid={'table-select-checkbox-' + row.id}
             onCheckedChange={() => handleRowCheckboxChange(row)}
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
         );
@@ -474,12 +471,12 @@ export function useDataTable<TData, TValue>({
     <div
       {...itemProps?.root}
       className={clsx(
-        '~flex ~flex-col ~gap-[16px] ~bg-white ~text-sm',
+        '~flex ~flex-col ~gap-[16px] ~rounded-md ~bg-white ~text-sm',
         itemProps?.root?.className
       )}
     >
       {includeLoading && !data?.length ? (
-        <div className='~flex ~h-40 ~items-center ~justify-center'>
+        <div className=' ~flex ~h-40 ~items-center ~justify-center ~rounded-md'>
           <Loader />
         </div>
       ) : (
@@ -512,7 +509,7 @@ export function useDataTable<TData, TValue>({
                       key={headerGroup.id}
                       {...itemProps?.tableHeaderRow}
                       className={clsx(
-                        '~text-[#231f21] hover:!~bg-transparent',
+                        'hover:!~bg-transparent',
                         itemProps?.tableHeaderRow?.className
                       )}
                     >
@@ -540,10 +537,7 @@ export function useDataTable<TData, TValue>({
               <TableBody
                 data-testid='data-table-body'
                 {...itemProps?.tableBody}
-                className={clsx(
-                  '~relative ~gap-2',
-                  itemProps?.tableBody?.className
-                )}
+                className={clsx('~relative', itemProps?.tableBody?.className)}
               >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) =>
@@ -631,7 +625,7 @@ export function useDataTable<TData, TValue>({
                   // Always add padding-left to the first cell to reserve space
                   // and position the cell relatively for the absolute span.
                   isFirstCell ? '~relative first:~pl-[30px]' : '', // Adjust 30px based on icon size
-                  'last:~pr-[20px]',
+                  'last:~px-3',
                   itemProps?.tableCell?.className
                 )}
               >
@@ -691,7 +685,7 @@ export function useDataTable<TData, TValue>({
           type='button'
           data-testid={'go-to-page-' + item}
           className={clsx(
-            '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
+            '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-text-pri ~shadow-none disabled:~bg-transparent',
             currentPage === item ? '~border ~border-[#CCCCCC]' : '',
             itemProps?.pagination?.page?.className
           )}
@@ -728,7 +722,7 @@ export function useDataTable<TData, TValue>({
               data-testid='perpage-button'
               {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
-                '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-4',
+                '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-2',
                 itemProps?.itemPerPage?.selectTrigger?.className
               )}
             >
@@ -765,7 +759,7 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-text-pri',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
@@ -780,7 +774,7 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-text-pri',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}
