@@ -22,6 +22,8 @@ export default {
           cta2: 'var(--color-grey-0)',
           destructive: 'var(--color-red-500)',
           invert: 'var(--color-grey-0)',
+          success:'var(--color-green-600)',
+          progress:'var(--color-yellow-600)',
         },
         surface: {
           pri: 'var(--color-grey-0)',
@@ -33,6 +35,8 @@ export default {
           'cta-bg': 'var(--color-cta-15)',
           destructive: 'var(--color-red-500)',
           invert: 'var(--color-grey-90)',
+          success:'var(--color-green-100)',
+          progress:'var(--color-yellow-100)',
         },
         icon: {
           pri: 'var(--color-grey-60)',
