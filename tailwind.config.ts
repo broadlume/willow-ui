@@ -116,6 +116,7 @@ export default {
         // Tailwind defaults: 'tighter': '-0.05em', 'tight': '-0.025em', 'normal': '0em', 'wide': '0.025em', 'wider': '0.05em', 'widest': '0.1em'
         // Your values override 'wide', 'wider', 'widest' and add 'normal' explicitly.
         // 'normal': '0', // Matches Tailwind default, can be removed if not needed for explicit override
+        smaller: '0.02em', // Overrides Tailwind default (0.025em)
         wide: '0.04em', // Overrides Tailwind default (0.025em)
         wider: '0.08em', // Overrides Tailwind default (0.05em)
         widest: '0.16em', // Overrides Tailwind default (0.1em)
