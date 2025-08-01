@@ -15,7 +15,7 @@ export const Basic: Story = {
     className: ['~text-primary-500'],
   },
   render: () => (
-    <div className='~flex ~items-center ~space-x-2'>
+    <div className='~flex ~items-center ~gap-x-2'>
       <Loader
         name='loading-indicator'
         data-testid='loading-icon'

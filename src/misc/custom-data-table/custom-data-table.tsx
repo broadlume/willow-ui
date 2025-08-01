@@ -22,7 +22,7 @@ export const CustomDataTable = <T,>({
 
   return (
     <div
-      className={`body-medium tw-reset ~rounded-lg ~border ~shadow-sm${classNames.root}`}
+      className={`body-medium tw-reset ~rounded-lg ~border ~shadow-xs ${classNames.root}`}
     >
       {props.selectableRows ? (
         <DataTable
