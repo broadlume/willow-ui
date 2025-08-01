@@ -8,7 +8,7 @@ const toggleVariants = cva(
   [
     'tw-reset ~inline-flex ~h-9 ~items-center ~justify-center ~rounded-md ~bg-transparent ~px-3 ~transition-none',
     'hover:~bg-accent hover:~text-muted-foreground',
-    'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
+    'focus-visible:~outline-hidden focus-visible:~ring-1 focus-visible:~ring-ring',
     'disabled:~pointer-events-none disabled:~opacity-50',
     'data-[state=on]:~bg-secondary data-[state=on]:~text-accent-foreground',
   ],

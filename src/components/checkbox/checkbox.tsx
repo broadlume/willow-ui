@@ -13,7 +13,7 @@ const Checkbox = React.forwardRef<
     ref={ref}
     className={cn(
       '~h-3 ~w-3 ~shrink-0 ~rounded-[4px] ~border ~border-border-pri data-[state=checked]:~border-border-cta data-[state=checked]:~bg-surface-cta data-[state=checked]:~text-text-cta2',
-      // 'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
+      // 'focus-visible:~outline-hidden focus-visible:~ring-1 focus-visible:~ring-ring',
       // 'disabled:~cursor-not-allowed disabled:~opacity-50',
       // 'data-[state=checked]:~bg-primary data-[state=checked]:~text-primary-foreground',
       className

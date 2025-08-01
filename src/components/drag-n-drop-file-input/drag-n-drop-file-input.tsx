@@ -154,7 +154,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       onDragOver={(event) => dragOverHandler(event)}
       onDragLeave={(event) => dragLeaveHandler(event)}
       className={clsx(
-        `~flex ~w-full ~flex-col ~items-center ~justify-center ~rounded ~border-2 ~border-dotted ~bg-[#FAFAFA] ~p-8 ${
+        `~flex ~w-full ~flex-col ~items-center ~justify-center ~rounded-sm ~border-2 ~border-dotted ~bg-[#FAFAFA] ~p-8 ${
           onDrag ? '~border-[#1FA384]' : '~border-[#E8E8E8]'
         } `,
         classNames.root
