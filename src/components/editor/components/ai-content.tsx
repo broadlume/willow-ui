@@ -87,19 +87,19 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
   };
 
   return (
-    <div className='p-2 flex flex-col gap-4 max-h-48'>
-      <h2 className='text-center mb-4'>Generate Content with AI</h2>
-      <div className='flex max-md:flex-col gap-10 justify-between items-center'>
+    <div className='~p-2 ~flex ~flex-col ~gap-4 ~max-h-48'>
+      <h2 className='~text-center ~mb-4'>Generate Content with AI</h2>
+      <div className='~flex max-md:~flex-col ~gap-10 ~justify-between ~items-center'>
         <Form {...form}>
-          <div className='flex-1'>
-            <form className='flex flex-col gap-10' onSubmit={form.handleSubmit((data) => handleFormSubmit(data.tone, data.prompt))}>
+          <div className='~flex-1'>
+            <form className='~flex ~flex-col ~gap-10' onSubmit={form.handleSubmit((data) => handleFormSubmit(data.tone, data.prompt))}>
               <FormField
                 control={form.control}
                 name='prompt'
                 render={({ field }) => (
                   <FormItem>
                     <Label>Prompt:</Label>
-                    <Textarea placeholder='Enter your prompt here...' {...field} className='w-full h-32' />
+                    <Textarea placeholder='Enter your prompt here...' {...field} className='~w-full ~h-32' />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -168,7 +168,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
                   </FormItem>
                 )}
               />
-              <div className='flex gap-2 justify-evenly items-center'>
+              <div className='~flex ~gap-2 ~justify-evenly ~items-center'>
                 <Button type='button' variant='secondary' onClick={() => form.reset()}>
                   Clear
                 </Button>
@@ -183,15 +183,15 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
             </form>
           </div>
         </Form>
-        <div className='flex-1 flex flex-col gap-2'>
+        <div className='~flex-1 ~flex ~flex-col ~gap-2'>
           {
             generatedContent && (
               <>
                 <h3>Output:</h3>
-                <Textarea value={generatedContent} onChange={e => setGeneratedContent(e.target.value)} className='w-full h-32' />
+                <Textarea value={generatedContent} onChange={e => setGeneratedContent(e.target.value)} className='~w-full ~h-32' />
                 <Button
                   type='button'
-                  className='mt-4'
+                  className='~mt-4'
                   onClick={() => {
                     if (from && to) {
                       // Insert the generated content at the current selection

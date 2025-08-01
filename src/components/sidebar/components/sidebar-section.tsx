@@ -50,7 +50,7 @@ export const SidebarSection: FC<Props> = ({
   return (
     <div key={item.label}>
       <div
-        className="flex items-center justify-between text-black text-sm tracking-widest cursor-pointer pt-1 pb-1 font-bold hover:text-violet-600"
+        className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:~text-violet-600"
         onClick={() => toggleSection(item.label)}
       >
         <span>{item.label}</span>

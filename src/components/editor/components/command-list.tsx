@@ -67,19 +67,19 @@ export const CommandList = forwardRef(({ items, editor, range, query }: CommandL
     }, [items, query]); // Also reset if query changes
 
     if (!filteredItems.length) {
-        return <div className='p-2 text-gray-500'>No results</div>;
+        return <div className='~p-2 ~text-gray-500'>No results</div>;
     }
 
     return (
-        <div className='bg-white border border-gray-200 rounded-md shadow-lg p-1 max-h-60 overflow-y-auto'>
+        <div className='~bg-white ~border ~border-gray-200 ~rounded-md ~shadow-lg ~p-1 ~max-h-60 ~overflow-y-auto'>
             {filteredItems.map((item, index) => (
                 <button
                     key={item.title}
                     className={clsx(
-                        'block w-full text-left px-3 py-2 rounded-md text-sm',
-                        'hover:bg-blue-100 focus:bg-blue-100', // Tailwind for hover/focus
+                        '~block ~w-full ~text-left ~px-3 ~py-2 ~rounded-md ~text-sm',
+                        'hover:~bg-blue-100 focus:~bg-blue-100', // Tailwind for hover/focus
                         {
-                            'bg-blue-500 text-white hover:bg-blue-600 focus:bg-blue-600': index === selectedIndex,
+                            '~bg-blue-500 ~text-white hover:~bg-blue-600 focus:~bg-blue-600': index === selectedIndex,
                         }
                     )}
                     onClick={() => selectItem(index)}

@@ -36,7 +36,7 @@ export const Styled: Story = {
         <TooltipTrigger asChild>
           <Button variant='outline'>Hover over me!</Button>
         </TooltipTrigger>
-        <TooltipContent className='bg-[#000] p-2 rounded-md'>
+        <TooltipContent className='~bg-[#000] ~p-2 ~rounded-md'>
           <p>You did it!</p>
         </TooltipContent>
       </Tooltip>

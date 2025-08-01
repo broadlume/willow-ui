@@ -87,8 +87,8 @@ export const Video = Node.create({
   renderHTML({ node, HTMLAttributes }) {
     const widthClass =
       HTMLAttributes.width && HTMLAttributes.width !== '100%'
-        ? `w-[${HTMLAttributes.width}]`
-        : 'w-full';
+        ? `~w-[${HTMLAttributes.width}]`
+        : '~w-full';
 
     // This outer div is the actual "node" that ProseMirror will manage.
     // It controls the layout and dragging.
@@ -99,11 +99,11 @@ export const Video = Node.create({
           'video-wrapper', // A class for our CSS to target
           widthClass,
           node.attrs.aspectRatio,
-          'rounded-lg',
-          'border-2',
-          'border-transparent', // Make border transparent by default
-          'hover:border-blue-600', // Show border on hover
-          'cursor-move'
+          '~rounded-lg',
+          '~border-2',
+          '~border-transparent', // Make border transparent by default
+          'hover:~border-blue-600', // Show border on hover
+          '~cursor-move'
         ),
         'data-drag-handle': '', // Explicitly mark this div as the drag handle
       },
@@ -113,7 +113,7 @@ export const Video = Node.create({
         {
           ...HTMLAttributes,
           // Let the iframe fill its wrapper
-          class: 'w-full h-full rounded-lg',
+          class: '~w-full ~h-full ~rounded-lg',
         },
       ],
     ];
@@ -124,14 +124,14 @@ export const Video = Node.create({
       setVideo:
         (src: string) =>
         ({ commands }) => {
-          let aspectRatio = 'aspect-video';
+          let aspectRatio = '~aspect-video';
           if (
             src.includes('shorts') ||
             src.includes('9_16') ||
             src.includes('vertical') ||
             src.match(/aspect=9:16/i)
           ) {
-            aspectRatio = 'aspect-[9/16]';
+            aspectRatio = '~aspect-[9/16]';
           }
           return commands.insertContent({
             type: this.name,

@@ -57,7 +57,7 @@ export function AsyncInputSearch<T>({
     <Command className={wrapClassName}>
       <CommandInput
         placeholder={placeholder}
-        className='h-9'
+        className='~h-9'
         onValueChange={(q) => onSearch(q)}
       />
       <CommandList onScroll={handleScroll}>
@@ -70,7 +70,7 @@ export function AsyncInputSearch<T>({
                 <div
                   key={key}
                   onClick={() => onSelect(item)}
-                  className='hover:bg-slate-100 cursor-pointer rounded-xs px-2 py-1.5 text-sm'
+                  className='hover:~bg-slate-100 ~cursor-pointer ~rounded-sm ~px-2 ~py-1.5 ~text-sm'
                 >
                   {renderItem(item, Boolean(isSelected))}
                 </div>
@@ -78,7 +78,7 @@ export function AsyncInputSearch<T>({
             })}
           </div>
         ) : (
-          <div className='py-6 text-center text-sm'>No results found.</div>
+          <div className='~py-6 ~text-center ~text-sm'>No results found.</div>
         )}
       </CommandList>
     </Command>

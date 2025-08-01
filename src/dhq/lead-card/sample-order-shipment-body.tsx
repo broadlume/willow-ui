@@ -26,25 +26,25 @@ const SampleOrderLineItem = ({ item }: SampleOrderLineItemProps) => {
   return (
     <ul
       role='list'
-      className='border-b p-2'
+      className='~border-b ~p-2'
       style={{ listStyleImage: `url(${CircleFilled})` }} // best way to get the image imported from the assets folder
     >
       <li style={{ marginLeft: '1em', paddingInlineStart: '10px' }}>
-        <div className='flex flex-col gap-1'>
+        <div className='~flex ~flex-col ~gap-1'>
           <div className='body-small'>
             {`${item.title} - Sample`}
             {manufacturer_name && (
-              <span className='font-normal'>{` (${manufacturer_name})`}</span>
+              <span className='~font-normal'>{` (${manufacturer_name})`}</span>
             )}
           </div>
-          <div className='body-small flex gap-4'>
+          <div className='body-small ~flex ~gap-4'>
             <span>
               SKU:&nbsp;
-              <span className='font-normal'>{item.sku}</span>
+              <span className='~font-normal'>{item.sku}</span>
             </span>
             <span>
               Quantity:&nbsp;
-              <span className='font-normal'>{item.quantity}</span>
+              <span className='~font-normal'>{item.quantity}</span>
             </span>
           </div>
         </div>
@@ -88,22 +88,22 @@ const FulfillmentInfo = ({ shipment }: FulfillmentInfoProps) => {
           gap: '2px',
         }}
       >
-        <span className='body-x-small font-bold'>
+        <span className='body-x-small ~font-bold'>
           Fulfillment Date: &nbsp;
-          <span className='font-normal'>{fulfillment_date}</span>
+          <span className='~font-normal'>{fulfillment_date}</span>
         </span>
-        <span className='body-x-small font-bold'>
+        <span className='body-x-small ~font-bold'>
           {is_delivered ? 'Delivered On' : 'Estimated Delivery'}:&nbsp;
-          <span className='font-normal'>{delivery_date}</span>
+          <span className='~font-normal'>{delivery_date}</span>
         </span>
       </div>
-      <span className='body-x-small font-bold'>
+      <span className='body-x-small ~font-bold'>
         Tracking:&nbsp;
-        <span className='font-normal'>
+        <span className='~font-normal'>
           {/* if tracking number + url, show the tracking number as a link */}
           {trackingNumber && trackingUrl && (
             <a
-              className='text-xs'
+              className='~text-xs'
               target='_blank'
               rel='noreferrer'
               href={trackingUrl}
@@ -117,7 +117,7 @@ const FulfillmentInfo = ({ shipment }: FulfillmentInfoProps) => {
           {!trackingNumber && 'TBD'}
           {/* if carrier, show carrier name in parentheses */}
           {carrier && (
-            <span className='text-ash-medium'>&nbsp;({carrier})</span>
+            <span className='~text-ash-medium'>&nbsp;({carrier})</span>
           )}
         </span>
       </span>
@@ -137,8 +137,8 @@ const SampleOrderShipmentHeader = ({
   const { color, title } = getFulfillmentStatusViewInfo(shipment);
 
   return (
-    <div className='flex items-center gap-3 px-0 pb-2 pt-4'>
-      <div className='body-large font-normal'>
+    <div className='~flex ~items-center ~gap-3 ~px-0 ~pb-2 ~pt-4'>
+      <div className='body-large ~font-normal'>
         {!trackingNumber && orderIndex > -1 ? (
           <>Remaining Items</>
         ) : (

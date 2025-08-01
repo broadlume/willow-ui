@@ -45,7 +45,7 @@ export const Default: Story = {
 /** All toggle styles. */
 export const Styles: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle>Default</Toggle>
       <Toggle style='outline'>Outline</Toggle>
     </div>
@@ -55,7 +55,7 @@ export const Styles: Story = {
 /** All toggle shapes. */
 export const Shapes: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle style='outline'>Default</Toggle>
       <Toggle style='outline' shape='pill'>
         Pill
@@ -67,7 +67,7 @@ export const Shapes: Story = {
 /** All toggle sizes. */
 export const Sizes: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle size='lg' style='outline'>
         Large (lg)
       </Toggle>
@@ -85,7 +85,7 @@ export const Sizes: Story = {
 /** Disabled toggles. */
 export const Disabled: Story = {
   render: (_) => (
-    <div className='flex gap-2'>
+    <div className='~flex ~gap-2'>
       <Toggle disabled>Default</Toggle>
       <Toggle disabled style='outline'>
         Outline

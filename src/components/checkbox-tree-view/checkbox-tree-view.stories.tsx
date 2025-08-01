@@ -50,7 +50,7 @@ export const Demo: Story = {
       <div>
         <TreeView data={treeData} onChange={handleTreeChange} />
         <pre>
-          <p className='font-bold'>Selected Values:</p>
+          <p className='~font-bold'>Selected Values:</p>
           {selectedValues.map((val) => (
             <p>{val}</p>
           ))}

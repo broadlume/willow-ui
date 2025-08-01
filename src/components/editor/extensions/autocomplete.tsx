@@ -37,7 +37,7 @@ const AutocompleteNodeComponent: React.FC<NodeViewProps> = ({
         onChange={(value, label) => handleSelect(value, label!)}
         fetchOptions={fetchOptions}
         autoFocus={true}
-        className='w-1/4'
+        className='~w-1/4'
         darkMode={darkMode}
       />
     </NodeViewWrapper>

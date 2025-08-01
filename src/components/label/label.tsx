@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@src/lib/utils';
 
 const labelVariants = cva(
-  'tw-reset leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50'
+  'tw-reset ~leading-none peer-disabled:~cursor-not-allowed peer-disabled:~opacity-50'
 );
 
 /** An accessible label associated a control. */

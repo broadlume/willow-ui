@@ -8,10 +8,10 @@ interface PopoverMenuItemContentProps {
 export const PopoverMenuItemContent = ({title, content}: PopoverMenuItemContentProps) => {
     return (
         <Popover>
-            <PopoverTrigger type='button' className="bg-transparent border-none shadow-none p-0 focus:outline-hidden hover:cursor-pointer">
+            <PopoverTrigger type='button' className="~bg-transparent ~border-none ~shadow-none ~p-0 focus:~outline-none hover:~cursor-pointer">
                 {title}
             </PopoverTrigger>
-            <PopoverContent align="start" alignOffset={110} sideOffset={-30} side="right" className="bg-white rounded-lg shadow-lg p-1 z-50">
+            <PopoverContent align="start" alignOffset={110} sideOffset={-30} side="right" className="~bg-white ~rounded-lg ~shadow-lg ~p-1 ~z-50">
                 {content}
             </PopoverContent>
         </Popover>

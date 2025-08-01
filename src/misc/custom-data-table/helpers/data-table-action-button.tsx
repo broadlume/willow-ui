@@ -33,13 +33,13 @@ export const DataTableActionMenu = (props: { actions: string[] }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className='w-auto gap-y-2'>
+        <div className='~w-auto ~space-y-2'>
           {props.actions.map((action: string, i, arr) => {
             return (
               <>
                 <div key={action}>
                   <button
-                    className='h-full w-full text-left capitalize hover:bg-gray-100'
+                    className='~h-full ~w-full ~text-left ~capitalize hover:~bg-gray-100'
                     data-tag='allowRowEvents'
                     data-action={action.toLowerCase()}
                   >

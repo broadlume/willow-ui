@@ -17,82 +17,82 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn('tw-reset p-3', className)}
+      className={cn('tw-reset ~p-3', className)}
       classNames={{
-        root: cn('w-min', classNames?.root),
+        root: cn('~w-min', classNames?.root),
         months: cn(
-          'flex w-full flex-col gap-y-4 sm:flex-row sm:gap-x-4 sm:gap-y-0',
+          '~flex ~w-full ~flex-col ~space-y-4 sm:~flex-row sm:~space-x-4 sm:~space-y-0',
           classNames?.months
         ),
-        month: cn('gap-y-4', classNames?.month),
+        month: cn('~space-y-4', classNames?.month),
         caption: cn(
-          'relative flex items-center justify-center pt-1',
+          '~relative ~flex ~items-center ~justify-center ~pt-1',
           classNames?.caption
         ),
-        caption_label: cn('text-sm font-medium', classNames?.caption_label),
-        nav: cn('flex items-center gap-x-1', classNames?.nav),
+        caption_label: cn('~text-sm ~font-medium', classNames?.caption_label),
+        nav: cn('~flex ~items-center ~space-x-1', classNames?.nav),
         nav_button: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-9 w-9 p-0',
+          '~h-9 ~w-9 ~p-0',
           classNames?.nav_button
         ),
         nav_button_previous: cn(
-          'absolute left-1',
+          '~absolute ~left-1',
           classNames?.nav_button_previous
         ),
-        nav_button_next: cn('absolute right-1', classNames?.nav_button_next),
+        nav_button_next: cn('~absolute ~right-1', classNames?.nav_button_next),
         table: cn(
-          'w-full table-fixed border-collapse gap-y-1',
+          '~w-full ~table-fixed ~border-collapse ~space-y-1',
           classNames?.table
         ),
         head_row: cn('', classNames?.head_row),
         head_cell: cn(
-          'caption-1 w-10 text-center font-normal text-muted-foreground',
+          'caption-1 ~w-10 ~text-center ~font-normal ~text-muted-foreground',
           classNames?.head_cell
         ),
-        row: cn('mt-2 w-full', classNames?.row),
+        row: cn('~mt-2 ~w-full', classNames?.row),
         cell: cn(
-          'relative p-0 text-center focus-within:relative focus-within:z-20 ',
+          '~relative ~p-0 ~text-center focus-within:~relative focus-within:~z-20 ',
           props.mode === 'range'
-            ? '[&:has(>.day-range-end)]:rounded-r-full [&:has(>.day-range-start)]:rounded-l-full [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-full'
-            : '[&:has([aria-selected])]:rounded-full',
+            ? '[&:has(>.day-range-end)]:~rounded-r-full [&:has(>.day-range-start)]:~rounded-l-full [&:has([aria-selected])]:~bg-accent first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full'
+            : '[&:has([aria-selected])]:~rounded-full',
           classNames?.cell
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-10 w-10 p-0 font-normal aria-selected:opacity-100',
+          '~h-10 ~w-10 ~p-0 ~font-normal aria-selected:~opacity-100',
           classNames?.day
         ),
         day_selected: cn(
-          'bg-primary text-primary-foreground',
-          'hover:bg-primary hover:text-primary-foreground',
-          'focus:bg-primary focus:text-primary-foreground',
+          '~bg-primary ~text-primary-foreground',
+          'hover:~bg-primary hover:~text-primary-foreground',
+          'focus:~bg-primary focus:~text-primary-foreground',
           classNames?.day_selected
         ),
         day_today: cn(
-          'today bg-accent text-accent-foreground',
+          'today ~bg-accent ~text-accent-foreground',
           classNames?.day_today
         ),
         day_outside: cn(
-          'text-muted-foreground opacity-50',
+          '~text-muted-foreground ~opacity-50',
           classNames?.day_outside
         ),
         day_disabled: cn(
-          'text-muted-foreground opacity-50',
+          '~text-muted-foreground ~opacity-50',
           classNames?.day_disabled
         ),
         day_range_middle: cn(
-          'aria-selected:bg-transparent aria-selected:text-accent-foreground',
-          '[&.today]:bg-accent',
+          'aria-selected:~bg-transparent aria-selected:~text-accent-foreground',
+          '[&.today]:~bg-accent',
           classNames?.day_range_middle
         ),
         day_range_start: cn('day-range-start', classNames?.day_range_start),
         day_range_end: cn('day-range-end', classNames?.day_range_end),
-        day_hidden: cn('invisible', classNames?.day_hidden),
+        day_hidden: cn('~invisible', classNames?.day_hidden),
       }}
       components={{
-        IconLeft: () => <ChevronLeftIcon className='h-5 w-5' />,
-        IconRight: () => <ChevronRightIcon className='h-5 w-5' />,
+        IconLeft: () => <ChevronLeftIcon className='~h-5 ~w-5' />,
+        IconRight: () => <ChevronRightIcon className='~h-5 ~w-5' />,
       }}
       {...props}
     />

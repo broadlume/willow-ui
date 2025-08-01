@@ -54,13 +54,13 @@ export const AsyncAutocomplete = ({
           role='combobox'
           aria-expanded={open}
           aria-label='async-autocomplete'
-          className='min-w-[300px] justify-between rounded-md bg-background font-normal normal-case'
+          className='~min-w-[300px] ~justify-between ~rounded-md ~bg-background ~font-normal ~normal-case'
         >
           {selectedData ? selectedData.label : placeholder}
           <RxCaretSort />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='min-w-[300px] p-0'>
+      <PopoverContent className='~min-w-[300px] ~p-0'>
         <AsyncInputSearch
           items={data}
           onScroll={onScroll}
@@ -71,13 +71,13 @@ export const AsyncAutocomplete = ({
           placeholder={placeholder}
           getKey={(item) => item.value}
           renderItem={(item, isSelected) => (
-            <div className='flex flex-col justify-between'>
-              <div className='flex items-center justify-between'>
-                <p className='text-sm'>{item.label}</p>
-                {isSelected && <HiCheck className='h-3 w-3' />}
+            <div className='~flex ~flex-col ~justify-between'>
+              <div className='~flex ~items-center ~justify-between'>
+                <p className='~text-sm'>{item.label}</p>
+                {isSelected && <HiCheck className='~h-3 ~w-3' />}
               </div>
               {item?.description && (
-                <p className='mb-2 text-xs text-zinc-500'>
+                <p className='~mb-2 ~text-xs ~text-zinc-500'>
                   {item.description}
                 </p>
               )}

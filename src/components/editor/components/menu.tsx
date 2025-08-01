@@ -27,8 +27,8 @@ type L2MenuType = 'video' | 'embed' | 'link' | 'image';
 // Define the static width of the "More" button and the dark mode button
 const MORE_BUTTON_WIDTH = 40; // Approximate width of the more button + its padding/margin
 const DARK_MODE_BUTTON_WIDTH = 40; // Approximate width of the dark mode button + its padding/margin
-const MENU_PADDING = 32; // Total horizontal padding of the menu (p-[0.625em_1em_0.625em_1em] = 1em left + 1em right = 32px)
-const GAP_WIDTH = 16; // Tailwind gap-4 means 16px gap
+const MENU_PADDING = 32; // Total horizontal padding of the menu (~p-[0.625em_1em_0.625em_1em] = 1em left + 1em right = 32px)
+const GAP_WIDTH = 16; // Tailwind ~gap-4 means 16px gap
 
 export const Menu = ({
   editor,
@@ -155,12 +155,12 @@ export const Menu = ({
       <div
         ref={menuRef} // Attach ref to the menu container
         className={clsx(
-          'flex w-full flex-wrap rounded-tl-lg rounded-tr-lg border-[1px] border-b-0 border-solid border-gray-300 p-[0.625em_1em_0.625em_1em] text-lg',
+          '~flex ~w-full ~flex-wrap ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~p-[0.625em_1em_0.625em_1em] ~text-lg',
           className
         )}
       >
-        <div className='flex w-full items-center justify-between'>
-          <div className={clsx('flex flex-wrap gap-4')}>
+        <div className='~flex ~w-full ~items-center ~justify-between'>
+          <div className={clsx('~flex ~flex-wrap ~gap-4')}>
             {visibleItems.map((item, index) => (
               <React.Fragment key={item.id}>
                 {item.render(commonMenuItemProps)}
@@ -168,7 +168,7 @@ export const Menu = ({
               </React.Fragment>
             ))}
           </div>
-          <div className='flex items-center gap-2'>
+          <div className='~flex ~items-center ~gap-2'>
             <MenuItemWithTooltip key={"menu-link-tool-tip" + "theme"} tooltipContent={
               darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
             }> {/* Wrap with Tooltip */}
@@ -176,11 +176,11 @@ export const Menu = ({
               title={
                 darkMode ? (
                   <FiSun
-                    className={clsx('text-black', { 'text-white': darkMode })}
+                    className={clsx('~text-black', { '~text-white': darkMode })}
                   />
                 ) : (
                   <FiMoon
-                    className={clsx('text-black', { 'text-white': darkMode })}
+                    className={clsx('~text-black', { '~text-white': darkMode })}
                   />
                 )
               }
@@ -193,7 +193,7 @@ export const Menu = ({
                 className=''
                 title={
                   <MdOutlineMoreVert
-                    className={clsx('text-black', { 'text-white': darkMode })}
+                    className={clsx('~text-black', { '~text-white': darkMode })}
                     size={18}
                   />
                 }
@@ -210,12 +210,12 @@ export const Menu = ({
       {/* Expanded Menu */}
       <div
         className={clsx(
-          'hidden w-full flex-wrap justify-end gap-5 border-l-[1px] border-r-[1px] border-solid border-gray-300 p-3',
+          '~hidden ~w-full ~flex-wrap ~justify-end ~gap-5 ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~p-3',
           {
-            '!flex': expandedMenu,
-            'bg-gray-100': !darkMode,
-            'text-gray-800': !darkMode,
-            'bg-gray-900 text-gray-200': darkMode,
+            '!~flex': expandedMenu,
+            '~bg-gray-100': !darkMode,
+            '~text-gray-800': !darkMode,
+            '~bg-gray-900 ~text-gray-200': darkMode,
           }
         )}
       >
@@ -230,12 +230,12 @@ export const Menu = ({
       {/* Expanded Menu L2*/}
       <div
         className={clsx(
-          'hidden w-full justify-end gap-2 border-l-[1px] border-r-[1px] border-t-2  border-solid border-gray-300 border-t-white bg-[#F3F3F3] p-3',
+          '~hidden ~w-full ~justify-end ~gap-2 ~border-l-[1px] ~border-r-[1px] ~border-t-2  ~border-solid ~border-gray-300 ~border-t-white ~bg-[#F3F3F3] ~p-3',
           {
-            '!flex': expandedMenuL2,
-            'bg-gray-100': !darkMode,
-            'text-gray-800': !darkMode,
-            'bg-gray-900 text-gray-200': darkMode,
+            '!~flex': expandedMenuL2,
+            '~bg-gray-100': !darkMode,
+            '~text-gray-800': !darkMode,
+            '~bg-gray-900 ~text-gray-200': darkMode,
           }
         )}
       >

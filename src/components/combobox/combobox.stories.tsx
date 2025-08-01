@@ -88,7 +88,7 @@ const longList = Array.from({ length: 100 }, (_, i) => ({
 export const Demo: Story = {
   render: (_) => (
     <Combobox>
-      <ComboboxValue className='w-[200px]' placeholder='Select framework...' />
+      <ComboboxValue className='~w-[200px]' placeholder='Select framework...' />
       <ComboboxContent>
         <ComboboxInput placeholder='Search frameworks...' />
         <ComboboxEmpty>No results found.</ComboboxEmpty>
@@ -111,7 +111,7 @@ const LocationDemoComponent = ({ placeholder, values }: any) => {
 
   return (
     <Combobox>
-      <ComboboxValue className='w-[300px]' placeholder={placeholder} />
+      <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
       <ComboboxContent>
         <ComboboxInput placeholder='Search locations...' />
         <ComboboxEmpty>No results found.</ComboboxEmpty>
@@ -129,18 +129,18 @@ const LocationDemoComponent = ({ placeholder, values }: any) => {
             <FaPlus />
             Add location
           </ComboboxFooter>
-          <DialogContent className='sm:max-w-[425px]'>
+          <DialogContent className='sm:~max-w-[425px]'>
             <DialogHeader>
               <DialogTitle>Add location</DialogTitle>
               <DialogDescription>
                 Add a new location to your list.
               </DialogDescription>
             </DialogHeader>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
+            <div className='~grid ~grid-cols-4 ~items-center ~gap-4'>
+              <Label htmlFor='name' className='~text-right'>
                 Name
               </Label>
-              <Input id='name' defaultValue='' className='col-span-3' />
+              <Input id='name' defaultValue='' className='~col-span-3' />
             </div>
             <DialogFooter>
               <Button variant='secondary' onClick={() => setOpen(false)}>
@@ -168,9 +168,9 @@ export const FooterDemo: StoryObj = {
 const ControlledDemoComponent = ({ placeholder, values }: any) => {
   const [value, setValue] = useState<string[]>([]);
   return (
-    <div className='tw-reset flex flex-col gap-2'>
+    <div className='tw-reset ~flex ~flex-col ~gap-2'>
       <Combobox value={value} onChange={setValue}>
-        <ComboboxValue className='w-[300px]' placeholder={placeholder} />
+        <ComboboxValue className='~w-[300px]' placeholder={placeholder} />
         <ComboboxContent>
           <ComboboxInput placeholder={placeholder} />
           <ComboboxEmpty>No results found.</ComboboxEmpty>
@@ -187,7 +187,7 @@ const ControlledDemoComponent = ({ placeholder, values }: any) => {
       </Combobox>
       <p>External control:</p>
       {values.map((_value) => (
-        <div className='flex gap-1' key={_value.value}>
+        <div className='~flex ~gap-1' key={_value.value}>
           <Checkbox
             id={_value.value}
             checked={value.includes(_value.value)}
@@ -216,7 +216,7 @@ export const Controlled: StoryObj = {
 export const LongListDemo: Story = {
   render: (_) => (
     <Combobox>
-      <ComboboxValue className='w-[200px]' placeholder='Select...' />
+      <ComboboxValue className='~w-[200px]' placeholder='Select...' />
       <ComboboxContent>
         <ComboboxInput placeholder='Random placeholder' />
         <ComboboxEmpty>No results found.</ComboboxEmpty>

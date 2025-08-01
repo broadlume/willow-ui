@@ -19,7 +19,7 @@ const CalendarDemo = (_) => {
       mode='single'
       selected={date}
       onSelect={setDate}
-      className='inline-flex rounded-md border shadow'
+      className='~inline-flex ~rounded-md ~border ~shadow'
     />
   );
 };

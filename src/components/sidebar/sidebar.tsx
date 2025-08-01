@@ -61,7 +61,7 @@ export const Sidebar: FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="w-64 h-screen border-r py-6 px-8 bg-neutral-100 text-sm flex flex-col gap-6">
+    <aside className="~w-64 ~h-screen ~border-r ~py-6 ~px-8 ~bg-neutral-100 ~text-sm ~flex ~flex-col ~gap-6">
       {items
         .filter((item) => !item.hidden)
         .map((item, key) => (

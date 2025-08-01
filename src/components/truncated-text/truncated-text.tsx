@@ -20,7 +20,7 @@ const TruncatedText = ({ children, className, onTruncation }: Props) => {
   useResizeDetector({ onResize, targetRef });
 
   return (
-    <div className={cn('truncate', className)} ref={targetRef}>
+    <div className={cn('~truncate', className)} ref={targetRef}>
       {children}
     </div>
   );

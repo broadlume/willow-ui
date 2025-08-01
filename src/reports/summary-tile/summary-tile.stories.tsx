@@ -101,7 +101,7 @@ const stackedData: SummaryTileNumProps[] = [
 
 export const Demo: Story = {
   render: (_) => (
-    <div className='flex flex-wrap gap-4'>
+    <div className='~flex ~flex-wrap ~gap-4'>
       {data.map((tile, index) => (
         <SummaryTile key={index} {...tile} />
       ))}
@@ -110,7 +110,7 @@ export const Demo: Story = {
 };
 export const CustomUnits: Story = {
   render: (_) => (
-    <div className='flex flex-wrap gap-4'>
+    <div className='~flex ~flex-wrap ~gap-4'>
       {customData.map((tile, index) => (
         <SummaryTile key={index} {...tile} />
       ))}
@@ -120,7 +120,7 @@ export const CustomUnits: Story = {
 
 export const Loading: Story = {
   render: (_) => (
-    <div className='flex flex-wrap gap-4'>
+    <div className='~flex ~flex-wrap ~gap-4'>
       {data.map((tile, index) => (
         <SummaryTile key={index} {...tile} loading />
       ))}
@@ -130,10 +130,10 @@ export const Loading: Story = {
 
 export const Stacked: Story = {
   render: (_) => (
-    <div className='grid grid-cols-2 gap-4'>
+    <div className='~grid ~grid-cols-2 ~gap-4'>
       {stackedData.map((tile, index) =>
         index === 0 ? (
-          <SummaryTile stacked {...tile} className='col-span-2 h-[100px]' />
+          <SummaryTile stacked {...tile} className='~col-span-2 ~h-[100px]' />
         ) : (
           <SummaryTile stacked {...tile} />
         )
@@ -144,13 +144,13 @@ export const Stacked: Story = {
 
 export const StackedLoading: Story = {
   render: (_) => (
-    <div className='grid grid-cols-2 gap-4'>
+    <div className='~grid ~grid-cols-2 ~gap-4'>
       {stackedData.map((tile, index) =>
         index === 0 ? (
           <SummaryTile
             stacked
             {...tile}
-            className='col-span-2 h-[100px]'
+            className='~col-span-2 ~h-[100px]'
             loading
           />
         ) : (

@@ -23,17 +23,17 @@ export const UserTableUser = (user: {
   email: string | undefined;
 }) => {
   return (
-    <div className='flex items-center'>
-      <Avatar className='h-9 w-9'>
+    <div className='~flex ~items-center'>
+      <Avatar className='~h-9 ~w-9'>
         <AvatarImage
           src={user.profileImage}
           alt={`${user.fname} ${user.lname}`}
         />
         <AvatarFallback>{getInitials(user.fname, user.lname)}</AvatarFallback>
       </Avatar>
-      <div className='ml-4 gap-y-1'>
-        <p className='text-sm font-medium leading-none'>{user.email}</p>
-        <p className='text-sm text-muted-foreground'>{`${user.fname} ${user.lname}`}</p>
+      <div className='~ml-4 ~space-y-1'>
+        <p className='~text-sm ~font-medium ~leading-none'>{user.email}</p>
+        <p className='~text-sm ~text-muted-foreground'>{`${user.fname} ${user.lname}`}</p>
       </div>
     </div>
   );
@@ -54,7 +54,7 @@ export const UserTableRole = (role: { id: string | number; name: string }) => {
   };
 
   return (
-    <Badge variant='outline' className={`w-full ${getClassName(role.id)}`}>
+    <Badge variant='outline' className={`~w-full ${getClassName(role.id)}`}>
       {role.name.toUpperCase()}
     </Badge>
   );
@@ -70,9 +70,9 @@ export const UserTableActions = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className='w-auto gap-y-2'>
+        <div className='~w-auto ~space-y-2'>
           <button
-            className='h-full w-full text-left hover:bg-gray-100'
+            className='~h-full ~w-full ~text-left hover:~bg-gray-100'
             data-tag='allowRowEvents'
             data-action='edit'
           >
@@ -80,7 +80,7 @@ export const UserTableActions = () => {
           </button>
           <Separator />
           <button
-            className='h-full w-full text-left hover:bg-gray-100'
+            className='~h-full ~w-full ~text-left hover:~bg-gray-100'
             data-tag='allowRowEvents'
             data-action='deactivate'
           >
