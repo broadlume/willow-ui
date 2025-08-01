@@ -34,10 +34,10 @@ export const Custom: Story = {
   args: {
     classNames: {
       wrapper: [''],
-      label: ['~text-4xl ~text-junglegreen'],
+      label: ['text-4xl text-junglegreen'],
     },
     customIcon: () => (
-      <FaChevronCircleRight className='~mx-3 ~text-lg ~text-ash-light' />
+      <FaChevronCircleRight className='mx-3 text-lg text-ash-light' />
     ),
     onClick: (e) => alert('clicked=' + e.target.id),
   },

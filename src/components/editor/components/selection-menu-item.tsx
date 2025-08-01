@@ -16,7 +16,7 @@ export const SelectionTypeMenuItemContent = ({ items, onSelection }: SelectionTy
         setSelectedItem(value);
         onSelection(value);
       }}>
-        <SelectTrigger value={selectedItem} className='~w-32 ~h-6 ~border-none ~shadow-none focus:outline-hidden focus:ring-0'>
+        <SelectTrigger value={selectedItem} className='w-32 h-6 border-none shadow-none focus:outline-hidden focus:ring-0'>
           <SelectValue>{selectedItemLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>

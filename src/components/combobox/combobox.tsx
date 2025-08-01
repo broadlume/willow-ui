@@ -125,18 +125,18 @@ const ComboboxValue = ({
 
   const popoverClassNames = cn(
     selectVariants(),
-    '~relative ~justify-start ~gap-1',
-    !hasSelectedValues && '~text-input'
+    'relative justify-start gap-1',
+    !hasSelectedValues && 'text-input'
   );
   const referenceClassNames = cn(
     popoverClassNames,
-    '~invisible ~absolute ~inset-0'
+    'invisible absolute inset-0'
   );
 
   return (
     <Tooltip>
       <TooltipContent
-        className={cn('tooltip-content-max', !truncated && '~hidden')}
+        className={cn('tooltip-content-max', !truncated && 'hidden')}
       >
         {getRawSelectedText()}
       </TooltipContent>
@@ -146,10 +146,10 @@ const ComboboxValue = ({
             <TruncatedText onTruncation={setTruncated}>
               {getRawSelectedText()}
             </TruncatedText>
-            <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
+            <CaretSortIcon className='ml-auto h-4 w-4 shrink-0 opacity-50' />
           </div>
           <TruncatedText>{getDisplayText()}</TruncatedText>
-          <CaretSortIcon className='~ml-auto ~h-4 ~w-4 ~shrink-0 ~opacity-50' />
+          <CaretSortIcon className='ml-auto h-4 w-4 shrink-0 opacity-50' />
         </PopoverTrigger>
       </TooltipTrigger>
     </Tooltip>
@@ -182,8 +182,8 @@ const ComboboxContent = ({ children }: { children: React.ReactNode }) => {
   }, [children, addItem, removeItem]);
 
   return (
-    <PopoverContent className='popover-content ~p-0'>
-      <Command className='~rounded-none' filter={filter}>
+    <PopoverContent className='popover-content p-0'>
+      <Command className='rounded-none' filter={filter}>
         {children}
       </Command>
     </PopoverContent>
@@ -196,9 +196,9 @@ const ComboboxInput = React.forwardRef<
 >(({ className, wrapperClassName, ...props }, ref) => (
   <CommandInput
     ref={ref}
-    className={cn('~h-9', className)}
+    className={cn('h-9', className)}
     wrapperClassName={cn(
-      '~rounded-none ~border-4 ~border-b-[5px]',
+      'rounded-none border-4 border-b-[5px]',
       wrapperClassName
     )}
     {...props}
@@ -240,10 +240,10 @@ const ComboboxItem = ({ value, children }: ComboboxItemProps) => {
   return (
     <CommandItem
       onSelect={() => handleSelect(value)}
-      className={cn(!isSelected && '~text-muted-foreground')}
+      className={cn(!isSelected && 'text-muted-foreground')}
       value={label}
     >
-      <Checkbox checked={isSelected} className='~mr-3' />
+      <Checkbox checked={isSelected} className='mr-3' />
       {children}
     </CommandItem>
   );
@@ -258,7 +258,7 @@ const ComboboxFooter = ({ children, onSelect }: ComboboxAddItemProps) => {
   return (
     <CommandGroup forceMount>
       <CommandItem
-        className='caption-1 ~cursor-pointer ~gap-2 ~text-mosaic aria-selected:~text-mosaic'
+        className='caption-1 cursor-pointer gap-2 text-mosaic aria-selected:text-mosaic'
         onSelect={onSelect}
         value={id}
         forceMount

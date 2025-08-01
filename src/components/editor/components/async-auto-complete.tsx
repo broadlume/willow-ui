@@ -66,22 +66,22 @@ export const AsyncSelectAutoComplete: React.FC<AsyncSelectAutoCompleteProps> = (
   };
 
   return (
-    <div className={cn('~relative ~w-full', className)}>
+    <div className={cn('relative w-full', className)}>
       <div
         className={cn(
-          '~flex ~items-center ~border ~rounded-md ~px-2 ~py-1',
-          disabled && '~opacity-50 ~pointer-events-none',
+          'flex items-center border rounded-md px-2 py-1',
+          disabled && 'opacity-50 pointer-events-none',
           darkMode
-            ? '~bg-gray-900 ~border-gray-700'
-            : '~bg-white'
+            ? 'bg-gray-900 border-gray-700'
+            : 'bg-white'
         )}
       >
         <Input
           ref={inputRef}
           placeholder={placeholder}
           className={cn(
-            'focus-visible:~ring-0 focus:~outline-hidden ~outline-hidden ~border-none ~shadow-none',
-            darkMode ? '~bg-gray-900 ~text-gray-100' : ''
+            'focus-visible:ring-0 focus:outline-hidden outline-hidden border-none shadow-none',
+            darkMode ? 'bg-gray-900 text-gray-100' : ''
           )}
           value={inputValue}
           onChange={e => {
@@ -107,26 +107,26 @@ export const AsyncSelectAutoComplete: React.FC<AsyncSelectAutoCompleteProps> = (
             }
           }}
         />
-        <CaretSortIcon className={cn("~ml-2 ~h-4 ~w-4 ~opacity-50", darkMode ? "~text-gray-400" : "")} />
+        <CaretSortIcon className={cn("ml-2 h-4 w-4 opacity-50", darkMode ? "text-gray-400" : "")} />
       </div>
       {open && (
         <div
           className={cn(
-            "~absolute ~z-50 ~mt-1 ~w-full ~rounded-md ~border ~shadow-lg ~max-h-60 ~overflow-auto",
+            "absolute z-50 mt-1 w-full rounded-md border shadow-lg max-h-60 overflow-auto",
             darkMode
-              ? "~bg-gray-900 ~border-gray-700 ~text-gray-100"
-              : "~bg-white"
+              ? "bg-gray-900 border-gray-700 text-gray-100"
+              : "bg-white"
           )}
         >
           {loading ? (
-            <div className={cn("~px-3 ~py-2", darkMode ? "~text-gray-400" : "~text-gray-400")}>Loading...</div>
+            <div className={cn("px-3 py-2", darkMode ? "text-gray-400" : "text-gray-400")}>Loading...</div>
           ) : options.length === 0 && inputValue ? (
-            <div className={cn("~px-3 ~py-2", darkMode ? "~text-gray-400" : "~text-gray-400")}>
-              <div className={cn("~px-2 ~py-1.5 ~text-sm", darkMode ? "~text-gray-400" : "~text-gray-500")}>
+            <div className={cn("px-3 py-2", darkMode ? "text-gray-400" : "text-gray-400")}>
+              <div className={cn("px-2 py-1.5 text-sm", darkMode ? "text-gray-400" : "text-gray-500")}>
                 No results found.
               </div>
               {/* <Button
-                className={cn('~mt-4')}
+                className={cn('mt-4')}
                 onClick={(e) => {
                   e.preventDefault();
                   alert('You can add a new item: ' + inputValue);
@@ -140,14 +140,14 @@ export const AsyncSelectAutoComplete: React.FC<AsyncSelectAutoCompleteProps> = (
               <div
                 key={option.value}
                 className={cn(
-                  '~px-3 ~py-2 ~cursor-pointer',
+                  'px-3 py-2 cursor-pointer',
                   idx === highlighted
                     ? darkMode
-                      ? '~bg-gray-800 ~text-blue-300'
-                      : '~bg-blue-100'
+                      ? 'bg-gray-800 text-blue-300'
+                      : 'bg-blue-100'
                     : darkMode
-                    ? 'hover:~bg-gray-800'
-                    : 'hover:~bg-gray-100'
+                    ? 'hover:bg-gray-800'
+                    : 'hover:bg-gray-100'
                 )}
                 onMouseDown={e => {
                   e.preventDefault();

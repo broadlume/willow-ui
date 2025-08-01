@@ -32,7 +32,7 @@ export const Demo: Story = {
 
   render: (args) => (
     <Select {...args}>
-      <SelectTrigger className='~w-[180px]'>
+      <SelectTrigger className='w-[180px]'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
       <SelectContent>
@@ -50,7 +50,7 @@ export const Demo: Story = {
 export const WithGroups: StoryObj = {
   render: (_) => (
     <Select>
-      <SelectTrigger className='~w-[180px]'>
+      <SelectTrigger className='w-[180px]'>
         <SelectValue placeholder='Select a food' />
       </SelectTrigger>
       <SelectContent>
@@ -79,7 +79,7 @@ export const WithGroups: StoryObj = {
 export const Disabled: StoryObj = {
   render: (_) => (
     <Select disabled>
-      <SelectTrigger className='~w-[180px]'>
+      <SelectTrigger className='w-[180px]'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
       <SelectContent>
@@ -97,7 +97,7 @@ export const Disabled: StoryObj = {
 export const DisabledItems: StoryObj = {
   render: (_) => (
     <Select>
-      <SelectTrigger className='~w-[180px]'>
+      <SelectTrigger className='w-[180px]'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
       <SelectContent>
