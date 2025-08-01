@@ -1,5 +1,5 @@
 import './assets/typekit.css';
-import './index.scss';
+import './index.css';
 
 // Components
 export * from '@components/accordion/accordion';
