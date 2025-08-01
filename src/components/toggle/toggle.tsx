@@ -16,7 +16,7 @@ const toggleVariants = cva(
     variants: {
       style: {
         default: '',
-        outline: '~border ~border-input ~shadow-sm',
+        outline: '~border ~border-input ~shadow-xs',
       },
       shape: {
         default: '',
