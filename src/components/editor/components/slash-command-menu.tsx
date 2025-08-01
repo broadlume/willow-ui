@@ -78,17 +78,17 @@ const SlashCommandMenu = forwardRef<SlashCommandMenuHandle, SlashCommandMenuProp
     }
 
     return (
-      <div className="~bg-white ~rounded-lg ~shadow-lg ~border ~border-gray-200 ~overflow-hidden ~max-h-60 ~overflow-y-auto ~p-2">
+      <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden max-h-60 overflow-y-auto p-2">
         {items.map((item, index) => (
           <Button
             type='button'
             variant='link'
             key={index}
             className={clsx(
-              '~block ~w-full ~text-left ~px-4 ~py-2 ~text-xs ~color-[#000] ~rounded-none',
-              'hover:~bg-blue-50 ~hover:~text-blue-700 hover:~border-none',
+              'block w-full text-left px-4 py-2 text-xs color-[#000] rounded-none',
+              'hover:bg-blue-50 hover:text-blue-700 hover:border-none',
               {
-                '~border-b-2 ~border-blue-800 ~text-blue-800': index === selectedIndex,
+                'border-b-2 border-blue-800 text-blue-800': index === selectedIndex,
               }
             )}
             onClick={() => selectItem(index)}
