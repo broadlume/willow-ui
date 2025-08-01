@@ -6,7 +6,7 @@ import { cn } from '@src/lib/utils';
 const badgeVariants = cva(
   [
     'tw-reset body-x-small ~inline-flex ~cursor-default ~items-center ~rounded-full ~border ~px-3 ~py-0.5 ~transition-colors',
-    'focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
+    'focus:~outline-hidden focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
   ],
   {
     variants: {

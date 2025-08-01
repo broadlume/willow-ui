@@ -26,7 +26,7 @@ export const EditorContent: React.FC<{
                                 })
                             } onChange={(e) => setContent!(e.target.value)} className={
                                 clsx(
-                                    '~w-full ~min-h-[20rem] ~border-gray-300 ~outline-none ~rounded-none ~rounded-bl-lg ~rounded-br-lg',
+                                    '~w-full ~min-h-[20rem] ~border-gray-300 ~outline-hidden ~rounded-none ~rounded-bl-lg ~rounded-br-lg',
                                     {
                                         'dark:~bg-gray-800 dark:~text-gray-200': darkMode,
                                         'dark:~border-gray-600': darkMode,

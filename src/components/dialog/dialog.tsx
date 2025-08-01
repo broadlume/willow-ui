@@ -76,7 +76,7 @@ const DialogContent = React.forwardRef<
           <DialogPrimitive.Close
             className={cn(
               '~absolute ~right-4 ~top-4 ~rounded-xs ~opacity-70 ~transition-opacity hover:~opacity-100 disabled:~pointer-events-none',
-              '~ring-offset-background focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
+              '~ring-offset-background focus:~outline-hidden focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',
               'data-[state=open]:~bg-accent data-[state=open]:~text-muted-foreground'
             )}
             onClick={onClose}
