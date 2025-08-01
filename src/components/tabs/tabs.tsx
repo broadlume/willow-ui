@@ -56,7 +56,7 @@ const sliderVariants = cva(
 const tabTriggerVariants = cva(
   [
     'caption-1 ~inline-flex ~min-h-0 ~items-center ~justify-center ~whitespace-nowrap ~px-3 ~py-1 ~ring-offset-background ~transition-all',
-    'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
+    'focus-visible:~outline-hidden focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
     'disabled:~pointer-events-none disabled:~opacity-50',
   ],
   {
@@ -189,7 +189,7 @@ const TabsContent = React.forwardRef<
     ref={ref}
     className={cn(
       '~mt-2 ~ring-offset-background',
-      'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
+      'focus-visible:~outline-hidden focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
       className
     )}
     {...props}

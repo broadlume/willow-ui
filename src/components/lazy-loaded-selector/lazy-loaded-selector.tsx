@@ -85,7 +85,7 @@ const LazyLoadedSelector = <T extends Items>({
                 <div
                   data-testid={'website-item-' + item?.name}
                   className="~grow ~px-2 ~py-1.5
-                    ~rounded-sm ~flex"
+                    ~rounded-xs ~flex"
                   key={item?.id}
                 >
                   <div className='~flex-grow' onClick={() => handleSelect(item)}>

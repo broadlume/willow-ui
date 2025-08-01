@@ -257,7 +257,7 @@ export function useDataTable<TData, TValue>({
             data-testid={'table-header-select-checkbox'}
             checked={isIndeterminate ? 'indeterminate' : isChecked}
             color='#1A6CFF'
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
+            className='~rounded-xs ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             onCheckedChange={() => handleHeaderCheckboxClick()}
             // disable selecting all rows if single selection is enabled
             disabled={enableSingleSelection}
@@ -275,7 +275,7 @@ export function useDataTable<TData, TValue>({
             checked={isChecked}
             data-testid={'table-select-checkbox-' + row.id}
             onCheckedChange={() => handleRowCheckboxChange(row)}
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
+            className='~rounded-xs ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
         );

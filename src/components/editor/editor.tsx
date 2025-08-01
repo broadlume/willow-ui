@@ -100,7 +100,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: clsx(
-          'focus:~outline-none ~not-prose',
+          'focus:~outline-hidden ~not-prose',
           darkMode ? '!~text-white' : '~text-black'
         )
       },

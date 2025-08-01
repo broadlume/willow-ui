@@ -19,7 +19,7 @@ type Story = StoryObj<typeof TruncatedText>;
 
 export const Default: Story = {
   render: (_) => (
-    <div className='tw-reset ~flex ~w-[300px] ~flex-col ~gap-2 ~rounded-sm ~border-2 ~p-2'>
+    <div className='tw-reset ~flex ~w-[300px] ~flex-col ~gap-2 ~rounded-xs ~border-2 ~p-2'>
       <TruncatedText>This is a short text.</TruncatedText>
       <TruncatedText>
         This is a longer text that will be truncated.

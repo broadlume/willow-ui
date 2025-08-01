@@ -80,7 +80,7 @@ export const AsyncSelectAutoComplete: React.FC<AsyncSelectAutoCompleteProps> = (
           ref={inputRef}
           placeholder={placeholder}
           className={cn(
-            'focus-visible:~ring-0 focus:~outline-none ~outline-none ~border-none ~shadow-none',
+            'focus-visible:~ring-0 focus:~outline-hidden ~outline-hidden ~border-none ~shadow-none',
             darkMode ? '~bg-gray-900 ~text-gray-100' : ''
           )}
           value={inputValue}
