@@ -25,23 +25,23 @@ export const Demo: Story = {
   render: (_) => (
     <Popover>
       <PopoverTrigger>Click me!</PopoverTrigger>
-      <PopoverContent className='~w-[340px]'>
-        <div className='~grid ~gap-4'>
-          <div className='~gap-y-2'>
-            <h4 className='~font-medium ~leading-none'>Dimensions</h4>
-            <p className='~text-muted-foreground'>
+      <PopoverContent className='w-[340px]'>
+        <div className='grid gap-4'>
+          <div className='gap-y-2'>
+            <h4 className='font-medium leading-none'>Dimensions</h4>
+            <p className='text-muted-foreground'>
               Set the dimensions for the layer.
             </p>
           </div>
-          <div className='~grid ~gap-2'>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+          <div className='grid gap-2'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='width'>Width</Label>
-              <Input id='width' defaultValue='100%' className='~col-span-2' />
+              <Input id='width' defaultValue='100%' className='col-span-2' />
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='maxWidth'>Max width</Label>
               <Select defaultValue='min-content'>
-                <SelectTrigger id='maxWidth' className='~col-span-2'>
+                <SelectTrigger id='maxWidth' className='col-span-2'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -53,16 +53,16 @@ export const Demo: Story = {
                 </SelectContent>
               </Select>
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='height'>Height</Label>
-              <Input id='height' defaultValue='25px' className='~col-span-2' />
+              <Input id='height' defaultValue='25px' className='col-span-2' />
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='maxHeight'>Max height</Label>
               <Input
                 id='maxHeight'
                 defaultValue='none'
-                className='~col-span-2'
+                className='col-span-2'
               />
             </div>
           </div>
@@ -78,23 +78,23 @@ export const CustomTrigger: Story = {
       <PopoverTrigger asChild>
         <Button variant='outline'>Open popover</Button>
       </PopoverTrigger>
-      <PopoverContent className='~w-[340px]'>
-        <div className='~grid ~gap-4'>
-          <div className='~gap-y-2'>
-            <h4 className='~font-medium ~leading-none'>Dimensions</h4>
-            <p className='~text-muted-foreground'>
+      <PopoverContent className='w-[340px]'>
+        <div className='grid gap-4'>
+          <div className='gap-y-2'>
+            <h4 className='font-medium leading-none'>Dimensions</h4>
+            <p className='text-muted-foreground'>
               Set the dimensions for the layer.
             </p>
           </div>
-          <div className='~grid ~gap-2'>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+          <div className='grid gap-2'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='width'>Width</Label>
-              <Input id='width' defaultValue='100%' className='~col-span-2' />
+              <Input id='width' defaultValue='100%' className='col-span-2' />
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='maxWidth'>Max width</Label>
               <Select defaultValue='min-content'>
-                <SelectTrigger id='maxWidth' className='~col-span-2'>
+                <SelectTrigger id='maxWidth' className='col-span-2'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -106,16 +106,16 @@ export const CustomTrigger: Story = {
                 </SelectContent>
               </Select>
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='height'>Height</Label>
-              <Input id='height' defaultValue='25px' className='~col-span-2' />
+              <Input id='height' defaultValue='25px' className='col-span-2' />
             </div>
-            <div className='~grid ~grid-cols-3 ~items-center ~gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
               <Label htmlFor='maxHeight'>Max height</Label>
               <Input
                 id='maxHeight'
                 defaultValue='none'
-                className='~col-span-2'
+                className='col-span-2'
               />
             </div>
           </div>

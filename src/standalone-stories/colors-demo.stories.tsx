@@ -50,10 +50,10 @@ const ColorCard = (
     <Card
       ref={colorRef}
       key={variableName}
-      className='~m-[10px]'
+      className='m-[10px]'
       style={{ backgroundColor: `hsl(var(--${variableName}))` }}
     >
-      <CardContent className='~p-6'>
+      <CardContent className='p-6'>
         <p style={{ color: textColor }}>{variableName}</p>
         <p style={{ color: textColor }}>
           {(matchedColor && `--${matchedColor}`) || computedColor}
@@ -86,21 +86,21 @@ const ColorPaletteDemoComponent = (_) => {
   const calculatedColors = useRef<Record<string, string>>({});
 
   return (
-    <div className='tw-reset ~flex ~flex-col ~gap-4'>
+    <div className='tw-reset flex flex-col gap-4'>
       <p className='body-large'>
         Note: All colors are defined in index.css with HSL values, so RGB
         conversion may not be 100% accurate.
       </p>
       <Separator />
       <p className='body-large'>Palette</p>
-      <div className='~flex ~flex-wrap'>
+      <div className='flex flex-wrap'>
         {Object.entries(colorPaletteFlattened).map(([name]) => {
           return ColorCard(name, calculatedColors.current, true);
         })}
       </div>
       <Separator />
       <p className='body-large'>Theme Colors</p>
-      <div className='~flex ~flex-wrap'>
+      <div className='flex flex-wrap'>
         {Object.entries(themeColorsFlattened).map(([name]) => {
           return ColorCard(name, calculatedColors.current);
         })}
