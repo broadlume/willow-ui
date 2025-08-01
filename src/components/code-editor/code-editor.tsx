@@ -228,25 +228,25 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 <div className="~px-6 ~py-4 ~bg-white ~rounded-md ~text-sm">
                     <h3 className="~font-semibold ~mb-3 ~text-gray-800 text-lg">⚙️ Editor Shortcuts & Tips</h3>
                     <div className="~grid ~grid-cols-1 sm:~grid-cols-2 ~gap-4">
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-xs">
                             <span className='~flex ~items-center ~mb-1 font-medium'><FaSun className='~mr-2' /> / <FaMoon className='~ml-2' /> Theme Toggle</span>
                             <p className="~text-gray-600">Switch between dark and light modes.</p>
                         </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-xs">
                             <span className='~flex ~items-center ~mb-1 font-medium'><FaBrush className='~mr-2' /> Format Code</span>
                             <p className="~text-gray-600">Auto-format code with Prettier.</p>
                         </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-xs">
                             <span className='~flex ~items-center ~mb-1 font-medium'><FaCopy className='~mr-2' /> Copy Code</span>
                             <p className="~text-gray-600">Copy the editor content to clipboard.</p>
                         </div>
                         {enableTokenSuggestion &&
-                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-xs">
                                 <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
                                 <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
                             </div>
                         }
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
+                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-xs">
                             <span className='~font-medium'>Shortcut</span>
                             <p className="~text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
                         </div>

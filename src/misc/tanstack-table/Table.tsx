@@ -780,6 +780,7 @@ export function useDataTable<TData, TValue>({
       excludedRowIds,
       handleSelectionReset,
       handleSelectAll,
+
     },
   };
 }
