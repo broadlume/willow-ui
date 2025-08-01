@@ -11,10 +11,10 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className='~relative ~w-full ~overflow-auto'>
+  <div className='relative w-full overflow-auto'>
     <table
       ref={ref}
-      className={clsx('~w-full ~caption-bottom ~text-sm', className)}
+      className={clsx('w-full caption-bottom text-sm', className)}
       {...props}
     />
   </div>
@@ -25,7 +25,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={clsx('[&_tr]:~border-b', className)} {...props} />
+  <thead ref={ref} className={clsx('[&_tr]:border-b', className)} {...props} />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -35,7 +35,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={clsx('[&_tr:last-child]:~border-0', className)}
+    className={clsx('[&_tr:last-child]:border-0', className)}
     {...props}
   />
 ));
@@ -48,7 +48,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={clsx(
-      '~border-t ~bg-muted/50 ~font-medium [&>tr]:last:~border-b-0',
+      'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
       className
     )}
     {...props}
@@ -63,7 +63,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={clsx(
-      '~transition-colors hover:~bg-muted/50 data-[state=selected]:~bg-muted ~relative',
+      'transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted relative',
       className
     )}
     {...props}
@@ -78,7 +78,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      '~w-fit ~px-2 ~py-[14px] ~text-left ~align-middle ~text-xs ~font-semibold ~text-muted-foreground last:~pr-[20px] [&:has([role=checkbox])]:~px-[16px]',
+      'w-fit px-2 py-[14px] text-left align-middle text-xs font-semibold text-muted-foreground last:pr-[20px] [&:has([role=checkbox])]:px-[16px]',
       className
     )}
     {...props}
@@ -93,7 +93,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={clsx(
-      '~p-2 ~align-middle ~text-xs [&:has([role=checkbox])]:~px-[16px]',
+      'p-2 align-middle text-xs [&:has([role=checkbox])]:px-[16px]',
       className
     )}
     {...props}
@@ -107,7 +107,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={clsx('~mt-4 ~text-sm ~text-muted-foreground', className)}
+    className={clsx('mt-4 text-sm text-muted-foreground', className)}
     {...props}
   />
 ));
@@ -153,7 +153,7 @@ const DraggableColumnHeader = <TData, TValue>({
       // colSpan={header.colSpan}
       {...itemProps?.tableHead}
       className={clsx(
-        '~px-3 ~py-3 ~uppercase ~text-[#1A1A1A]',
+        'px-3 py-3 uppercase text-[#1A1A1A]',
         itemProps?.tableHead?.className
       )}
     >
@@ -163,7 +163,7 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
-          '~flex ~items-center ~gap-1 !~p-0 ~text-[13px] ~font-semibold ~text-[#1A1A1A]',
+          'flex items-center gap-1 !p-0 text-[13px] font-semibold text-[#1A1A1A]',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
             'cursor-grab': isDraggable && !isDragging,
@@ -175,25 +175,25 @@ const DraggableColumnHeader = <TData, TValue>({
           ? null
           : flexRender(header.column.columnDef.header, header.getContext())}
         {header.column.getCanSort() && header.column.getIsSorted() ? (
-          <div className='~flex ~flex-col ~items-center'>
+          <div className='flex flex-col items-center'>
             <HiMiniChevronUp
               data-testid={'data-table-header-asc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'asc'}
               className={clsx(
-                '~-mb-[5px] ~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
+                '-mb-[5px] ml-2 h-4 w-4 text-[#1A1A1A]',
                 header.column.getIsSorted() === 'asc'
-                  ? '~opacity-100'
-                  : '~opacity-40'
+                  ? 'opacity-100'
+                  : 'opacity-40'
               )}
             />
             <HiMiniChevronDown
               data-testid={'data-table-header-desc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'desc'}
               className={clsx(
-                '~ml-2 ~h-4 ~w-4 ~text-[#1A1A1A]',
+                'ml-2 h-4 w-4 text-[#1A1A1A]',
                 header.column.getIsSorted() === 'desc'
-                  ? '~opacity-100'
-                  : '~opacity-40'
+                  ? 'opacity-100'
+                  : 'opacity-40'
               )}
             />
           </div>

@@ -13,7 +13,7 @@ export const CommandMenu = ({
     return (
         <>
             {showCommandMenu && (
-                <div className='p-2 ~absolute ~rounded-sm ~border ~border-gray-300 ~bg-gray-400 ~shadow-lg'>
+                <div className='p-2 absolute rounded-sm border border-gray-300 bg-gray-400 shadow-lg'>
                     <Button onClick={editor.chain().focus().setParagraph().run}>
                         Paragraph
                     </Button>

@@ -64,8 +64,8 @@ export const Variants: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args}>Primary</Button>
         <Button {...args} variant='secondary'>
           Secondary
@@ -93,8 +93,8 @@ export const Sizes: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args} size='lg'>
           Primary (lg)
         </Button>
