@@ -75,6 +75,14 @@ export default {
         // Tailwind defaults are: xs(12px), sm(14px), base(16px), lg(18px), xl(20px), 2xl(24px), 3xl(30px), 4xl(36px), 5xl(48px), 6xl(60px), 7xl(72px), 8xl(96px), 9xl(128px)
         '2xs': '10px', // No default match
         m: '18px', // No default match
+        lg: '20px',
+        xl: '24px', // No default match
+        '2xl': '28px', // No default match
+        '3xl': '32px', // No default match
+        '4xl': '36px', // No default match
+        '5xl': '40px', // No default match
+        '6xl': '44px', // No default match
+        '7xl': '48px', // No default match
         '8xl': '52px', // Tailwind's 8xl is 96px.
         '9xl': '60px', // Tailwind's 9xl is 128px.
         '10xl': '68px', // No default match
