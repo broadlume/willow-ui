@@ -12,14 +12,14 @@ type Story = StoryObj<typeof Loader>;
 /** A basic Loader. */
 export const Basic: Story = {
   argTypes: {
-    className: ['~text-primary-500'],
+    className: ['text-primary-500'],
   },
   render: () => (
-    <div className='~flex ~items-center ~gap-x-2'>
+    <div className='flex items-center gap-x-2'>
       <Loader
         name='loading-indicator'
         data-testid='loading-icon'
-        className='~h-6 ~w-6'
+        className='h-6 w-6'
       />
     </div>
   ),

@@ -6,7 +6,7 @@ import { FaArrowCircleDown, FaArrowCircleUp } from 'react-icons/fa';
 // Component to display the main number
 const NumberDisplay = ({ loading, numberString }) =>
   loading ? (
-    <Skeleton className='~h-6 ~w-24 ~rounded-md' />
+    <Skeleton className='h-6 w-24 rounded-md' />
   ) : (
     <h5>{numberString}</h5>
   );
@@ -14,29 +14,29 @@ const NumberDisplay = ({ loading, numberString }) =>
 // Component to display the label
 const LabelDisplay = ({ loading, label }) =>
   loading ? (
-    <Skeleton className='~h-4 ~w-28 ~rounded-md' />
+    <Skeleton className='h-4 w-28 rounded-md' />
   ) : (
-    <div className='~flex ~items-center ~gap-2'>{label}</div>
+    <div className='flex items-center gap-2'>{label}</div>
   );
 
 // Component to display the delta value with arrow
 const DeltaDisplay = ({ loading, Arrow, deltaString, deltaClass, stacked }) => (
   <div
-    className={`~flex ~items-center ~whitegap-nowrap ~pt-2 ~text-[10px] ${deltaClass}`}
+    className={`flex items-center whitegap-nowrap pt-2 text-[10px] ${deltaClass}`}
   >
     {loading ? (
-      <Skeleton className='~h-4 ~w-20' />
+      <Skeleton className='h-4 w-20' />
     ) : deltaString ? (
       // Show the arrow only if there is a delta value.
       <>
-        <Arrow className='~text-xs' />
+        <Arrow className='text-xs' />
         &nbsp;{deltaString}&nbsp;
-        <span className='~text-card-foreground'>Change</span>
+        <span className='text-card-foreground'>Change</span>
       </>
     ) : (
       // Place the invisble arrow as a spacer if there is no delta value.
       // If stacked, don't put the spacer.
-      !stacked && <Arrow className='~invisible ~text-xs' />
+      !stacked && <Arrow className='invisible text-xs' />
     )}
   </div>
 );
@@ -112,27 +112,27 @@ const SummaryTile = ({
   const isDeltaGood = isNegative ? !negativeIsGood : negativeIsGood;
 
   // Classes and components based on conditions.
-  const deltaClass = isDeltaGood ? '~text-danger' : '~text-beryl';
+  const deltaClass = isDeltaGood ? 'text-danger' : 'text-beryl';
   const Arrow = isNegative ? FaArrowCircleDown : FaArrowCircleUp;
 
   return (
     <Card
       className={cn(
-        '~rounded-md ~shadow-lg',
-        !stacked && '~h-[150px] ~w-[150px]',
+        'rounded-md shadow-lg',
+        !stacked && 'h-[150px] w-[150px]',
         className
       )}
     >
       <CardContent
         noHeader
-        className='~flex ~h-full ~flex-col ~items-center ~p-4'
+        className='flex h-full flex-col items-center p-4'
       >
-        <div className='~py-auto ~flex ~flex-1 ~flex-col ~items-center ~justify-center'>
-          {!stacked && <div className='~flex-1'></div>} {/* spacer */}
+        <div className='py-auto flex flex-1 flex-col items-center justify-center'>
+          {!stacked && <div className='flex-1'></div>} {/* spacer */}
           <NumberDisplay loading={loading} numberString={getNumberString()} />
           <p
-            className={`caption-2 ~pt-1 ~text-center ~font-normal ~leading-5 ${
-              stacked ? '' : '~flex-1'
+            className={`caption-2 pt-1 text-center font-normal leading-5 ${
+              stacked ? '' : 'flex-1'
             }`}
           >
             <LabelDisplay loading={loading} label={label} />

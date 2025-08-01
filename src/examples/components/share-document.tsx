@@ -27,18 +27,18 @@ export function ShareDocumentDemo(_) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='~flex ~gap-x-2'>
+        <div className='flex gap-x-2'>
           <Input value='http://example.com/link/to/document' readOnly />
-          <Button variant='secondary' className='~shrink-0'>
+          <Button variant='secondary' className='shrink-0'>
             Copy Link
           </Button>
         </div>
-        <Separator className='~my-4' />
-        <div className='~gap-y-4'>
-          <h4 className='~text-sm ~font-medium'>People with access</h4>
-          <div className='~grid ~gap-6'>
-            <div className='~flex ~min-w-0 ~items-center ~justify-between ~gap-x-4'>
-              <div className='~flex ~min-w-0 ~items-center ~gap-x-4'>
+        <Separator className='my-4' />
+        <div className='gap-y-4'>
+          <h4 className='text-sm font-medium'>People with access</h4>
+          <div className='grid gap-6'>
+            <div className='flex min-w-0 items-center justify-between gap-x-4'>
+              <div className='flex min-w-0 items-center gap-x-4'>
                 <Avatar>
                   <AvatarImage
                     src='https://github.com/dreadhalor.png'
@@ -46,17 +46,17 @@ export function ShareDocumentDemo(_) {
                   />
                   <AvatarFallback>SH</AvatarFallback>
                 </Avatar>
-                <div className='~min-w-0'>
-                  <p className='~text-sm ~font-medium ~leading-none'>
+                <div className='min-w-0'>
+                  <p className='text-sm font-medium leading-none'>
                     Scott Hetrick
                   </p>
-                  <p className='~truncate ~text-sm ~text-muted-foreground'>
+                  <p className='truncate text-sm text-muted-foreground'>
                     scotthetrick2@yahoo.com
                   </p>
                 </div>
               </div>
               <Select defaultValue='edit'>
-                <SelectTrigger className='~ml-auto ~w-[120px] ~shrink-0'>
+                <SelectTrigger className='ml-auto w-[120px] shrink-0'>
                   <SelectValue placeholder='Select' />
                 </SelectTrigger>
                 <SelectContent>
@@ -65,8 +65,8 @@ export function ShareDocumentDemo(_) {
                 </SelectContent>
               </Select>
             </div>
-            <div className='~flex ~items-center ~justify-between ~gap-x-4'>
-              <div className='~flex ~items-center ~gap-x-4'>
+            <div className='flex items-center justify-between gap-x-4'>
+              <div className='flex items-center gap-x-4'>
                 <Avatar>
                   <AvatarImage
                     src='https://github.com/shadcn.png'
@@ -75,16 +75,16 @@ export function ShareDocumentDemo(_) {
                   <AvatarFallback>AC</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className='~text-sm ~font-medium ~leading-none'>
+                  <p className='text-sm font-medium leading-none'>
                     Arshad Chummun
                   </p>
-                  <p className='~text-sm ~text-muted-foreground'>
+                  <p className='text-sm text-muted-foreground'>
                     shad@shadcn.com
                   </p>
                 </div>
               </div>
               <Select defaultValue='view'>
-                <SelectTrigger className='~ml-auto ~w-[120px]'>
+                <SelectTrigger className='ml-auto w-[120px]'>
                   <SelectValue placeholder='Select' />
                 </SelectTrigger>
                 <SelectContent>
@@ -93,8 +93,8 @@ export function ShareDocumentDemo(_) {
                 </SelectContent>
               </Select>
             </div>
-            <div className='~flex ~items-center ~justify-between ~gap-x-4'>
-              <div className='~flex ~items-center ~gap-x-4'>
+            <div className='flex items-center justify-between gap-x-4'>
+              <div className='flex items-center gap-x-4'>
                 <Avatar>
                   <AvatarImage
                     src='https://github.com/t3dotgg.png'
@@ -103,16 +103,16 @@ export function ShareDocumentDemo(_) {
                   <AvatarFallback>TB</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className='~text-sm ~font-medium ~leading-none'>
+                  <p className='text-sm font-medium leading-none'>
                     Theo Browne
                   </p>
-                  <p className='~text-sm ~text-muted-foreground'>
+                  <p className='text-sm text-muted-foreground'>
                     theo@ping.gg
                   </p>
                 </div>
               </div>
               <Select defaultValue='view'>
-                <SelectTrigger className='~ml-auto ~w-[120px]'>
+                <SelectTrigger className='ml-auto w-[120px]'>
                   <SelectValue placeholder='Select' />
                 </SelectTrigger>
                 <SelectContent>
