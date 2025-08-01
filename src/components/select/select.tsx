@@ -59,7 +59,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           '~p-0', // dropdown padding
           position === 'popper' &&
-          '~h-[var(--radix-select-trigger-height)] ~w-full ~min-w-[var(--radix-select-trigger-width)]'
+          '~h-(--radix-select-trigger-height) ~w-full ~min-w-(--radix-select-trigger-width)'
         )}
       >
         {children}
