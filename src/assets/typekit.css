@@ -255,6 +255,86 @@
   font-stretch: normal;
 }
 
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 300; /* For Light */
+  font-style: normal;
+  font-display: swap; /* Improves performance */
+  src: url('./Fonts/FoundersGrotesk-Light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 300; /* For Light Italic */
+  font-style: italic;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-LightItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 400; /* For Regular */
+  font-style: normal;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 400; /* For Regular Italic */
+  font-style: italic;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-RegularItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 500; /* For Medium */
+  font-style: normal;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 500; /* For Medium Italic */
+  font-style: italic;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-MediumItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 600; /* For Semibold */
+  font-style: normal;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-Semibold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 600; /* For Semibold Italic */
+  font-style: italic;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-SemiboldItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 700; /* For Bold */
+  font-style: normal;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Founders Grotesk';
+  font-weight: 700; /* For Bold Italic */
+  font-style: italic;
+  font-display: swap;
+  src: url('./Fonts/FoundersGrotesk-BoldItalic.otf') format('opentype');
+}
+
 .tk-filson-pro {
   font-family: 'filson-pro', sans-serif;
 }

@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import '@src/index.scss';
+import '@src/index.css';
 import '@src/assets/typekit.css';
 
 const preview: Preview = {
