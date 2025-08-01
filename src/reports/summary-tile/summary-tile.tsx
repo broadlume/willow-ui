@@ -22,7 +22,7 @@ const LabelDisplay = ({ loading, label }) =>
 // Component to display the delta value with arrow
 const DeltaDisplay = ({ loading, Arrow, deltaString, deltaClass, stacked }) => (
   <div
-    className={`~flex ~items-center ~whitespace-nowrap ~pt-2 ~text-[10px] ${deltaClass}`}
+    className={`~flex ~items-center ~whitegap-nowrap ~pt-2 ~text-[10px] ${deltaClass}`}
   >
     {loading ? (
       <Skeleton className='~h-4 ~w-20' />

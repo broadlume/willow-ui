@@ -28,7 +28,7 @@ const ContactInfoBlock = ({
   icon: React.ReactNode;
 }) => {
   return (
-    <div className='~flex ~items-center ~space-x-2 ~font-medium ~text-primary'>
+    <div className='~flex ~items-center ~gap-x-2 ~font-medium ~text-primary'>
       {icon}
       <span className='~cursor-pointer ~text-sm hover:~underline'>{info}</span>
     </div>
@@ -37,7 +37,7 @@ const ContactInfoBlock = ({
 
 const NameInfo = ({ name }: { name: string }) => {
   return (
-    <div className='~flex ~items-center ~space-x-2'>
+    <div className='~flex ~items-center ~gap-x-2'>
       <Globe className='~text-2xl' />
       <span>{name}</span>
     </div>
@@ -54,7 +54,7 @@ const EmailInfo = ({ email }: { email: string }) => (
 
 const TimestampInfo = ({ timestamp }: { timestamp: string }) => {
   return (
-    <div className='~flex ~items-center ~space-x-2'>
+    <div className='~flex ~items-center ~gap-x-2'>
       <Tooltip delayDuration={300}>
         <TooltipTrigger asChild>
           <span>

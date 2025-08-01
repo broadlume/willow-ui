@@ -44,7 +44,7 @@ export function NotificationsDemo(_) {
           {notificationOptions.map(({ icon: Icon, title, description }) => (
             <Label
               className={cn(
-                '~-mx-2 ~flex ~cursor-pointer ~items-start ~space-x-4 ~rounded-md ~p-2 ~transition-all hover:~bg-accent hover:~text-accent-foreground',
+                '~-mx-2 ~flex ~cursor-pointer ~items-start ~gap-x-4 ~rounded-md ~p-2 ~transition-all hover:~bg-accent hover:~text-accent-foreground',
                 '[&:has([data-state=checked])]:~bg-accent [&:has([data-state=checked])]:~text-accent-foreground'
               )}
               key={title}
@@ -54,7 +54,7 @@ export function NotificationsDemo(_) {
                 className='~sr-only'
               />
               <Icon className='~mt-px ~h-5 ~w-5' />
-              <div className='~space-y-1'>
+              <div className='~gap-y-1'>
                 <p className='~text-sm ~font-medium ~leading-none'>{title}</p>
                 <p className='~text-sm ~text-muted-foreground'>{description}</p>
               </div>

@@ -58,7 +58,7 @@ const FormDemoComponent = (_) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='~w-2/3 ~space-y-6'
+        className='~w-2/3 ~gap-y-6'
       >
         <FormField
           control={form.control}

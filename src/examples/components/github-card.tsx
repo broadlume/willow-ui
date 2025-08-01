@@ -28,8 +28,8 @@ export function GithubCardDemo(_) {
   const [inspirationChecked, setInspirationChecked] = useState(true);
   return (
     <Card>
-      <CardHeader className='~grid ~grid-cols-[1fr_110px] ~items-start ~gap-4 ~space-y-0'>
-        <div className='~space-y-1'>
+      <CardHeader className='~grid ~grid-cols-[1fr_110px] ~items-start ~gap-4 ~gap-y-0'>
+        <div className='~gap-y-1'>
           <CardTitle>willow-ui</CardTitle>
           <CardDescription>
             Beautifully designed components built with shadcn/ui, Radix UI &
@@ -86,7 +86,7 @@ export function GithubCardDemo(_) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className='~flex ~space-x-4 ~text-sm ~text-muted-foreground'>
+        <div className='~flex ~gap-x-4 ~text-sm ~text-muted-foreground'>
           <div className='~flex ~items-center'>
             <CircleIcon className='~mr-1 ~h-3 ~w-3 ~fill-sky-400 ~text-sky-400' />
             TypeScript

@@ -33,7 +33,7 @@ export const DataTableActionMenu = (props: { actions: string[] }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className='~w-auto ~space-y-2'>
+        <div className='~w-auto ~gap-y-2'>
           {props.actions.map((action: string, i, arr) => {
             return (
               <>

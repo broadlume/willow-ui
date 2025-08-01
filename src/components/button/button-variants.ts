@@ -15,9 +15,9 @@ const buttonVariants = cva(
           'text-primary-foreground bg-surface-destructive text-surface-pri hover:bg-[var(--color-red-400)] disabled:bg-[var(--color-red-200)]',
         // TODO: @dhavaljbroadlume confirm hover color with designer
         outline:
-          'bg-surface-pri text-text-pri shadow-none outline outline-1 outline-offset-[-1px] outline-border-pri hover:opacity-75 disabled:opacity-50',
+          'bg-surface-pri text-text-pri shadow-none outline-1 outline-offset-[-1px] outline-border-pri hover:opacity-75 disabled:opacity-50',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 bg-[var(--color-cta-15)] text-text-cta shadow-xs outline outline-1 outline-offset-[-1px] outline-[var(--color-cta-100)] hover:opacity-75 disabled:opacity-50',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80 bg-[var(--color-cta-15)] text-text-cta shadow-xs outline-1 outline-offset-[-1px] outline-[var(--color-cta-100)] hover:opacity-75 disabled:opacity-50',
         ghost:
           'bg-transparent shadow-none hover:bg-[var(--color-grey-10)] disabled:bg-[var(--color-grey-5)]',
         link: 'bg-transparent text-text-cta underline-offset-4 shadow-none hover:text-[var(--color-cta-75)] hover:underline disabled:text-[var(--color-cta-50)]',
