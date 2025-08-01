@@ -655,7 +655,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-xs'
                         onClick={() => {
                             editor
                                 .chain()
@@ -709,7 +709,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-xs'
                         onClick={() => {
                             setL2EmbedLink('');
                             setExpandedMenuL2(false);
@@ -752,7 +752,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-xs'
                         onClick={() => {
                             setL2Image('');
                             setExpandedMenuL2(false);

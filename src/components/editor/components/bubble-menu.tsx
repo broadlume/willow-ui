@@ -87,7 +87,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                     placeholder='https://'
                                     value={url}
                                     onChange={e => setUrl(e.target.value)}
-                                    className="~border ~border-gray-300 ~rounded ~p-1 ~w-48"
+                                    className="~border ~border-gray-300 ~rounded-sm ~p-1 ~w-48"
                                     onKeyDown={e => {
                                         if (e.key === 'Enter' && !isApplyDisabled) {
                                             e.preventDefault();
