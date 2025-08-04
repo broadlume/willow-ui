@@ -467,6 +467,13 @@ export function useDataTable<TData, TValue>({
     performAction({ event, row });
   };
 
+  const bodyRowProps = useCallback((row) => {
+    if (typeof itemProps?.tableBodyRow === 'function') {
+      return itemProps.tableBodyRow(row);
+    }
+    return itemProps?.tableBodyRow || {};
+  }, [itemProps?.tableBodyRow])
+
   /**
    * Render Data table Component
    */
@@ -551,8 +558,8 @@ export function useDataTable<TData, TValue>({
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                         row={row}
-                        {...itemProps?.tableBodyRow}
-                        className={clsx(itemProps?.tableBodyRow?.className)}
+                         {...bodyRowProps(row)}
+                        className={clsx(bodyRowProps(row)?.className)}
                       >
                         <TableRowCells row={row} itemProps={itemProps}/>
                       </CustomTableRow>
@@ -560,8 +567,8 @@ export function useDataTable<TData, TValue>({
                       <TableRow
                         key={row.id}
                         onClick={(event) => handleRowClick({ event, row })}
-                        {...itemProps?.tableBodyRow}
-                        className={clsx(itemProps?.tableBodyRow?.className)}
+                         {...bodyRowProps(row)}
+                        className={clsx(bodyRowProps(row)?.className)}
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                       >
