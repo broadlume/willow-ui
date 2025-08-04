@@ -35,8 +35,8 @@ export const Custom: Story = {
   args: {
     classNames: {
       wrapper: [''],
-      label: ['~text-4xl ~text-text-brand ~font-semibold ~uppercase'],
-      separator: ['~mx-2 ~text-4xl ~font-semibold ~text-text-brand'],
+      label: ['text-4xl text-text-brand font-semibold uppercase'],
+      separator: ['mx-2 text-4xl font-semibold text-text-brand'],
     },
     onClick: (e) => alert('clicked=' + e.target.id),
   },

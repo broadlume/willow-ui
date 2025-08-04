@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { Loader } from '@components/Loader/Loader';
 import { Button } from './button';
-import { HomeIcon } from '@radix-ui/react-icons';
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -58,8 +58,8 @@ export const Variants: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args}>Primary</Button>
         <Button {...args} className='' variant='secondary'>
           Secondary
@@ -75,6 +75,37 @@ export const Variants: Story = {
         </Button>
         <Button {...args} className='' variant='link'>
           Link
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
+/** All button with icons. */
+export const Icons: Story = {
+  args: {
+    children: 'Button Label',
+  },
+  render: (args) => (
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
+        <Button {...args} size='lg'>
+          Primary (lg)
+        </Button>
+        <Button {...args} className='' variant='secondary'>
+          <Loader /> Secondary
+        </Button>
+        <Button {...args} className='' variant='outline'>
+          <Loader /> Outline
+        </Button>
+        <Button {...args} variant='destructive'>
+          <Loader /> Destructive
+        </Button>
+        <Button {...args} className='' variant='ghost'>
+          <Loader /> Ghost
+        </Button>
+        <Button {...args} className='' variant='link'>
+          <Loader /> Link
         </Button>
       </div>
     </div>
