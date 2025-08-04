@@ -61,7 +61,7 @@ export const SidebarItem: FC<Props> = ({
         <ToggleIcon isOpen={openSections[item.label]} rightArrow={rightArrow} downArrow={downArrow} />
       </div>
       {openSections[item.label] && hasGrandchildren && (
-        <ul className="mt-2 ml-4 border-l border-gray-200 gap-y-2 text-[14px]">
+        <ul className="mt-2 ml-4 border-l border-gray-200 space-y-2 text-[14px]">
           {item?.items?.map((grandchild, key) => {
             const isGrandChildActive = location === grandchild.link;
             return (

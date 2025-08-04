@@ -11,7 +11,7 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-muted-foreground',
+  'relative inline-flex h-9 items-center justify-center bg-background text-muted-foreground',
   {
     variants: {
       variant: {
@@ -55,7 +55,7 @@ const sliderVariants = cva(
 
 const tabTriggerVariants = cva(
   [
-    'caption-1 inline-flex min-h-0 items-center justify-center whitegap-nowrap px-3 py-1 ring-offset-background transition-all',
+    'caption-1 inline-flex min-h-0 items-center justify-center whitespace-nowrap px-3 py-1 ring-offset-background transition-all',
     'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
   ],

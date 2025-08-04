@@ -44,12 +44,12 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'tw-reset relative z-50 min-w-[8em] overflow-hidden rounded-md border bg-surface-pri font-normal leading-6  shadow-md',
+        'tw-reset relative z-50 min-w-[8em] overflow-hidden rounded-md border bg-popover font-normal leading-6 text-popover-foreground shadow-md',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
         position === 'popper' &&
-          'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+        'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
         className
       )}
       position={position}
@@ -59,7 +59,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           'p-0', // dropdown padding
           position === 'popper' &&
-            'h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width)]'
+          'h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width)'
         )}
       >
         {children}

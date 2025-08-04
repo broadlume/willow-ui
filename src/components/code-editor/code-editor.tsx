@@ -118,74 +118,117 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         endColumn: position.column,
       });
 
-  return (
-    <div className='border border-gray-300 rounded-lg shadow-md overflow-hidden'>
-      <div className='flex justify-between items-center py-2 px-6 bg-gray-100 border-b border-gray-300'>
-        <p className='font-medium'>
-          <b>Type: </b>
-          <span className='capitalize text-indigo-600'>{passedLanguage}</span>
-        </p>
+            if (textBeforeCursor.endsWith('{{')) {
+                editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+            }
+        });
+    };
 
-        {statusMessage && (
-          <div className='text-green-600 text-sm px-3 py-1'>
-            {statusMessage}
-          </div>
-        )}
+    useEffect(() => {
+        if (!editorRef.current) return;
+        const editorDomNode = editorRef.current.getDomNode?.();
+        if (!editorDomNode) return;
 
-        <div className='flex gap-2 items-center'>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Format Code'
-            onClick={formatCode}
-          >
-            <FaBrush
-              fontSize={18}
-              className='hover:text-indigo-500 transition'
-            />
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Toggle Theme'
-            onClick={toggleTheme}
-          >
-            {theme === 'vs-dark' ? (
-              <FaSun
-                fontSize={18}
-                className='hover:text-yellow-500 transition'
-              />
-            ) : (
-              <FaMoon
-                fontSize={18}
-                className='hover:text-gray-700 transition'
-              />
-            )}
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Copy Code'
-            onClick={copyCode}
-          >
-            <FaCopy
-              fontSize={18}
-              className='hover:text-green-500 transition'
-            />
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Toggle Help'
-            onClick={toggleHelper}
-          >
-            <FaQuestionCircle
-              fontSize={18}
-              className='hover:text-blue-500 transition'
-            />
-          </Button>
-        </div>
-      </div>
+        const suggestWidget = editorDomNode.ownerDocument.querySelector('.monaco-editor .suggest-widget .tree');
+        if (!suggestWidget) return;
+
+        const onScroll = (e: any) => {
+            if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
+                console.log('Scrolled to bottom, fetch more suggestions');
+            }
+        };
+
+        suggestWidget.addEventListener('scroll', onScroll);
+        return () => suggestWidget.removeEventListener('scroll', onScroll);
+    }, [editorRef.current, suggestionPage]);
+
+    const formatCode = () => {
+        if (!editorRef.current) return;
+
+        const currentCode = editorRef.current.getValue();
+        let formattedCode = currentCode;
+
+        try {
+            formattedCode = prettier.format(currentCode, {
+                parser: getPrettierParser(passedLanguage),
+                plugins: [prettierParserHtml, prettierParserCss, prettierParserBabel],
+            });
+        } catch (error) {
+            console.error('Error formatting code:', error);
+        }
+
+        editorRef.current.setValue(formattedCode);
+    };
+
+    const getPrettierParser = (lang: string) => {
+        switch (lang) {
+            case 'html':
+            case 'liquid':
+                return 'html';
+            case 'css':
+                return 'css';
+            case 'javascript':
+            case 'json':
+                return 'babel';
+            default:
+                return 'babel';
+        }
+    };
+
+    const onChange = useCallback((value: string | undefined) => {
+        const updatedCode = value ?? '';
+        setCode(updatedCode);
+        passedOnChange?.(updatedCode);
+    }, [passedOnChange]);
+
+    const toggleTheme = () => setTheme((prev) => (prev === 'vs-dark' ? 'light' : 'vs-dark'));
+    const toggleHelper = () => setShowHelper((prev) => !prev);
+
+    const copyCode = () => {
+        if (!editorRef.current) return;
+        const currentCode = editorRef.current.getValue();
+        navigator.clipboard.writeText(currentCode)
+            .then(() => {
+                setStatusMessage('Code copied to clipboard!');
+                setTimeout(() => setStatusMessage(''), 2000);
+            })
+            .catch((err) => {
+                setStatusMessage('Failed to copy code.');
+                setTimeout(() => setStatusMessage(''), 2000);
+                console.error(err);
+            });
+    };
+
+    return (
+        <div className='border border-gray-300 rounded-lg shadow-md overflow-hidden'>
+            <div className='flex justify-between items-center py-2 px-6 bg-gray-100 border-b border-gray-300'>
+                <p className="font-medium">
+                    <b>Type: </b><span className="capitalize text-indigo-600">{passedLanguage}</span>
+                </p>
+
+                {statusMessage && (
+                    <div
+                        className="text-green-600 text-sm px-3 py-1"
+                    >
+                        {statusMessage}
+                    </div>
+                )}
+
+                <div className="flex gap-2 items-center">
+                    <Button type="button" variant='ghost' title="Format Code" onClick={formatCode}>
+                        <FaBrush fontSize={18} className="hover:text-indigo-500 transition" />
+                    </Button>
+                    <Button type="button" variant='ghost' title="Toggle Theme" onClick={toggleTheme}>
+                        {theme === 'vs-dark' ? <FaSun fontSize={18} className="hover:text-yellow-500 transition" /> : <FaMoon fontSize={18} className="hover:text-gray-700 transition" />}
+                    </Button>
+                    <Button type="button" variant='ghost' title="Copy Code" onClick={copyCode}>
+                        <FaCopy fontSize={18} className="hover:text-green-500 transition" />
+                    </Button>
+                    <Button type="button" variant='ghost' title="Toggle Help" onClick={toggleHelper}>
+                        <FaQuestionCircle fontSize={18} className="hover:text-blue-500 transition" />
+                    </Button>
+                </div>
+            </div>
 
             {showHelper && (
                 <div className="px-6 py-4 bg-white rounded-md text-sm">
@@ -217,19 +260,19 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 </div>
             )}
 
-      <Editor
-        options={defaultOptions}
-        height={height}
-        width={width}
-        language={passedLanguage}
-        theme={theme}
-        defaultValue={code}
-        onChange={onChange}
-        onMount={handleEditorDidMount}
-        className='rounded-b-lg p-0'
-      />
-    </div>
-  );
+            <Editor
+                options={defaultOptions}
+                height={height}
+                width={width}
+                language={passedLanguage}
+                theme={theme}
+                defaultValue={code}
+                onChange={onChange}
+                onMount={handleEditorDidMount}
+                className='rounded-b-lg p-0'
+            />
+        </div>
+    );
 };
 
 export { CodeEditor };

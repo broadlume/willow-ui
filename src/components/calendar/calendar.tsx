@@ -21,16 +21,16 @@ function Calendar({
       classNames={{
         root: cn('w-min', classNames?.root),
         months: cn(
-          'flex w-full flex-col gap-y-4 sm:flex-row sm:gap-x-4 sm:gap-y-0',
+          'flex w-full flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0',
           classNames?.months
         ),
-        month: cn('gap-y-4', classNames?.month),
+        month: cn('space-y-4', classNames?.month),
         caption: cn(
           'relative flex items-center justify-center pt-1',
           classNames?.caption
         ),
         caption_label: cn('text-sm font-medium', classNames?.caption_label),
-        nav: cn('flex items-center gap-x-1', classNames?.nav),
+        nav: cn('flex items-center space-x-1', classNames?.nav),
         nav_button: cn(
           buttonVariants({ variant: 'ghost' }),
           'h-9 w-9 p-0',
@@ -42,7 +42,7 @@ function Calendar({
         ),
         nav_button_next: cn('absolute right-1', classNames?.nav_button_next),
         table: cn(
-          'w-full table-fixed border-collapse gap-y-1',
+          'w-full table-fixed border-collapse space-y-1',
           classNames?.table
         ),
         head_row: cn('', classNames?.head_row),

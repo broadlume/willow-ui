@@ -14,7 +14,7 @@ import {
 export function CreateAccountDemo(_) {
   return (
     <Card>
-      <CardHeader className='gap-y-1'>
+      <CardHeader className='space-y-1'>
         <CardTitle className='text-2xl'>Create an account</CardTitle>
         <CardDescription>
           Enter your email below to create your account
@@ -36,7 +36,7 @@ export function CreateAccountDemo(_) {
             <span className='w-full border-t' />
           </div>
           <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-surface-pri px-2 text-muted-foreground'>
+            <span className='bg-background px-2 text-muted-foreground'>
               Or continue with
             </span>
           </div>

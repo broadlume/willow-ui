@@ -170,7 +170,7 @@ const TreeView: React.FC<TreeViewProps> = ({ data, onChange }) => {
         <li key={node.id}>
           <div className='mb-2 flex items-center gap-2'>
             {/* Space reserved for Chevron, even if the node doesn't have one */}
-            <span className='w-4 flex-shrink-0'>
+            <span className='w-4 shrink-0'>
               {node.children && node.children.length > 0 && (
                 <span
                   onClick={() => toggleExpand(node.id)}

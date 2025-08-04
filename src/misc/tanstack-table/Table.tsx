@@ -471,12 +471,12 @@ export function useDataTable<TData, TValue>({
     <div
       {...itemProps?.root}
       className={clsx(
-        'flex flex-col gap-[16px] rounded-md bg-white text-sm',
+        'flex flex-col gap-[16px] bg-white text-sm',
         itemProps?.root?.className
       )}
     >
       {includeLoading && !data?.length ? (
-        <div className=' flex h-40 items-center justify-center rounded-md'>
+        <div className='flex h-40 items-center justify-center'>
           <Loader />
         </div>
       ) : (
@@ -509,7 +509,7 @@ export function useDataTable<TData, TValue>({
                       key={headerGroup.id}
                       {...itemProps?.tableHeaderRow}
                       className={clsx(
-                        'hover:!bg-transparent',
+                        'text-[#231f21] hover:!bg-transparent',
                         itemProps?.tableHeaderRow?.className
                       )}
                     >
@@ -613,41 +613,35 @@ export function useDataTable<TData, TValue>({
   }: TableRowCellProps<TData>) => {
     return (
       <>
-        <div style={{ display: 'contents' }}>
-          {row.getVisibleCells().map((cell, index) => {
-            const isFirstCell = index === 0;
-            return (
-              <TableCell
-                data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-                key={cell.id}
-                {...itemProps?.tableCell}
-                className={clsx(
-                  // Always add padding-left to the first cell to reserve space
-                  // and position the cell relatively for the absolute span.
-                  isFirstCell ? 'relative first:pl-[30px]' : '', // Adjust 30px based on icon size
-                  'last:px-3',
-                  itemProps?.tableCell?.className
-                )}
-              >
-                {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
-                {isFirstCell && renderDraggableIcon && (
-                  <span
-                    className={clsx(
-                      '-translate-y-[50%] absolute left-[-2px] top-[32%] rounded-full px-[4px] py-[2px] text-xs',
-                      itemProps?.draggable
-                    )}
-                  >
-                    <RiDraggable />
-                  </span>
-                )}
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            );
-          })}
-        </div>
-        {dropIndicatorInstruction && (
-          <DropIndicator instruction={dropIndicatorInstruction} />
-        )}
+      <div style={{display: 'contents'}}>
+        {row.getVisibleCells().map((cell, index) => {
+          const isFirstCell = index === 0;
+          return (
+            <TableCell
+              data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+              key={cell.id}
+              {...itemProps?.tableCell}
+              className={clsx(
+                'px-3 py-4',
+                // Always add padding-left to the first cell to reserve space
+                // and position the cell relatively for the absolute span.
+                isFirstCell ? 'first:pl-[30px] relative' : '', // Adjust 30px based on icon size
+                'last:pr-[20px]',
+                itemProps?.tableCell?.className
+              )}
+            >
+              {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
+              {isFirstCell && renderDraggableIcon && (
+                <span className={clsx("absolute left-[-2px] top-[32%] -translate-y-[50%] py-[2px] px-[4px] rounded-full text-xs", itemProps?.draggable)}>
+                  <RiDraggable />
+                </span>
+              )}
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          );
+        })}
+      </div>
+      {dropIndicatorInstruction && <DropIndicator instruction={dropIndicatorInstruction} />}
       </>
     );
   };
@@ -685,7 +679,7 @@ export function useDataTable<TData, TValue>({
           type='button'
           data-testid={'go-to-page-' + item}
           className={clsx(
-            'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-text-pri shadow-none disabled:bg-transparent',
+            'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-[#1A1A1A] shadow-none disabled:bg-transparent',
             currentPage === item ? 'border border-[#CCCCCC]' : '',
             itemProps?.pagination?.page?.className
           )}
@@ -722,7 +716,7 @@ export function useDataTable<TData, TValue>({
               data-testid='perpage-button'
               {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
-                'h-[30px] w-fit text-xs font-normal [&>span]:mr-2',
+                'h-[30px] w-fit text-xs font-normal [&>span]:mr-4',
                 itemProps?.itemPerPage?.selectTrigger?.className
               )}
             >
@@ -759,7 +753,7 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-[#1A1A1A]',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
@@ -774,7 +768,7 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-[#1A1A1A]',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}
@@ -795,7 +789,6 @@ export function useDataTable<TData, TValue>({
       excludedRowIds,
       handleSelectionReset,
       handleSelectAll,
-
     },
   };
 }

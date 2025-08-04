@@ -31,7 +31,7 @@ export const UserTableUser = (user: {
         />
         <AvatarFallback>{getInitials(user.fname, user.lname)}</AvatarFallback>
       </Avatar>
-      <div className='ml-4 gap-y-1'>
+      <div className='ml-4 space-y-1'>
         <p className='text-sm font-medium leading-none'>{user.email}</p>
         <p className='text-sm text-muted-foreground'>{`${user.fname} ${user.lname}`}</p>
       </div>
@@ -70,7 +70,7 @@ export const UserTableActions = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className='w-auto gap-y-2'>
+        <div className='w-auto space-y-2'>
           <button
             className='h-full w-full text-left hover:bg-gray-100'
             data-tag='allowRowEvents'
