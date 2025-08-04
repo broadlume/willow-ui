@@ -256,8 +256,6 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             data-testid={'table-header-select-checkbox'}
             checked={isIndeterminate ? 'indeterminate' : isChecked}
-            color='#1A6CFF'
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             onCheckedChange={() => handleHeaderCheckboxClick()}
             // disable selecting all rows if single selection is enabled
             disabled={enableSingleSelection}
@@ -275,7 +273,6 @@ export function useDataTable<TData, TValue>({
             checked={isChecked}
             data-testid={'table-select-checkbox-' + row.id}
             onCheckedChange={() => handleRowCheckboxChange(row)}
-            className='~rounded-sm ~border-[#1A6CFF] data-[state=checked]:~bg-[#1A6CFF]'
             aria-label='Select row'
           />
         );
@@ -474,19 +471,19 @@ export function useDataTable<TData, TValue>({
     <div
       {...itemProps?.root}
       className={clsx(
-        '~flex ~flex-col ~gap-[16px] ~bg-white ~text-sm',
+        'flex flex-col gap-[16px] bg-white text-sm',
         itemProps?.root?.className
       )}
     >
       {includeLoading && !data?.length ? (
-        <div className='~flex ~h-40 ~items-center ~justify-center'>
+        <div className='flex h-40 items-center justify-center'>
           <Loader />
         </div>
       ) : (
         <div
           {...itemProps?.tableWrapper}
           className={clsx(
-            '~rounded-md ~border',
+            'rounded-md border',
             itemProps?.tableWrapper?.className
           )}
         >
@@ -512,7 +509,7 @@ export function useDataTable<TData, TValue>({
                       key={headerGroup.id}
                       {...itemProps?.tableHeaderRow}
                       className={clsx(
-                        '~text-[#231f21] hover:!~bg-transparent',
+                        'text-[#231f21] hover:!bg-transparent',
                         itemProps?.tableHeaderRow?.className
                       )}
                     >
@@ -540,10 +537,7 @@ export function useDataTable<TData, TValue>({
               <TableBody
                 data-testid='data-table-body'
                 {...itemProps?.tableBody}
-                className={clsx(
-                  '~relative ~gap-2',
-                  itemProps?.tableBody?.className
-                )}
+                className={clsx('relative', itemProps?.tableBody?.className)}
               >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) =>
@@ -583,7 +577,7 @@ export function useDataTable<TData, TValue>({
                       // colSpan={columns.length}
                       {...itemProps?.tableCell}
                       className={clsx(
-                        '~h-24 ~text-center',
+                        'h-24 text-center',
                         itemProps?.tableCell?.className
                       )}
                     >
@@ -619,41 +613,35 @@ export function useDataTable<TData, TValue>({
   }: TableRowCellProps<TData>) => {
     return (
       <>
-        <div style={{ display: 'contents' }}>
-          {row.getVisibleCells().map((cell, index) => {
-            const isFirstCell = index === 0;
-            return (
-              <TableCell
-                data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
-                key={cell.id}
-                {...itemProps?.tableCell}
-                className={clsx(
-                  // Always add padding-left to the first cell to reserve space
-                  // and position the cell relatively for the absolute span.
-                  isFirstCell ? '~relative first:~pl-[30px]' : '', // Adjust 30px based on icon size
-                  'last:~pr-[20px]',
-                  itemProps?.tableCell?.className
-                )}
-              >
-                {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
-                {isFirstCell && renderDraggableIcon && (
-                  <span
-                    className={clsx(
-                      '-~translate-y-[50%] ~absolute ~left-[-2px] ~top-[32%] ~rounded-full ~px-[4px] ~py-[2px] ~text-xs',
-                      itemProps?.draggable
-                    )}
-                  >
-                    <RiDraggable />
-                  </span>
-                )}
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            );
-          })}
-        </div>
-        {dropIndicatorInstruction && (
-          <DropIndicator instruction={dropIndicatorInstruction} />
-        )}
+      <div style={{display: 'contents'}}>
+        {row.getVisibleCells().map((cell, index) => {
+          const isFirstCell = index === 0;
+          return (
+            <TableCell
+              data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
+              key={cell.id}
+              {...itemProps?.tableCell}
+              className={clsx(
+                'px-3 py-4',
+                // Always add padding-left to the first cell to reserve space
+                // and position the cell relatively for the absolute span.
+                isFirstCell ? 'first:pl-[30px] relative' : '', // Adjust 30px based on icon size
+                'last:pr-[20px]',
+                itemProps?.tableCell?.className
+              )}
+            >
+              {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
+              {isFirstCell && renderDraggableIcon && (
+                <span className={clsx("absolute left-[-2px] top-[32%] -translate-y-[50%] py-[2px] px-[4px] rounded-full text-xs", itemProps?.draggable)}>
+                  <RiDraggable />
+                </span>
+              )}
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          );
+        })}
+      </div>
+      {dropIndicatorInstruction && <DropIndicator instruction={dropIndicatorInstruction} />}
       </>
     );
   };
@@ -691,8 +679,8 @@ export function useDataTable<TData, TValue>({
           type='button'
           data-testid={'go-to-page-' + item}
           className={clsx(
-            '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-[#1A1A1A] ~shadow-none disabled:~bg-transparent',
-            currentPage === item ? '~border ~border-[#CCCCCC]' : '',
+            'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-[#1A1A1A] shadow-none disabled:bg-transparent',
+            currentPage === item ? 'border border-[#CCCCCC]' : '',
             itemProps?.pagination?.page?.className
           )}
           variant={currentPage === item ? 'outline' : 'ghost'}
@@ -706,29 +694,29 @@ export function useDataTable<TData, TValue>({
     return (
       <div
         className={clsx(
-          '~mb-[16px] ~flex ~items-center ~justify-between ~px-2',
+          'mb-[16px] flex items-center justify-between px-2',
           itemProps?.tableFooterWrapper
         )}
       >
         {/* Item per page */}
         <div
           className={clsx(
-            '~flex ~flex-1 ~flex-row ~items-center ~justify-start ~gap-3',
+            'flex flex-1 flex-row items-center justify-start gap-3',
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='~text-xs ~font-normal'>Item Per page</p>
+          <p className='text-xs font-normal'>Item Per page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'
             onValueChange={(value) => table.setPageSize(Number(value))}
           >
             <SelectTrigger
-              icon={<HiChevronDown className='~h-4 ~w-4' />}
+              icon={<HiChevronDown className='h-4 w-4' />}
               data-testid='perpage-button'
               {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
-                '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-4',
+                'h-[30px] w-fit text-xs font-normal [&>span]:mr-4',
                 itemProps?.itemPerPage?.selectTrigger?.className
               )}
             >
@@ -740,7 +728,7 @@ export function useDataTable<TData, TValue>({
                   {...itemProps?.itemPerPage?.selectItem}
                   data-testid={`perpage-item-${opt}`}
                   className={clsx(
-                    '~text-xs ~font-normal',
+                    'text-xs font-normal',
                     itemProps?.itemPerPage?.selectItem?.className
                   )}
                   key={opt}
@@ -754,7 +742,7 @@ export function useDataTable<TData, TValue>({
         </div>
         <div
           className={clsx(
-            '~flex ~items-center ~gap-[12px]',
+            'flex items-center gap-[12px]',
             itemProps?.pagination?.className
           )}
         >
@@ -765,11 +753,11 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-[#1A1A1A]',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
-            <HiMiniChevronLeft className='~h-6 ~w-6' />
+            <HiMiniChevronLeft className='h-6 w-6' />
           </Button>
 
           {/* Pages */}
@@ -780,12 +768,12 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-[#1A1A1A]',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-[#1A1A1A]',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}
           >
-            <HiMiniChevronRight className='~h-6 ~w-6' />
+            <HiMiniChevronRight className='h-6 w-6' />
           </Button>
         </div>
       </div>
