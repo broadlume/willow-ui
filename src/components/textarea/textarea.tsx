@@ -2,10 +2,11 @@ import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  dirty?: boolean
-  invalid?: boolean;
-};
+export type TextareaProps =
+  React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+    dirty?: boolean;
+    invalid?: boolean;
+  };
 
 /** A resizable, multi-line text field. */
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -13,13 +14,14 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         className={cn(
-          'tw-reset ~peer ~flex ~min-h-[60px] ~w-full ~rounded-md ~border ~border-border ~bg-transparent ~px-3 ~py-2 ~shadow-sm',
-          'placeholder:~text-input',
-          'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
-          'disabled:~cursor-not-allowed disabled:~opacity-50',
+          'tw-reset ~peer ~flex ~min-h-[60px] ~w-full ~rounded-md ~border ~border-border-sec ~bg-surface-pri ~px-3 ~py-1 ~text-sm',
+          'placeholder:~text-text-opt',
+          'hover:~border-border-opt',
+          'focus-visible:~border-border-opt focus-visible:~outline-none focus-visible:~ring-0',
+          'disabled:~cursor-not-allowed disabled:~bg-surface-sec',
           {
-            "~bg-blue-50": props.dirty && !props.invalid,
-            "~bg-red-50": props.invalid
+            '~bg-[var(--color-blue-50)]': props.dirty && !props.invalid,
+            '~border-border-destructive ~text-text-destructive': props.invalid,
           },
           className
         )}
