@@ -13,18 +13,20 @@ const badgeVariants = cva(
     variants: {
       /** Variant color of the badge. */
       variant: {
-        default: '~bg-surface-cta-bg ~text-text-cta',
-        secondary: '~bg-surface-opt ~text-text-sec',
-        success: '~bg-surface-success ~text-text-success',
-        inProgress: '~bg-surface-progress ~text-text-progress',
-        destructive: '~bg-[var(--color-red-50)] ~text-text-destructive',
-        outline: '~border ~border-border-sec ~bg-surface-pri ~text-text-pri',
+        default:
+          'border-transparent bg-primary text-primary-foreground shadow',
+        secondary:
+          'border-transparent bg-secondary text-secondary-foreground',
+        success: 'border-transparent bg-success text-success-foreground',
+        destructive:
+          'border-transparent bg-destructive text-destructive-foreground shadow',
+        outline: 'text-foreground',
       },
       /** Relative size of the badge. */
       size: {
         default: '',
-        small: '~text-2xs',
-        xs: '~py-0 ~text-2xs',
+        small: 'text-[10px]',
+        xs: 'py-0 text-[10px]',
       },
     },
     defaultVariants: {

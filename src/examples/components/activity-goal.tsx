@@ -31,43 +31,43 @@ export function ActivityGoalDemo(_) {
         <CardTitle>Move Goal</CardTitle>
         <CardDescription>Set your daily activity goal.</CardDescription>
       </CardHeader>
-      <CardContent className='~pb-2'>
-        <div className='~flex ~items-center ~justify-center ~space-x-2'>
+      <CardContent className='pb-2'>
+        <div className='flex items-center justify-center space-x-2'>
           <Button
             variant='outline'
             size='icon'
-            className='~h-8 ~w-8 ~shrink-0 ~rounded-full'
+            className='h-8 w-8 shrink-0 rounded-full'
             onClick={() => onClick(-increment)}
             disabled={goal <= min}
           >
-            <MinusIcon className='~h-4 ~w-4' />
-            <span className='~sr-only'>Decrease</span>
+            <MinusIcon className='h-4 w-4' />
+            <span className='sr-only'>Decrease</span>
           </Button>
-          <div className='~flex-1 ~text-center'>
-            <div className='~text-5xl ~font-bold ~tracking-tighter'>{goal}</div>
-            <div className='~text-[0.70em] ~uppercase ~text-muted-foreground'>
+          <div className='flex-1 text-center'>
+            <div className='text-5xl font-bold tracking-tighter'>{goal}</div>
+            <div className='text-[0.70em] uppercase text-muted-foreground'>
               Calories/day
             </div>
           </div>
           <Button
             variant='outline'
             size='icon'
-            className='~h-8 ~w-8 ~shrink-0 ~rounded-full'
+            className='h-8 w-8 shrink-0 rounded-full'
             onClick={() => onClick(increment)}
             disabled={goal >= max}
           >
-            <PlusIcon className='~h-4 ~w-4' />
-            <span className='~sr-only'>Increase</span>
+            <PlusIcon className='h-4 w-4' />
+            <span className='sr-only'>Increase</span>
           </Button>
         </div>
-        <div className='~my-3 ~flex ~h-[60px] ~animate-scale-up ~items-end ~gap-1'>
+        <div className='my-3 flex h-[60px] animate-scale-up items-end gap-1'>
           {bars.map((goal, index) => (
             <div
               key={index}
               className={cn(
-                '~w-1/12 ~bg-primary ~opacity-20 ~transition-[height]',
-                index === 0 && '~rounded-l-md',
-                index === bars.length - 1 && '~rounded-r-md'
+                'w-1/12 bg-primary opacity-20 transition-[height]',
+                index === 0 && 'rounded-l-md',
+                index === bars.length - 1 && 'rounded-r-md'
               )}
               style={{
                 height: `${
@@ -81,7 +81,7 @@ export function ActivityGoalDemo(_) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className='~w-full'>Set Goal</Button>
+        <Button className='w-full'>Set Goal</Button>
       </CardFooter>
     </Card>
   );

@@ -2,38 +2,36 @@ import { cva } from 'class-variance-authority';
 
 const buttonVariants = cva(
   [
-    '~inline-flex ~h-9 ~items-center ~justify-center ~gap-2 ~overflow-hidden ~rounded-[100px] ~px-4 ~font-founders_grotesk ~text-xs ~font-semibold ~uppercase ~leading-none ~shadow',
-    'focus-visible:~ring-ring focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-offset-2',
-    'disabled:~cursor-not-allowed',
+    'tw-reset caption-1 inline-flex h-12 items-center justify-center rounded-full px-6 transition-colors',
+    'focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2',
+    'disabled:pointer-events-none disabled:opacity-50',
   ],
   {
     variants: {
       variant: {
         default:
-          '~text-primary-foreground ~bg-surface-cta ~text-surface-pri hover:~bg-[var(--color-cta-75)] disabled:~bg-[var(--color-cta-50)]',
+          'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
         destructive:
-          '~text-primary-foreground ~bg-surface-destructive ~text-surface-pri hover:~bg-[var(--color-red-400)] disabled:~bg-[var(--color-red-200)]',
-        // TODO: @dhavaljbroadlume confirm hover color with designer
+          'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
         outline:
-          '~bg-surface-pri ~text-text-pri ~shadow-none ~outline ~outline-1 ~outline-offset-[-1px] ~outline-border-pri hover:~opacity-75 disabled:~opacity-50',
+          'border border-border bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground',
         secondary:
-          '~bg-secondary ~text-secondary-foreground hover:~bg-secondary/80 ~bg-[var(--color-cta-15)] ~text-text-cta ~shadow-sm ~outline ~outline-1 ~outline-offset-[-1px] ~outline-[var(--color-cta-100)] hover:~opacity-75 disabled:~opacity-50',
-        ghost:
-          '~bg-transparent ~shadow-none hover:~bg-[var(--color-grey-10)] disabled:~bg-[var(--color-grey-5)]',
-        link: '~bg-transparent ~text-text-cta ~underline-offset-4 ~shadow-none hover:~text-[var(--color-cta-75)] hover:~underline disabled:~text-[var(--color-cta-50)]',
+          'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: '',
-        sm: '~text-[10px]',
-        lg: '~text-base',
-        icon: '~h-12 ~w-12 ~p-0 !~outline-none',
+        sm: 'text-[10px]',
+        lg: 'text-base',
+        icon: 'h-12 w-12 p-0',
       },
     },
     compoundVariants: [
       {
         variant: 'link',
         size: ['default', 'sm', 'lg', 'icon'],
-        className: '~h-auto ~w-auto ~px-0 ~py-0',
+        className: 'h-auto w-auto px-0 py-0',
       },
     ],
     defaultVariants: {

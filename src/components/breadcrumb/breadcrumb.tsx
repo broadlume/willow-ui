@@ -16,7 +16,7 @@ const BreadCrumb = ({
   ...props
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
   return (
-    <div className={clsx(`~my-4 ~flex ~flex-row`, className)} {...props}>
+    <div className={clsx(`my-4 flex flex-row`, className)} {...props}>
       {children}
     </div>
   );
@@ -54,7 +54,7 @@ const BreadCrumbItem = ({
     <div
       id={id + 'wrapper'}
       className={clsx(
-        `~flex ~flex-row ~items-center ~justify-between`,
+        `flex flex-row items-center justify-between`,
         classNames.wrapper
       )}
       {...props}
@@ -63,9 +63,9 @@ const BreadCrumbItem = ({
         id={id}
         onClick={onClick}
         className={clsx(
-          `~font-sans ~text-xs`,
-          onClick ? '~underline hover:~cursor-pointer' : '',
-          !isLast ? '~text-gold' : '',
+          `font-sans text-xs`,
+          onClick ? 'underline hover:cursor-pointer' : '',
+          !isLast ? 'text-gold' : '',
           classNames.label
         )}
       >
@@ -75,7 +75,7 @@ const BreadCrumbItem = ({
         CustomIcon ? (
           <CustomIcon />
         ) : (
-          <FaChevronRight className='~mx-1.5 ~text-xs ~text-ash-light' />
+          <FaChevronRight className='mx-1.5 text-xs text-ash-light' />
         )
       ) : null}
     </div>

@@ -27,7 +27,7 @@ export const Demo: Story = {
 /** All badge variants. */
 export const Variants: Story = {
   render: (args) => (
-    <div className='~flex ~flex-wrap ~gap-2'>
+    <div className='flex flex-wrap gap-2'>
       <Badge {...args} variant='default'>
         Default
       </Badge>
@@ -50,15 +50,15 @@ export const Variants: Story = {
 /** All badge sizes (+variants) */
 export const Sizes: Story = {
   render: (_) => (
-    <div className='~flex ~flex-col ~gap-2'>
-      <div className='~flex ~flex-wrap ~gap-2'>
+    <div className='flex flex-col gap-2'>
+      <div className='flex flex-wrap gap-2'>
         <Badge>Default</Badge>
         <Badge variant='secondary'>Secondary</Badge>
         <Badge variant='success'>Success</Badge>
         <Badge variant='destructive'>Destructive</Badge>
         <Badge variant='outline'>Outline</Badge>
       </div>
-      <div className='~flex ~flex-wrap ~gap-2'>
+      <div className='flex flex-wrap gap-2'>
         <Badge size='small'>Default (sm)</Badge>
         <Badge variant='secondary' size='small'>
           Secondary (sm)
@@ -73,7 +73,7 @@ export const Sizes: Story = {
           Outline (sm)
         </Badge>
       </div>
-      <div className='~flex ~flex-wrap ~gap-2'>
+      <div className='flex flex-wrap gap-2'>
         <Badge size='small'>Default (xs)</Badge>
         <Badge variant='secondary' size='xs'>
           Secondary (xs)
