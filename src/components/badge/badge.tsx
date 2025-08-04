@@ -5,8 +5,9 @@ import { cn } from '@src/lib/utils';
 
 const badgeVariants = cva(
   [
-    'tw-reset body-x-small inline-flex cursor-default items-center rounded-full border px-3 py-0.5 transition-colors',
-    'focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2',
+    'tw-reset ~font-2xl ~text-2xs ~inline-flex ~cursor-default ~items-center ~rounded ~px-2 ~py-1 ~transition-colors ~gap-2 ~shadow', 
+    'focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',  
+    '~h-5',
   ],
   {
     variants: {
@@ -40,6 +41,8 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {
   /** Arbitrary background color of the badge */
   background?: string;
+  className?: string;
+  style?: React.CSSProperties;
   /** Arbitrary text color of the badge */
   color?: string;
 }
