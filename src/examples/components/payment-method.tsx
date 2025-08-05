@@ -39,9 +39,9 @@ export function PaymentMethodDemo(_) {
           {paymentMethods.map(({ icon: Icon, title }) => (
             <Label
               className={cn(
-                '~flex ~cursor-pointer ~flex-col ~items-center ~justify-between ~rounded-md ~border-2 ~border-muted ~bg-surface-pri ~p-4',
-                'hover:~bg-accent hover:~text-accent-foreground',
-                '[&:has([data-state=checked])]:~border-primary'
+                'flex cursor-pointer flex-col items-center justify-between rounded-md border-2 border-muted bg-surface-pri p-4',
+                'hover:bg-accent hover:text-accent-foreground',
+                '[&:has([data-state=checked])]:border-primary'
               )}
               key={title}
             >

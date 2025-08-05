@@ -471,12 +471,12 @@ export function useDataTable<TData, TValue>({
     <div
       {...itemProps?.root}
       className={clsx(
-        '~flex ~flex-col ~gap-[16px] ~rounded-md ~bg-white ~text-sm',
+        'flex flex-col gap-[16px] rounded-md bg-white text-sm',
         itemProps?.root?.className
       )}
     >
       {includeLoading && !data?.length ? (
-        <div className=' ~flex ~h-40 ~items-center ~justify-center ~rounded-md'>
+        <div className=' flex h-40 items-center justify-center rounded-md'>
           <Loader />
         </div>
       ) : (
@@ -509,7 +509,7 @@ export function useDataTable<TData, TValue>({
                       key={headerGroup.id}
                       {...itemProps?.tableHeaderRow}
                       className={clsx(
-                        'hover:!~bg-transparent',
+                        'hover:!bg-transparent',
                         itemProps?.tableHeaderRow?.className
                       )}
                     >
@@ -624,8 +624,8 @@ export function useDataTable<TData, TValue>({
                 className={clsx(
                   // Always add padding-left to the first cell to reserve space
                   // and position the cell relatively for the absolute span.
-                  isFirstCell ? '~relative first:~pl-[30px]' : '', // Adjust 30px based on icon size
-                  'last:~px-3',
+                  isFirstCell ? 'relative first:pl-[30px]' : '', // Adjust 30px based on icon size
+                  'last:px-3',
                   itemProps?.tableCell?.className
                 )}
               >
@@ -633,7 +633,7 @@ export function useDataTable<TData, TValue>({
                 {isFirstCell && renderDraggableIcon && (
                   <span
                     className={clsx(
-                      '-~translate-y-[50%] ~absolute ~left-[-2px] ~top-[32%] ~rounded-full ~px-[4px] ~py-[2px] ~text-xs',
+                      '-translate-y-[50%] absolute left-[-2px] top-[32%] rounded-full px-[4px] py-[2px] text-xs',
                       itemProps?.draggable
                     )}
                   >
@@ -685,8 +685,8 @@ export function useDataTable<TData, TValue>({
           type='button'
           data-testid={'go-to-page-' + item}
           className={clsx(
-            '~h-[30px] ~w-[30px] ~rounded-md ~p-2 ~text-sm ~font-normal ~text-text-pri ~shadow-none disabled:~bg-transparent',
-            currentPage === item ? '~border ~border-[#CCCCCC]' : '',
+            'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-text-pri shadow-none disabled:bg-transparent',
+            currentPage === item ? 'border border-[#CCCCCC]' : '',
             itemProps?.pagination?.page?.className
           )}
           variant={currentPage === item ? 'outline' : 'ghost'}
@@ -722,7 +722,7 @@ export function useDataTable<TData, TValue>({
               data-testid='perpage-button'
               {...itemProps?.itemPerPage?.selectTrigger}
               className={clsx(
-                '~h-[30px] ~w-fit ~text-xs ~font-normal [&>span]:~mr-2',
+                'h-[30px] w-fit text-xs font-normal [&>span]:mr-2',
                 itemProps?.itemPerPage?.selectTrigger?.className
               )}
             >
@@ -759,7 +759,7 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
@@ -774,7 +774,7 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              '~h-[30px] ~w-[30px] ~rounded-md ~bg-[#1A6CFF] ~p-2 ~font-normal ~text-white ~shadow-none hover:~bg-[#1A6CFF] hover:~opacity-90 disabled:~border-none disabled:~bg-transparent disabled:~text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}
