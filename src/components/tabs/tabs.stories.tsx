@@ -38,7 +38,7 @@ export const Default: Story = {
   },
   render: (args) => (
     <Tabs defaultValue='contacts' {...args}>
-      <TabsList className='~grid ~grid-cols-4'>
+      <TabsList className='grid grid-cols-4'>
         <TabsTrigger value='leads'>Leads</TabsTrigger>
         <TabsTrigger value='contacts'>Contacts</TabsTrigger>
         <TabsTrigger value='stores'>Stores</TabsTrigger>
@@ -52,7 +52,7 @@ export const Default: Story = {
 export const Pills: Story = {
   render: (args) => (
     <Tabs defaultValue='contacts' {...args} variant='pills'>
-      <TabsList className='~grid ~grid-cols-4'>
+      <TabsList className='grid grid-cols-4'>
         <TabsTrigger value='leads'>Leads</TabsTrigger>
         <TabsTrigger value='contacts'>Contacts</TabsTrigger>
         <TabsTrigger value='stores'>Stores</TabsTrigger>
@@ -66,7 +66,7 @@ export const Pills: Story = {
 export const DisabledTabs: Story = {
   render: (args) => (
     <Tabs defaultValue='leads' {...args}>
-      <TabsList className='~grid ~grid-cols-4'>
+      <TabsList className='grid grid-cols-4'>
         <TabsTrigger value='leads'>Leads</TabsTrigger>
         <TabsTrigger value='contacts'>Contacts</TabsTrigger>
         <TabsTrigger value='stores' disabled>
@@ -83,8 +83,8 @@ export const DisabledTabs: Story = {
 /** A basic tabs, with associated content. */
 export const WithContent: Story = {
   render: (args) => (
-    <Tabs defaultValue='account' className='~w-[400px]' {...args}>
-      <TabsList className='~grid ~grid-cols-2'>
+    <Tabs defaultValue='account' className='w-[400px]' {...args}>
+      <TabsList className='grid grid-cols-2'>
         <TabsTrigger value='account'>Account</TabsTrigger>
         <TabsTrigger value='password'>Password</TabsTrigger>
       </TabsList>
@@ -96,12 +96,12 @@ export const WithContent: Story = {
               Make changes to your account here. Click save when you're done.
             </CardDescription>
           </CardHeader>
-          <CardContent className='~space-y-2'>
-            <div className='~space-y-1'>
+          <CardContent className='space-y-2'>
+            <div className='space-y-1'>
               <Label htmlFor='name'>Name</Label>
               <Input id='name' defaultValue='Scott Hetrick' />
             </div>
-            <div className='~space-y-1'>
+            <div className='space-y-1'>
               <Label htmlFor='username'>Username</Label>
               <Input id='username' defaultValue='@dreadhalor' />
             </div>
@@ -119,12 +119,12 @@ export const WithContent: Story = {
               Change your password here. After saving, you'll be logged out.
             </CardDescription>
           </CardHeader>
-          <CardContent className='~space-y-2'>
-            <div className='~space-y-1'>
+          <CardContent className='space-y-2'>
+            <div className='space-y-1'>
               <Label htmlFor='current'>Current password</Label>
               <Input id='current' type='password' />
             </div>
-            <div className='~space-y-1'>
+            <div className='space-y-1'>
               <Label htmlFor='new'>New password</Label>
               <Input id='new' type='password' />
             </div>
@@ -144,17 +144,17 @@ export const Vertical: Story = {
     <Tabs
       orientation='vertical'
       defaultValue='account'
-      className='~flex ~flex-row ~gap-2'
+      className='flex flex-row gap-2'
       {...args}
     >
-      <TabsList className='~flex ~h-full ~w-[200px] ~min-w-[200px] ~max-w-[200px] ~flex-col'>
-        <TabsTrigger value='account' className='~w-full ~p-0'>
+      <TabsList className='flex h-full w-[200px] min-w-[200px] max-w-[200px] flex-col'>
+        <TabsTrigger value='account' className='w-full p-0'>
           <SidebarItem>Account?</SidebarItem>
         </TabsTrigger>
-        <TabsTrigger value='password' className='~w-full ~p-0'>
+        <TabsTrigger value='password' className='w-full p-0'>
           <SidebarItem>Password</SidebarItem>
         </TabsTrigger>
-        <TabsTrigger value='password2' className='~w-full ~p-0'>
+        <TabsTrigger value='password2' className='w-full p-0'>
           <SidebarItem>dsdfdee</SidebarItem>
         </TabsTrigger>
       </TabsList>
@@ -166,12 +166,12 @@ export const Vertical: Story = {
               Make changes to your account here. Click save when you're done.
             </CardDescription>
           </CardHeader>
-          <CardContent className='~space-y-2'>
-            <div className='~space-y-1'>
+          <CardContent className='space-y-2'>
+            <div className='space-y-1'>
               <Label htmlFor='name'>Name</Label>
               <Input id='name' defaultValue='Scott Hetrick' />
             </div>
-            <div className='~space-y-1'>
+            <div className='space-y-1'>
               <Label htmlFor='username'>Username</Label>
               <Input id='username' defaultValue='@dreadhalor' />
             </div>
@@ -189,12 +189,12 @@ export const Vertical: Story = {
               Change your password here. After saving, you'll be logged out.
             </CardDescription>
           </CardHeader>
-          <CardContent className='~space-y-2'>
-            <div className='~space-y-1'>
+          <CardContent className='space-y-2'>
+            <div className='space-y-1'>
               <Label htmlFor='current'>Current password</Label>
               <Input id='current' type='password' />
             </div>
-            <div className='~space-y-1'>
+            <div className='space-y-1'>
               <Label htmlFor='new'>New password</Label>
               <Input id='new' type='password' />
             </div>
@@ -210,12 +210,12 @@ export const Vertical: Story = {
             <CardTitle>Password</CardTitle>
             <CardDescription>Change your afewaw out.</CardDescription>
           </CardHeader>
-          <CardContent className='~space-y-2'>
-            <div className='~space-y-1'>
+          <CardContent className='space-y-2'>
+            <div className='space-y-1'>
               <Label htmlFor='current'>Current eee</Label>
               <Input id='current' type='password' />
             </div>
-            <div className='~space-y-1'>
+            <div className='space-y-1'>
               <Label htmlFor='new'>dd ssad</Label>
               <Input id='new' type='password' />
             </div>

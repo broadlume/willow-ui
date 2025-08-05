@@ -5,4 +5,6 @@ export default {
     tailwindcss,
     autoprefixer,
   },
-};
+}
+
+export default config

@@ -34,8 +34,8 @@ export function PaymentMethodDemo(_) {
           Add a new payment method to your account.
         </CardDescription>
       </CardHeader>
-      <CardContent className='~grid ~gap-6'>
-        <RadioGroup defaultValue='apple' className='~grid ~grid-cols-3 ~gap-4'>
+      <CardContent className='grid gap-6'>
+        <RadioGroup defaultValue='apple' className='grid grid-cols-3 gap-4'>
           {paymentMethods.map(({ icon: Icon, title }) => (
             <Label
               className={cn(
@@ -47,23 +47,23 @@ export function PaymentMethodDemo(_) {
             >
               <RadioGroupItem
                 value={title.toLowerCase()}
-                className='~sr-only'
+                className='sr-only'
               />
-              <Icon className='~mb-3 ~h-6 ~w-6' title='test' />
+              <Icon className='mb-3 h-6 w-6' title='test' />
               {title}
             </Label>
           ))}
         </RadioGroup>
-        <div className='~grid ~gap-2'>
+        <div className='grid gap-2'>
           <Label htmlFor='name'>Name</Label>
           <Input id='name' placeholder='First Last' />
         </div>
-        <div className='~grid ~gap-2'>
+        <div className='grid gap-2'>
           <Label htmlFor='number'>Card number</Label>
           <Input id='number' placeholder='' />
         </div>
-        <div className='~grid ~grid-cols-3 ~gap-4'>
-          <div className='~grid ~gap-2'>
+        <div className='grid grid-cols-3 gap-4'>
+          <div className='grid gap-2'>
             <Label htmlFor='month'>Expires</Label>
             <Select>
               <SelectTrigger id='month'>
@@ -85,7 +85,7 @@ export function PaymentMethodDemo(_) {
               </SelectContent>
             </Select>
           </div>
-          <div className='~grid ~gap-2'>
+          <div className='grid gap-2'>
             <Label htmlFor='year'>Year</Label>
             <Select>
               <SelectTrigger id='year'>
@@ -100,14 +100,14 @@ export function PaymentMethodDemo(_) {
               </SelectContent>
             </Select>
           </div>
-          <div className='~grid ~gap-2'>
+          <div className='grid gap-2'>
             <Label htmlFor='cvc'>CVC</Label>
             <Input id='cvc' placeholder='CVC' />
           </div>
         </div>
       </CardContent>
       <CardFooter>
-        <Button className='~w-full'>Continue</Button>
+        <Button className='w-full'>Continue</Button>
       </CardFooter>
     </Card>
   );

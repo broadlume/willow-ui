@@ -11,7 +11,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className='~relative ~w-full ~overflow-auto'>
+  <div className='relative w-full overflow-auto'>
     <table
       ref={ref}
       className={clsx('~w-full ~caption-bottom ~text-xs', className)}
@@ -190,8 +190,8 @@ const DraggableColumnHeader = <TData, TValue>({
               className={clsx(
                 '~-mb-1  ~h-4 ~w-4 ~text-text-pri',
                 header.column.getIsSorted() === 'asc'
-                  ? '~opacity-100'
-                  : '~opacity-40'
+                  ? 'opacity-100'
+                  : 'opacity-40'
               )}
             />
             <HiMiniChevronDown
@@ -200,8 +200,8 @@ const DraggableColumnHeader = <TData, TValue>({
               className={clsx(
                 ' ~-mb-[2px] ~h-4 ~w-4 ~text-text-pri',
                 header.column.getIsSorted() === 'desc'
-                  ? '~opacity-100'
-                  : '~opacity-40'
+                  ? 'opacity-100'
+                  : 'opacity-40'
               )}
             />
           </div>

@@ -11,14 +11,14 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      'tw-reset ~group ~peer ~relative ~flex ~w-full ~cursor-pointer ~touch-none ~select-none ~items-center',
-      'data-[disabled]:~cursor-not-allowed data-[disabled]:~opacity-50',
+      'tw-reset group peer relative flex w-full cursor-pointer touch-none select-none items-center',
+      'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
       className
     )}
     {...props}
   >
-    <SliderPrimitive.Track className='~relative ~h-1.5 ~w-full ~grow ~overflow-hidden ~rounded-full ~bg-primary/20'>
-      <SliderPrimitive.Range className='~absolute ~h-full ~bg-primary' />
+    <SliderPrimitive.Track className='relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20'>
+      <SliderPrimitive.Range className='absolute h-full bg-primary' />
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb
       className={cn(

@@ -211,20 +211,20 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   };
 
   return (
-    <div className='~border ~border-gray-300 ~rounded-lg ~shadow-md ~overflow-hidden'>
-      <div className='~flex ~justify-between ~items-center ~py-2 ~px-6 ~bg-gray-100 ~border-b ~border-gray-300'>
-        <p className='~font-medium'>
+    <div className='border border-gray-300 rounded-lg shadow-md overflow-hidden'>
+      <div className='flex justify-between items-center py-2 px-6 bg-gray-100 border-b border-gray-300'>
+        <p className='font-medium'>
           <b>Type: </b>
-          <span className='~capitalize ~text-indigo-600'>{passedLanguage}</span>
+          <span className='capitalize text-indigo-600'>{passedLanguage}</span>
         </p>
 
         {statusMessage && (
-          <div className='~text-green-600 ~text-sm ~px-3 ~py-1'>
+          <div className='text-green-600 text-sm px-3 py-1'>
             {statusMessage}
           </div>
         )}
 
-        <div className='~flex ~gap-2 ~items-center'>
+        <div className='flex gap-2 items-center'>
           <Button
             type='button'
             variant='ghost'
@@ -233,7 +233,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           >
             <FaBrush
               fontSize={18}
-              className='hover:~text-indigo-500 transition'
+              className='hover:text-indigo-500 transition'
             />
           </Button>
           <Button
@@ -245,12 +245,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             {theme === 'vs-dark' ? (
               <FaSun
                 fontSize={18}
-                className='hover:~text-yellow-500 transition'
+                className='hover:text-yellow-500 transition'
               />
             ) : (
               <FaMoon
                 fontSize={18}
-                className='hover:~text-gray-700 transition'
+                className='hover:text-gray-700 transition'
               />
             )}
           </Button>
@@ -262,7 +262,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           >
             <FaCopy
               fontSize={18}
-              className='hover:~text-green-500 transition'
+              className='hover:text-green-500 transition'
             />
           </Button>
           <Button
@@ -273,37 +273,37 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           >
             <FaQuestionCircle
               fontSize={18}
-              className='hover:~text-blue-500 transition'
+              className='hover:text-blue-500 transition'
             />
           </Button>
         </div>
       </div>
 
             {showHelper && (
-                <div className="~px-6 ~py-4 ~bg-white ~rounded-md ~text-sm">
-                    <h3 className="~font-semibold ~mb-3 ~text-gray-800 text-lg">⚙️ Editor Shortcuts & Tips</h3>
-                    <div className="~grid ~grid-cols-1 sm:~grid-cols-2 ~gap-4">
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaSun className='~mr-2' /> / <FaMoon className='~ml-2' /> Theme Toggle</span>
-                            <p className="~text-gray-600">Switch between dark and light modes.</p>
+                <div className="px-6 py-4 bg-white rounded-md text-sm">
+                    <h3 className="font-semibold mb-3 text-gray-800 text-lg">⚙️ Editor Shortcuts & Tips</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="p-3 bg-gray-50 rounded-lg shadow-xs">
+                            <span className='flex items-center mb-1 font-medium'><FaSun className='mr-2' /> / <FaMoon className='ml-2' /> Theme Toggle</span>
+                            <p className="text-gray-600">Switch between dark and light modes.</p>
                         </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaBrush className='~mr-2' /> Format Code</span>
-                            <p className="~text-gray-600">Auto-format code with Prettier.</p>
+                        <div className="p-3 bg-gray-50 rounded-lg shadow-xs">
+                            <span className='flex items-center mb-1 font-medium'><FaBrush className='mr-2' /> Format Code</span>
+                            <p className="text-gray-600">Auto-format code with Prettier.</p>
                         </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaCopy className='~mr-2' /> Copy Code</span>
-                            <p className="~text-gray-600">Copy the editor content to clipboard.</p>
+                        <div className="p-3 bg-gray-50 rounded-lg shadow-xs">
+                            <span className='flex items-center mb-1 font-medium'><FaCopy className='mr-2' /> Copy Code</span>
+                            <p className="text-gray-600">Copy the editor content to clipboard.</p>
                         </div>
                         {enableTokenSuggestion &&
-                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                                <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
-                                <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
+                            <div className="p-3 bg-gray-50 rounded-lg shadow-xs">
+                                <span className='font-medium'>Tokens: <code>&#123;&#123;</code></span>
+                                <p className="text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
                             </div>
                         }
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~font-medium'>Shortcut</span>
-                            <p className="~text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
+                        <div className="p-3 bg-gray-50 rounded-lg shadow-xs">
+                            <span className='font-medium'>Shortcut</span>
+                            <p className="text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
                         </div>
                     </div>
                 </div>
@@ -318,7 +318,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         defaultValue={code}
         onChange={onChange}
         onMount={handleEditorDidMount}
-        className='~rounded-b-lg ~p-0'
+        className='rounded-b-lg p-0'
       />
     </div>
   );
