@@ -61,7 +61,7 @@ export interface DataTableProps<TData, TValue> {
     tableHeaderRow?: DataProps;
     tableHead?: DataProps;
     tableBody?: DataProps;
-    tableBodyRow?: DataProps;
+    tableBodyRow?: DataProps | ((row: Row<TData>) => DataProps);
     tableRow?: DataProps;
     tableCell?: DataProps;
     draggable?: DataProps;
