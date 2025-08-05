@@ -471,7 +471,6 @@ export function useDataTable<TData, TValue>({
    * Supports both function and static object configurations:
    * Function: itemProps.tableBodyRow(row) - allows conditional styling/props per row
    * Object: itemProps.tableBodyRow - applies same props to all rows
-   * Used in render to spread props onto TableRow components (lines 250+ and 260+)
    * Example usage: tableBodyRow: (row) => ({ className: row.original.isActive ? 'bg-green' : 'bg-red' })
    */
   const bodyRowProps = useCallback((row) => {
