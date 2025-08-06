@@ -11,7 +11,7 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  'relative inline-flex h-9 items-center justify-center bg-background text-muted-foreground',
+  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-muted-foreground',
   {
     variants: {
       variant: {
