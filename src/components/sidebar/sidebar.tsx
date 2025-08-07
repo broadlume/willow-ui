@@ -44,6 +44,7 @@ export const Sidebar: FC<SidebarProps> = ({
   rightArrow = HiChevronRight,
   downArrow = HiChevronDown,
   className,
+  defaultParentOpen = false,
 }) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
     getInitialOpenSections(location, items)
@@ -76,6 +77,7 @@ export const Sidebar: FC<SidebarProps> = ({
             className={className}
             rightArrow={rightArrow}
             downArrow={downArrow}
+            defaultParentOpen={defaultParentOpen}
           />
         ))}
     </aside>
