@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { IconType, SidebarItemProps } from "../types";
 import { SidebarLink } from "./sidebar-link";
 import { ToggleIcon } from "./toggle-icon";
@@ -34,7 +34,12 @@ export const SidebarSection: FC<Props> = ({
 }) => {
   const isActive = location === item.link || location + "/" === item.link;
   const hasChildren = item.items?.length;
-  const isOpen = defaultParentOpen && !openSections[item.label] ? true : openSections[item.label];
+  useEffect(() => {
+    if (openSections[item.label] === undefined) {
+      toggleSection(item.label);
+    }
+  }, [item.label, openSections, toggleSection]);
+  const isOpen = openSections[item.label] === undefined ? defaultParentOpen : openSections[item.label];
 
   if (item.link && !hasChildren) {
     return (
