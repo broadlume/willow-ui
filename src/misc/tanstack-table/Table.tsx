@@ -77,7 +77,7 @@ export function useDataTable<TData, TValue>({
   handleRowClick: passedHandlerRowClick,
   includeLoading = false,
   enableSingleSelection = false,
-  noRecordFoundMessage,
+  noRecordFoundMessage = 'There are no records to display',
   pageSizeOptions = [5, 10, 20, 50],
 }: DataTableProps<TData, TValue>) {
   /**
@@ -607,7 +607,7 @@ export function useDataTable<TData, TValue>({
                         itemProps?.tableCell?.className
                       )}
                     >
-                      {noRecordFoundMessage || 'There are no records to display'}
+                      {noRecordFoundMessage}
                     </TableCell>
                   </TableRow>
                 )}
