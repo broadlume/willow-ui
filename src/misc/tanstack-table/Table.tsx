@@ -77,6 +77,8 @@ export function useDataTable<TData, TValue>({
   handleRowClick: passedHandlerRowClick,
   includeLoading = false,
   enableSingleSelection = false,
+  emptyMessage,
+  pageSizeOptions,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -497,9 +499,10 @@ export function useDataTable<TData, TValue>({
         </div>
       ) : (
         <div
-          {...itemProps?.tableWrapper}
+          {...(({ enableStickyHeader, ...rest }) => rest)(itemProps?.tableWrapper || {})}
           className={clsx(
             '~rounded-md ~border',
+            itemProps?.tableWrapper?.enableStickyHeader && '~max-h-[65vh] ~min-h-[0px] ~overflow-y-auto',
             itemProps?.tableWrapper?.className
           )}
         >
@@ -517,7 +520,10 @@ export function useDataTable<TData, TValue>({
                 <TableHeader
                   data-testid='data-table-header'
                   {...itemProps?.tableHeader}
-                  className={clsx(itemProps?.tableHeader?.className)}
+                  className={clsx(
+                    itemProps?.tableWrapper?.enableStickyHeader && '~sticky ~top-0 ~z-20 ~bg-white',
+                    itemProps?.tableHeader?.className
+                  )}
                 >
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow
@@ -597,7 +603,7 @@ export function useDataTable<TData, TValue>({
                         itemProps?.tableCell?.className
                       )}
                     >
-                      There are no records to display
+                      {emptyMessage || 'There are no records to display'}
                     </TableCell>
                   </TableRow>
                 )}
@@ -727,7 +733,7 @@ export function useDataTable<TData, TValue>({
               <SelectValue />
             </SelectTrigger>
             <SelectContent data-testid='perpage-list'>
-              {[5, 10, 20, 50].map((opt) => (
+              {(pageSizeOptions || [5, 10, 20, 50]).map((opt) => (
                 <SelectItem
                   {...itemProps?.itemPerPage?.selectItem}
                   data-testid={`perpage-item-${opt}`}
