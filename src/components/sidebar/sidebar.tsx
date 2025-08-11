@@ -46,9 +46,18 @@ export const Sidebar: FC<SidebarProps> = ({
   className,
   defaultParentOpen = false,
 }) => {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
-    getInitialOpenSections(location, items)
-  );
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    const initialOpen = getInitialOpenSections(location, items);
+    if (defaultParentOpen) {
+      items.forEach(item => {
+        if (item.items?.length) {
+          initialOpen[item.label] = true;
+        }
+      });
+    }
+    return initialOpen;
+  });
+
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({
@@ -73,7 +82,7 @@ export const Sidebar: FC<SidebarProps> = ({
             openSections={openSections}
             toggleSection={toggleSection}
             closeAllSections={closeAllSections}
-            onMenuClick={onMenuClick} 
+            onMenuClick={onMenuClick}
             className={className}
             rightArrow={rightArrow}
             downArrow={downArrow}

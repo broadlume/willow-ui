@@ -34,17 +34,13 @@ export const SidebarSection: FC<Props> = ({
 }) => {
   const isActive = location === item.link || location + "/" === item.link;
   const hasChildren = item.items?.length;
-  useEffect(() => {
-    if (openSections[item.label] === undefined) {
-      toggleSection(item.label);
-    }
-  }, [item.label, openSections, toggleSection]);
-  const isOpen = openSections[item.label] === undefined ? defaultParentOpen : openSections[item.label];
+
+  const isOpen = openSections[item.label] ?? defaultParentOpen;
 
   if (item.link && !hasChildren) {
     return (
       <SidebarLink
-        key={item.label}
+        key={item.label}  
         to={item.link}
         label={item.label}
         isActive={isActive}
