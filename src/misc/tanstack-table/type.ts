@@ -44,7 +44,7 @@ export interface DataTableProps<TData, TValue> {
   enableRowSelection?: boolean;
   enableSingleSelection?: boolean;
   pageSizeOptions?: number[];
-  emptyMessage?: React.ReactNode;
+  noRecordFoundMessage?: React.ReactNode;
   customTableRow?: (
     props: React.PropsWithChildren<
       { row: Row<TData> } & Parameters<typeof TableRow>[0]

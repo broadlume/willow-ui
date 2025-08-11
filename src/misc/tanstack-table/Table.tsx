@@ -77,8 +77,8 @@ export function useDataTable<TData, TValue>({
   handleRowClick: passedHandlerRowClick,
   includeLoading = false,
   enableSingleSelection = false,
-  emptyMessage,
-  pageSizeOptions,
+  noRecordFoundMessage,
+  pageSizeOptions = [5, 10, 20, 50],
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -502,7 +502,9 @@ export function useDataTable<TData, TValue>({
           {...(({ enableStickyHeader, ...rest }) => rest)(itemProps?.tableWrapper || {})}
           className={clsx(
             '~rounded-md ~border',
-            itemProps?.tableWrapper?.enableStickyHeader && '~max-h-[65vh] ~min-h-[0px] ~overflow-y-auto',
+            {
+              '~max-h-[65vh] ~min-h-[0px] ~overflow-y-auto': itemProps?.tableWrapper?.enableStickyHeader
+            },
             itemProps?.tableWrapper?.className
           )}
         >
@@ -521,7 +523,9 @@ export function useDataTable<TData, TValue>({
                   data-testid='data-table-header'
                   {...itemProps?.tableHeader}
                   className={clsx(
-                    itemProps?.tableWrapper?.enableStickyHeader && '~sticky ~top-0 ~z-20 ~bg-white',
+                    {
+                      '~sticky ~top-0 ~z-20 ~bg-white ~shadow-sm': itemProps?.tableWrapper?.enableStickyHeader
+                    },
                     itemProps?.tableHeader?.className
                   )}
                 >
@@ -603,7 +607,7 @@ export function useDataTable<TData, TValue>({
                         itemProps?.tableCell?.className
                       )}
                     >
-                      {emptyMessage || 'There are no records to display'}
+                      {noRecordFoundMessage || 'There are no records to display'}
                     </TableCell>
                   </TableRow>
                 )}
@@ -733,7 +737,7 @@ export function useDataTable<TData, TValue>({
               <SelectValue />
             </SelectTrigger>
             <SelectContent data-testid='perpage-list'>
-              {(pageSizeOptions || [5, 10, 20, 50]).map((opt) => (
+              {pageSizeOptions.map((opt) => (
                 <SelectItem
                   {...itemProps?.itemPerPage?.selectItem}
                   data-testid={`perpage-item-${opt}`}

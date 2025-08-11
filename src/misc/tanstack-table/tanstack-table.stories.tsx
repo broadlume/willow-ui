@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useDataTable } from './Table';
 import { columns, Payment, payments } from './data';
 import { useState } from 'react';
+import clsx from 'clsx';
 
 const TanStackTable = () => {
   const { CustomDataTable, table } = useDataTable({
@@ -88,35 +89,35 @@ export const WithSingleRowSelection: Story = {
   render: (args) => <TanstackTableWithSingleRowSelection />,
 };
 
-// Story for DataTable with custom empty message
-const TanstackTableWithEmptyMessage = () => {
+// Story for DataTable with custom no data found message
+const TanstackTableWithWithNoDataFoundMessage = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
-    data: [], // Empty data to trigger empty state
+    data: [],
     tableParams: {
       manualPagination: false,
     },
     enableRowSelection: true,
-    emptyMessage: 'Custom empty message: No data found!',
+    noRecordFoundMessage: 'Custom empty message: No data found!',
     includeLoading: false,
   });
   return <CustomDataTable />;
 };
 
-export const EmptyMessage: Story = {
-  render: (args) => <TanstackTableWithEmptyMessage />,
+export const WithNoDataFoundMessage: Story = {
+  render: (args) => <TanstackTableWithWithNoDataFoundMessage />,
 };
 
-// Story for DataTable with JSX empty message
-const TanstackTableWithJSXEmptyMessage = () => {
+// Story for DataTable with dynamic no data found message
+const TanstackTableWithDynamicNoDataFoundMessage = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
-    data: [], // Empty data to trigger empty state
+    data: [],
     tableParams: {
       manualPagination: false,
     },
     enableRowSelection: true,
-    emptyMessage: (
+    noRecordFoundMessage: (
       <div className="~text-center ~py-8">
         <h3 className="~text-lg ~font-semibold ~text-gray-700">No Data Available</h3>
         <p className="~text-sm ~text-gray-500 ~mt-2">Try adjusting your filters or check back later.</p>
@@ -127,12 +128,12 @@ const TanstackTableWithJSXEmptyMessage = () => {
   return <CustomDataTable />;
 };
 
-export const JSXEmptyMessage: Story = {
-  render: (args) => <TanstackTableWithJSXEmptyMessage />,
+export const WithDynamicNoDataFoundMessage: Story = {
+  render: (args) => <TanstackTableWithDynamicNoDataFoundMessage />,
 };
 
-// Story for DataTable with dynamic background row colors
-const TanstackTableWithDynamicRowColors = () => {
+// Story for DataTable with dynamic background row style
+const TanstackTableWithDynamicRowStyle = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
     data: payments,
@@ -141,28 +142,26 @@ const TanstackTableWithDynamicRowColors = () => {
     },
     enableRowSelection: true,
     itemProps: {
-      tableBodyRow: (row) => ({
-        className: row.original.status === 'success' 
-          ? '~bg-green-50 hover:~bg-green-100' 
-          : row.original.status === 'failed'
-          ? '~bg-red-50 hover:~bg-red-100'
-          : row.original.status === 'processing'
-          ? '~bg-blue-50 hover:~bg-blue-100'
-          : row.original.status === 'pending'
-          ? '~bg-yellow-50 hover:~bg-yellow-100'
-          : '~bg-gray-50 hover:~bg-gray-100'
+       tableBodyRow: (row) => ({
+        className: clsx({
+          '~bg-green-50 hover:~bg-green-100': row.original.status === 'success',
+          '~bg-red-50 hover:~bg-red-100': row.original.status === 'failed',
+          '~bg-blue-50 hover:~bg-blue-100': row.original.status === 'processing',
+          '~bg-yellow-50 hover:~bg-yellow-100': row.original.status === 'pending',
+          '~bg-gray-50 hover:~bg-gray-100': !['success', 'failed', 'processing', 'pending'].includes(row.original.status)
+        })
       })
     }
   });
   return <CustomDataTable />;
 };
 
-export const DynamicRowColors: Story = {
-  render: (args) => <TanstackTableWithDynamicRowColors />,
+export const WithDynamicRowStyle: Story = {
+  render: (args) => <TanstackTableWithDynamicRowStyle />,
 };
 
-// Story for DataTable with static background row colors
-const TanstackTableWithStaticRowColors = () => {
+// Story for DataTable with global dynamic row style
+const TanstackTableWithGlobalDynamicRowStyle = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
     data: payments,
@@ -179,12 +178,12 @@ const TanstackTableWithStaticRowColors = () => {
   return <CustomDataTable />;
 };
 
-export const StaticRowColors: Story = {
-  render: (args) => <TanstackTableWithStaticRowColors />,
+export const WithGlobalDynamicRowStyle: Story = {
+  render: (args) => <TanstackTableWithGlobalDynamicRowStyle />,
 };
 
-// Story for DataTable with sticky header and custom page size options
-const TanstackTableWithStickyHeaderAndCustomPageSizes = () => {
+// Story for DataTable with sticky header
+const TanstackTableWithStickyHeader = () => {
   const { CustomDataTable, table } = useDataTable({
     columns: columns,
     data: payments,
@@ -192,18 +191,37 @@ const TanstackTableWithStickyHeaderAndCustomPageSizes = () => {
       manualPagination: false,
     },
     enableRowSelection: true,
-    initialPagination: { pageIndex: 0, pageSize: 50 }, // Initial page size
-    pageSizeOptions: [10, 25, 50, 100, 250, 500, 1000], // Custom page size options
+    initialPagination: { pageIndex: 0, pageSize: 20 },
     itemProps: {
       tableWrapper: {
-        enableStickyHeader: true // Enable sticky header with scrollable body
+        enableStickyHeader: true
       }
     },
   });
   return <CustomDataTable />;
 };
 
-export const StickyHeaderWithCustomPageSizes: Story = {
-  render: (args) => <TanstackTableWithStickyHeaderAndCustomPageSizes />,
+export const WithStickyHeader: Story = {
+  render: (args) => <TanstackTableWithStickyHeader />,
 };
+
+// Story for DataTable with dynamic page size options
+const TanstackTableWithDynamicPageSizeOptions = () => {
+  const { CustomDataTable, table } = useDataTable({
+    columns: columns,
+    data: payments,
+    tableParams: {
+      manualPagination: false,
+    },
+    enableRowSelection: true,
+    initialPagination: { pageIndex: 0, pageSize: 50 },
+    pageSizeOptions: [10, 25, 50, 100, 250, 500, 1000],
+  });
+  return <CustomDataTable />;
+};
+
+export const WithDynamicPageSizeOptions: Story = {
+  render: (args) => <TanstackTableWithDynamicPageSizeOptions />,
+};
+
 
