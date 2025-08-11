@@ -40,7 +40,7 @@ export const SidebarSection: FC<Props> = ({
   if (item.link && !hasChildren) {
     return (
       <SidebarLink
-        key={item.label}  
+        key={item.label}
         to={item.link}
         label={item.label}
         isActive={isActive}
