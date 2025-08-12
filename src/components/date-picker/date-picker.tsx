@@ -26,6 +26,7 @@ interface DatePickerPropsBase {
   mode?: DatePickerMode;
   trigger?: React.ReactElement;
   onOpenChange?: (isOpen: boolean) => void;
+  popoverContentProps?: React.ComponentProps<typeof PopoverContent>;
 }
 
 export type DatePickerSingleProps = Omit<
@@ -59,6 +60,7 @@ export const DatePicker = ({
   onSelect,
   trigger,
   onOpenChange,
+  popoverContentProps,
   ...props
 }: DatePickerProps) => {
   const [_selected, _setSelected] = useState<DateSelection>(selected);
@@ -155,7 +157,11 @@ export const DatePicker = ({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className='~w-auto ~p-0' align='start'>
+      <PopoverContent
+        className='~w-auto ~p-0'
+        align='start'
+        {...popoverContentProps}
+      >
         {mode === 'single' ? (
           <Calendar {...(newProps as DatePickerSingleProps)} />
         ) : (

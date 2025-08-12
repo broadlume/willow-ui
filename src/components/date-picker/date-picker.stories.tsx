@@ -28,6 +28,9 @@ const DatePickerSingleOrRangeDemo = (props: DatePickerProps) => {
           console.log('Popover closed (outside click or ESC)');
         }
       }}
+      popoverContentProps={{
+        sideOffset: 20,
+      }}
       {...restProps}
     />
   );
