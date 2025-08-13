@@ -38,7 +38,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         <TipTapBubbleMenu
             editor={editor}
             className={clsx(
-                '~rounded-md ~border ~border-gray-300 ~bg-white ~p-2 ~shadow-lg'
+                '~border ~border-gray-300 ~bg-white ~p-2 ~shadow-lg'
             )}
             tippyOptions={{
                 placement: 'bottom',

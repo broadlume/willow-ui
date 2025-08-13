@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
+import {
+  Editor as TiptapEditor,
+  useEditor,
+  UseEditorOptions,
+} from '@tiptap/react';
 import { TextSelection } from '@tiptap/pm/state';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 // Extensions
 import StarterKit from '@tiptap/starter-kit';
@@ -20,7 +24,6 @@ import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Gapcursor from '@tiptap/extension-gapcursor';
 
-
 // Custom Extensions
 import { Video } from './extensions/video';
 import { LineHeight } from './extensions/line-height';
@@ -30,22 +33,27 @@ import { Indentation } from './extensions/indentation';
 import { AutocompleteNode } from './nodes/autocomplete-node';
 
 // contexts
-import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
+import {
+  NodeViewContext,
+  NodeViewContextType,
+} from './context/node-view-context';
 
 // Components
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { BubbleMenu } from './components/bubble-menu';
-import {SlashCommand} from './extensions/slash-command';
+import { SlashCommand } from './extensions/slash-command';
 
 export type EditorProps = {
-  content?: string,
-  onChange?: (html: string) => void,
-  onBlur?: (html: string) => void,
-  dropdownItems?: { label: string, value: string }[],
-  dropdownPlaceholder?: string,
-  autocompleteFetchOptions?: (query: string) => Promise<{ label: string; value: string }[]>;
+  content?: string;
+  onChange?: (html: string) => void;
+  onBlur?: (html: string) => void;
+  dropdownItems?: { label: string; value: string }[];
+  dropdownPlaceholder?: string;
+  autocompleteFetchOptions?: (
+    query: string
+  ) => Promise<{ label: string; value: string }[]>;
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -63,7 +71,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   // List of Tiptap Editor Extensions
   const extensions = [
     StarterKit.configure({
-      gapcursor: false
+      gapcursor: false,
     }),
     Gapcursor,
     Link.configure({ openOnClick: true }),
@@ -72,7 +80,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
     TableRow,
     TableCell,
     TableHeader,
-    TextAlign.configure({ types: ['heading', 'paragraph'], alignments: ['left', 'center', 'right'] }),
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+      alignments: ['left', 'center', 'right'],
+    }),
     Underline,
     Highlight,
     CodeBlock,
@@ -85,15 +96,15 @@ export const Editor: React.FC<EditorProps> = (props) => {
     LineHeight,
     Indentation,
     AutocompleteNode,
-    SlashCommand
+    SlashCommand,
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
   const EditorConfig: UseEditorOptions = {
     extensions,
     content,
-    onUpdate: ({ editor, }) => handleUpdate(editor),
-    onBlur: ({ editor, }) => {
+    onUpdate: ({ editor }) => handleUpdate(editor),
+    onBlur: ({ editor }) => {
       const html = editor.getHTML();
       props.onBlur?.(html);
     },
@@ -102,7 +113,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
         class: clsx(
           'focus:~outline-none ~not-prose',
           darkMode ? '!~text-white' : '~text-black'
-        )
+        ),
       },
       // handleKeyDown: (_, event) => {
       //   switch (event.key) {
@@ -117,7 +128,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
       //       break;
       //   }
       // }
-    }
+    },
   };
 
   const editor = useEditor(EditorConfig);
@@ -126,54 +137,59 @@ export const Editor: React.FC<EditorProps> = (props) => {
     onUpdate: ({ editor }) => handleUpdate(editor),
   });
 
-  const nodeViewContextValue = useMemo<NodeViewContextType>(() => ({
-    fetchOptions: props.autocompleteFetchOptions!,
-    darkMode,
-  }), [props.autocompleteFetchOptions, darkMode]);
+  const nodeViewContextValue = useMemo<NodeViewContextType>(
+    () => ({
+      fetchOptions: props.autocompleteFetchOptions!,
+      darkMode,
+    }),
+    [props.autocompleteFetchOptions, darkMode]
+  );
 
   const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
   useEffect(() => {
-  if (content && editor) {
-    const currentContent = editor.getHTML();
-    if (content !== currentContent) {
-      // Save cursor position
-      const { from, to } = editor.state.selection;
+    if (content && editor) {
+      const currentContent = editor.getHTML();
+      if (content !== currentContent) {
+        // Save cursor position
+        const { from, to } = editor.state.selection;
 
-      // Update content
-      editor.commands.setContent(content);
+        // Update content
+        editor.commands.setContent(content);
 
-      // Restore cursor position
-      const newFrom = Math.min(from, editor.state.doc.content.size);
-      const newTo = Math.min(to, editor.state.doc.content.size);
-      const textSelection = new TextSelection(
-        editor.state.doc.resolve(newFrom),
-        editor.state.doc.resolve(newTo)
-      );
-      editor.view.dispatch(editor.state.tr.setSelection(textSelection));
+        // Restore cursor position
+        const newFrom = Math.min(from, editor.state.doc.content.size);
+        const newTo = Math.min(to, editor.state.doc.content.size);
+        const textSelection = new TextSelection(
+          editor.state.doc.resolve(newFrom),
+          editor.state.doc.resolve(newTo)
+        );
+        editor.view.dispatch(editor.state.tr.setSelection(textSelection));
+      }
     }
-  }
 
-  if (content && dialogEditor) {
-    const currentContent = dialogEditor.getHTML();
-    if (content !== currentContent) {
-      // Save cursor position
-      const { from, to } = dialogEditor.state.selection;
+    if (content && dialogEditor) {
+      const currentContent = dialogEditor.getHTML();
+      if (content !== currentContent) {
+        // Save cursor position
+        const { from, to } = dialogEditor.state.selection;
 
-      // Update content
-      dialogEditor.commands.setContent(content);
+        // Update content
+        dialogEditor.commands.setContent(content);
 
-      // Restore cursor position
-      const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
-      const newTo = Math.min(to, dialogEditor.state.doc.content.size);
-      const textSelection = new TextSelection(
-        dialogEditor.state.doc.resolve(newFrom),
-        dialogEditor.state.doc.resolve(newTo)
-      );
-      dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
+        // Restore cursor position
+        const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
+        const newTo = Math.min(to, dialogEditor.state.doc.content.size);
+        const textSelection = new TextSelection(
+          dialogEditor.state.doc.resolve(newFrom),
+          dialogEditor.state.doc.resolve(newTo)
+        );
+        dialogEditor.view.dispatch(
+          dialogEditor.state.tr.setSelection(textSelection)
+        );
+      }
     }
-  }
-}, [content, editor, dialogEditor]);
+  }, [content, editor, dialogEditor]);
 
   if (!activeEditor) return null;
 
@@ -182,72 +198,70 @@ export const Editor: React.FC<EditorProps> = (props) => {
       <BubbleMenu editor={activeEditor} />
       {/* <CommandMenu editor={activeEditor} showCommandMenu={commandMenu} /> */}
       <div
-        onClick={e => e.stopPropagation()}
-        onKeyDown={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
-        {
-          showEditorInDialog && (
-            <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
-                {/* Menu */}
-                <Menu editor={dialogEditor!}
-                  showRawHtml={showRawHtml}
-                  toggleRawHtml={() => setShowRawHtml((v) => !v)}
-                  darkMode={darkMode}
-                  toggleDarkMode={() => setDarkMode((v) => !v)}
-                  className={
-                    clsx({
-                      '~bg-gray-100': !darkMode,
-                      '~text-gray-800': !darkMode,
-                      '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
-                    })
-                  }
-                />
-
-                {/* Editor */}
-                <EditorContent
-                  editor={dialogEditor!}
-                  content={content}
-                  setContent={setContent}
-                  darkMode={darkMode}
-                  markdownMode={showRawHtml}
-                />
-              </DialogContent>
-            </Dialog>
-          )
-        }
-
-        {
-          !showEditorInDialog && (
-            <>
+        {showEditorInDialog && (
+          <Dialog
+            open={showEditorInDialog}
+            onOpenChange={setShowEditorInDialog}
+          >
+            <DialogContent
+              className='~max-w-[90vw] ~gap-0 ~p-10'
+              onPointerDownOutside={(e) => e.preventDefault()}
+            >
               {/* Menu */}
-              <Menu editor={editor!}
-                setShowEditorInDialog={setShowEditorInDialog}
-                showEditorInDialog={showEditorInDialog}
+              <Menu
+                editor={dialogEditor!}
                 showRawHtml={showRawHtml}
                 toggleRawHtml={() => setShowRawHtml((v) => !v)}
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
-                className={
-                  clsx({
-                    '~bg-gray-100': !darkMode,
-                    '~text-gray-800': !darkMode,
-                    '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
-                  })
-                }
+                className={clsx({
+                  '~bg-surface-pri ~text-text-pri': !darkMode,
+                  '~border-gray-700 ~bg-gray-900 ~text-white': darkMode,
+                })}
               />
 
               {/* Editor */}
               <EditorContent
-                editor={editor!}
+                editor={dialogEditor!}
                 content={content}
                 setContent={setContent}
                 darkMode={darkMode}
                 markdownMode={showRawHtml}
               />
-            </>
-          )
-        }
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {!showEditorInDialog && (
+          <>
+            {/* Menu */}
+            <Menu
+              editor={editor!}
+              setShowEditorInDialog={setShowEditorInDialog}
+              showEditorInDialog={showEditorInDialog}
+              showRawHtml={showRawHtml}
+              toggleRawHtml={() => setShowRawHtml((v) => !v)}
+              darkMode={darkMode}
+              toggleDarkMode={() => setDarkMode((v) => !v)}
+              className={clsx({
+                '~bg-surface-pri ~text-text-pri': !darkMode,
+                '~border-gray-700 ~bg-gray-900 ~text-white': darkMode,
+              })}
+            />
+
+            {/* Editor */}
+            <EditorContent
+              editor={editor!}
+              content={content}
+              setContent={setContent}
+              darkMode={darkMode}
+              markdownMode={showRawHtml}
+            />
+          </>
+        )}
 
         {/* Debugging Content */}
         {/* <div className='~mt-4'>

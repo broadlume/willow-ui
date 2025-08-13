@@ -153,13 +153,14 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
     {
         id: 'text-style',
         widthEstimate: 100,
-        render: ({ editor }) => (
+        render: ({ editor, darkMode }) => (
             <MenuLink
                 title={
                     <SelectionTypeMenuItemContent
                         items={TextStyleItems}
                         onSelection={(value) => TextStyleOnSelection(editor, value)}
                         key={1}
+                        darkMode={darkMode}
                     />
                 }
                 eventHandler={() => { }}
@@ -266,6 +267,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                     key='editor-font-color-picker'
                                 />
                             }
+                            darkMode={darkMode}
                         />
                     }
                     eventHandler={() => { }}
@@ -433,8 +435,10 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                     onSelection={(value) =>
                                         editor.chain().focus().setLineHeight(value).run()
                                     }
+                                    darkMode={darkMode}
                                 />
                             }
+                            darkMode={darkMode}
                         />
                     }
                     eventHandler={() => { }}
