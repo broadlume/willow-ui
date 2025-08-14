@@ -49,7 +49,6 @@ export const Custom: Story = {
   ),
 };
 
-
 export const CustomWithIcon: Story = {
   args: {
     classNames: {

@@ -43,6 +43,8 @@ export interface DataTableProps<TData, TValue> {
   enableSelectAllPages?: boolean;
   enableRowSelection?: boolean;
   enableSingleSelection?: boolean;
+  pageSizeOptions?: number[];
+  noRecordFoundMessage?: React.ReactNode | string;
   customTableRow?: (
     props: React.PropsWithChildren<
       { row: Row<TData> } & Parameters<typeof TableRow>[0]
@@ -55,13 +57,15 @@ export interface DataTableProps<TData, TValue> {
   }) => void;
   itemProps?: {
     root?: DataProps;
-    tableWrapper?: DataProps;
+    tableWrapper?: DataProps & {
+      enableStickyHeader?: boolean;
+    };
     table?: DataProps;
     tableHeader?: DataProps;
     tableHeaderRow?: DataProps;
     tableHead?: DataProps;
     tableBody?: DataProps;
-    tableBodyRow?: DataProps;
+    tableBodyRow?: DataProps | ((row: Row<TData>) => DataProps);
     tableRow?: DataProps;
     tableCell?: DataProps;
     draggable?: DataProps;

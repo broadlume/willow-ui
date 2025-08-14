@@ -39,16 +39,13 @@ export function PaymentMethodDemo(_) {
           {paymentMethods.map(({ icon: Icon, title }) => (
             <Label
               className={cn(
-                'flex cursor-pointer flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4',
+                'flex cursor-pointer flex-col items-center justify-between rounded-md border-2 border-muted bg-surface-pri p-4',
                 'hover:bg-accent hover:text-accent-foreground',
                 '[&:has([data-state=checked])]:border-primary'
               )}
               key={title}
             >
-              <RadioGroupItem
-                value={title.toLowerCase()}
-                className='sr-only'
-              />
+              <RadioGroupItem value={title.toLowerCase()} className='sr-only' />
               <Icon className='mb-3 h-6 w-6' title='test' />
               {title}
             </Label>

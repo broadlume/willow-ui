@@ -11,7 +11,7 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  'relative inline-flex h-9 items-center justify-center bg-background text-muted-foreground',
+  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-muted-foreground',
   {
     variants: {
       variant: {
@@ -43,8 +43,7 @@ const sliderVariants = cva(
       {
         variant: 'pills',
         orientation: 'horizontal',
-        className:
-          'bottom-1 top-1 h-auto rounded-full border-none bg-black',
+        className: 'bottom-1 top-1 h-auto rounded-full border-none bg-black',
       },
     ],
     defaultVariants: {
