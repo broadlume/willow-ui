@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { IconType, SidebarItemProps } from "../types";
 import { SidebarLink } from "./sidebar-link";
 import { ToggleIcon } from "./toggle-icon";
@@ -17,6 +17,7 @@ type Props = {
   };
   rightArrow: IconType;
   downArrow: IconType;
+  defaultParentOpen?: boolean;
 };
 
 export const SidebarSection: FC<Props> = ({
@@ -29,9 +30,12 @@ export const SidebarSection: FC<Props> = ({
   className,
   rightArrow,
   downArrow,
+  defaultParentOpen = false
 }) => {
   const isActive = location === item.link || location + "/" === item.link;
   const hasChildren = item.items?.length;
+
+  const isOpen = openSections[item.label] ?? defaultParentOpen;
 
   if (item.link && !hasChildren) {
     return (
@@ -52,11 +56,12 @@ export const SidebarSection: FC<Props> = ({
       <div
         className="~flex ~items-center ~justify-between ~text-black ~text-sm ~tracking-widest ~cursor-pointer ~pt-1 ~pb-1 ~font-bold hover:~text-violet-600"
         onClick={() => toggleSection(item.label)}
+        data-testid={`sidebar-section-${item.label}`}
       >
         <span>{item.label}</span>
-        <ToggleIcon isOpen={openSections[item.label]} rightArrow={rightArrow} downArrow={downArrow} />
+        <ToggleIcon isOpen={isOpen} rightArrow={rightArrow} downArrow={downArrow} />
       </div>
-      {openSections[item.label] && item.items && (
+      {isOpen && item.items && (
         <SidebarItemList
           items={item.items}
           location={location}
