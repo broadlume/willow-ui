@@ -27,7 +27,7 @@ export const SidebarItemList: FC<Props> = ({
   downArrow,
 }) => {
   return (
-    <ul className="~mt-2 ~ml-1 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
+    <ul className="mt-2 ml-1 border-l border-gray-200 space-y-2 text-[14px]">
       {items.map((child, key) => (
         <li key={child.label + key}>
           <SidebarItem
