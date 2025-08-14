@@ -324,27 +324,6 @@
   margin-top: 0;
   margin-bottom: 0;
 }
-/* 
-.ProseMirror ul {
-  @apply tw:list-disc tw:pl-5;
-}
-
-.ProseMirror ol {
-  @apply tw:list-decimal tw:pl-5;
-}
-
-.ProseMirror table {
-  @apply tw:w-full tw:border-collapse;
-}
-
-.ProseMirror th,
-.ProseMirror td {
-  @apply tw:border tw:border-gray-400 tw:px-4 tw:py-2;
-}
-
-.ProseMirror th {
-  @apply tw:bg-gray-100 tw:font-bold;
-} */
 
 /* Editor Styles */
 
