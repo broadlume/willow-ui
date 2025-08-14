@@ -17,9 +17,9 @@ export const LinkComponent: React.FC<LinkComponentProps> = ({
     <a
       href={to}
       className={clsx(
-        "w-48 h-[34px] flex items-center py-1 pl-[11px] px-[15px]",
-        "border-l-[4px] border-l-indigo-600",
-        "text-indigo-600 hover:text-violet-600",
+        "w-48 h-8 flex items-center py-1 pl-3 px-4",
+        "border-l-4 border-l-text-brand",
+        "text-text-brand hover:text-text-brand",
         className
       )}>
       {children}
