@@ -45,10 +45,7 @@ export function PaymentMethodDemo(_) {
               )}
               key={title}
             >
-              <RadioGroupItem
-                value={title.toLowerCase()}
-                className='sr-only'
-              />
+              <RadioGroupItem value={title.toLowerCase()} className='sr-only' />
               <Icon className='mb-3 h-6 w-6' title='test' />
               {title}
             </Label>

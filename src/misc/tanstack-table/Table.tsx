@@ -472,12 +472,15 @@ export function useDataTable<TData, TValue>({
    * Object: itemProps.tableBodyRow - applies same props to all rows
    * Example usage: tableBodyRow: (row) => ({ className: row.original.isActive ? 'bg-green' : 'bg-red' })
    */
-  const bodyRowProps = useCallback((row) => {
-    if (typeof itemProps?.tableBodyRow === 'function') {
-      return itemProps.tableBodyRow(row);
-    }
-    return itemProps?.tableBodyRow || {};
-  }, [itemProps?.tableBodyRow])
+  const bodyRowProps = useCallback(
+    (row) => {
+      if (typeof itemProps?.tableBodyRow === 'function') {
+        return itemProps.tableBodyRow(row);
+      }
+      return itemProps?.tableBodyRow || {};
+    },
+    [itemProps?.tableBodyRow]
+  );
 
   /**
    * Render Data table Component
@@ -496,11 +499,14 @@ export function useDataTable<TData, TValue>({
         </div>
       ) : (
         <div
-          {...(({ enableStickyHeader, ...rest }) => rest)(itemProps?.tableWrapper || {})}
+          {...(({ enableStickyHeader, ...rest }) => rest)(
+            itemProps?.tableWrapper || {}
+          )}
           className={clsx(
             'rounded-md border',
             {
-              'max-h-[65vh] min-h-[0px] overflow-y-auto': itemProps?.tableWrapper?.enableStickyHeader
+              'max-h-[65vh] min-h-[0px] overflow-y-auto':
+                itemProps?.tableWrapper?.enableStickyHeader,
             },
             itemProps?.tableWrapper?.className
           )}
@@ -521,7 +527,8 @@ export function useDataTable<TData, TValue>({
                   {...itemProps?.tableHeader}
                   className={clsx(
                     {
-                      'sticky top-0 z-20 bg-white shadow-sm': itemProps?.tableWrapper?.enableStickyHeader
+                      'sticky top-0 z-20 bg-white shadow-sm':
+                        itemProps?.tableWrapper?.enableStickyHeader,
                     },
                     itemProps?.tableHeader?.className
                   )}
@@ -571,7 +578,7 @@ export function useDataTable<TData, TValue>({
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                         row={row}
-                         {...bodyRowProps(row)}
+                        {...bodyRowProps(row)}
                         className={clsx(bodyRowProps(row)?.className)}
                       >
                         <TableRowCells row={row} itemProps={itemProps} />
@@ -580,7 +587,7 @@ export function useDataTable<TData, TValue>({
                       <TableRow
                         key={row.id}
                         onClick={(event) => handleRowClick({ event, row })}
-                         {...bodyRowProps(row)}
+                        {...bodyRowProps(row)}
                         className={clsx(bodyRowProps(row)?.className)}
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
