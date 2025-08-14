@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { Loader } from '@components/Loader/Loader';
 import { Button } from './button';
-import { HomeIcon } from '@radix-ui/react-icons';
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -35,13 +35,7 @@ export const Demo: Story = {
         'link',
       ],
     },
-    size: {
-      description: 'The button size.',
-      control: {
-        type: 'select',
-        options: ['default', 'sm', 'lg', 'icon'],
-      },
-    },
+
     disabled: {
       description: 'Whether the button is disabled.',
       control: {
@@ -64,22 +58,22 @@ export const Variants: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args}>Primary</Button>
-        <Button {...args} variant='secondary'>
+        <Button {...args} className='' variant='secondary'>
           Secondary
         </Button>
-        <Button {...args} variant='outline'>
+        <Button {...args} className='' variant='outline'>
           Outline
         </Button>
         <Button {...args} variant='destructive'>
           Destructive
         </Button>
-        <Button {...args} variant='ghost'>
+        <Button {...args} className='' variant='ghost'>
           Ghost
         </Button>
-        <Button {...args} variant='link'>
+        <Button {...args} className='' variant='link'>
           Link
         </Button>
       </div>
@@ -87,23 +81,31 @@ export const Variants: Story = {
   ),
 };
 
-/** All button sizes. */
-export const Sizes: Story = {
+/** All button with icons. */
+export const Icons: Story = {
   args: {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
-        <Button {...args} size='lg'>
-          Primary (lg)
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
+        <Button {...args}>
+          <Loader /> Primary
         </Button>
-        <Button {...args}>Primary (default)</Button>
-        <Button {...args} size='sm'>
-          Primary (sm)
+        <Button {...args} className='' variant='secondary'>
+          <Loader /> Secondary
         </Button>
-        <Button {...args} size='icon'>
-          <HomeIcon />
+        <Button {...args} className='' variant='outline'>
+          <Loader /> Outline
+        </Button>
+        <Button {...args} variant='destructive'>
+          <Loader /> Destructive
+        </Button>
+        <Button {...args} className='' variant='ghost'>
+          <Loader /> Ghost
+        </Button>
+        <Button {...args} className='' variant='link'>
+          <Loader /> Link
         </Button>
       </div>
     </div>

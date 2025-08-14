@@ -100,8 +100,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: clsx(
-          'focus:~outline-none ~not-prose',
-          darkMode ? '!~text-white' : '~text-black'
+          'focus:outline-hidden not-prose',
+          darkMode ? '!text-white' : 'text-black'
         )
       },
       // handleKeyDown: (_, event) => {
@@ -188,7 +188,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
         {
           showEditorInDialog && (
             <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
+              <DialogContent className='max-w-[90vw] gap-0 p-10' onPointerDownOutside={(e) => e.preventDefault()}>
                 {/* Menu */}
                 <Menu editor={dialogEditor!}
                   showRawHtml={showRawHtml}
@@ -197,9 +197,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
                   toggleDarkMode={() => setDarkMode((v) => !v)}
                   className={
                     clsx({
-                      '~bg-gray-100': !darkMode,
-                      '~text-gray-800': !darkMode,
-                      '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                      'bg-gray-100': !darkMode,
+                      'text-gray-800': !darkMode,
+                      'bg-gray-900 text-gray-200 border-gray-600': darkMode,
                     })
                   }
                 />
@@ -230,9 +230,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 toggleDarkMode={() => setDarkMode((v) => !v)}
                 className={
                   clsx({
-                    '~bg-gray-100': !darkMode,
-                    '~text-gray-800': !darkMode,
-                    '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                    'bg-gray-100': !darkMode,
+                    'text-gray-800': !darkMode,
+                    'bg-gray-900 text-gray-200 border-gray-600': darkMode,
                   })
                 }
               />
@@ -250,7 +250,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
         }
 
         {/* Debugging Content */}
-        {/* <div className='~mt-4'>
+        {/* <div className='mt-4'>
         <h3>Editor Content (HTML):</h3>
         <div>{content}</div>
       </div> */}
