@@ -42,6 +42,7 @@ export const Demo: Story = {
     ),
     rightArrow: HiChevronRight,
     downArrow: HiChevronDown,
+    defaultParentOpen: true,
   },
   argTypes: {
     items: {
@@ -63,6 +64,10 @@ export const Demo: Story = {
     downArrow: {
       description: 'The icon for collapsing the section.',
       control: 'object',
+    },
+    defaultParentOpen: {
+      description: 'Whether the parent section should be open by default.',
+      control: 'boolean',
     },
   },
   render: (args) => <Sidebar {...args} />,
