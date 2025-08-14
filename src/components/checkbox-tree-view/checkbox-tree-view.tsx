@@ -165,16 +165,16 @@ const TreeView: React.FC<TreeViewProps> = ({ data, onChange }) => {
   };
 
   const renderTree = (nodes: TreeNode[]) => (
-    <ul className='~ml-4 ~list-none'>
+    <ul className='ml-4 list-none'>
       {nodes.map((node) => (
         <li key={node.id}>
-          <div className='~mb-2 ~flex ~items-center ~gap-2'>
+          <div className='mb-2 flex items-center gap-2'>
             {/* Space reserved for Chevron, even if the node doesn't have one */}
-            <span className='~w-4 ~shrink-0'>
+            <span className='w-4 shrink-0'>
               {node.children && node.children.length > 0 && (
                 <span
                   onClick={() => toggleExpand(node.id)}
-                  className='~cursor-pointer'
+                  className='cursor-pointer'
                 >
                   {expandedState[node.id] ? (
                     <FaChevronDown />
@@ -223,7 +223,7 @@ const TreeView: React.FC<TreeViewProps> = ({ data, onChange }) => {
   return (
     <div>
       {renderTree(data)}
-      <Button className='~mt-2' onClick={reset}>
+      <Button className='mt-2' onClick={reset}>
         Reset Tree
       </Button>
     </div>
