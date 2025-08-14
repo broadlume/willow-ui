@@ -77,6 +77,8 @@ export function useDataTable<TData, TValue>({
   handleRowClick: passedHandlerRowClick,
   includeLoading = false,
   enableSingleSelection = false,
+  noRecordFoundMessage = 'There are no records to display',
+  pageSizeOptions = [5, 10, 20, 50],
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -468,6 +470,19 @@ export function useDataTable<TData, TValue>({
   };
 
   /**
+   * Supports both function and static object configurations:
+   * Function: itemProps.tableBodyRow(row) - allows conditional styling/props per row
+   * Object: itemProps.tableBodyRow - applies same props to all rows
+   * Example usage: tableBodyRow: (row) => ({ className: row.original.isActive ? 'bg-green' : 'bg-red' })
+   */
+  const bodyRowProps = useCallback((row) => {
+    if (typeof itemProps?.tableBodyRow === 'function') {
+      return itemProps.tableBodyRow(row);
+    }
+    return itemProps?.tableBodyRow || {};
+  }, [itemProps?.tableBodyRow])
+
+  /**
    * Render Data table Component
    */
   const CustomDataTable = () => (
@@ -484,9 +499,12 @@ export function useDataTable<TData, TValue>({
         </div>
       ) : (
         <div
-          {...itemProps?.tableWrapper}
+          {...(({ enableStickyHeader, ...rest }) => rest)(itemProps?.tableWrapper || {})}
           className={clsx(
             'rounded-md border',
+            {
+              'max-h-[65vh] min-h-[0px] overflow-y-auto': itemProps?.tableWrapper?.enableStickyHeader
+            },
             itemProps?.tableWrapper?.className
           )}
         >
@@ -504,7 +522,12 @@ export function useDataTable<TData, TValue>({
                 <TableHeader
                   data-testid='data-table-header'
                   {...itemProps?.tableHeader}
-                  className={clsx(itemProps?.tableHeader?.className)}
+                  className={clsx(
+                    {
+                      'sticky top-0 z-20 bg-white shadow-sm': itemProps?.tableWrapper?.enableStickyHeader
+                    },
+                    itemProps?.tableHeader?.className
+                  )}
                 >
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow
@@ -551,8 +574,8 @@ export function useDataTable<TData, TValue>({
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                         row={row}
-                        {...itemProps?.tableBodyRow}
-                        className={clsx(itemProps?.tableBodyRow?.className)}
+                         {...bodyRowProps(row)}
+                        className={clsx(bodyRowProps(row)?.className)}
                       >
                         <TableRowCells row={row} itemProps={itemProps}/>
                       </CustomTableRow>
@@ -560,8 +583,8 @@ export function useDataTable<TData, TValue>({
                       <TableRow
                         key={row.id}
                         onClick={(event) => handleRowClick({ event, row })}
-                        {...itemProps?.tableBodyRow}
-                        className={clsx(itemProps?.tableBodyRow?.className)}
+                         {...bodyRowProps(row)}
+                        className={clsx(bodyRowProps(row)?.className)}
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                       >
@@ -584,7 +607,7 @@ export function useDataTable<TData, TValue>({
                         itemProps?.tableCell?.className
                       )}
                     >
-                      There are no records to display
+                      {noRecordFoundMessage}
                     </TableCell>
                   </TableRow>
                 )}
@@ -714,7 +737,7 @@ export function useDataTable<TData, TValue>({
               <SelectValue />
             </SelectTrigger>
             <SelectContent data-testid='perpage-list'>
-              {[5, 10, 20, 50].map((opt) => (
+              {pageSizeOptions.map((opt) => (
                 <SelectItem
                   {...itemProps?.itemPerPage?.selectItem}
                   data-testid={`perpage-item-${opt}`}
