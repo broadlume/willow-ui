@@ -58,8 +58,8 @@ export const Variants: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args}>Primary</Button>
         <Button {...args} className='' variant='secondary'>
           Secondary
@@ -87,8 +87,8 @@ export const Icons: Story = {
     children: 'Button Label',
   },
   render: (args) => (
-    <div className='~flex ~flex-col ~space-y-2'>
-      <div className='~flex ~gap-1'>
+    <div className='flex flex-col space-y-2'>
+      <div className='flex gap-1'>
         <Button {...args}>
           <Loader /> Primary
         </Button>

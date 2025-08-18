@@ -28,7 +28,7 @@ export const Tags: Story = {
     const style = color && { style: { color } };
 
     return (
-      <div className='tw-reset ~grid ~grid-cols-[auto_1fr] ~items-baseline ~gap-[10px]'>
+      <div className='tw-reset grid grid-cols-[auto_1fr] items-baseline gap-[10px]'>
         <p {...style}>h1</p>
         <h1 {...style}>{input}</h1>
         <p {...style}>h2</p>
@@ -45,7 +45,7 @@ export const Tags: Story = {
         <p {...style}>{input}</p>
         <p {...style}>a</p>
         <a
-          className='~mr-auto'
+          className='mr-auto'
           onClick={(e) => e.preventDefault()}
           href='#'
           {...style}
@@ -67,7 +67,7 @@ export const Variants: Story = {
     const style = color && { style: { color } };
 
     return (
-      <div className='tw-reset ~grid ~grid-cols-[auto_1fr] ~items-baseline ~gap-[10px]'>
+      <div className='tw-reset grid grid-cols-[auto_1fr] items-baseline gap-[10px]'>
         <p {...style}>Body (Large)</p>
         <p className='body-large' {...style}>
           {input}
