@@ -63,7 +63,7 @@ export const Sizes: Story = {
         <Badge variant='secondary' size='small'>
           Secondary (sm)
         </Badge>
-        <Badge variant='success' size='small'>
+        <Badge variant='success' size='xs'>
           Success (sm)
         </Badge>
         <Badge variant='destructive' size='small'>
