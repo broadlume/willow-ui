@@ -74,6 +74,7 @@ const InputWithSlots = React.forwardRef<
             )}
           >
             {label}
+            {inputProps.required && <span className='text-text-brand'>*</span>}
           </label>
         )}
 
@@ -88,7 +89,7 @@ const InputWithSlots = React.forwardRef<
               '[&:not(:has(input:focus))]:outline-destructive',
             {
               'bg-(--color-blue-50)': inputProps.dirty && !inputProps.invalid,
-              'border-border-destructive text-text-destructive':
+              'border-border-destructive hover:border-border-destructive':
                 inputProps.invalid,
               'pl-3': !prefixSlot,
             },
