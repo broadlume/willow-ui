@@ -23,14 +23,15 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
   onClick,
   hasChildren = false,
   onMenuClick,
-  className = ''
+  className = '',
 }) => {
   const linkClass = cn(
     'w-48 hover:text-text-brand',
     {
       'h-8 flex items-center py-1 px-4': hasChildren,
       'h-6 block transition-colors duration-150 font-semibold': !hasChildren,
-      'pl-3 border-l-4 border-l-text-brand text-text-brand': hasChildren && isActive,
+      'pl-3 border-l-4 border-l-text-brand text-text-brand':
+        hasChildren && isActive,
       'pl-4': hasChildren && !isActive,
       'text-text-brand': !hasChildren && isActive,
     },

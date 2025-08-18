@@ -195,12 +195,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         />
       </div>
       {infoMessage ? (
-        <p
-          className={clsx(
-            'mt-3 text-center text-xs',
-            classNames.infoMessage
-          )}
-        >
+        <p className={clsx('mt-3 text-center text-xs', classNames.infoMessage)}>
           {infoMessage}
         </p>
       ) : (

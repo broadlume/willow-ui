@@ -27,7 +27,6 @@ export const CustomDataTable = <T,>({
       {props.selectableRows ? (
         <DataTable
           selectableRowsNoSelectAll
-          // selectableRowsComponent={CustomCheckBox as unknown as ReactNode}
           {...props}
         />
       ) : (
