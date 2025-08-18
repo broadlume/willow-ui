@@ -25,6 +25,8 @@ interface DatePickerPropsBase {
   selected?: DateSelection;
   mode?: DatePickerMode;
   trigger?: React.ReactElement;
+  onOpenChange?: (isOpen: boolean) => void;
+  popoverContentProps?: React.ComponentProps<typeof PopoverContent>;
 }
 
 export type DatePickerSingleProps = Omit<
@@ -57,10 +59,13 @@ export const DatePicker = ({
   selected,
   onSelect,
   trigger,
+  onOpenChange,
+  popoverContentProps,
   ...props
 }: DatePickerProps) => {
   const [_selected, _setSelected] = useState<DateSelection>(selected);
   const [buttonText, setButtonText] = useState<string>('');
+  const [open, setOpen] = useState(false);
 
   function _onSelect(
     selection: (Date & DateRange) | undefined,
@@ -129,24 +134,34 @@ export const DatePicker = ({
   };
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        onOpenChange?.(isOpen);
+      }}
+    >
       <PopoverTrigger asChild disabled={disabled}>
         {trigger || (
           <Button
             variant='outline'
             id='date'
             className={cn(
-              '~w-[250px] ~items-center ~justify-start ~text-left ~font-normal',
-              !selected && '~text-muted-foreground',
+              'w-[250px] items-center justify-start text-left font-normal',
+              !selected && 'text-muted-foreground',
               className
             )}
           >
-            <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
+            <CalendarIcon className='mr-3 h-5 w-5' />
             {buttonText}
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className='~w-auto ~p-0' align='start'>
+      <PopoverContent
+        className='w-auto p-0'
+        align='start'
+        {...popoverContentProps}
+      >
         {mode === 'single' ? (
           <Calendar {...(newProps as DatePickerSingleProps)} />
         ) : (
