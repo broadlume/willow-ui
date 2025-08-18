@@ -20,7 +20,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           'focus-visible:border-border-opt focus-visible:outline-none focus-visible:ring-0',
           'disabled:cursor-not-allowed disabled:bg-surface-sec',
           {
-            'bg-[var(--color-blue-50)]': props.dirty && !props.invalid,
+            'bg-(--color-blue-50)': props.dirty && !props.invalid,
             'border-border-destructive text-text-destructive': props.invalid,
           },
           className

@@ -87,11 +87,10 @@ const InputWithSlots = React.forwardRef<
             inputProps.error &&
               '[&:not(:has(input:focus))]:outline-destructive',
             {
-              'bg-[var(--color-blue-50)]':
-                inputProps.dirty && !inputProps.invalid,
+              'bg-(--color-blue-50)': inputProps.dirty && !inputProps.invalid,
               'border-border-destructive text-text-destructive':
                 inputProps.invalid,
-                'pl-3': !prefixSlot,
+              'pl-3': !prefixSlot,
             },
             inputProps.disabled ? 'cursor-not-allowed bg-surface-sec' : '',
             wrapperProps?.className
