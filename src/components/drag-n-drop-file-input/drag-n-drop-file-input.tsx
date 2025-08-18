@@ -155,8 +155,8 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       onDragOver={(event) => dragOverHandler(event)}
       onDragLeave={(event) => dragLeaveHandler(event)}
       className={clsx(
-        `~flex ~w-full ~flex-col ~items-center ~justify-center ~rounded-md ~border-2 ~border-surface-cta ~bg-surface-pri ~p-8 ${
-          onDrag ? '~border-[#1FA384]' : '~border-[#E8E8E8]'
+        `flex w-full flex-col items-center justify-center rounded-md border-2 border-surface-cta bg-surface-pri p-8 ${
+          onDrag ? 'border-[#1FA384]' : 'border-[#E8E8E8]'
         } `,
         classNames.root
       )}
@@ -164,16 +164,16 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       {topIcon}
       <div
         className={clsx(
-          '~flex ~flex-col ~items-center ~justify-center ~gap-5',
+          'flex flex-col items-center justify-center gap-5',
           classNames.wrapper
         )}
       >
-        <p className={clsx('~mr-2 ~text-sm ~text-text-pri', classNames.label)}>
+        <p className={clsx('mr-2 text-sm text-text-pri', classNames.label)}>
           {label}
         </p>
         <Button
           className={clsx(
-            '~primary-type-button ~text-[0.7rem]',
+            'primary-type-button text-[0.7rem]',
             'custom-primary-button custom-primary-font',
             classNames.button
           )}
@@ -197,7 +197,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       {infoMessage ? (
         <p
           className={clsx(
-            '~mt-3 ~text-center ~text-xs',
+            'mt-3 text-center text-xs',
             classNames.infoMessage
           )}
         >

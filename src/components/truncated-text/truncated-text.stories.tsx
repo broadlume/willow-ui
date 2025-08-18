@@ -19,7 +19,7 @@ type Story = StoryObj<typeof TruncatedText>;
 
 export const Default: Story = {
   render: (_) => (
-    <div className='tw-reset ~flex ~w-[300px] ~flex-col ~gap-2 ~rounded-sm ~border-2 ~p-2'>
+    <div className='tw-reset flex w-[300px] flex-col gap-2 rounded-xs border-2 p-2'>
       <TruncatedText>This is a short text.</TruncatedText>
       <TruncatedText>
         This is a longer text that will be truncated.
@@ -35,13 +35,13 @@ const ResizableStory = (_) => {
   return (
     <ResizablePanelGroup
       direction='horizontal'
-      className='~min-h-[200px] ~w-full ~rounded-lg ~border'
+      className='min-h-[200px] w-full rounded-lg border'
     >
       <ResizablePanel defaultSize={25}>
         <div
           className={cn(
-            '~flex ~h-full ~items-center ~justify-center ~p-6',
-            isFirstTruncated && '~rounded-l-lg ~border ~border-destructive'
+            'flex h-full items-center justify-center p-6',
+            isFirstTruncated && 'rounded-l-lg border border-destructive'
           )}
         >
           <TruncatedText onTruncation={setIsFirstTruncated}>
@@ -53,8 +53,8 @@ const ResizableStory = (_) => {
       <ResizablePanel defaultSize={75}>
         <div
           className={cn(
-            '~flex ~h-full ~items-center ~justify-center ~p-6',
-            isSecondTruncated && '~rounded-r-lg ~border ~border-destructive'
+            'flex h-full items-center justify-center p-6',
+            isSecondTruncated && 'rounded-r-lg border border-destructive'
           )}
         >
           <TruncatedText onTruncation={setIsSecondTruncated}>
