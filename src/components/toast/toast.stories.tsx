@@ -29,7 +29,7 @@ const meta: Meta = {
     variant: {
       control: {
         type: 'select',
-        options: ['default', 'destructive'],
+        options: ['default', 'warning', 'success', 'destructive'],
       },
     },
     asChild: {
