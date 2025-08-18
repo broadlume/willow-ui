@@ -43,8 +43,7 @@ const sliderVariants = cva(
       {
         variant: 'pills',
         orientation: 'horizontal',
-        className:
-          'bottom-1 top-1 h-auto rounded-full border-none bg-black',
+        className: 'bottom-1 top-1 h-auto rounded-full border-none bg-black',
       },
     ],
     defaultVariants: {
