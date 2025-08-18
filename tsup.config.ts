@@ -51,6 +51,24 @@ export default defineConfig((options) => ({
   loader: {
     '.css': 'css', // change from 'local-css' to 'css'
     '.scss': 'css', // add this line to handle scss files as css
+    '.aac': 'base64',
+    '.eot': 'base64',
+    '.flac': 'base64',
+    '.gif': 'base64',
+    '.jpeg': 'base64',
+    '.jpg': 'base64',
+    '.mp3': 'base64',
+    '.mp4': 'base64',
+    '.ogg': 'base64',
+    '.otf': 'base64',
+    '.png': 'base64',
+    '.svg': 'base64',
+    '.ttf': 'base64',
+    '.wav': 'base64',
+    '.webm': 'base64',
+    '.webp': 'base64',
+    '.woff': 'base64',
+    '.woff2': 'base64',
   },
 
   // Ensure React 17+ JSX transform is used.

@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { HiChevronDown, HiChevronRight } from 'react-icons/hi2';
 import { SidebarSection } from './components/sidebar-section';
 import { SidebarItemProps, SidebarProps } from './types';
+import clsx from 'clsx';
 
 const getInitialOpenSections = (
   pathname: string,
@@ -51,6 +52,9 @@ export const Sidebar: FC<SidebarProps> = ({
   downArrow = HiChevronDown,
   className,
   defaultParentOpen = false,
+  classNames = {
+    asideClassName: '',
+  },
 }) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     () => {
@@ -78,7 +82,12 @@ export const Sidebar: FC<SidebarProps> = ({
   };
 
   return (
-    <aside className='w-64 h-screen border-r py-6 px-8 bg-surface-pri text-sm flex flex-col gap-6'>
+    <aside
+      className={clsx(
+        'w-64 h-screen border-r px-8 bg-surface-pri text-sm flex flex-col gap-6',
+        classNames.asideClassName
+      )}
+    >
       {items
         .filter((item) => !item.hidden)
         .map((item, key) => (

@@ -600,7 +600,6 @@ export function useDataTable<TData, TValue>({
                   <TableRow
                     data-testid={'data-table-row-' + 'no-rows'}
                     {...itemProps?.tableBodyRow}
-                    className={clsx(itemProps?.tableBodyRow?.className)}
                   >
                     <TableCell
                       data-testid='data-table-row-cell-no-rows'

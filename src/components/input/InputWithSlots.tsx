@@ -80,7 +80,7 @@ const InputWithSlots = React.forwardRef<
         <div
           {...wrapperProps}
           className={cn(
-            'flex items-stretch rounded-md border border-border-sec bg-surface-pri  text-sm',
+            'flex items-center rounded-md border border-border-sec bg-surface-pri text-sm px-2 gap-1',
             'placeholder:text-text-opt',
             'hover:border-border-opt',
             'focus-visible:border-border-opt focus-visible:outline-none focus-visible:ring-0',
