@@ -54,8 +54,8 @@ function Calendar({
         cell: cn(
           'relative p-0 text-center focus-within:relative focus-within:z-20 ',
           props.mode === 'range'
-            ? '[&:has(>.day-range-end)]:~rounded-r-full [&:has(>.day-range-start)]:~rounded-l-full [&:has([aria-selected])]:~bg-surface-cta first:[&:has([aria-selected])]:~rounded-l-full last:[&:has([aria-selected])]:~rounded-r-full'
-            : '[&:has([aria-selected])]:~rounded-full',
+            ? '[&:has(>.day-range-end)]:rounded-r-full [&:has(>.day-range-start)]:rounded-l-full [&:has([aria-selected])]:bg-surface-cta first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-full'
+            : '[&:has([aria-selected])]:rounded-full',
           classNames?.cell
         ),
         day: cn(
@@ -64,14 +64,14 @@ function Calendar({
           classNames?.day
         ),
         day_selected: cn(
-          'aria-selected:~bg-surface-cta aria-selected:~text-text-cta2',
-          'aria-selected:hover:~bg-surface-cta aria-selected:hover:~text-text-cta2',
-          'hover:~bg-surface-cta hover:~text-text-pri-foreground',
-          'focus:~bg-surface-cta focus:~text-text-pri-foreground',
+          'aria-selected:bg-surface-cta aria-selected:text-text-cta2',
+          'aria-selected:hover:bg-surface-cta aria-selected:hover:text-text-cta2',
+          'hover:bg-surface-cta hover:text-text-pri-foreground',
+          'focus:bg-surface-cta focus:text-text-pri-foreground',
           classNames?.day_selected
         ),
         day_today: cn(
-          'today ~bg-surface-sec ~text-text-sec-foreground',
+          'today bg-surface-sec text-text-sec-foreground',
           classNames?.day_today
         ),
         day_outside: cn(
@@ -83,8 +83,8 @@ function Calendar({
           classNames?.day_disabled
         ),
         day_range_middle: cn(
-          'aria-selected:~bg-surface-cta aria-selected:~text-accent-foreground',
-          '[&.today]:~bg-surface-cta',
+          'aria-selected:bg-surface-cta aria-selected:text-accent-foreground',
+          '[&.today]:bg-surface-cta',
           classNames?.day_range_middle
         ),
         day_range_start: cn('day-range-start', classNames?.day_range_start),
