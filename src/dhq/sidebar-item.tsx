@@ -6,7 +6,7 @@ type Props = {
 
 const SidebarItem = ({ children }: Props) => {
   return (
-    <div className='~flex ~h-[50px] ~w-full ~items-center ~justify-center hover:~bg-mosaic/10'>
+    <div className='flex h-[50px] w-full items-center justify-center hover:bg-mosaic/10'>
       {children}
     </div>
   );

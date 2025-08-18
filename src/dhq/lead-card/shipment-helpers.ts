@@ -31,64 +31,64 @@ const fulfillment_status_map: Record<
 > = {
   [pending]: {
     title: 'Awaiting Fulfillment',
-    color: '~text-heart ~bg-heart/20',
+    color: 'text-heart bg-heart/20',
     index: 2,
   },
   [open]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [success]: {
     title: 'Delivered',
-    color: '~text-success ~bg-success/20',
+    color: 'text-success bg-success/20',
     index: 0,
   },
-  [error]: { title: 'Error', color: '~text-danger ~bg-danger/20', index: 3 },
-  [failure]: { title: 'Failed', color: '~text-danger ~bg-danger/20', index: 3 },
+  [error]: { title: 'Error', color: 'text-danger bg-danger/20', index: 3 },
+  [failure]: { title: 'Failed', color: 'text-danger bg-danger/20', index: 3 },
   [cancelled]: {
     title: 'Canceled',
-    color: '~text-danger ~bg-danger/20',
+    color: 'text-danger bg-danger/20',
     index: 3,
   },
   [label_printed]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [label_purchased]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [attempted_delivery]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [ready_for_pickup]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [confirmed]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [in_transit]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [out_for_delivery]: {
     title: 'In Transit',
-    color: '~text-ribbon ~bg-ribbon/20',
+    color: 'text-ribbon bg-ribbon/20',
     index: 1,
   },
   [delivered]: {
     title: 'Delivered',
-    color: '~text-success ~bg-success/20',
+    color: 'text-success bg-success/20',
     index: 0,
   },
 };
