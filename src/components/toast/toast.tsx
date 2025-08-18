@@ -39,11 +39,11 @@ const toastVariants = cva(
       variant: {
         default: 'border bg-surface-pri',
         warning:
-          'rounded-lg border border-[var(--color-yellow-400)] [background:linear-gradient(270deg,rgba(255,221,51,0)_45.19%,rgba(255,221,51,0.12)_100%),#fff]',
+          'rounded-lg border border-(--color-yellow-400) [background:linear-gradient(270deg,rgba(255,221,51,0)_45.19%,rgba(255,221,51,0.12)_100%),#fff]',
         success:
-          'rounded-lg border border-[var(--color-green-500)] [background:linear-gradient(270deg,rgba(0,237,123,0)_45.19%,rgba(0,237,81,0.12)_100%),#fff]',
+          'rounded-lg border border-(--color-green-500) [background:linear-gradient(270deg,rgba(0,237,123,0)_45.19%,rgba(0,237,81,0.12)_100%),#fff]',
         destructive:
-          'rounded-lg border border-[var(--color-red-500)] [background:linear-gradient(270deg,rgba(255,85,85,0)_45.19%,rgba(255,85,85,0.12)_100%),#fff]',
+          'rounded-lg border border-(--color-red-500) [background:linear-gradient(270deg,rgba(255,85,85,0)_45.19%,rgba(255,85,85,0.12)_100%),#fff]',
       },
     },
     defaultVariants: {
@@ -57,23 +57,31 @@ const iconVariants = (variant: string) => {
     case 'warning':
       return (
         <RiErrorWarningFill
-          className={`h-9 w-9 p-1 text-[var(--color-yellow-400)] border-2 rounded-full border-[var(--color-yellow-400)]`}
+          className={`h-9 w-9 p-1 text-[var(--color-yellow-400)] border-2 rounded-full border-(--color-yellow-400)`}
         />
       );
     case 'success':
       return (
         <GoCheckCircleFill
-          className={'h-9 w-9 p-1 text-[var(--color-green-500)] border-2 rounded-full border-[var(--color-green-500)]'}
+          className={
+            'h-9 w-9 p-1 text-[var(--color-green-500)] border-2 rounded-full border-(--color-green-500)'
+          }
         />
       );
     case 'destructive':
       return (
-        <GoXCircleFill className={'h-9 w-9 p-1 text-[var(--color-red-500)] border-2 rounded-full border-[var(--color-red-500)]'} />
+        <GoXCircleFill
+          className={
+            'h-9 w-9 p-1 text-[var(--color-red-500)] border-2 rounded-full border-(--color-red-500)'
+          }
+        />
       );
     default:
       return (
         <GoCheckCircleFill
-          className={'h-9 w-9 p-1 text-text-opt border-2 rounded-full border-text-opt'}
+          className={
+            'h-9 w-9 p-1 text-text-opt border-2 rounded-full border-text-opt'
+          }
         />
       );
   }
@@ -162,10 +170,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn(
-      'text-xs font-normal text-text-opt opacity-90',
-      className
-    )}
+    className={cn('text-xs font-normal text-text-opt opacity-90', className)}
     {...props}
   />
 ));
