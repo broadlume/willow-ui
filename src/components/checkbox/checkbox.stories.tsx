@@ -34,31 +34,34 @@ export const WithText: Story = {
   ),
 };
 
-
 /** A checkbox with different states. */
 export const WithDataStates: Story = {
   render: (_) => {
-    const [state, setState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>('unchecked');
+    const [state, setState] = React.useState<
+      'checked' | 'unchecked' | 'indeterminate'
+    >('unchecked');
 
     const handleToggle = () => {
       setState((prev) =>
-        prev === 'unchecked' ? 'checked' :
-        prev === 'checked' ? 'indeterminate' :
-        'unchecked'
+        prev === 'unchecked'
+          ? 'checked'
+          : prev === 'checked'
+          ? 'indeterminate'
+          : 'unchecked'
       );
     };
 
     return (
-      <div className='~items-top ~flex ~space-x-2'>
+      <div className='items-top flex space-x-2'>
         <Checkbox
           id='terms1'
           checked={state === 'checked' || state === 'indeterminate'}
           data-state={state}
           onClick={handleToggle}
         />
-        <div className='tw-reset ~grid ~gap-2 ~leading-none'>
+        <div className='tw-reset grid gap-2 leading-none'>
           <Label htmlFor='terms1'>Accept terms & conditions</Label>
-          <p className='~text-muted-foreground'>
+          <p className='text-muted-foreground'>
             You agree to our Terms of Service & Privacy Policy.
           </p>
         </div>
