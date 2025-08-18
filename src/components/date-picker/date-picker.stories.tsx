@@ -13,9 +13,27 @@ export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
 const DatePickerSingleOrRangeDemo = (props: DatePickerProps) => {
+  const { onOpenChange, ...restProps } = props;
   const [date, setDate] = useState<Date | DateRange>();
 
-  return <DatePicker selected={date} onSelect={setDate} {...props} />;
+  return (
+    <DatePicker
+      selected={date}
+      onSelect={setDate}
+      onOpenChange={(isOpen) => {
+        console.log('open changed:', isOpen);
+        onOpenChange?.(isOpen);
+
+        if (!isOpen) {
+          console.log('Popover closed (outside click or ESC)');
+        }
+      }}
+      popoverContentProps={{
+        sideOffset: 20,
+      }}
+      {...restProps}
+    />
+  );
 };
 export const Demo: Story = {
   render: DatePickerSingleOrRangeDemo,

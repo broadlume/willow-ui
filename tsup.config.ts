@@ -2,10 +2,6 @@ import { defineConfig } from 'tsup';
 import { peerDependencies } from './package.json';
 import svgrPlugin from 'esbuild-plugin-svgr';
 import { sassPlugin } from 'esbuild-sass-plugin';
-// import cssModulesPlugin from 'esbuild-css-modules-plugin';
-import cssModulePlugin from 'esbuild-plugin-css-module';
-import { cssplugin } from './cssplugin';
-// import { sassPlugin } from 'esbuild-sass-plugin';
 
 // https://tsup.egoist.dev/
 export default defineConfig((options) => ({
@@ -18,10 +14,7 @@ export default defineConfig((options) => ({
   // Directory to output the built files.
   outDir: 'dist',
 
-  // This is a key difference from Vite's `fileName`.
   // tsup uses the entry file name as the base for the output.
-  // So 'src/index.ts' becomes 'index.js'. Your Vite config created 'willow-ui.es.js'.
-  // While you can't rename the file stem directly in tsup, you can control the extension.
   // Your `package.json` exports will point to `dist/index.cjs` and `dist/index.es.js`.
   outExtension({ format }) {
     if (format === 'cjs') return { js: '.cjs' };

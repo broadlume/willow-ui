@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import { Button } from '@components/button';
 import clsx from 'clsx';
+import { Trash2 } from 'lucide-react';
 
 interface DragNDropFileInputProps {
   file: File;
@@ -154,8 +155,8 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       onDragOver={(event) => dragOverHandler(event)}
       onDragLeave={(event) => dragLeaveHandler(event)}
       className={clsx(
-        `~flex ~w-full ~flex-col ~items-center ~justify-center ~rounded ~border-2 ~border-dotted ~bg-[#FAFAFA] ~p-8 ${
-          onDrag ? '~border-[#1FA384]' : '~border-[#E8E8E8]'
+        `flex w-full flex-col items-center justify-center rounded-md border-2 border-surface-cta bg-surface-pri p-8 ${
+          onDrag ? 'border-[#1FA384]' : 'border-[#E8E8E8]'
         } `,
         classNames.root
       )}
@@ -163,16 +164,16 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       {topIcon}
       <div
         className={clsx(
-          '~flex ~items-center ~justify-center',
+          'flex flex-col items-center justify-center gap-5',
           classNames.wrapper
         )}
       >
-        <p className={clsx('~mr-2 ~text-sm ~text-[#A6A6A6]', classNames.label)}>
+        <p className={clsx('mr-2 text-sm text-text-pri', classNames.label)}>
           {label}
         </p>
         <Button
           className={clsx(
-            '~primary-type-button ~text-[0.7rem]',
+            'primary-type-button text-[0.7rem]',
             'custom-primary-button custom-primary-font',
             classNames.button
           )}
@@ -194,12 +195,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
         />
       </div>
       {infoMessage ? (
-        <p
-          className={clsx(
-            '~mt-3 ~text-center ~text-xs',
-            classNames.infoMessage
-          )}
-        >
+        <p className={clsx('mt-3 text-center text-xs', classNames.infoMessage)}>
           {infoMessage}
         </p>
       ) : (
