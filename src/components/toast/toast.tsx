@@ -1,5 +1,8 @@
 import React from 'react';
 import { Cross2Icon } from '@radix-ui/react-icons';
+import { RiErrorWarningFill } from 'react-icons/ri';
+import { GoCheckCircleFill, GoXCircleFill } from 'react-icons/go';
+
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -34,9 +37,13 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border bg-background',
+        default: 'border bg-surface-pri',
+        warning:
+          'rounded-lg border border-(--color-yellow-400) [background:linear-gradient(270deg,rgba(255,221,51,0)_45.19%,rgba(255,221,51,0.12)_100%),#fff]',
+        success:
+          'rounded-lg border border-(--color-green-500) [background:linear-gradient(270deg,rgba(0,237,123,0)_45.19%,rgba(0,237,81,0.12)_100%),#fff]',
         destructive:
-          'destructive group border-destructive bg-destructive text-destructive-foreground',
+          'rounded-lg border border-(--color-red-500) [background:linear-gradient(270deg,rgba(255,85,85,0)_45.19%,rgba(255,85,85,0.12)_100%),#fff]',
       },
     },
     defaultVariants: {
@@ -45,18 +52,59 @@ const toastVariants = cva(
   }
 );
 
+const iconVariants = (variant: string) => {
+  switch (variant) {
+    case 'warning':
+      return (
+        <RiErrorWarningFill
+          className={`h-9 w-9 p-1 text-[var(--color-yellow-400)] border-2 rounded-full border-(--color-yellow-400)`}
+        />
+      );
+    case 'success':
+      return (
+        <GoCheckCircleFill
+          className={
+            'h-9 w-9 p-1 text-[var(--color-green-500)] border-2 rounded-full border-(--color-green-500)'
+          }
+        />
+      );
+    case 'destructive':
+      return (
+        <GoXCircleFill
+          className={
+            'h-9 w-9 p-1 text-[var(--color-red-500)] border-2 rounded-full border-(--color-red-500)'
+          }
+        />
+      );
+    default:
+      return (
+        <GoCheckCircleFill
+          className={
+            'h-9 w-9 p-1 text-text-opt border-2 rounded-full border-text-opt'
+          }
+        />
+      );
+  }
+};
+
 /** A succinct message that is displayed temporarily. */
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
     VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+>(({ className, variant, children, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
-    />
+    >
+      <div className='mr-2 h-9 w-9 bg-white rounded-full'>
+        {iconVariants(variant ?? 'default')}
+      </div>
+
+      <div className='flex min-w-0 flex-1 flex-col'>{children}</div>
+    </ToastPrimitives.Root>
   );
 });
 Toast.displayName = ToastPrimitives.Root.displayName;
@@ -70,7 +118,7 @@ const ToastAction = React.forwardRef<
     className={cn(
       'body-small inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 transition-colors',
       'hover:bg-secondary',
-      'focus:outline-hidden focus:ring-1 focus:ring-ring',
+      'focus:ring-ring focus:outline-none focus:ring-1',
       'disabled:pointer-events-none disabled:opacity-50',
       'group-[.destructive]:border-muted/40',
       'group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground',
@@ -89,9 +137,9 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      'absolute right-1 top-1 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity',
+      'text-foreground/50 absolute right-1 top-1 rounded-md p-1 opacity-0 transition-opacity',
       'hover:text-foreground group-hover:opacity-100',
-      'focus:opacity-100 focus:outline-hidden focus:ring-1',
+      'focus:opacity-100 focus:outline-none focus:ring-1',
       'group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50',
       'group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
       className
@@ -110,7 +158,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn('body-large [&+div]:text-xs', className)}
+    className={cn('body-large font-semibold [&+div]:text-sm', className)}
     {...props}
   />
 ));
@@ -122,7 +170,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn('opacity-90', className)}
+    className={cn('text-xs font-normal text-text-opt opacity-90', className)}
     {...props}
   />
 ));

@@ -5,18 +5,16 @@ import { cn } from '@src/lib/utils';
 
 const badgeVariants = cva(
   [
-    'tw-reset ~font-2xl ~text-2xs ~inline-flex ~cursor-default ~items-center ~rounded ~px-2 ~py-1 ~transition-colors ~gap-2 ~shadow', 
-    'focus:~outline-none focus:~ring-2 focus:~ring-ring focus:~ring-offset-2',  
-    '~h-5',
+    'tw-reset font-2xl text-2xs inline-flex cursor-default items-center rounded px-2 py-1 transition-colors gap-2 shadow',
+    'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+    'h-5',
   ],
   {
     variants: {
       /** Variant color of the badge. */
       variant: {
-        default:
-          'border-transparent bg-primary text-primary-foreground shadow',
-        secondary:
-          'border-transparent bg-secondary text-secondary-foreground',
+        default: 'border-transparent bg-primary text-primary-foreground shadow',
+        secondary: 'border-transparent bg-secondary text-secondary-foreground',
         success: 'border-transparent bg-success text-success-foreground',
         destructive:
           'border-transparent bg-destructive text-destructive-foreground shadow',
