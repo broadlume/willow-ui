@@ -11,12 +11,12 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-muted-foreground',
+  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-text-brand text-sm',
   {
     variants: {
       variant: {
-        default: '',
-        pills: 'rounded-full border border-black p-1',
+        default: 'border-b border-border-sec',
+        pills: 'rounded-full border border-border-brand p-1',
       },
     },
     defaultVariants: {
@@ -26,12 +26,12 @@ const tabListVariants = cva(
 );
 
 const sliderVariants = cva(
-  'pointer-events-none absolute transition-all duration-300 ease-in-out',
+  'pointer-events-none absolute transition-all duration-300 ease-in-out text-sm',
   {
     variants: {
       variant: {
-        default: 'z-10 border-primary',
-        pills: 'bottom-1 top-1 rounded-full bg-black',
+        default: 'border-border-brand',
+        pills: 'bottom-1 top-1 rounded-full bg-surface-brand',
       },
       orientation: {
         horizontal: 'left-0 h-full border-b-2',
@@ -43,7 +43,8 @@ const sliderVariants = cva(
       {
         variant: 'pills',
         orientation: 'horizontal',
-        className: 'bottom-1 top-1 h-auto rounded-full border-none bg-black',
+        className:
+          'bottom-1 top-1 h-auto rounded-full border-none bg-surface-brand',
       },
     ],
     defaultVariants: {
