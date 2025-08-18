@@ -20,7 +20,11 @@ const Label = React.forwardRef<
     {...props}
   >
     {props.children}
-    {props.required ? <span style={{ color: 'var(--color-red-500)' }}>*</span> : ''}
+    {props.required ? (
+      <span style={{ color: 'var(--color-red-500)' }}>*</span>
+    ) : (
+      ''
+    )}
   </LabelPrimitive.Root>
 ));
 Label.displayName = LabelPrimitive.Root.displayName;
