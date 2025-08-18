@@ -17,15 +17,16 @@ export const Simple: Story = {
   args: {
     classNames: {
       wrapper: [],
-      label: [''],
+      label: [],
+      separator: [],
     },
     onClick: (e) => alert('clicked=' + e.target.id),
   },
   render: (args) => (
     <BreadCrumb>
-      <BreadCrumbItem id='item1' label='Item 1' {...args} />
-      <BreadCrumbItem id='item2' label='Item 2' {...args} />
-      <BreadCrumbItem id='item3' label='Item 3' isLast={true} {...args} />
+      <BreadCrumbItem {...args} id='item1' label='Item 1' isFirst={true} />
+      <BreadCrumbItem {...args} id='item2' label='Item 2' />
+      <BreadCrumbItem {...args} id='item3' label='Item 3' isLast={true} />
     </BreadCrumb>
   ),
 };
@@ -34,16 +35,34 @@ export const Custom: Story = {
   args: {
     classNames: {
       wrapper: [''],
-      label: ['text-4xl text-junglegreen'],
+      label: ['text-4xl text-text-brand font-semibold uppercase'],
+      separator: ['mx-2 text-4xl font-semibold text-text-brand'],
+    },
+    onClick: (e) => alert('clicked=' + e.target.id),
+  },
+  render: (args) => (
+    <BreadCrumb>
+      <BreadCrumbItem {...args} id='item1' label='Item 1' isFirst={true} />
+      <BreadCrumbItem {...args} id='item2' label='Item 2' />
+      <BreadCrumbItem {...args} id='item3' label='Item 3' isLast={true} />
+    </BreadCrumb>
+  ),
+};
+
+export const CustomWithIcon: Story = {
+  args: {
+    classNames: {
+      wrapper: [''],
+      label: ['~text-4xl ~text-text-brand'],
     },
     customIcon: () => (
-      <FaChevronCircleRight className='mx-3 text-lg text-ash-light' />
+      <FaChevronCircleRight className='~text-ash-light ~mx-3 ~text-lg' />
     ),
     onClick: (e) => alert('clicked=' + e.target.id),
   },
   render: (args) => (
     <BreadCrumb>
-      <BreadCrumbItem {...args} id='item1' label='Item 1' />
+      <BreadCrumbItem {...args} id='item1' label='Item 1' isFirst={true} />
       <BreadCrumbItem {...args} id='item2' label='Item 2' />
       <BreadCrumbItem {...args} id='item3' label='Item 3' isLast={true} />
     </BreadCrumb>
