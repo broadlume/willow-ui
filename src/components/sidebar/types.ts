@@ -22,6 +22,7 @@ export type SidebarProps = {
     menuClass?: string;
     menuLinkClass?: string;
   };
+  defaultParentOpen?: boolean;
 };
 
 export type IconType = ComponentType<{ className?: string }>;

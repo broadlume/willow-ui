@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { DragNDropFileInput } from './drag-n-drop-file-input';
+import { IoIosFolderOpen } from 'react-icons/io';
 
 const meta: Meta = {
   component: DragNDropFileInput,
@@ -27,38 +28,12 @@ export const Demo: Story = {
         }}
         button={
           <>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-6 w-6'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth={2}
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <path d='M12 2l9 7-9 7-9-7 9-7z' />
-              <path d='M12 22V8' />
-            </svg>{' '}
-            Browse Files
+            <IoIosFolderOpen className='~h-4 ~w-4' />
+            Browse
           </>
         }
-        label='Drag and drop your files here or '
-        topIcon={
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            className='h-6 w-6'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth={2}
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M12 2l9 7-9 7-9-7 9-7z' />
-            <path d='M12 22V8' />
-          </svg>
-        }
+        label='Drag & drop here or Please select file to upload.'
+        topIcon={''}
       />
     );
   },
