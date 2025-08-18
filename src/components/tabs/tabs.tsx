@@ -11,12 +11,12 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  '~relative ~inline-flex ~h-9 ~items-center ~justify-center ~bg-surface-pri ~text-muted-foreground',
+  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-muted-foreground',
   {
     variants: {
       variant: {
         default: '',
-        pills: '~rounded-full ~border ~border-black ~p-1',
+        pills: 'rounded-full border border-black p-1',
       },
     },
     defaultVariants: {
@@ -26,16 +26,16 @@ const tabListVariants = cva(
 );
 
 const sliderVariants = cva(
-  '~pointer-events-none ~absolute ~transition-all ~duration-300 ~ease-in-out',
+  'pointer-events-none absolute transition-all duration-300 ease-in-out',
   {
     variants: {
       variant: {
-        default: '~z-10 ~border-primary',
-        pills: '~bottom-1 ~top-1 ~rounded-full ~bg-black',
+        default: 'z-10 border-primary',
+        pills: 'bottom-1 top-1 rounded-full bg-black',
       },
       orientation: {
-        horizontal: '~left-0 ~h-full ~border-b-2',
-        vertical: '~top-0 ~w-full ~border-r-2',
+        horizontal: 'left-0 h-full border-b-2',
+        vertical: 'top-0 w-full border-r-2',
       },
     },
     // TODO: compound variant may make default pill variant effectively redundant
@@ -43,8 +43,7 @@ const sliderVariants = cva(
       {
         variant: 'pills',
         orientation: 'horizontal',
-        className:
-          '~bottom-1 ~top-1 ~h-auto ~rounded-full ~border-none ~bg-black',
+        className: 'bottom-1 top-1 h-auto rounded-full border-none bg-black',
       },
     ],
     defaultVariants: {
@@ -55,19 +54,19 @@ const sliderVariants = cva(
 
 const tabTriggerVariants = cva(
   [
-    'caption-1 ~inline-flex ~min-h-0 ~items-center ~justify-center ~whitespace-nowrap ~px-3 ~py-1 ~ring-offset-background ~transition-all',
-    'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
-    'disabled:~pointer-events-none disabled:~opacity-50',
+    'caption-1 inline-flex min-h-0 items-center justify-center whitespace-nowrap px-3 py-1 ring-offset-background transition-all',
+    'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+    'disabled:pointer-events-none disabled:opacity-50',
   ],
   {
     variants: {
       variant: {
         default: cn(
-          '~h-full ~border-b ~border-border',
-          'data-[state=inactive]:~font-normal data-[state=active]:~text-foreground'
+          'h-full border-b border-border',
+          'data-[state=inactive]:font-normal data-[state=active]:text-foreground'
         ),
         pills:
-          '~z-10 ~rounded-full ~text-foreground data-[state=active]:~text-white',
+          'z-10 rounded-full text-foreground data-[state=active]:text-white',
       },
     },
     defaultVariants: {
@@ -155,7 +154,7 @@ const TabsList = React.forwardRef<
         ref={sliderRef}
         className={cn(
           sliderVariants({ variant, orientation }),
-          isFirstRender ? '~transition-none' : ''
+          isFirstRender ? 'transition-none' : ''
         )}
       />
       {children}
@@ -188,8 +187,8 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      '~mt-2 ~ring-offset-background',
-      'focus-visible:~outline-none focus-visible:~ring-2 focus-visible:~ring-ring focus-visible:~ring-offset-2',
+      'mt-2 ring-offset-background',
+      'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
       className
     )}
     {...props}
