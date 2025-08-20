@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 
 const buttonVariants = cva(
   [
-    'inline-flex h-9 items-center justify-center gap-2 overflow-hidden rounded-[100px] px-4 font-founders_grotesk text-xs font-semibold uppercase leading-none shadow',
+    'inline-flex h-9 items-center justify-center gap-2 overflow-hidden rounded-[100px] px-4 font-founders_grotesk text-xs font-semibold uppercase leading-none shadow tracking-[0.24px]',
     'hover:cursor-pointer',
     'focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-2',
     'disabled:cursor-not-allowed',
