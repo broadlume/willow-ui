@@ -55,7 +55,7 @@ const sliderVariants = cva(
 
 const tabTriggerVariants = cva(
   [
-    'caption-1 inline-flex min-h-0 items-center justify-center whitespace-nowrap px-3 py-1 ring-offset-background transition-all',
+    'caption-1 inline-flex min-h-0 items-center justify-center whitespace-nowrap font-semibold ring-offset-background transition-all',
     'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
@@ -63,11 +63,13 @@ const tabTriggerVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'h-full border-b border-border',
-          'data-[state=inactive]:font-normal data-[state=active]:text-foreground'
+          'h-full border-b border-border px-3 pb-3',
+          'data-[state=inactive]:text-text-opt data-[state=active]:text-foreground'
         ),
-        pills:
-          'z-10 rounded-full text-foreground data-[state=active]:text-white',
+        pills:cn(
+          'px-3 py-1',
+          'z-10 rounded-full text-foreground data-[state=active]:text-white'
+        ),
       },
     },
     defaultVariants: {

@@ -257,11 +257,13 @@ export function useDataTable<TData, TValue>({
         return (
           <Checkbox
             data-testid={'table-header-select-checkbox'}
-            checked={isIndeterminate ? 'indeterminate' : isChecked}
+            checked={isChecked || isIndeterminate ? true : false}
+            data-state={isIndeterminate ? 'indeterminate' : isChecked ? 'checked' : 'unchecked'}
             onCheckedChange={() => handleHeaderCheckboxClick()}
             // disable selecting all rows if single selection is enabled
             disabled={enableSingleSelection}
             aria-label='Select all'
+            className={'h-4 w-4'}
           />
         );
       },
@@ -276,6 +278,7 @@ export function useDataTable<TData, TValue>({
             data-testid={'table-select-checkbox-' + row.id}
             onCheckedChange={() => handleRowCheckboxChange(row)}
             aria-label='Select row'
+            className={'h-4 w-4'}
           />
         );
       },
