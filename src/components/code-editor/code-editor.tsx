@@ -73,7 +73,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       if (!enableTokenSuggestion) return;
       monaco.languages.registerCompletionItemProvider(language, {
         triggerCharacters: ['{'],
-        // @ts-expect-error fix this
         provideCompletionItems: async (model, position) => {
           const textBeforeCursor = model.getValueInRange({
             startLineNumber: position.lineNumber,
