@@ -46,10 +46,7 @@ interface InputWithSlotsProps
  *   inputProps={{ placeholder: "Enter price" }}
  * />
  */
-const InputWithSlots = React.forwardRef<
-  Parameters<typeof Input>[0],
-  InputWithSlotsProps
->(
+const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
   ({
     prefixSlot,
     postfixSlot,
