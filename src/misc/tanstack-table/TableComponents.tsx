@@ -14,7 +14,7 @@ const Table = React.forwardRef<
   <div className='relative w-full'>
     <table
       ref={ref}
-      className={clsx('w-full caption-bottom text-xs', className)}
+      className={clsx('w-full caption-bottom text-sm', className)}
       {...props}
     />
   </div>
@@ -87,7 +87,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground w-fit text-left align-middle text-xs font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
+      'text-muted-foreground w-fit text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
       '[&:has(td>button[role=checkbox])>td]:mt-[2px]', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}

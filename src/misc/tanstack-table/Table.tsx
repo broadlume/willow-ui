@@ -258,7 +258,13 @@ export function useDataTable<TData, TValue>({
           <Checkbox
             data-testid={'table-header-select-checkbox'}
             checked={isChecked || isIndeterminate ? true : false}
-            data-state={isIndeterminate ? 'indeterminate' : isChecked ? 'checked' : 'unchecked'}
+            data-state={
+              isIndeterminate
+                ? 'indeterminate'
+                : isChecked
+                ? 'checked'
+                : 'unchecked'
+            }
             onCheckedChange={() => handleHeaderCheckboxClick()}
             // disable selecting all rows if single selection is enabled
             disabled={enableSingleSelection}
@@ -666,7 +672,7 @@ export function useDataTable<TData, TValue>({
                   <span
                     className={clsx(
                       '-translate-y-[50%] absolute left-[-2px] top-[32%] rounded-full px-[4px] py-[2px] text-xs',
-                      itemProps?.draggable
+                      itemProps?.draggable?.className
                     )}
                   >
                     <RiDraggable />

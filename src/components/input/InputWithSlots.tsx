@@ -66,7 +66,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
           <label
             htmlFor='price'
             className={cn(
-              'mb-2 block text-sm font-normal text-text-pri',
+              'mb-2 block text-base font-normal text-text-pri',
               classes?.labelClass
             )}
           >
