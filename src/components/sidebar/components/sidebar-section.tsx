@@ -59,7 +59,7 @@ export const SidebarSection: FC<Props> = ({
   return (
     <div key={item.label}>
       <div
-        className='flex items-center justify-between text-text-pri text-sm tracking-widest cursor-pointer pt-1 pb-1 font-semibold hover:text-text-brand'
+        className='flex items-center justify-between text-text-pri text-base tracking-widest cursor-pointer pt-1 pb-1 font-semibold hover:text-text-brand'
         onClick={() => toggleSection(item.label)}
         data-testid={`sidebar-section-${item.label}`}
       >

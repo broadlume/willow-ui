@@ -84,7 +84,7 @@ export const Sidebar: FC<SidebarProps> = ({
   return (
     <aside
       className={clsx(
-        'w-64 h-screen border-r px-8 bg-surface-pri text-sm flex flex-col gap-6',
+        'w-64 h-screen border-r px-8 bg-surface-pri text-base flex flex-col gap-6',
         classNames.asideClassName
       )}
     >
