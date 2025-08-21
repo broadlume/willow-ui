@@ -2,6 +2,7 @@ import { cn } from '@src/lib/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Input, InputProps } from './input';
+import { HiExclamationCircle } from 'react-icons/hi2';
 
 interface InputWithSlotsProps
   extends InputProps,
@@ -108,9 +109,10 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         </div>
 
         {inputProps?.error ? (
-          <p className='mt-1 text-xs font-normal text-text-destructive'>
+          <div className='mt-1 text-xs font-normal text-text-destructive flex flex-row items-center gap-1'>
+            <HiExclamationCircle className='h-3 w-3' />
             {inputProps?.error}
-          </p>
+          </div>
         ) : null}
       </div>
     );
