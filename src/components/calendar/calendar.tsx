@@ -17,7 +17,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn('tw-reset p-3', className)}
+      className={cn('tw-reset p-2', className)}
       classNames={{
         root: cn('w-min', classNames?.root),
         months: cn(
@@ -26,14 +26,14 @@ function Calendar({
         ),
         month: cn('space-y-4', classNames?.month),
         caption: cn(
-          'relative flex items-center justify-center pt-1',
+          'relative flex items-center justify-center pt-1 mb-2',
           classNames?.caption
         ),
         caption_label: cn('text-sm font-medium', classNames?.caption_label),
         nav: cn('flex items-center space-x-1', classNames?.nav),
         nav_button: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-9 w-9 p-0',
+          'h-7 w-7 p-0',
           classNames?.nav_button
         ),
         nav_button_previous: cn(
@@ -42,12 +42,12 @@ function Calendar({
         ),
         nav_button_next: cn('absolute right-1', classNames?.nav_button_next),
         table: cn(
-          'w-full table-fixed border-collapse space-y-1',
+          'table-fixed border-collapse space-y-1',
           classNames?.table
         ),
         head_row: cn('', classNames?.head_row),
         head_cell: cn(
-          'caption-1 w-10 text-center font-normal text-muted-foreground',
+          'caption-1 w-8 text-center text-sm font-normal text-muted-foreground mb-2',
           classNames?.head_cell
         ),
         row: cn('mt-2 w-full', classNames?.row),
@@ -60,7 +60,7 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-10 w-10 p-0 font-normal aria-selected:opacity-100',
+          'h-8 w-8 p-0 font-normal aria-selected:opacity-100',
           classNames?.day
         ),
         day_selected: cn(
