@@ -1,19 +1,30 @@
 import React from 'react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@components/tooltip/tooltip';
 
 interface MenuItemWithTooltipProps {
-    children: React.ReactNode;
-    tooltipContent: string;
-    key?: string | number;
+  children: React.ReactNode;
+  tooltipContent: string;
+  key?: string | number;
 }
 
-export const MenuItemWithTooltip: React.FC<MenuItemWithTooltipProps> = ({ children, tooltipContent, key }) => {
-    return (
-        <TooltipProvider>
-            <Tooltip key={key}>
-                <TooltipTrigger type="button">{children}</TooltipTrigger>
-                <TooltipContent>{tooltipContent}</TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    );
+export const MenuItemWithTooltip: React.FC<MenuItemWithTooltipProps> = ({
+  children,
+  tooltipContent,
+  key,
+}) => {
+  return (
+    <TooltipProvider>
+      <Tooltip key={key}>
+        <TooltipTrigger className='~mt-1' type='button'>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent>{tooltipContent}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 };

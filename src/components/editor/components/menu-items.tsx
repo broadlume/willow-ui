@@ -71,12 +71,12 @@ type L2MenuType = 'video' | 'embed' | 'link' | 'image';
 
 const TextStyleItems = [
     { value: 'normal', label: 'Normal' },
-    { value: 'h1', label: 'Heading 1', className: '~text-2xl' },
-    { value: 'h2', label: 'Heading 2', className: '~text-xl' },
-    { value: 'h3', label: 'Heading 3', className: '~text-lg' },
-    { value: 'h4', label: 'Heading 4', className: '~text-base' },
-    { value: 'h5', label: 'Heading 5', className: '~text-sm' },
-    { value: 'h6', label: 'Heading 6', className: '~text-xs' },
+    { value: 'h1', label: 'Heading 1', className: 'text-2xl' },
+    { value: 'h2', label: 'Heading 2', className: 'text-xl' },
+    { value: 'h3', label: 'Heading 3', className: 'text-lg' },
+    { value: 'h4', label: 'Heading 4', className: 'text-base' },
+    { value: 'h5', label: 'Heading 5', className: 'text-sm' },
+    { value: 'h6', label: 'Heading 6', className: 'text-xs' },
 ];
 
 const TextStyleOnSelection = (editor: Editor, value: string) => {
@@ -111,7 +111,7 @@ const TextStyleOnSelection = (editor: Editor, value: string) => {
 const getCurrentIndentLevel = (editor: Editor) => editor?.getAttributes('paragraph').indent || 0;
 
 export const MenuItemDivider = () => (
-    <div className='~border-[0.5px] ~border-solid ~border-gray-300 ~h-6' />
+    <div className='border-[0.5px] border-solid border-gray-300 h-6' />
 );
 
 export interface MenuItemDefinition {
@@ -132,12 +132,12 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 title={
                     <DialogMenuItem
                         title={
-                            <div className='~flex ~items-center ~gap-1'>
+                            <div className='flex items-center gap-1'>
                                 <AIIcon />
-                                <span className='~text-lg ~font-normal ~text-[#6038E8]'>Ai</span>
+                                <span className='text-lg font-normal text-[#6038E8]'>Ai</span>
                             </div>
                         }
-                        dialogClassName='~p-2 !~max-w-5xl !~h-5/6'
+                        dialogClassName='p-2 !max-w-5xl !h-5/6'
                         content={({ closeDialog }) => (
                             <AIContent editor={editor} closeDialog={closeDialog} />
                         )}
@@ -153,13 +153,14 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
     {
         id: 'text-style',
         widthEstimate: 100,
-        render: ({ editor }) => (
+        render: ({ editor, darkMode }) => (
             <MenuLink
                 title={
                     <SelectionTypeMenuItemContent
                         items={TextStyleItems}
                         onSelection={(value) => TextStyleOnSelection(editor, value)}
                         key={1}
+                        darkMode={darkMode}
                     />
                 }
                 eventHandler={() => { }}
@@ -177,7 +178,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatBold
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -195,7 +196,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatItalic
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -213,7 +214,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatUnderlined
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -231,7 +232,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdStrikethroughS
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -251,7 +252,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                         <PopoverMenuItemContent
                             title={
                                 <MdFormatColorText
-                                    className={clsx('~text-black', { '~text-white': darkMode })}
+                                    className={clsx('text-black', { 'text-white': darkMode })}
                                     size={18}
                                 />
                             }
@@ -266,6 +267,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                     key='editor-font-color-picker'
                                 />
                             }
+                            darkMode={darkMode}
                         />
                     }
                     eventHandler={() => { }}
@@ -283,7 +285,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatAlignLeft
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -301,7 +303,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatAlignCenter
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -319,7 +321,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatAlignRight
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -337,7 +339,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatListBulleted
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -356,7 +358,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <LuUndo2
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -374,7 +376,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <LuRedo2
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -394,7 +396,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                     <MenuLink
                         title={
                             <IoExpandOutline
-                                className={clsx('~text-black', { '~text-white': darkMode })}
+                                className={clsx('text-black', { 'text-white': darkMode })}
                                 size={18}
                             />
                         }
@@ -417,7 +419,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                         <PopoverMenuItemContent
                             title={
                                 <TbLineHeight
-                                    className={clsx('~text-black', { '~text-white': darkMode })}
+                                    className={clsx('text-black', { 'text-white': darkMode })}
                                     size={18}
                                 />
                             }
@@ -433,8 +435,10 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                     onSelection={(value) =>
                                         editor.chain().focus().setLineHeight(value).run()
                                     }
+                                    darkMode={darkMode}
                                 />
                             }
+                            darkMode={darkMode}
                         />
                     }
                     eventHandler={() => { }}
@@ -451,7 +455,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatIndentDecrease
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -475,7 +479,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <MdFormatIndentIncrease
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -499,7 +503,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <FaTextSlash
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -520,7 +524,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <FaLink
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -538,7 +542,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <FaCode
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -556,7 +560,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <IoImageOutline
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -574,7 +578,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <IoVideocamOutline
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -593,7 +597,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 <MenuLink
                     title={
                         <AiOutlineTable
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx('text-black', { 'text-white': darkMode })}
                             size={18}
                         />
                     }
@@ -629,13 +633,13 @@ export const getL3MenuContent = (
                         type='url'
                         placeholder='https://'
                         value={l2Link}
-                        className='~rounded-md ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
+                        className='rounded-md border-[1px] border-solid border-gray-300 p-2'
                         onChange={(e) => setL2Link(e.target.value)}
                     />
                     <Button
                         type='button'
                         variant='default'
-                        className='~rounded-3xl ~px-8'
+                        className='rounded-3xl px-8'
                         disabled={!l2Link || !isURL(l2Link, { require_protocol: true })}
                         onClick={() => {
                             if (l2Link && isURL(l2Link, { require_protocol: true })) {
@@ -655,7 +659,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
                         onClick={() => {
                             editor
                                 .chain()
@@ -683,13 +687,13 @@ export const getL3MenuContent = (
                         type='url'
                         placeholder='https://'
                         value={l2EmbedLink}
-                        className='~rounded-md ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
+                        className='rounded-md border-[1px] border-solid border-gray-300 p-2'
                         onChange={(e) => setL2EmbedLink(e.target.value)}
                     />
                     <Button
                         type='button'
                         variant='default'
-                        className='~rounded-3xl ~px-8'
+                        className='rounded-3xl px-8'
                         disabled={
                             !l2EmbedLink || !isURL(l2EmbedLink, { require_protocol: true })
                         }
@@ -709,7 +713,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
                         onClick={() => {
                             setL2EmbedLink('');
                             setExpandedMenuL2(false);
@@ -731,13 +735,13 @@ export const getL3MenuContent = (
                         type='url'
                         placeholder='https://'
                         value={l2Image}
-                        className='~rounded-md ~border-[1px] ~border-solid ~border-gray-300 ~p-2'
+                        className='rounded-md border-[1px] border-solid border-gray-300 p-2'
                         onChange={(e) => setL2Image(e.target.value)}
                     />
                     <Button
                         type='button'
                         variant='default'
-                        className='~rounded-3xl ~px-8'
+                        className='rounded-3xl px-8'
                         disabled={!l2Image || !isURL(l2Image, { require_protocol: true })}
                         onClick={() => {
                             if (l2Image && isURL(l2Image, { require_protocol: true })) {
@@ -752,7 +756,7 @@ export const getL3MenuContent = (
                     <Button
                         type='button'
                         variant='secondary'
-                        className='~rounded-3xl ~border-[1px] ~border-[#000] ~px-8 ~shadow-sm'
+                        className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
                         onClick={() => {
                             setL2Image('');
                             setExpandedMenuL2(false);

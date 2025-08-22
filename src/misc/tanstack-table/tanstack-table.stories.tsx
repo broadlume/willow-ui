@@ -42,13 +42,13 @@ const TanstackTableWithLoading = () => {
     columns: columns,
     data: asyncPayments,
     tableParams: {
-      manualPagination: false
+      manualPagination: false,
     },
     enableRowSelection: true,
-    // includeLoading: true, // it's true by default, so you can omit it
+    includeLoading: true, // it's true by default, so you can omit it
   });
   return <CustomDataTable />;
-}
+};
 
 export const WithLoadingState: Story = {
   render: (args) => <TanstackTableWithLoading />,
@@ -83,7 +83,7 @@ const TanstackTableWithSingleRowSelection = () => {
     enableSingleSelection: true, // Enable single row selection
   });
   return <CustomDataTable />;
-}
+};
 
 export const WithSingleRowSelection: Story = {
   render: (args) => <TanstackTableWithSingleRowSelection />,

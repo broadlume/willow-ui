@@ -2,6 +2,7 @@ import { cn } from '@src/lib/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Input, InputProps } from './input';
+import { HiExclamationCircle } from 'react-icons/hi2';
 
 interface InputWithSlotsProps
   extends InputProps,
@@ -46,10 +47,7 @@ interface InputWithSlotsProps
  *   inputProps={{ placeholder: "Enter price" }}
  * />
  */
-const InputWithSlots = React.forwardRef<
-  Parameters<typeof Input>[0],
-  InputWithSlotsProps
->(
+const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
   ({
     prefixSlot,
     postfixSlot,
@@ -64,27 +62,36 @@ const InputWithSlots = React.forwardRef<
     ...inputProps
   }) => {
     return (
-      <div className={cn('~flex ~flex-col', classes?.textFieldWrapClass)}>
+      <div className={cn('flex flex-col', classes?.textFieldWrapClass)}>
         {label && (
           <label
             htmlFor='price'
             className={cn(
-              '~mb-2 ~block ~text-sm/6 ~font-medium ~text-gray-900',
+              'mb-2 block text-base font-normal text-text-pri',
               classes?.labelClass
             )}
           >
             {label}
+            {inputProps.required && <span className='text-text-brand'>*</span>}
           </label>
         )}
 
         <div
           {...wrapperProps}
           className={cn(
-            '~flex ~items-stretch ~rounded-md ~border ~border-gray-300 ~bg-white ~pl-[8px] ~shadow-sm ~outline-1 ~-outline-offset-1 ~outline-gray-300 ~transition-colors',
-            'focus-visible:~outline-none focus-visible:~ring-1 focus-visible:~ring-ring',
-            '[&:has(input:focus)]:~border-blue-500 [&:has(input:focus)]:~outline-none [&:has(input:focus)]:~ring-1',
-            inputProps.error && '[&:not(:has(input:focus))]:~outline-[#E00000]',
-            inputProps.disabled ? '~bg-gray-200' : '',
+            'flex items-center rounded-md border border-border-sec bg-surface-pri text-sm px-2 gap-1',
+            'placeholder:text-text-opt',
+            'hover:border-border-opt',
+            '[&:has(input:focus)]:border-border-opt focus-visible:outline-none focus-visible:ring-0',
+            inputProps.error &&
+              '[&:not(:has(input:focus))]:outline-destructive',
+            {
+              'bg-(--color-blue-50)': inputProps.dirty && !inputProps.invalid,
+              'border-border-destructive hover:border-border-destructive':
+                inputProps.invalid,
+              'pl-3': !prefixSlot,
+            },
+            inputProps.disabled ? 'cursor-not-allowed bg-surface-sec' : '',
             wrapperProps?.className
           )}
         >
@@ -92,8 +99,8 @@ const InputWithSlots = React.forwardRef<
           <Input
             {...inputProps}
             className={clsx(
-              '~flex-1 ~border-0 ~bg-transparent ~p-0 disabled:~bg-transparent',
-              '~shadow-none focus-visible:~outline-none focus-visible:~ring-0',
+              'flex-1 border-0 bg-transparent p-0 disabled:bg-transparent',
+              'shadow-none focus-visible:outline-hidden focus-visible:ring-0',
               inputProps?.className
             )}
           />
@@ -102,9 +109,10 @@ const InputWithSlots = React.forwardRef<
         </div>
 
         {inputProps?.error ? (
-          <p className='~mt-1 ~text-xs ~font-normal ~text-[#E00000]'>
+          <div className='mt-1 text-xs font-normal text-text-destructive flex flex-row items-center gap-1'>
+            <HiExclamationCircle className='h-3 w-3' />
             {inputProps?.error}
-          </p>
+          </div>
         ) : null}
       </div>
     );

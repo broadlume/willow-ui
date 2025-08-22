@@ -22,12 +22,11 @@ export const CustomDataTable = <T,>({
 
   return (
     <div
-      className={`body-medium tw-reset ~rounded-lg ~border ~shadow ${classNames.root}`}
+      className={`body-medium tw-reset rounded-lg border shadow-sm ${classNames.root}`}
     >
       {props.selectableRows ? (
         <DataTable
           selectableRowsNoSelectAll
-          // selectableRowsComponent={CustomCheckBox as unknown as ReactNode}
           {...props}
         />
       ) : (

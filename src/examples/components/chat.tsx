@@ -36,8 +36,8 @@ export function ChatDemo(_) {
 
   return (
     <Card>
-      <CardHeader className='~flex ~flex-row ~items-center'>
-        <div className='~flex ~items-center ~space-x-4'>
+      <CardHeader className='flex flex-row items-center'>
+        <div className='flex items-center space-x-4'>
           <Avatar>
             <AvatarImage
               src={getRandomAvatar('Taylor Johannson')}
@@ -46,25 +46,25 @@ export function ChatDemo(_) {
             <AvatarFallback>TJ</AvatarFallback>
           </Avatar>
           <div>
-            <p className='~text-sm ~font-medium ~leading-none'>
+            <p className='text-sm font-medium leading-none'>
               Taylor Johannson
             </p>
-            <p className='~text-sm ~text-muted-foreground'>
+            <p className='text-sm text-muted-foreground'>
               taylor.johannson@example.com
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className='~space-y-4'>
+        <div className='space-y-4'>
           {messages.map((message, index) => (
             <div
               key={index}
               className={cn(
-                '~flex ~w-max ~max-w-[75%] ~flex-col ~gap-2 ~rounded-lg ~px-3 ~py-2 ~text-sm',
+                'flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm',
                 message.role === 'user'
-                  ? '~ml-auto ~bg-primary ~text-primary-foreground'
-                  : '~bg-muted'
+                  ? 'ml-auto bg-primary text-primary-foreground'
+                  : 'bg-muted'
               )}
             >
               {message.content}
@@ -87,16 +87,16 @@ export function ChatDemo(_) {
             ]);
             event.currentTarget.message.value = '';
           }}
-          className='~flex ~w-full ~items-center ~space-x-2'
+          className='flex w-full items-center space-x-2'
         >
           <Input
             id='message'
             placeholder='Type your message...'
-            className='~flex-1'
+            className='flex-1'
           />
           <Button type='submit' size='icon'>
-            <PaperPlaneIcon className='~h-4 ~w-4' />
-            <span className='~sr-only'>Send</span>
+            <PaperPlaneIcon className='h-4 w-4' />
+            <span className='sr-only'>Send</span>
           </Button>
         </form>
       </CardFooter>

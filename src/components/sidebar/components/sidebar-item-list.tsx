@@ -1,13 +1,18 @@
-import { FC } from "react";
-import { IconType, SidebarItemProps } from "../types";
-import { SidebarItem } from "./sidebar-item";
+import { FC } from 'react';
+import { IconType, SidebarItemProps } from '../types';
+import { SidebarItem } from './sidebar-item';
 
 type Props = {
   items: SidebarItemProps[];
   location: string;
   openSections: Record<string, boolean>;
   toggleSection: (label: string) => void;
-  onMenuClick: (props: { to: string; children: React.ReactNode; className?: string; onClick?: () => void }) => JSX.Element;
+  onMenuClick: (props: {
+    to: string;
+    children: React.ReactNode;
+    className?: string;
+    onClick?: () => void;
+  }) => JSX.Element;
   className?: {
     menuClass?: string;
     menuLinkClass?: string;
@@ -27,7 +32,7 @@ export const SidebarItemList: FC<Props> = ({
   downArrow,
 }) => {
   return (
-    <ul className="~mt-2 ~ml-1 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
+    <ul className='mt-2 ml-1 border-l border-border-sec space-y-2 text-base'>
       {items.map((child, key) => (
         <li key={child.label + key}>
           <SidebarItem

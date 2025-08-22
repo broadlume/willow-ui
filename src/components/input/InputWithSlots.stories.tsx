@@ -23,7 +23,7 @@ export const WithPrefix: Story = {
   args: {
     placeholder: 'Search...',
     prefixSlot: (
-      <div className='~flex ~shrink-0 ~select-none ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 select-none items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <MagnifyingGlassIcon height='16' width='16' />
       </div>
     ),
@@ -35,7 +35,7 @@ export const WithPostfix: Story = {
   args: {
     placeholder: 'Enter value...',
     postfixSlot: (
-      <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <Cross2Icon height='14' width='14' />
       </div>
     ),
@@ -47,12 +47,12 @@ export const WithBoth: Story = {
   args: {
     placeholder: 'Search settings...',
     prefixSlot: (
-      <div className='~flex ~shrink-0 ~select-none ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 select-none items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <MagnifyingGlassIcon height='16' width='16' />
       </div>
     ),
     postfixSlot: (
-      <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <Cross2Icon height='14' width='14' />
       </div>
     ),
@@ -64,18 +64,18 @@ export const WithCustomClasses: Story = {
     label: '',
     placeholder: 'Custom styled...',
     classes: {
-      inputClass: 'rounded-lg',
+      inputClass: 'rounded-2xl',
 
       labelClass: '',
       textFieldWrapClass: '',
     },
     prefixSlot: (
-      <div className='~flex ~shrink-0 ~select-none ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 select-none items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <MagnifyingGlassIcon height='16' width='16' />
       </div>
     ),
     postfixSlot: (
-      <div className='~flex ~shrink-0 ~items-center ~px-2 ~text-base ~text-gray-500 sm:~text-sm/6'>
+      <div className='flex shrink-0 items-center px-3 text-base text-gray-500 sm:text-sm/6'>
         <Cross2Icon height='14' width='14' />
       </div>
     ),

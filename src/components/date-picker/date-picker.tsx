@@ -147,18 +147,18 @@ export const DatePicker = ({
             variant='outline'
             id='date'
             className={cn(
-              '~w-[250px] ~items-center ~justify-start ~text-left ~font-normal',
-              !selected && '~text-muted-foreground',
+              'w-[250px] items-center justify-start text-left font-normal',
+              !selected && 'text-muted-foreground',
               className
             )}
           >
-            <CalendarIcon className='~mr-3 ~h-5 ~w-5' />
+            <CalendarIcon className='mr-3 h-5 w-5' />
             {buttonText}
           </Button>
         )}
       </PopoverTrigger>
       <PopoverContent
-        className='~w-auto ~p-0'
+        className='w-auto p-0'
         align='start'
         {...popoverContentProps}
       >
