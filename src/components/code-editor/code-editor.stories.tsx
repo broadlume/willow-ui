@@ -19,8 +19,8 @@ export const Demo: Story = {
         return (
             <CodeEditor
                 onChange={onChange}
-                language='liquid'
-                theme='vs-dark'
+                language='html'
+                theme='light'
                 asyncTokenSuggestions={async (query) => {
                     return fetch(`https://dummyjson.com/users/search?q=${query}`)
                         .then(res => res.json())

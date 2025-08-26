@@ -252,3 +252,10 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
+
+// /**
+//  * DO NOT DELETE Styles for the code editor component
+//  */
+// .monaco-editor .margin-view-overlays {
+//   @apply ~border-r ~border-[#333333]
+// }

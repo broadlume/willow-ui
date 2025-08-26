@@ -1,15 +1,20 @@
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import clsx from 'clsx';
 
-import { FaSun, FaMoon, FaQuestionCircle, FaBrush, FaCopy } from 'react-icons/fa';
-
-import Editor, { Theme, EditorProps, Monaco } from '@monaco-editor/react';
+import Editor, { EditorProps, Monaco, Theme } from '@monaco-editor/react';
 import * as emmetMonaco from 'emmet-monaco-es';
-import * as prettier from 'prettier/standalone';
-import * as prettierParserHtml from 'prettier/parser-html';
+import type * as monaco from 'monaco-editor';
 import * as prettierParserBabel from 'prettier/parser-babel';
+import * as prettierParserHtml from 'prettier/parser-html';
 import * as prettierParserCss from 'prettier/parser-postcss';
+import * as prettier from 'prettier/standalone';
 
 import { Button } from '@components/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@components/popover/popover';
+
+// icons
+import { HiClipboardDocumentCheck, HiCodeBracketSquare, HiEllipsisVertical, HiMiniMoon, HiMiniSun, HiPaintBrush } from 'react-icons/hi2';
+import { ReactComponent as AIIcon } from './ai-icon.svg';
 
 interface CodeEditorProps {
     code?: string,
@@ -26,7 +31,7 @@ interface CodeEditorProps {
 const CodeEditor: React.FC<CodeEditorProps> = ({
     code: passedCode = '',
     onChange: passedOnChange,
-    language: passedLanguage = 'html',
+    language = 'html',
     theme: passedTheme = 'vs-dark',
     height = '90vh',
     width = '100%',
@@ -36,14 +41,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 }: CodeEditorProps) => {
     const [code, setCode] = useState<string>(passedCode);
     const [theme, setTheme] = useState<Theme>(passedTheme);
-    const [showHelper, setShowHelper] = useState<boolean>(false);
     const [statusMessage, setStatusMessage] = useState('');
     const [suggestionPage, setSuggestionPage] = useState(1);
-    const editorRef = useRef<any>(null);
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
     const defaultOptions: EditorProps['options'] = {
-        fontSize: 16,
-        fontFamily: 'monospace',
+        fontSize: 14,
+        fontFamily: 'Fira Code',
         lineNumbersMinChars: 3,
         minimap: { enabled: true },
         scrollbar: {
@@ -64,10 +68,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         emmetMonaco.emmetJSX(monaco);
 
         ['html', 'liquid', 'javascript'].forEach((language) => {
-            if(!enableTokenSuggestion) return;
+            if (!enableTokenSuggestion) return;
             monaco.languages.registerCompletionItemProvider(language, {
                 triggerCharacters: ['{'],
-                provideCompletionItems: async (model, position) => {
+                provideCompletionItems: async (model, position, _context, _token) => {
                     const textBeforeCursor = model.getValueInRange({
                         startLineNumber: position.lineNumber,
                         startColumn: 1,
@@ -126,7 +130,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         const suggestWidget = editorDomNode.ownerDocument.querySelector('.monaco-editor .suggest-widget .tree');
         if (!suggestWidget) return;
 
-        const onScroll = (e: any) => {
+        const onScroll = (_e: Event) => {
             if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
                 console.log('Scrolled to bottom, fetch more suggestions');
             }
@@ -134,7 +138,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
         suggestWidget.addEventListener('scroll', onScroll);
         return () => suggestWidget.removeEventListener('scroll', onScroll);
-    }, [editorRef.current, suggestionPage]);
+    }, [suggestionPage]);
 
     const formatCode = () => {
         if (!editorRef.current) return;
@@ -144,7 +148,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
         try {
             formattedCode = prettier.format(currentCode, {
-                parser: getPrettierParser(passedLanguage),
+                parser: getPrettierParser(language),
                 plugins: [prettierParserHtml, prettierParserCss, prettierParserBabel],
             });
         } catch (error) {
@@ -176,7 +180,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     }, [passedOnChange]);
 
     const toggleTheme = () => setTheme((prev) => (prev === 'vs-dark' ? 'light' : 'vs-dark'));
-    const toggleHelper = () => setShowHelper((prev) => !prev);
 
     const copyCode = () => {
         if (!editorRef.current) return;
@@ -194,77 +197,129 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     };
 
     return (
-        <div className='~border ~border-gray-300 ~rounded-lg ~shadow-md ~overflow-hidden'>
-            <div className='~flex ~justify-between ~items-center ~py-2 ~px-6 ~bg-gray-100 ~border-b ~border-gray-300'>
-                <p className="~font-medium">
-                    <b>Type: </b><span className="~capitalize ~text-indigo-600">{passedLanguage}</span>
-                </p>
+        <div className={
+            clsx(
+                '~w-full ~h-[440px] ~border ~rounded-lg ~overflow-hidden ~flex ~flex-col',
+                {
+                    '~bg-white ~border-[#CCCCCC]': theme === 'light',
+                    '~bg-[#1A1A1A] ~border-[#333333]': theme === 'vs-dark',
+                },
+            )
+        }>
+            {/* Header Bar */}
+            <div className={
+                clsx(
+                    '~border-b ~px-2.5 ~py-2 ~flex ~justify-between ~items-center ~h-[40px]',
+                    {
+                        '~bg-white ~border-[#CCCCCC]': theme === 'light',
+                        '~bg-[#1A1A1A] ~border-[#333333]': theme === 'vs-dark',
+                    },
+                )
+            }>
+                {/* Label */}
+                <div className='~text-xs ~capitalize ~flex ~items-center ~gap-1'>
+                    <HiCodeBracketSquare size={14} className='~text-[#6038E8]' />
+                    <span className={
+                        clsx(
+                            {
+                                '~text-[#1A1A1A]': theme === 'light',
+                                '~text-white': theme === 'vs-dark',
+                            }
+                        )
+                    }>{language}</span>
+                </div>
 
-                {statusMessage && (
-                    <div
-                        className="~text-green-600 ~text-sm ~px-3 ~py-1"
-                    >
-                        {statusMessage}
+                {/* Toolbar */}
+                <div className='~flex ~items-center ~gap-4 ~relative'>
+                    {/* AI Icon */}
+                    <div className='~flex ~items-center ~gap-1 ~cursor-pointer'>
+                        <AIIcon />
+                        <span className='~text-sm ~font-normal ~text-[#6038E8]'>Ai</span>
                     </div>
-                )}
 
-                <div className="~flex ~gap-2 ~items-center">
-                    <Button type="button" variant='ghost' title="Format Code" onClick={formatCode}>
-                        <FaBrush fontSize={18} className="hover:~text-indigo-500 transition" />
+                    {/* Theme Toggle */}
+                    <Button
+                        type="button" variant='link'
+                        className={
+                            clsx(
+                                {
+                                    '~text-[#1A1A1A]': theme === 'light',
+                                    '~text-white': theme === 'vs-dark',
+                                }
+                            )
+                        }
+                        onClick={() => {
+                            toggleTheme();
+                        }}
+                    >
+                        {theme === 'vs-dark' ? <HiMiniSun size={16} /> : <HiMiniMoon size={16} />}
                     </Button>
-                    <Button type="button" variant='ghost' title="Toggle Theme" onClick={toggleTheme}>
-                        {theme === 'vs-dark' ? <FaSun fontSize={18} className="hover:~text-yellow-500 transition" /> : <FaMoon fontSize={18} className="hover:~text-gray-700 transition" />}
-                    </Button>
-                    <Button type="button" variant='ghost' title="Copy Code" onClick={copyCode}>
-                        <FaCopy fontSize={18} className="hover:~text-green-500 transition" />
-                    </Button>
-                    <Button type="button" variant='ghost' title="Toggle Help" onClick={toggleHelper}>
-                        <FaQuestionCircle fontSize={18} className="hover:~text-blue-500 transition" />
-                    </Button>
+
+                    {/* More Options Menu */}
+                    <Popover>
+                        <PopoverTrigger
+                            className={
+                                clsx(
+                                    {
+                                        '~text-[#1A1A1A]': theme === 'light',
+                                        '~text-white': theme === 'vs-dark',
+                                    }
+                                )
+                            }
+                        >
+                            <HiEllipsisVertical size={24} />
+                        </PopoverTrigger>
+                        <PopoverContent className='~flex ~flex-col ~gap-2 ~p-2'>
+                            <Button
+                                type="button" 
+                                variant='link'
+                                className='hover:~no-underline ~text-[#1A1A1A] ~gap-2'
+                                onClick={() => formatCode()}
+                            >
+                                <HiPaintBrush />
+                                Format
+                            </Button>
+                            <Button
+                                type="button" 
+                                variant='link'
+                                className='hover:~no-underline ~text-[#1A1A1A] ~gap-2'
+                                onClick={() => copyCode()}
+                            >
+                                <HiClipboardDocumentCheck />
+                                Copy
+                            </Button>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
 
-            {showHelper && (
-                <div className="~px-6 ~py-4 ~bg-white ~rounded-md ~text-sm">
-                    <h3 className="~font-semibold ~mb-3 ~text-gray-800 text-lg">⚙️ Editor Shortcuts & Tips</h3>
-                    <div className="~grid ~grid-cols-1 sm:~grid-cols-2 ~gap-4">
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaSun className='~mr-2' /> / <FaMoon className='~ml-2' /> Theme Toggle</span>
-                            <p className="~text-gray-600">Switch between dark and light modes.</p>
-                        </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaBrush className='~mr-2' /> Format Code</span>
-                            <p className="~text-gray-600">Auto-format code with Prettier.</p>
-                        </div>
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~flex ~items-center ~mb-1 font-medium'><FaCopy className='~mr-2' /> Copy Code</span>
-                            <p className="~text-gray-600">Copy the editor content to clipboard.</p>
-                        </div>
-                        {enableTokenSuggestion &&
-                            <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                                <span className='~font-medium'>Tokens: <code>&#123;&#123;</code></span>
-                                <p className="~text-gray-600">Trigger suggestions like <code>&#123;&#123;user</code></p>
-                            </div>
-                        }
-                        <div className="~p-3 ~bg-gray-50 ~rounded-lg ~shadow-sm">
-                            <span className='~font-medium'>Shortcut</span>
-                            <p className="~text-gray-600"><kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions manually</p>
-                        </div>
+            {/* Content Area */}
+            <div className='~flex-1 ~relative ~overflow-hidden'>
+                {statusMessage && (
+                    <div className="~absolute ~top-2 ~right-2 ~z-10 ~bg-green-600 ~text-white ~text-xs ~px-3 ~py-1 ~rounded">
+                        {statusMessage}
                     </div>
-                </div>
-            )}
-
-            <Editor
-                options={defaultOptions}
-                height={height}
-                width={width}
-                language={passedLanguage}
-                theme={theme}
-                defaultValue={code}
-                onChange={onChange}
-                onMount={handleEditorDidMount}
-                className='~rounded-b-lg ~p-0'
-            />
+                )}
+                <Editor
+                    options={{
+                        ...defaultOptions,
+                        lineNumbers: 'on',
+                        lineNumbersMinChars: 3,
+                        selectOnLineNumbers: true,
+                        glyphMargin: false,
+                        folding: true,
+                        lineDecorationsWidth: 10,
+                        lineHeight: 22,
+                    }}
+                    height={height}
+                    width={width}
+                    language={language}
+                    theme={theme}
+                    defaultValue={code}
+                    onChange={onChange}
+                    onMount={handleEditorDidMount}
+                />
+            </div>
         </div>
     );
 };
