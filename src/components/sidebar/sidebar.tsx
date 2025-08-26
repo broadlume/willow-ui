@@ -2,13 +2,14 @@ import { FC, useState } from "react";
 import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
 import { SidebarSection } from "./components/sidebar-section";
 import { SidebarItemProps, SidebarProps } from "./types";
+import { isLocationActive } from "./utils/link-matcher";
 
 const getInitialOpenSections = (pathname: string, items: SidebarItemProps[]): Record<string, boolean> => {
   const openSections: Record<string, boolean> = {};
 
   const traverse = (nodes: SidebarItemProps[], path: string[] = []): boolean => {
     for (const node of nodes) {
-      if (node.link === pathname) {
+      if (isLocationActive(pathname, node)) {
         for (const label of path) openSections[label] = true;
         return true;
       }
