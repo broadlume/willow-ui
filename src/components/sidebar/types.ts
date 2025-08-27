@@ -3,6 +3,8 @@ import { ComponentType, ReactNode } from "react";
 export type SidebarItemProps = {
   label: string;
   link?: string;
+  links?: string[]; // Support for multiple links
+  linkPattern?: string; // Support for regex pattern matching
   hidden?: boolean;
   items?: SidebarItemProps[];
 };
