@@ -17,7 +17,7 @@ export const DialogMenuItem = ({ title, content, dialogClassName }: DialogMenuIt
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger onClick={() => setIsOpen(true)}>{title}</DialogTrigger>
+            <DialogTrigger tabIndex={-1} onClick={() => setIsOpen(true)}>{title}</DialogTrigger>
             <DialogContent className={clsx('', dialogClassName)}>
                 {content({ closeDialog })}
             </DialogContent>
