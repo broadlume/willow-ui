@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Editor, BubbleMenu as TipTapBubbleMenu } from '@tiptap/react';
 import clsx from 'clsx';
 import isURL from 'validator/lib/isURL';
 
 // Icons
-import { FaBold, FaItalic, FaLink } from "react-icons/fa";
+import { FaBold, FaItalic, FaLink, FaEdit, FaUnlink } from "react-icons/fa";
 import { MdFormatUnderlined, MdStrikethroughS } from 'react-icons/md';
 
 import { MenuLink } from './menu-link';
@@ -20,7 +20,22 @@ interface BubbleMenuProps {
 export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
     const [showLinkInput, setShowLinkInput] = useState(false);
     const [url, setUrl] = useState('');
+    const [isEditingLink, setIsEditingLink] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // Check if current selection has a link
+    const isLinkActive = editor.isActive('link');
+    const linkAttributes = editor.getAttributes('link');
+    const currentLinkHref = linkAttributes.href || '';
+
+    // Update URL state when link becomes active or when editing existing link
+    useEffect(() => {
+        if (isLinkActive && currentLinkHref && !isEditingLink) {
+            setUrl(currentLinkHref);
+        } else if (!isLinkActive && !isEditingLink) {
+            setUrl('');
+        }
+    }, [isLinkActive, currentLinkHref, isEditingLink]);
 
     const applyLink = () => {
         if (url) {
@@ -29,7 +44,31 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
             editor.chain().focus().unsetLink().run();
         }
         setShowLinkInput(false);
+        setIsEditingLink(false);
         setUrl('');
+    };
+
+    const removeLink = () => {
+        editor.chain().focus().unsetLink().run();
+        setShowLinkInput(false);
+        setIsEditingLink(false);
+        setUrl('');
+    };
+
+    const startEditingLink = () => {
+        setUrl(currentLinkHref);
+        setIsEditingLink(true);
+        setShowLinkInput(true);
+        // Focus input after a brief delay to ensure it's rendered
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 10);
+    };
+
+    const cancelLinkEditing = () => {
+        setShowLinkInput(false);
+        setIsEditingLink(false);
+        setUrl(isLinkActive ? currentLinkHref : '');
     };
 
     const isApplyDisabled = !url || !isURL(url);
@@ -46,8 +85,11 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                 interactive: true,
                 animation: 'fade',
                 onHidden: (instance) => {
-                    setUrl('');
-                    setShowLinkInput(false);
+                    // Only reset state if not editing a link
+                    if (!isEditingLink) {
+                        setUrl(isLinkActive ? currentLinkHref : '');
+                        setShowLinkInput(false);
+                    }
                 }
             }}
         >
@@ -68,61 +110,92 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                     title={<MdStrikethroughS className={clsx('~text-black', { '~text-white': darkMode })} size={16} />}
                     eventHandler={() => editor.chain().focus().toggleStrike().run()}
                 />
-                <div>
-                    <Popover open={showLinkInput}>
-                        <PopoverTrigger>
-                            <MenuLink
-                                title={<FaLink className={clsx('~text-black', { '~text-white': darkMode })} size={14} />}
-                                eventHandler={() => {
-                                    setShowLinkInput(true)
-                                    inputRef.current?.focus();
-                                }}
-                            />
-                        </PopoverTrigger>
-                        <PopoverContent side='bottom'>
-                            <div>
-                                <Input
-                                    ref={inputRef}
-                                    type="text"
-                                    placeholder='https://'
-                                    value={url}
-                                    onChange={e => setUrl(e.target.value)}
-                                    className="~border ~border-gray-300 ~rounded ~p-1 ~w-48"
-                                    onKeyDown={e => {
-                                        if (e.key === 'Enter' && !isApplyDisabled) {
-                                            e.preventDefault();
-                                            applyLink();
-                                        } else if (e.key === 'Escape') {
-                                            setShowLinkInput(false);
-                                            setUrl('');
+                
+                {/* Link Section - Show different UI based on link state */}
+                {isLinkActive && !showLinkInput ? (
+                    // Show edit/delete options when a link is selected
+                    <>
+                        <MenuLink
+                            title={<FaEdit className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />}
+                            eventHandler={startEditingLink}
+                        />
+                        <MenuLink
+                            title={<FaUnlink className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />}
+                            eventHandler={removeLink}
+                        />
+                    </>
+                ) : (
+                    // Show link creation/editing interface
+                    <div>
+                        <Popover open={showLinkInput}>
+                            <PopoverTrigger>
+                                <MenuLink
+                                    title={<FaLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />}
+                                    eventHandler={() => {
+                                        if (!isLinkActive) {
+                                            setShowLinkInput(true);
+                                            inputRef.current?.focus();
+                                        } else {
+                                            startEditingLink();
                                         }
                                     }}
-                                    autoFocus
                                 />
-                                <div className="~flex ~justify-end ~gap-2 ~mt-2">
-                                    <Button
-                                        className="hover:~no-underline"
-                                        onClick={() => {
-                                            setShowLinkInput(false);
-                                            setUrl('');
+                            </PopoverTrigger>
+                            <PopoverContent side='bottom'>
+                                <div>
+                                    <Input
+                                        ref={inputRef}
+                                        type="text"
+                                        placeholder='https://'
+                                        value={url}
+                                        onChange={e => setUrl(e.target.value)}
+                                        className="~border ~border-gray-300 ~rounded ~p-1 ~w-48"
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter' && !isApplyDisabled) {
+                                                e.preventDefault();
+                                                applyLink();
+                                            } else if (e.key === 'Escape') {
+                                                cancelLinkEditing();
+                                            }
                                         }}
-                                        variant={'link'}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        className="hover:~no-underline"
-                                        onClick={applyLink}
-                                        variant={'link'}
-                                        disabled={isApplyDisabled}
-                                    >
-                                        Apply
-                                    </Button>
+                                        autoFocus
+                                    />
+                                    <div className="~flex ~justify-between ~gap-2 ~mt-2">
+                                        <div className="~flex ~gap-2">
+                                            <Button
+                                                className="hover:~no-underline"
+                                                onClick={cancelLinkEditing}
+                                                variant={'link'}
+                                                size="sm"
+                                            >
+                                                Cancel
+                                            </Button>
+                                            {isLinkActive && (
+                                                <Button
+                                                    className="hover:~no-underline ~text-red-600"
+                                                    onClick={removeLink}
+                                                    variant={'link'}
+                                                    size="sm"
+                                                >
+                                                    Remove Link
+                                                </Button>
+                                            )}
+                                        </div>
+                                        <Button
+                                            className="hover:~no-underline"
+                                            onClick={applyLink}
+                                            variant={'link'}
+                                            disabled={isApplyDisabled}
+                                            size="sm"
+                                        >
+                                            {isEditingLink ? 'Update' : 'Apply'}
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                )}
             </div>
         </TipTapBubbleMenu>
     );
