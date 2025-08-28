@@ -13,14 +13,13 @@ import { MenuItemWithTooltip } from './menu-item-with-tooltip';
 
 interface MenuProps {
   editor: Editor;
-  showEditorInDialog?: boolean;
   setShowEditorInDialog?: (show: boolean) => void;
+  showEditorInDialog?: boolean;
   showRawHtml?: boolean;
   toggleRawHtml?: () => void;
   darkMode?: boolean;
   toggleDarkMode?: () => void;
   className?: string;
-  hasValidationErrors?: boolean;
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -39,7 +38,6 @@ export const Menu = ({
   className,
   darkMode,
   toggleDarkMode,
-  hasValidationErrors,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -149,8 +147,7 @@ export const Menu = ({
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
-    setExpandedMenuL2,
-    hasValidationErrors
+    setExpandedMenuL2
   };
 
   return (

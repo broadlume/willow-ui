@@ -151,7 +151,6 @@
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "emmet-monaco-es": "^5.5.0",
-    "html-validate": "^10.0.0",
     "lucide-react": "^0.245.0",
     "prosemirror-autocomplete": "^0.4.3",
     "react-data-table-component": "^7.7.0",

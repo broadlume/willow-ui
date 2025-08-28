@@ -53,7 +53,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [htmlValidationErrors, setHtmlValidationErrors] = useState<{ line: number; column?: number; error: string; content: string; severity?: string }[]>([]);
 
   const handleUpdate = (editor: TiptapEditor) => {
     const html = editor.getHTML();
@@ -66,18 +65,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
     props.onChange?.(newContent);
   };
 
-  // Handle mode toggle with validation
+  // Handle mode toggle
   const handleToggleRawHtml = () => {
-    if (showRawHtml && htmlValidationErrors.length > 0) {
-      // Don't allow switching back to visual mode if there are HTML errors
-      return;
-    }
     setShowRawHtml((v) => !v);
-  };
-
-  // Handle HTML validation errors from EditorContent
-  const handleHtmlValidationErrors = (errors: { line: number; column?: number; error: string; content: string; severity?: string }[]) => {
-    setHtmlValidationErrors(errors);
   };
 
   // List of Tiptap Editor Extensions
@@ -214,7 +204,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
                   toggleRawHtml={handleToggleRawHtml}
                   darkMode={darkMode}
                   toggleDarkMode={() => setDarkMode((v) => !v)}
-                  hasValidationErrors={htmlValidationErrors.length > 0}
                   className={
                     clsx({
                       '~bg-gray-100': !darkMode,
@@ -231,8 +220,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
                   setContent={handleContentChange}
                   darkMode={darkMode}
                   markdownMode={showRawHtml}
-                  onToggleMode={handleToggleRawHtml}
-                  onValidationErrors={handleHtmlValidationErrors}
                 />
               </DialogContent>
             </Dialog>
@@ -250,7 +237,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 toggleRawHtml={handleToggleRawHtml}
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
-                hasValidationErrors={htmlValidationErrors.length > 0}
                 className={
                   clsx({
                     '~bg-gray-100': !darkMode,
@@ -267,8 +253,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 setContent={handleContentChange}
                 darkMode={darkMode}
                 markdownMode={showRawHtml}
-                onToggleMode={handleToggleRawHtml}
-                onValidationErrors={handleHtmlValidationErrors}
               />
             </>
           )

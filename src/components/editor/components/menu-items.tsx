@@ -64,8 +64,7 @@ export interface MenuItemRenderProps {
     expandedMenu?: boolean; // For More button to hide sub-menus
     setExpandedMenu?: (expanded: boolean) => void;
     expandedMenuL2?: boolean; // For More button to hide sub-menus
-    setExpandedMenuL2?: (expanded: boolean) => void;
-    hasValidationErrors?: boolean; // For visual indication of validation errors
+    setExpandedMenuL2?: Dispatch<SetStateAction<boolean>>;
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -535,8 +534,8 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
     {
         id: 'code',
         widthEstimate: 36,
-        render: ({ darkMode, toggleRawHtml, hasValidationErrors }) => (
-            <MenuItemWithTooltip key={"menu-link-tool-tip" + "Toggle"} tooltipContent={hasValidationErrors ? "Fix HTML errors before switching" : "Toggle Code/Raw HTML"}> {/* Wrap with Tooltip */}
+        render: ({ darkMode, toggleRawHtml }) => (
+            <MenuItemWithTooltip key={"menu-link-tool-tip" + "Toggle"} tooltipContent="Toggle Code/Raw HTML"> {/* Wrap with Tooltip */}
                 <MenuLink
                     title={
                         <FaCode
@@ -544,8 +543,6 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                 '~text-black', 
                                 { 
                                     '~text-white': darkMode,
-                                    '~text-red-500': hasValidationErrors && !darkMode,
-                                    '~text-red-400': hasValidationErrors && darkMode,
                                 }
                             )}
                             size={18}
