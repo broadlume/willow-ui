@@ -4,7 +4,8 @@ import clsx from 'clsx';
 import isURL from 'validator/lib/isURL';
 
 // Icons
-import { FaBold, FaItalic, FaLink, FaEdit, FaUnlink } from "react-icons/fa";
+import { FaBold, FaItalic } from "react-icons/fa";
+import { HiMiniLink, HiMiniPencil, HiMiniTrash } from 'react-icons/hi2';
 import { MdFormatUnderlined, MdStrikethroughS } from 'react-icons/md';
 
 import { MenuLink } from './menu-link';
@@ -116,11 +117,11 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                     // Show edit/delete options when a link is selected
                     <>
                         <MenuLink
-                            title={<FaEdit className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />}
+                            title={<HiMiniPencil className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />}
                             eventHandler={startEditingLink}
                         />
                         <MenuLink
-                            title={<FaUnlink className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />}
+                            title={<HiMiniTrash className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />}
                             eventHandler={removeLink}
                         />
                     </>
@@ -130,7 +131,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                         <Popover open={showLinkInput}>
                             <PopoverTrigger>
                                 <MenuLink
-                                    title={<FaLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />}
+                                    title={<HiMiniLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />}
                                     eventHandler={() => {
                                         if (!isLinkActive) {
                                             setShowLinkInput(true);
@@ -172,7 +173,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                             </Button>
                                             {isLinkActive && (
                                                 <Button
-                                                    className="hover:~no-underline ~text-red-600"
+                                                    className="hover:~no-underline ~ml-2 ~text-red-600"
                                                     onClick={removeLink}
                                                     variant={'link'}
                                                     size="sm"
