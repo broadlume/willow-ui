@@ -38,8 +38,7 @@ export const SidebarSection: FC<Props> = ({
   defaultParentOpen = false,
 }) => {
   const hasChildren = item.items?.length;
-  const isActive =
-    item.linkPattern?.test(location) || location + '/' === item.link;
+  const isActive = location + '/' === item.link;
 
   if (item.link && !hasChildren) {
     return (
