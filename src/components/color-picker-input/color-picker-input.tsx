@@ -7,6 +7,7 @@ interface ColorPickerInputProps {
   className?: string;
   colorPickerInputClasses?: string;
   textInputClasses?: string;
+  tabIndex?: number;
 }
 
 const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
@@ -16,6 +17,7 @@ const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
   className = '',
   colorPickerInputClasses = '',
   textInputClasses = '',
+  tabIndex = -1,
 }) => {
   return (
     <div className={`~flex ~gap-2 ${className}`}>
@@ -24,6 +26,7 @@ const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
         type="color"
         value={color}
         name={name}
+        tabIndex={tabIndex}
         onChange={(e) => setColor(e.target.value)}
       />
       <Input
@@ -31,6 +34,7 @@ const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
         type="text"
         value={color}
         name={name}
+        tabIndex={tabIndex}
         onChange={(e) => setColor(e.target.value)}
       />
     </div>

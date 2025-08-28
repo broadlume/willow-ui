@@ -27,7 +27,7 @@ import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
 
 // Custom Nodes
-import { AutocompleteNode } from './nodes/autocomplete-node';
+// import { AutocompleteNode } from './nodes/autocomplete-node';
 
 // contexts
 import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
@@ -37,7 +37,7 @@ import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { BubbleMenu } from './components/bubble-menu';
-import {SlashCommand} from './extensions/slash-command';
+import { SlashCommand } from './extensions/slash-command';
 
 export type EditorProps = {
   content?: string,
@@ -53,11 +53,31 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const [showEditorInDialog, setShowEditorInDialog] = useState(false);
   const [showRawHtml, setShowRawHtml] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [htmlValidationErrors, setHtmlValidationErrors] = useState<{ line: number; column?: number; error: string; content: string; severity?: string }[]>([]);
 
   const handleUpdate = (editor: TiptapEditor) => {
     const html = editor.getHTML();
     setContent(html);
     props.onChange?.(html);
+  };
+
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent);
+    props.onChange?.(newContent);
+  };
+
+  // Handle mode toggle with validation
+  const handleToggleRawHtml = () => {
+    if (showRawHtml && htmlValidationErrors.length > 0) {
+      // Don't allow switching back to visual mode if there are HTML errors
+      return;
+    }
+    setShowRawHtml((v) => !v);
+  };
+
+  // Handle HTML validation errors from EditorContent
+  const handleHtmlValidationErrors = (errors: { line: number; column?: number; error: string; content: string; severity?: string }[]) => {
+    setHtmlValidationErrors(errors);
   };
 
   // List of Tiptap Editor Extensions
@@ -84,7 +104,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     Color,
     LineHeight,
     Indentation,
-    AutocompleteNode,
+    // AutocompleteNode,
     SlashCommand
   ];
 
@@ -104,19 +124,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
           darkMode ? '!~text-white' : '~text-black'
         )
       },
-      // handleKeyDown: (_, event) => {
-      //   switch (event.key) {
-      //     case '/':
-      //       setCommandMenu(true);
-      //       break;
-      //     case 'Escape':
-      //     case 'Backspace':
-      //       setCommandMenu(false);
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // }
     }
   };
 
@@ -127,53 +134,65 @@ export const Editor: React.FC<EditorProps> = (props) => {
   });
 
   const nodeViewContextValue = useMemo<NodeViewContextType>(() => ({
-    fetchOptions: props.autocompleteFetchOptions!,
+    fetchOptions: props.autocompleteFetchOptions || (() => Promise.resolve([])),
     darkMode,
   }), [props.autocompleteFetchOptions, darkMode]);
 
   const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
   useEffect(() => {
-  if (content && editor) {
-    const currentContent = editor.getHTML();
-    if (content !== currentContent) {
-      // Save cursor position
-      const { from, to } = editor.state.selection;
+    // Update main editor if content changed externally (e.g., from HTML mode)
+    if (content && editor && !editor.isDestroyed) {
+      const currentContent = editor.getHTML();
+      if (content !== currentContent) {
+        // Save cursor position
+        const { from, to } = editor.state.selection;
 
-      // Update content
-      editor.commands.setContent(content);
+        // Update content without triggering onChange
+        editor.commands.setContent(content, false);
 
-      // Restore cursor position
-      const newFrom = Math.min(from, editor.state.doc.content.size);
-      const newTo = Math.min(to, editor.state.doc.content.size);
-      const textSelection = new TextSelection(
-        editor.state.doc.resolve(newFrom),
-        editor.state.doc.resolve(newTo)
-      );
-      editor.view.dispatch(editor.state.tr.setSelection(textSelection));
+        // Restore cursor position if still valid
+        try {
+          const newFrom = Math.min(from, editor.state.doc.content.size);
+          const newTo = Math.min(to, editor.state.doc.content.size);
+          const textSelection = new TextSelection(
+            editor.state.doc.resolve(newFrom),
+            editor.state.doc.resolve(newTo)
+          );
+          editor.view.dispatch(editor.state.tr.setSelection(textSelection));
+        } catch (error) {
+          // If cursor restoration fails, just place cursor at the end
+          editor.commands.focus('end');
+        }
+      }
     }
-  }
 
-  if (content && dialogEditor) {
-    const currentContent = dialogEditor.getHTML();
-    if (content !== currentContent) {
-      // Save cursor position
-      const { from, to } = dialogEditor.state.selection;
+    // Update dialog editor if content changed externally (e.g., from HTML mode)
+    if (content && dialogEditor && !dialogEditor.isDestroyed) {
+      const currentContent = dialogEditor.getHTML();
+      if (content !== currentContent) {
+        // Save cursor position
+        const { from, to } = dialogEditor.state.selection;
 
-      // Update content
-      dialogEditor.commands.setContent(content);
+        // Update content without triggering onChange
+        dialogEditor.commands.setContent(content, false);
 
-      // Restore cursor position
-      const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
-      const newTo = Math.min(to, dialogEditor.state.doc.content.size);
-      const textSelection = new TextSelection(
-        dialogEditor.state.doc.resolve(newFrom),
-        dialogEditor.state.doc.resolve(newTo)
-      );
-      dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
+        // Restore cursor position if still valid
+        try {
+          const newFrom = Math.min(from, dialogEditor.state.doc.content.size);
+          const newTo = Math.min(to, dialogEditor.state.doc.content.size);
+          const textSelection = new TextSelection(
+            dialogEditor.state.doc.resolve(newFrom),
+            dialogEditor.state.doc.resolve(newTo)
+          );
+          dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
+        } catch (error) {
+          // If cursor restoration fails, just place cursor at the end
+          dialogEditor.commands.focus('end');
+        }
+      }
     }
-  }
-}, [content, editor, dialogEditor]);
+  }, [content, editor, dialogEditor]);
 
   if (!activeEditor) return null;
 
@@ -186,15 +205,16 @@ export const Editor: React.FC<EditorProps> = (props) => {
         onKeyDown={e => e.stopPropagation()}
       >
         {
-          showEditorInDialog && (
+          showEditorInDialog && dialogEditor && (
             <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
               <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
                 {/* Menu */}
-                <Menu editor={dialogEditor!}
+                <Menu editor={dialogEditor}
                   showRawHtml={showRawHtml}
-                  toggleRawHtml={() => setShowRawHtml((v) => !v)}
+                  toggleRawHtml={handleToggleRawHtml}
                   darkMode={darkMode}
                   toggleDarkMode={() => setDarkMode((v) => !v)}
+                  hasValidationErrors={htmlValidationErrors.length > 0}
                   className={
                     clsx({
                       '~bg-gray-100': !darkMode,
@@ -206,11 +226,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
                 {/* Editor */}
                 <EditorContent
-                  editor={dialogEditor!}
+                  editor={dialogEditor}
                   content={content}
-                  setContent={setContent}
+                  setContent={handleContentChange}
                   darkMode={darkMode}
                   markdownMode={showRawHtml}
+                  onToggleMode={handleToggleRawHtml}
+                  onValidationErrors={handleHtmlValidationErrors}
                 />
               </DialogContent>
             </Dialog>
@@ -218,16 +240,17 @@ export const Editor: React.FC<EditorProps> = (props) => {
         }
 
         {
-          !showEditorInDialog && (
+          !showEditorInDialog && editor && (
             <>
               {/* Menu */}
-              <Menu editor={editor!}
+              <Menu editor={editor}
                 setShowEditorInDialog={setShowEditorInDialog}
                 showEditorInDialog={showEditorInDialog}
                 showRawHtml={showRawHtml}
-                toggleRawHtml={() => setShowRawHtml((v) => !v)}
+                toggleRawHtml={handleToggleRawHtml}
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
+                hasValidationErrors={htmlValidationErrors.length > 0}
                 className={
                   clsx({
                     '~bg-gray-100': !darkMode,
@@ -239,21 +262,17 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
               {/* Editor */}
               <EditorContent
-                editor={editor!}
+                editor={editor}
                 content={content}
-                setContent={setContent}
+                setContent={handleContentChange}
                 darkMode={darkMode}
                 markdownMode={showRawHtml}
+                onToggleMode={handleToggleRawHtml}
+                onValidationErrors={handleHtmlValidationErrors}
               />
             </>
           )
         }
-
-        {/* Debugging Content */}
-        {/* <div className='~mt-4'>
-        <h3>Editor Content (HTML):</h3>
-        <div>{content}</div>
-      </div> */}
       </div>
     </NodeViewContext.Provider>
   );

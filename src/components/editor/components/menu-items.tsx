@@ -65,6 +65,7 @@ export interface MenuItemRenderProps {
     setExpandedMenu?: (expanded: boolean) => void;
     expandedMenuL2?: boolean; // For More button to hide sub-menus
     setExpandedMenuL2?: (expanded: boolean) => void;
+    hasValidationErrors?: boolean; // For visual indication of validation errors
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -259,6 +260,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                 <ColorPickerInput
                                     color={fontColor!}
                                     name='color-picker-demo'
+                                    tabIndex={-1}
                                     setColor={(color) => {
                                         setFontColor!(color);
                                         editor.chain().focus().setColor(color).run();
@@ -533,12 +535,19 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
     {
         id: 'code',
         widthEstimate: 36,
-        render: ({ darkMode, toggleRawHtml }) => (
-            <MenuItemWithTooltip key={"menu-link-tool-tip" + "Toggle"} tooltipContent="Toggle Code/Raw HTML"> {/* Wrap with Tooltip */}
+        render: ({ darkMode, toggleRawHtml, hasValidationErrors }) => (
+            <MenuItemWithTooltip key={"menu-link-tool-tip" + "Toggle"} tooltipContent={hasValidationErrors ? "Fix HTML errors before switching" : "Toggle Code/Raw HTML"}> {/* Wrap with Tooltip */}
                 <MenuLink
                     title={
                         <FaCode
-                            className={clsx('~text-black', { '~text-white': darkMode })}
+                            className={clsx(
+                                '~text-black', 
+                                { 
+                                    '~text-white': darkMode,
+                                    '~text-red-500': hasValidationErrors && !darkMode,
+                                    '~text-red-400': hasValidationErrors && darkMode,
+                                }
+                            )}
                             size={18}
                         />
                     }
