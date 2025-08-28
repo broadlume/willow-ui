@@ -3,6 +3,7 @@ import { ComponentType, ReactNode } from 'react';
 export type SidebarItemProps = {
   label: string;
   link?: string;
+  linkPattern?: RegExp;
   hidden?: boolean;
   items?: SidebarItemProps[];
 };
@@ -23,7 +24,7 @@ export type SidebarProps = {
     menuLinkClass?: string;
   };
   defaultParentOpen?: boolean;
-  classNames: {
+  classNames?: {
     asideClassName?: string;
   };
 };

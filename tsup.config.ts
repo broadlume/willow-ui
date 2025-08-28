@@ -73,7 +73,7 @@ export default defineConfig((options) => ({
 
   // Ensure React 17+ JSX transform is used.
   jsx: 'react-jsx',
-  watch: true,
+  watch: false,
 
   // tsup handles code splitting, but for a component library,
   // a single file per format is often preferred.

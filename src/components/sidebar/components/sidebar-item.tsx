@@ -33,7 +33,8 @@ export const SidebarItem: FC<Props> = ({
   rightArrow,
   downArrow,
 }) => {
-  const isChildActive = location === item.link;
+  const isChildActive =
+    location === item.link || Boolean(item.linkPattern?.test(location));
   const hasGrandchildren = item.items?.length;
 
   if (item.link) {
@@ -68,7 +69,17 @@ export const SidebarItem: FC<Props> = ({
       {openSections[item.label] && hasGrandchildren && (
         <ul className='mt-2 ml-4 border-l border-border-sec space-y-2 text-base'>
           {item?.items?.map((grandchild, key) => {
-            const isGrandChildActive = location === grandchild.link;
+            const isGrandChildActive =
+              item.linkPattern?.test(location) || location === grandchild.link;
+            console.log(
+              'isGrandChildActive',
+              item.linkPattern?.test(location),
+              {
+                isActive: isGrandChildActive,
+                location,
+                item: grandchild,
+              }
+            );
             return (
               <li key={grandchild.label + key}>
                 <SidebarLink

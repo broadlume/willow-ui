@@ -37,10 +37,9 @@ export const SidebarSection: FC<Props> = ({
   downArrow,
   defaultParentOpen = false,
 }) => {
-  const isActive = location === item.link || location + '/' === item.link;
   const hasChildren = item.items?.length;
-
-  const isOpen = openSections[item.label] ?? defaultParentOpen;
+  const isActive =
+    item.linkPattern?.test(location) || location + '/' === item.link;
 
   if (item.link && !hasChildren) {
     return (
@@ -56,6 +55,7 @@ export const SidebarSection: FC<Props> = ({
     );
   }
 
+  const isOpen = openSections[item.label] ?? defaultParentOpen;
   return (
     <div key={item.label}>
       <div

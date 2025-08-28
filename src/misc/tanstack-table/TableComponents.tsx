@@ -87,8 +87,8 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground w-fit text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
-      '[&:has(td>button[role=checkbox])>td]:mt-[2px]', // apply margin-top to td inside th if td has button[role=checkbox]
+      'text-muted-foreground w-fit text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-5',
+      '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-5', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}
     {...props}
