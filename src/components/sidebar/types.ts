@@ -3,7 +3,7 @@ import { ComponentType, ReactNode } from 'react';
 export type SidebarItemProps = {
   label: string;
   link?: string;
-  linkPattern?: RegExp;
+  linkPattern?: string;
   hidden?: boolean;
   items?: SidebarItemProps[];
 };
