@@ -218,7 +218,7 @@ export const Menu = ({
             '!~flex': expandedMenu,
             '~bg-gray-100': !darkMode,
             '~text-gray-800': !darkMode,
-            '~bg-gray-900 ~text-gray-200': darkMode,
+            '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
           }
         )}
       >
@@ -238,7 +238,7 @@ export const Menu = ({
             '!~flex': expandedMenuL2,
             '~bg-gray-100': !darkMode,
             '~text-gray-800': !darkMode,
-            '~bg-gray-900 ~text-gray-200': darkMode,
+            '~bg-gray-900 ~text-gray-200 ~border-gray-600 ~border-t-gray-400': darkMode,
           }
         )}
       >
