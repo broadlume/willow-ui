@@ -1,6 +1,6 @@
 // src/components/menu/menu-items.tsx (Updated)
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Editor } from '@tiptap/react';
 import clsx from 'clsx';
 import isURL from 'validator/lib/isURL';

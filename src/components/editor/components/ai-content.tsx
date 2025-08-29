@@ -193,36 +193,33 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
                   type='button'
                   className='~mt-4'
                   onClick={() => {
-                    // Process the generated content to handle line breaks properly
-                    const processContent = (content: string) => {
-                      // Split content by double line breaks (paragraph breaks)
-                      const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim());
-                      
-                      if (paragraphs.length === 0) return content;
-                      
-                      // If there's only one paragraph, check for single line breaks
-                      if (paragraphs.length === 1) {
-                        const lines = content.split(/\n/).filter(line => line.trim());
-                        if (lines.length > 1) {
-                          // Convert single line breaks to <br> tags within a paragraph
-                          return `<p>${lines.join('<br>')}</p>`;
-                        }
-                        // Single line, wrap in paragraph
-                        return `<p>${content.trim()}</p>`;
-                      }
-                      
-                      // Multiple paragraphs, wrap each in <p> tags
-                      return paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-                    };
-
-                    const htmlContent = processContent(generatedContent);
-
+                    const htmlContent = generatedContent.split('\n').map(line => {
+                      const trimmedLine = line.trim();
+                      if (trimmedLine.length === 0) return null;
+                      return {
+                        type: 'paragraph',
+                        content: [{
+                          type: 'text',
+                          text: trimmedLine,
+                        }]
+                      };
+                    }).filter(el => el);
                     if (from && to) {
                       // Insert the generated content at the current selection
-                      editor.chain().focus().deleteRange({ from, to }).insertContent(htmlContent).run();
+                      htmlContent.map(
+                        el => {
+                          editor.chain().focus().deleteRange({ from, to }).insertContent(el).run();
+                          editor.chain().focus().deleteRange({ from, to }).insertContent('<br />').run();
+                        }
+                      )
                     } else {
                       // If no selection, just insert at the end
-                      editor.chain().focus().insertContent(htmlContent).run();
+                      htmlContent.map(
+                        el => {
+                          editor.chain().focus().insertContent(el).run();
+                          editor.chain().focus().insertContent('<br />').run();
+                        }
+                      )
                     }
                     setGeneratedContent(''); // Clear the generated content after inserting
                     form.reset(); // Reset the form after inserting

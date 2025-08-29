@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 
 import { Textarea } from '@components/textarea/textarea';
+import { BubbleMenu } from './bubble-menu';
 
 interface EditorContentProps {
     editor: Editor;
@@ -43,18 +44,23 @@ const VisualEditor: React.FC<{
     darkMode?: boolean;
     className?: string;
 }> = ({ editor, content, darkMode, className }) => (
-    <TiptapEditorContent
-        editor={editor}
-        content={content}
-        className={clsx(
-            '~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2 ~max-w-full',
-            {
-                '~bg-gray-800 ~text-gray-200': darkMode,
-                '~border-[1px] ~border-gray-600': darkMode,
-            },
-            className
-        )}
-    />
+    <div className="~relative">
+        {/* BubbleMenu for this specific editor instance */}
+        <BubbleMenu editor={editor} />
+        
+        <TiptapEditorContent
+            editor={editor}
+            content={content}
+            className={clsx(
+                '~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2 ~max-w-full',
+                {
+                    '~bg-gray-800 ~text-gray-200': darkMode,
+                    '~border-[1px] ~border-gray-600': darkMode,
+                },
+                className
+            )}
+        />
+    </div>
 );
 
 // Main EditorContent Component
@@ -78,8 +84,19 @@ export const EditorContent: React.FC<EditorContentProps> = ({
             setHtmlContent(content);
         }
 
+        // When switching back to visual mode, ensure editor is properly focused
+        const justSwitchedToVisual = !markdownMode && previousMarkdownMode.current;
+        if (justSwitchedToVisual && editor) {
+            // Small delay to ensure the visual editor is rendered before focusing
+            setTimeout(() => {
+                if (editor && !editor.isDestroyed) {
+                    editor.commands.focus();
+                }
+            }, 100);
+        }
+
         previousMarkdownMode.current = markdownMode ?? false;
-    }, [markdownMode, content]);
+    }, [markdownMode, content, editor]);
 
     // Handle HTML content changes
     const handleHtmlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

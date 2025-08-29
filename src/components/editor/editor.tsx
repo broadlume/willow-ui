@@ -36,7 +36,6 @@ import { NodeViewContext, NodeViewContextType } from './context/node-view-contex
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
-import { BubbleMenu } from './components/bubble-menu';
 import { SlashCommand } from './extensions/slash-command';
 
 export type EditorProps = {
@@ -110,7 +109,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: clsx(
-          'focus:~outline-none ~not-prose',
+          'focus:~outline-none ~not-prose ~overflow-auto',
           darkMode ? '!~text-white' : '~text-black'
         )
       },
@@ -188,8 +187,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
 
   return (
     <NodeViewContext.Provider value={nodeViewContextValue}>
-      <BubbleMenu editor={activeEditor} />
-      {/* <CommandMenu editor={activeEditor} showCommandMenu={commandMenu} /> */}
       <div
         onClick={e => e.stopPropagation()}
         onKeyDown={e => e.stopPropagation()}
@@ -197,7 +194,22 @@ export const Editor: React.FC<EditorProps> = (props) => {
         {
           showEditorInDialog && dialogEditor && (
             <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => e.preventDefault()}>
+              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => {
+                // Allow BubbleMenu interactions by checking if the target is part of a tippy popper or popover
+                const target = e.target as Element;
+                if (target && (
+                  target.closest('[data-tippy-root]') || 
+                  target.closest('[data-radix-popper-content-wrapper]') ||
+                  target.closest('[data-radix-popover-content]') ||
+                  target.closest('.tippy-popper') ||
+                  target.closest('[role="tooltip"]') ||
+                  target.closest('[role="dialog"]') ||
+                  target.closest('[data-state="open"]')
+                )) {
+                  return; // Allow the event to proceed for BubbleMenu/Popover interactions
+                }
+                e.preventDefault();
+              }}>
                 {/* Menu */}
                 <Menu editor={dialogEditor}
                   showRawHtml={showRawHtml}
