@@ -212,8 +212,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                 side='bottom'
                                 align="center"
                                 sideOffset={5}
-                                className="~z-[99999] ~bg-white ~border ~border-gray-300 ~shadow-lg"
-                                style={{ position: 'fixed' }}
+                                className="~z-[99999] ~bg-white ~border ~border-gray-300 ~shadow-lg ~fixed"
                                 onOpenAutoFocus={(e) => {
                                     e.preventDefault();
                                     setTimeout(() => {

@@ -109,7 +109,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     editorProps: {
       attributes: {
         class: clsx(
-          'focus:~outline-none ~not-prose',
+          'focus:~outline-none ~not-prose ~overflow-auto',
           darkMode ? '!~text-white' : '~text-black'
         )
       },
