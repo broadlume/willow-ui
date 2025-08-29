@@ -47,6 +47,10 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         setShowLinkInput(false);
         setIsEditingLink(false);
         setUrl('');
+        // Refocus the editor after applying the link
+        setTimeout(() => {
+            editor.commands.focus();
+        }, 10);
     };
 
     const removeLink = () => {
@@ -54,6 +58,10 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         setShowLinkInput(false);
         setIsEditingLink(false);
         setUrl('');
+        // Refocus the editor after removing the link
+        setTimeout(() => {
+            editor.commands.focus();
+        }, 10);
     };
 
     const startEditingLink = () => {
@@ -70,6 +78,10 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         setShowLinkInput(false);
         setIsEditingLink(false);
         setUrl(isLinkActive ? currentLinkHref : '');
+        // Refocus the editor after closing the popover
+        setTimeout(() => {
+            editor.commands.focus();
+        }, 10);
     };
 
     const isApplyDisabled = !url || !isURL(url);
@@ -78,15 +90,16 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         <TipTapBubbleMenu
             editor={editor}
             className={clsx(
-                '~rounded-md ~border ~border-gray-300 ~bg-white ~p-2 ~shadow-lg'
+                '~rounded-md ~border ~border-gray-300 ~bg-white ~p-2 ~shadow-lg ~z-[99999]'
             )}
             tippyOptions={{
                 placement: 'bottom',
                 duration: 150,
                 interactive: true,
                 animation: 'fade',
+                zIndex: 99999,
+                hideOnClick: false,
                 onHidden: (instance) => {
-                    // Only reset state if not editing a link
                     if (!isEditingLink) {
                         setUrl(isLinkActive ? currentLinkHref : '');
                         setShowLinkInput(false);
@@ -94,55 +107,122 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                 }
             }}
         >
-            <div onMouseDown={e => e.preventDefault()} className="~flex ~gap-4">
-                <MenuLink
-                    title={<FaBold className={clsx('~text-black', { '~text-white': darkMode })} size={14} />}
-                    eventHandler={() => editor.chain().focus().toggleBold().run()}
-                />
-                <MenuLink
-                    title={<FaItalic className={clsx('~text-black', { '~text-white': darkMode })} size={14} />}
-                    eventHandler={() => editor.chain().focus().toggleItalic().run()}
-                />
-                <MenuLink
-                    title={<MdFormatUnderlined className={clsx('~text-black', { '~text-white': darkMode })} size={16} />}
-                    eventHandler={() => editor.chain().focus().toggleUnderline().run()}
-                />
-                <MenuLink
-                    title={<MdStrikethroughS className={clsx('~text-black', { '~text-white': darkMode })} size={16} />}
-                    eventHandler={() => editor.chain().focus().toggleStrike().run()}
-                />
+            <div 
+                className="~flex ~gap-4"
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editor.chain().focus().toggleBold().run();
+                    }}
+                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                >
+                    <FaBold className={clsx('~text-black', { '~text-white': darkMode })} size={14} />
+                </button>
+                <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editor.chain().focus().toggleItalic().run();
+                    }}
+                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                >
+                    <FaItalic className={clsx('~text-black', { '~text-white': darkMode })} size={14} />
+                </button>
+                <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editor.chain().focus().toggleUnderline().run();
+                    }}
+                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                >
+                    <MdFormatUnderlined className={clsx('~text-black', { '~text-white': darkMode })} size={16} />
+                </button>
+                <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        editor.chain().focus().toggleStrike().run();
+                    }}
+                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                >
+                    <MdStrikethroughS className={clsx('~text-black', { '~text-white': darkMode })} size={16} />
+                </button>
                 
                 {/* Link Section - Show different UI based on link state */}
                 {isLinkActive && !showLinkInput ? (
                     // Show edit/delete options when a link is selected
                     <>
-                        <MenuLink
-                            title={<HiMiniPencil className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />}
-                            eventHandler={startEditingLink}
-                        />
-                        <MenuLink
-                            title={<HiMiniTrash className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />}
-                            eventHandler={removeLink}
-                        />
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                startEditingLink();
+                            }}
+                            className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                        >
+                            <HiMiniPencil className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />
+                        </button>
+                        <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                removeLink();
+                            }}
+                            className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                        >
+                            <HiMiniTrash className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />
+                        </button>
                     </>
                 ) : (
                     // Show link creation/editing interface
                     <div>
-                        <Popover open={showLinkInput}>
-                            <PopoverTrigger>
-                                <MenuLink
-                                    title={<HiMiniLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />}
-                                    eventHandler={() => {
+                        <Popover open={showLinkInput} onOpenChange={setShowLinkInput}>
+                            <PopoverTrigger asChild>
+                                <button
+                                    type="button"
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         if (!isLinkActive) {
                                             setShowLinkInput(true);
-                                            inputRef.current?.focus();
+                                            setTimeout(() => {
+                                                inputRef.current?.focus();
+                                            }, 100);
                                         } else {
                                             startEditingLink();
                                         }
                                     }}
-                                />
+                                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                                >
+                                    <HiMiniLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />
+                                </button>
                             </PopoverTrigger>
-                            <PopoverContent side='bottom'>
+                            <PopoverContent 
+                                side='bottom'
+                                align="center"
+                                sideOffset={5}
+                                className="~z-[99999] ~bg-white ~border ~border-gray-300 ~shadow-lg"
+                                style={{ position: 'fixed' }}
+                                onOpenAutoFocus={(e) => {
+                                    e.preventDefault();
+                                    setTimeout(() => {
+                                        inputRef.current?.focus();
+                                    }, 10);
+                                }}
+                                avoidCollisions={true}
+                                collisionPadding={20}
+                            >
                                 <div>
                                     <Input
                                         ref={inputRef}
