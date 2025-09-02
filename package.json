@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -185,6 +185,5 @@
     "url": "https://github.com/broadlume/willow-ui/issues"
   },
   "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/broadlume/willow-ui#readme",
-  "_id": "@broadlume/willow-ui@0.0.0"
+  "homepage": "https://github.com/broadlume/willow-ui#readme"
 }
