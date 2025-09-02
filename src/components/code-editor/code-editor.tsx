@@ -1,110 +1,163 @@
-import { useCallback, useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  FaSun,
-  FaMoon,
-  FaQuestionCircle,
-  FaBrush,
-  FaCopy,
-} from 'react-icons/fa';
-
-import Editor, { Theme, EditorProps, Monaco } from '@monaco-editor/react';
+import Editor, { EditorProps, Monaco } from '@monaco-editor/react';
 import * as emmetMonaco from 'emmet-monaco-es';
-import * as prettier from 'prettier/standalone';
-import * as prettierParserHtml from 'prettier/parser-html';
+import type * as monaco from 'monaco-editor';
 import * as prettierParserBabel from 'prettier/parser-babel';
+import * as prettierParserHtml from 'prettier/parser-html';
 import * as prettierParserCss from 'prettier/parser-postcss';
+import * as prettier from 'prettier/standalone';
 
 import { Button } from '@components/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@components/popover/popover';
+import { EMMET_SUPPORTED_LANGUAGES, oneDarkProTheme, oneLightProTheme } from './utils';
+
+// icons
+import { HiClipboardDocumentCheck, HiCodeBracketSquare, HiEllipsisVertical, HiMiniMoon, HiMiniSun, HiPaintBrush } from 'react-icons/hi2';
+import { ReactComponent as AIIcon } from './ai-icon.svg';
+
+// Simplified theme type - just light and dark
+type CustomTheme = 'light' | 'dark';
 
 interface CodeEditorProps {
-  code?: string;
-  onChange?: (code: string) => void;
-  language?: string;
-  theme?: Theme;
-  height?: string;
-  width?: string;
-  options?: EditorProps['options'];
-  asyncTokenSuggestions?: (query: string) => Promise<string[]>;
-  enableTokenSuggestion?: boolean;
+    code?: string,
+    onChange?: (code: string) => void,
+    language?: string,
+    theme?: CustomTheme,
+    height?: string,
+    width?: string,
+    options?: EditorProps['options'],
+    asyncTokenSuggestions?: (query: string) => Promise<string[]>;
+    enableTokenSuggestion?: boolean,
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
-  code: passedCode = '',
-  onChange: passedOnChange,
-  language: passedLanguage = 'html',
-  theme: passedTheme = 'vs-dark',
-  height = '90vh',
-  width = '100%',
-  options,
-  asyncTokenSuggestions,
-  enableTokenSuggestion = true,
+    code: passedCode = '',
+    onChange: passedOnChange,
+    language = 'html',
+    theme: passedTheme = 'dark',
+    height = '90vh',
+    width = '100%',
+    options: passedOptions,
+    asyncTokenSuggestions,
+    enableTokenSuggestion = true
 }: CodeEditorProps) => {
-  const [code, setCode] = useState<string>(passedCode);
-  const [theme, setTheme] = useState<Theme>(passedTheme);
-  const [showHelper, setShowHelper] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState('');
-  const [suggestionPage, setSuggestionPage] = useState(1);
-  const editorRef = useRef<any>(null);
+    const [code, setCode] = useState<string>(passedCode);
+    const [theme, setTheme] = useState<CustomTheme>(passedTheme);
+    const [statusMessage, setStatusMessage] = useState('');
+    const [suggestionPage, setSuggestionPage] = useState(1);
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const providersRef = useRef<monaco.IDisposable[]>([]);
 
-  const defaultOptions: EditorProps['options'] = {
-    fontSize: 16,
-    fontFamily: 'monospace',
-    lineNumbersMinChars: 3,
-    minimap: { enabled: true },
-    scrollbar: {
-      alwaysConsumeMouseWheel: false,
-      verticalScrollbarSize: 8,
-      horizontalScrollbarSize: 8,
-    },
-    autoClosingBrackets: 'always',
-    autoClosingQuotes: 'always',
-    ...options,
-  };
+    const options: EditorProps['options'] = {
+        fontSize: 14,
+        fontFamily: 'Fira Code',
+        lineNumbers: 'on',
+        lineNumbersMinChars: 3,
+        minimap: { enabled: true },
+        scrollbar: {
+            alwaysConsumeMouseWheel: false,
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+        },
+        autoClosingBrackets: 'always',
+        autoClosingQuotes: 'always',
+        cursorBlinking: 'smooth',
+        cursorSmoothCaretAnimation: 'on',
+        selectOnLineNumbers: true,
+        glyphMargin: false,
+        folding: true,
+        lineDecorationsWidth: 10,
+        lineHeight: 22,
+        wordWrap: 'on',
+        ...passedOptions,
+    };
+
+    // Helper function to initialize Emmet for all supported languages
+    const initializeEmmet = (monaco: Monaco) => {
+        // Group languages by emmet type for efficient initialization
+        const emmetGroups = EMMET_SUPPORTED_LANGUAGES.reduce((groups, config) => {
+            if (!groups[config.emmetType]) {
+                groups[config.emmetType] = [];
+            }
+            groups[config.emmetType].push(config.language);
+            return groups;
+        }, {} as Record<string, string[]>);
+
+        // Initialize Emmet for each type
+        if (emmetGroups.html?.length) {
+            emmetMonaco.emmetHTML(monaco, emmetGroups.html);
+        }
+        if (emmetGroups.css?.length) {
+            emmetMonaco.emmetCSS(monaco, emmetGroups.css);
+        }
+        if (emmetGroups.jsx?.length) {
+            emmetMonaco.emmetJSX(monaco, emmetGroups.jsx);
+        }
+    };
 
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
     editorRef.current = editor;
 
-    emmetMonaco.emmetCSS(monaco);
-    emmetMonaco.emmetHTML(monaco);
-    emmetMonaco.emmetJSX(monaco);
+        // Dispose of any existing providers
+        providersRef.current.forEach(provider => provider.dispose());
+        providersRef.current = [];
 
-    ['html', 'liquid', 'javascript'].forEach((language) => {
-      if (!enableTokenSuggestion) return;
-      monaco.languages.registerCompletionItemProvider(language, {
-        triggerCharacters: ['{'],
-        provideCompletionItems: async (model, position) => {
-          const textBeforeCursor = model.getValueInRange({
-            startLineNumber: position.lineNumber,
-            startColumn: 1,
-            endLineNumber: position.lineNumber,
-            endColumn: position.column,
-          });
+        // Define custom themes
+        monaco.editor.defineTheme('one-dark-pro', oneDarkProTheme);
+        monaco.editor.defineTheme('one-light-pro', oneLightProTheme);
 
-          const match = textBeforeCursor.match(/{{(\w*)$/);
-          if (!match || !asyncTokenSuggestions) {
-            return { suggestions: [] };
-          }
+        // Initialize Emmet for all supported languages
+        initializeEmmet(monaco);
 
-          const query = match[1];
-          let tokenResults: string[] = [];
-          try {
-            tokenResults = await asyncTokenSuggestions(query);
-          } catch (err) {
-            console.error('Failed to fetch async token suggestions:', err);
-          }
+        // Only register our custom completion providers if token suggestions are enabled
+        if (enableTokenSuggestion && asyncTokenSuggestions) {
+            ['html', 'liquid', 'javascript'].forEach((language) => {
+                const provider = monaco.languages.registerCompletionItemProvider(language, {
+                    triggerCharacters: ['{'],
+                    provideCompletionItems: async (model, position, _context, _token) => {
+                        const textBeforeCursor = model.getValueInRange({
+                            startLineNumber: position.lineNumber,
+                            startColumn: 1,
+                            endLineNumber: position.lineNumber,
+                            endColumn: position.column,
+                        });
 
-          const suggestions = tokenResults.map((token) => ({
-            label: token,
-            kind: monaco.languages.CompletionItemKind.Text,
-            insertText: `${token}`,
-            detail: `Insert ${token} token`,
-          }));
+                        const match = textBeforeCursor.match(/{{(\w*)$/);
+                        if (!match) {
+                            return { suggestions: [] };
+                        }
 
-          return { suggestions };
-        },
-      });
-    });
+                        const query = match[1];
+                        let tokenResults: string[] = [];
+                        try {
+                            tokenResults = await asyncTokenSuggestions(query);
+                        } catch (err) {
+                            console.error('Failed to fetch async token suggestions:', err);
+                        }
+
+                        const suggestions = tokenResults.map((token) => ({
+                            label: token,
+                            kind: monaco.languages.CompletionItemKind.Text,
+                            insertText: `${token}`,
+                            detail: `Insert ${token} token`,
+                            range: {
+                                startLineNumber: position.lineNumber,
+                                endLineNumber: position.lineNumber,
+                                startColumn: position.column - query.length,
+                                endColumn: position.column,
+                            },
+                        }));
+
+                        return { suggestions };
+                    }
+                });
+
+                // Store the provider for cleanup
+                providersRef.current.push(provider);
+            });
+        }
 
     editor.onDidChangeModelContent(() => {
       const position = editor.getPosition();
@@ -134,18 +187,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     );
     if (!suggestWidget) return;
 
-    const onScroll = (e: any) => {
-      if (
-        suggestWidget.scrollTop + suggestWidget.clientHeight >=
-        suggestWidget.scrollHeight
-      ) {
-        console.log('Scrolled to bottom, fetch more suggestions');
-      }
-    };
+        const onScroll = (_e: Event) => {
+            if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
+                console.log('Scrolled to bottom, fetch more suggestions');
+            }
+        };
 
-    suggestWidget.addEventListener('scroll', onScroll);
-    return () => suggestWidget.removeEventListener('scroll', onScroll);
-  }, [editorRef.current, suggestionPage]);
+        suggestWidget.addEventListener('scroll', onScroll);
+        return () => suggestWidget.removeEventListener('scroll', onScroll);
+    }, [suggestionPage]);
+
+    // Cleanup providers on unmount
+    useEffect(() => {
+        return () => {
+            providersRef.current.forEach(provider => provider.dispose());
+            providersRef.current = [];
+        };
+    }, []);
 
   const formatCode = () => {
     if (!editorRef.current) return;
@@ -153,14 +211,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     const currentCode = editorRef.current.getValue();
     let formattedCode = currentCode;
 
-    try {
-      formattedCode = prettier.format(currentCode, {
-        parser: getPrettierParser(passedLanguage),
-        plugins: [prettierParserHtml, prettierParserCss, prettierParserBabel],
-      });
-    } catch (error) {
-      console.error('Error formatting code:', error);
-    }
+        try {
+            formattedCode = prettier.format(currentCode, {
+                parser: getPrettierParser(language),
+                plugins: [prettierParserHtml, prettierParserCss, prettierParserBabel],
+            });
+        } catch (error) {
+            console.error('Error formatting code:', error);
+        }
 
     editorRef.current.setValue(formattedCode);
   };
@@ -189,155 +247,167 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     [passedOnChange]
   );
 
-  const toggleTheme = () =>
-    setTheme((prev) => (prev === 'vs-dark' ? 'light' : 'vs-dark'));
-  const toggleHelper = () => setShowHelper((prev) => !prev);
+    const toggleTheme = () => {
+        setTheme((prev) => prev === 'light' ? 'dark' : 'light');
+    };
 
-  const copyCode = () => {
-    if (!editorRef.current) return;
-    const currentCode = editorRef.current.getValue();
-    navigator.clipboard
-      .writeText(currentCode)
-      .then(() => {
-        setStatusMessage('Code copied to clipboard!');
-        setTimeout(() => setStatusMessage(''), 2000);
-      })
-      .catch((err) => {
-        setStatusMessage('Failed to copy code.');
-        setTimeout(() => setStatusMessage(''), 2000);
-        console.error(err);
-      });
-  };
+    // Map custom theme names to Monaco theme names
+    const getMonacoTheme = (customTheme: CustomTheme): string => {
+        switch (customTheme) {
+            case 'dark':
+                return 'one-dark-pro';
+            case 'light':
+                return 'one-light-pro';
+            default:
+                return 'one-dark-pro';
+        }
+    };
 
-  return (
-    <div className='border border-gray-300 rounded-lg shadow-md overflow-hidden'>
-      <div className='flex justify-between items-center py-2 px-6 bg-gray-100 border-b border-gray-300'>
-        <p className='font-medium'>
-          <b>Type: </b>
-          <span className='capitalize text-indigo-600'>{passedLanguage}</span>
-        </p>
+    const copyCode = () => {
+        if (!editorRef.current) return;
+        const currentCode = editorRef.current.getValue();
+        navigator.clipboard.writeText(currentCode)
+            .then(() => {
+                setStatusMessage('Code copied to clipboard!');
+                setTimeout(() => setStatusMessage(''), 2000);
+            })
+            .catch((err) => {
+                setStatusMessage('Failed to copy code.');
+                setTimeout(() => setStatusMessage(''), 2000);
+                console.error(err);
+            });
+    };
 
-        {statusMessage && (
-          <div className='text-green-600 text-sm px-3 py-1'>
-            {statusMessage}
-          </div>
-        )}
+    const isLightTheme = theme === 'light';
+    const isDarkTheme = theme === 'dark';
 
-        <div className='flex gap-2 items-center'>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Format Code'
-            onClick={formatCode}
-          >
-            <FaBrush
-              fontSize={18}
-              className='hover:text-indigo-500 transition'
+    return (
+        <div className={
+            clsx(
+                'w-full h-[440px] border rounded-lg overflow-hidden flex flex-col',
+                {
+                    'bg-[#fafafa] border-[#e5e5e6]': isLightTheme,
+                    'bg-[#282c34] border-[#3e4451]': isDarkTheme,
+                },
+            )
+        }>
+            {/* Header Bar */}
+            <div className={
+                clsx(
+                    'border-b px-2.5 py-2 flex justify-between items-center h-[40px]',
+                    {
+                        'bg-[#fafafa] border-[#e5e5e6]': isLightTheme,
+                        'bg-[#282c34] border-[#3e4451]': isDarkTheme,
+                    },
+                )
+            }>
+                {/* Label */}
+                <div className='text-xs capitalize flex items-center gap-1'>
+                    <HiCodeBracketSquare size={14} className='text-[#6038E8]' />
+                    <span className={
+                        clsx(
+                            {
+                                'text-[#383a42]': isLightTheme,
+                                'text-[#abb2bf]': isDarkTheme,
+                            }
+                        )
+                    }>{language}</span>
+                </div>
+
+                {/* Center Status Message */}
+                <div className='flex-1 flex justify-center items-center'>
+                    {statusMessage && (
+                        <div className={
+                            clsx(
+                                'text-xs px-3 py-1 rounded-full font-medium transition-all duration-300 ease-in-out animate-scale-up',
+                                {
+                                    'bg-[#6038E8]/10 text-[#6038E8] border border-[#6038E8]/20': isLightTheme,
+                                    'bg-[#6038E8]/20 text-[#8B5CF6] border border-[#6038E8]/30': isDarkTheme,
+                                }
+                            )
+                        }>
+                            {statusMessage}
+                        </div>
+                    )}
+                </div>
+
+                {/* Toolbar */}
+                <div className='flex items-center gap-4 relative'>
+                    {/* AI Icon */}
+                    <div className='flex items-center gap-1 cursor-pointer'>
+                        <AIIcon />
+                        <span className='text-sm font-normal text-[#6038E8]'>Ai</span>
+                    </div>
+
+                    {/* Theme Toggle */}
+                    <Button
+                        type="button" variant='link'
+                        className={
+                            clsx(
+                                {
+                                    'text-[#383a42]': isLightTheme,
+                                    'text-[#abb2bf]': isDarkTheme,
+                                }
+                            )
+                        }
+                        onClick={() => {
+                            toggleTheme();
+                        }}
+                    >
+                        {isDarkTheme ? <HiMiniSun size={16} /> : <HiMiniMoon size={16} />}
+                    </Button>
+
+                    {/* More Options Menu */}
+                    <Popover>
+                        <PopoverTrigger
+                            className={
+                                clsx(
+                                    {
+                                        'text-[#383a42]': isLightTheme,
+                                        'text-[#abb2bf]': isDarkTheme,
+                                    }
+                                )
+                            }
+                        >
+                            <HiEllipsisVertical size={24} />
+                        </PopoverTrigger>
+                        <PopoverContent className='w-28 flex flex-col items-start gap-2 p-2' alignOffset={-90}>
+                            <Button
+                                type="button"
+                                variant='link'
+                                className='hover:no-underline text-[#1A1A1A] gap-2'
+                                onClick={() => formatCode()}
+                            >
+                                <HiPaintBrush />
+                                Format
+                            </Button>
+                            <Button
+                                type="button"
+                                variant='link'
+                                className='hover:no-underline text-[#1A1A1A] gap-2'
+                                onClick={() => copyCode()}
+                            >
+                                <HiClipboardDocumentCheck />
+                                Copy
+                            </Button>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+            </div>
+
+            {/* Content Area */}
+            <Editor
+                options={options}
+                height={height}
+                width={width}
+                language={language}
+                theme={getMonacoTheme(theme)}
+                defaultValue={code}
+                onChange={onChange}
+                onMount={handleEditorDidMount}
             />
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Toggle Theme'
-            onClick={toggleTheme}
-          >
-            {theme === 'vs-dark' ? (
-              <FaSun
-                fontSize={18}
-                className='hover:text-yellow-500 transition'
-              />
-            ) : (
-              <FaMoon
-                fontSize={18}
-                className='hover:text-gray-700 transition'
-              />
-            )}
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Copy Code'
-            onClick={copyCode}
-          >
-            <FaCopy fontSize={18} className='hover:text-green-500 transition' />
-          </Button>
-          <Button
-            type='button'
-            variant='ghost'
-            title='Toggle Help'
-            onClick={toggleHelper}
-          >
-            <FaQuestionCircle
-              fontSize={18}
-              className='hover:text-blue-500 transition'
-            />
-          </Button>
         </div>
-      </div>
-
-      {showHelper && (
-        <div className='px-6 py-4 bg-white rounded-md text-sm'>
-          <h3 className='font-semibold mb-3 text-gray-800 text-lg'>
-            ⚙️ Editor Shortcuts & Tips
-          </h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-            <div className='p-3 bg-gray-50 rounded-lg shadow-xs'>
-              <span className='flex items-center mb-1 font-medium'>
-                <FaSun className='mr-2' /> / <FaMoon className='ml-2' /> Theme
-                Toggle
-              </span>
-              <p className='text-gray-600'>
-                Switch between dark and light modes.
-              </p>
-            </div>
-            <div className='p-3 bg-gray-50 rounded-lg shadow-xs'>
-              <span className='flex items-center mb-1 font-medium'>
-                <FaBrush className='mr-2' /> Format Code
-              </span>
-              <p className='text-gray-600'>Auto-format code with Prettier.</p>
-            </div>
-            <div className='p-3 bg-gray-50 rounded-lg shadow-xs'>
-              <span className='flex items-center mb-1 font-medium'>
-                <FaCopy className='mr-2' /> Copy Code
-              </span>
-              <p className='text-gray-600'>
-                Copy the editor content to clipboard.
-              </p>
-            </div>
-            {enableTokenSuggestion && (
-              <div className='p-3 bg-gray-50 rounded-lg shadow-xs'>
-                <span className='font-medium'>
-                  Tokens: <code>&#123;&#123;</code>
-                </span>
-                <p className='text-gray-600'>
-                  Trigger suggestions like <code>&#123;&#123;user</code>
-                </p>
-              </div>
-            )}
-            <div className='p-3 bg-gray-50 rounded-lg shadow-xs'>
-              <span className='font-medium'>Shortcut</span>
-              <p className='text-gray-600'>
-                <kbd>Ctrl</kbd> + <kbd>Space</kbd> to trigger suggestions
-                manually
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <Editor
-        options={defaultOptions}
-        height={height}
-        width={width}
-        language={passedLanguage}
-        theme={theme}
-        defaultValue={code}
-        onChange={onChange}
-        onMount={handleEditorDidMount}
-        className='rounded-b-lg p-0'
-      />
-    </div>
-  );
+    );
 };
 
 export { CodeEditor };

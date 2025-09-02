@@ -31,7 +31,7 @@ export const SelectionTypeMenuItemContent = ({
       }}
     >
       <SelectTrigger
-        value={selectedItem}
+        tabIndex={-1} value={selectedItem}
         className={clsx(
           'h-6 w-32 rounded-none border-none font-normal text-black shadow-none focus:outline-none focus:ring-0',
           {

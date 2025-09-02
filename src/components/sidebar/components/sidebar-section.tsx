@@ -1,8 +1,9 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { IconType, SidebarItemProps } from '../types';
+import { getPrimaryLink, hasNavigableLink, isLocationActive } from "../utils/link-matcher";
+import { SidebarItemList } from './sidebar-item-list';
 import { SidebarLink } from './sidebar-link';
 import { ToggleIcon } from './toggle-icon';
-import { SidebarItemList } from './sidebar-item-list';
 
 type Props = {
   item: SidebarItemProps;
@@ -37,14 +38,15 @@ export const SidebarSection: FC<Props> = ({
   downArrow,
   defaultParentOpen = false,
 }) => {
+  const isActive = isLocationActive(location, item);
   const hasChildren = item.items?.length;
-  const isActive = location + '/' === item.link;
+  const primaryLink = getPrimaryLink(item);
 
-  if (item.link && !hasChildren) {
+  if (hasNavigableLink(item) && !hasChildren && primaryLink) {
     return (
       <SidebarLink
         key={item.label}
-        to={item.link}
+        to={primaryLink}
         label={item.label}
         isActive={isActive}
         onClick={closeAllSections}

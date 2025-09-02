@@ -19,8 +19,8 @@ import { MenuItemWithTooltip } from './menu-item-with-tooltip';
 
 interface MenuProps {
   editor: Editor;
-  showEditorInDialog?: boolean;
   setShowEditorInDialog?: (show: boolean) => void;
+  showEditorInDialog?: boolean;
   showRawHtml?: boolean;
   toggleRawHtml?: () => void;
   darkMode?: boolean;
@@ -74,24 +74,21 @@ export const Menu = ({
   // Use ResizeObserver to get the available width of the menu container
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
-      if (entries[0] && menuRef.current) {
-        // Subtract the static width of the right-aligned buttons (dark mode + more)
-        // And also account for the gap between them and the left-aligned items
-        const currentWidth =
-          entries[0].contentRect.width -
-          (DARK_MODE_BUTTON_WIDTH + MORE_BUTTON_WIDTH + GAP_WIDTH) +
-          200;
-        setAvailableWidth(currentWidth);
+      const entry = entries[0];
+      if (entry) {
+        const newWidth = entry.contentRect.width;
+        setAvailableWidth(newWidth - MORE_BUTTON_WIDTH - DARK_MODE_BUTTON_WIDTH - MENU_PADDING);
       }
     });
 
-    if (menuRef.current) {
-      resizeObserver.observe(menuRef.current);
+    const currentRef = menuRef.current;
+    if (currentRef) {
+      resizeObserver.observe(currentRef);
     }
 
     return () => {
-      if (menuRef.current) {
-        resizeObserver.unobserve(menuRef.current);
+      if (currentRef) {
+        resizeObserver.unobserve(currentRef);
       }
     };
   }, []);
@@ -260,7 +257,7 @@ export const Menu = ({
           {
             '!flex': expandedMenuL2,
             'bg-surface-pri text-text-pri': !darkMode,
-            'bg-gray-900 text-white': darkMode,
+            'bg-gray-900 text-white border-gray-600 border-t-gray-400': darkMode,
           }
         )}
       >

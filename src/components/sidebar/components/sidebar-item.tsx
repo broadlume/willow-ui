@@ -1,8 +1,9 @@
-import { FC } from 'react';
-import { SidebarLink } from './sidebar-link';
-import { IconType, SidebarItemProps } from '../types';
-import { ToggleIcon } from './toggle-icon';
 import clsx from 'clsx';
+import { FC } from 'react';
+import { IconType, SidebarItemProps } from '../types';
+import { getPrimaryLink, hasNavigableLink, isLocationActive } from "../utils/link-matcher";
+import { SidebarLink } from './sidebar-link';
+import { ToggleIcon } from './toggle-icon';
 
 type Props = {
   item: SidebarItemProps;
@@ -33,13 +34,14 @@ export const SidebarItem: FC<Props> = ({
   rightArrow,
   downArrow,
 }) => {
-  const isChildActive = location === item.link;
+  const isChildActive = isLocationActive(location, item);
   const hasGrandchildren = item.items?.length;
+  const primaryLink = getPrimaryLink(item);
 
-  if (item.link) {
+  if (hasNavigableLink(item) && primaryLink) {
     return (
       <SidebarLink
-        to={item.link}
+        to={primaryLink}
         label={item.label}
         isActive={isChildActive}
         hasChildren={true}
@@ -68,12 +70,17 @@ export const SidebarItem: FC<Props> = ({
       {openSections[item.label] && hasGrandchildren && (
         <ul className='mt-2 ml-4 border-l border-border-sec space-y-2 text-base'>
           {item?.items?.map((grandchild, key) => {
-            const isGrandChildActive = location === grandchild.link;
-
+            const isGrandChildActive = isLocationActive(location, grandchild);
+            const grandchildPrimaryLink = getPrimaryLink(grandchild);
+            
+            if (!grandchildPrimaryLink) {
+              return null;
+            }
+            
             return (
               <li key={grandchild.label + key}>
                 <SidebarLink
-                  to={grandchild.link!}
+                  to={grandchildPrimaryLink}
                   label={grandchild.label}
                   isActive={isGrandChildActive}
                   hasChildren={true}

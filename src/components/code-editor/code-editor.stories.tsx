@@ -19,16 +19,16 @@ export const Demo: Story = {
         return (
             <CodeEditor
                 onChange={onChange}
-                language='liquid'
-                theme='vs-dark'
-                asyncTokenSuggestions={async (query) => {
-                    return fetch(`https://dummyjson.com/users/search?q=${query}`)
-                        .then(res => res.json())
-                        .then((data) => {
-                            console.log(data.users);
-                            return data.users.map((user: any) => user.firstName);
-                        });
-                }}
+                language='html'
+                theme='light'
+                // asyncTokenSuggestions={async (query) => {
+                //     return fetch(`https://dummyjson.com/users/search?q=${query}`)
+                //         .then(res => res.json())
+                //         .then((data: { users: { firstName: string }[] }) => {
+                //             console.log(data.users);
+                //             return data.users.map((user) => user.firstName);
+                //         });
+                // }}
             />
         );
     },

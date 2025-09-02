@@ -5,7 +5,8 @@ import { ReactNode } from "react"
 interface MenuLinkProps {
     title: string | ReactNode,
     eventHandler: () => void,
-    className?: string
+    className?: string,
+    tabIndex?: number
 }
 
 /**
@@ -19,7 +20,8 @@ interface MenuLinkProps {
 export const MenuLink = ({
     eventHandler,
     title,
-    className
+    className,
+    tabIndex = -1
 }: MenuLinkProps): JSX.Element => {
     return (
         <Button
@@ -30,6 +32,7 @@ export const MenuLink = ({
             variant='link'
             onClick={eventHandler}
             type="button"
+            tabIndex={tabIndex}
         >
             {title}
         </Button>

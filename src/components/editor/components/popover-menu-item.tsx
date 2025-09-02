@@ -19,7 +19,7 @@ export const PopoverMenuItemContent = ({
   return (
     <Popover>
       <PopoverTrigger
-        type='button'
+        tabIndex={-1} type='button'
         className='bg-transparent border-none shadow-none p-0 focus:outline-hidden hover:cursor-pointer'
       >
         {title}

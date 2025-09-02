@@ -1,6 +1,6 @@
 // src/components/menu/menu-items.tsx (Updated)
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Editor } from '@tiptap/react';
 import clsx from 'clsx';
 import isURL from 'validator/lib/isURL';
@@ -64,7 +64,7 @@ export interface MenuItemRenderProps {
     expandedMenu?: boolean; // For More button to hide sub-menus
     setExpandedMenu?: (expanded: boolean) => void;
     expandedMenuL2?: boolean; // For More button to hide sub-menus
-    setExpandedMenuL2?: (expanded: boolean) => void;
+    setExpandedMenuL2?: Dispatch<SetStateAction<boolean>>;
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -260,6 +260,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                                 <ColorPickerInput
                                     color={fontColor!}
                                     name='color-picker-demo'
+                                    tabIndex={-1}
                                     setColor={(color) => {
                                         setFontColor!(color);
                                         editor.chain().focus().setColor(color).run();

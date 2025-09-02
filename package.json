@@ -167,7 +167,6 @@
     "date-fns": "^2.30.0",
     "emmet-monaco-es": "^5.5.0",
     "lucide-react": "^0.245.0",
-    "openai": "^4.85.4",
     "prosemirror-autocomplete": "^0.4.3",
     "react-data-table-component": "^7.7.0",
     "react-day-picker": "^8.8.0",

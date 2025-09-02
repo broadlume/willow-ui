@@ -193,12 +193,33 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
                   type='button'
                   className='mt-4'
                   onClick={() => {
+                    const htmlContent = generatedContent.split('\n').map(line => {
+                      const trimmedLine = line.trim();
+                      if (trimmedLine.length === 0) return null;
+                      return {
+                        type: 'paragraph',
+                        content: [{
+                          type: 'text',
+                          text: trimmedLine,
+                        }]
+                      };
+                    }).filter(el => el);
                     if (from && to) {
                       // Insert the generated content at the current selection
-                      editor.chain().focus().deleteRange({ from, to }).insertContent(generatedContent).run();
+                      htmlContent.map(
+                        el => {
+                          editor.chain().focus().deleteRange({ from, to }).insertContent(el).run();
+                          editor.chain().focus().deleteRange({ from, to }).insertContent('<br />').run();
+                        }
+                      )
                     } else {
                       // If no selection, just insert at the end
-                      editor.chain().focus().insertContent(generatedContent).run();
+                      htmlContent.map(
+                        el => {
+                          editor.chain().focus().insertContent(el).run();
+                          editor.chain().focus().insertContent('<br />').run();
+                        }
+                      )
                     }
                     setGeneratedContent(''); // Clear the generated content after inserting
                     form.reset(); // Reset the form after inserting
