@@ -13,3 +13,20 @@ To run Storybook:
 `npm start`
 
 & that's it, Storybook should now be running on your computer at http://localhost:6006/. Let me know if that doesn't work for you.
+
+### Running and testing locally with a project
+
+willow-ui
+
+```
+pnpm i
+pnpm link
+pnpm build --watch
+```
+
+Then in your project
+
+```
+pnpm i
+pnpm link ../../willow-ui
+```
