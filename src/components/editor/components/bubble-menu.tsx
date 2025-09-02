@@ -4,18 +4,22 @@ import clsx from 'clsx';
 import isURL from 'validator/lib/isURL';
 
 // Icons
-import { FaBold, FaItalic } from "react-icons/fa";
+import { FaBold, FaItalic } from 'react-icons/fa';
 import { HiMiniLink, HiMiniPencil, HiMiniTrash } from 'react-icons/hi2';
 import { MdFormatUnderlined, MdStrikethroughS } from 'react-icons/md';
 
 import { MenuLink } from './menu-link';
 import { Input } from '@components/input/input';
 import { Button } from '@components/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@components/popover/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@components/popover/popover';
 
 interface BubbleMenuProps {
-    editor: Editor;
-    darkMode?: boolean;
+  editor: Editor;
+  darkMode?: boolean;
 }
 
 export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
@@ -84,13 +88,13 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
         }, 10);
     };
 
-    const isApplyDisabled = !url || !isURL(url);
+  const isApplyDisabled = !url || !isURL(url);
 
     return (
         <TipTapBubbleMenu
             editor={editor}
             className={clsx(
-                '~rounded-md ~border ~border-gray-300 ~bg-white ~p-2 ~shadow-lg ~z-[99999]'
+                'rounded-md border border-gray-300 bg-white p-2 shadow-lg z-[99999]'
             )}
             tippyOptions={{
                 placement: 'bottom',
@@ -108,7 +112,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
             }}
         >
             <div 
-                className="~flex ~gap-4"
+                className="flex gap-4"
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
             >
@@ -119,9 +123,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                         e.stopPropagation();
                         editor.chain().focus().toggleBold().run();
                     }}
-                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                    className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                 >
-                    <FaBold className={clsx('~text-black', { '~text-white': darkMode })} size={14} />
+                    <FaBold className={clsx('text-black', { 'text-white': darkMode })} size={14} />
                 </button>
                 <button
                     type="button"
@@ -130,9 +134,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                         e.stopPropagation();
                         editor.chain().focus().toggleItalic().run();
                     }}
-                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                    className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                 >
-                    <FaItalic className={clsx('~text-black', { '~text-white': darkMode })} size={14} />
+                    <FaItalic className={clsx('text-black', { 'text-white': darkMode })} size={14} />
                 </button>
                 <button
                     type="button"
@@ -141,9 +145,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                         e.stopPropagation();
                         editor.chain().focus().toggleUnderline().run();
                     }}
-                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                    className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                 >
-                    <MdFormatUnderlined className={clsx('~text-black', { '~text-white': darkMode })} size={16} />
+                    <MdFormatUnderlined className={clsx('text-black', { 'text-white': darkMode })} size={16} />
                 </button>
                 <button
                     type="button"
@@ -152,9 +156,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                         e.stopPropagation();
                         editor.chain().focus().toggleStrike().run();
                     }}
-                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                    className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                 >
-                    <MdStrikethroughS className={clsx('~text-black', { '~text-white': darkMode })} size={16} />
+                    <MdStrikethroughS className={clsx('text-black', { 'text-white': darkMode })} size={16} />
                 </button>
                 
                 {/* Link Section - Show different UI based on link state */}
@@ -168,9 +172,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                 e.stopPropagation();
                                 startEditingLink();
                             }}
-                            className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                            className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                         >
-                            <HiMiniPencil className={clsx('~text-blue-600', { '~text-blue-400': darkMode })} size={14} />
+                            <HiMiniPencil className={clsx('text-blue-600', { 'text-blue-400': darkMode })} size={14} />
                         </button>
                         <button
                             type="button"
@@ -179,9 +183,9 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                 e.stopPropagation();
                                 removeLink();
                             }}
-                            className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                            className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                         >
-                            <HiMiniTrash className={clsx('~text-red-600', { '~text-red-400': darkMode })} size={14} />
+                            <HiMiniTrash className={clsx('text-red-600', { 'text-red-400': darkMode })} size={14} />
                         </button>
                     </>
                 ) : (
@@ -203,16 +207,16 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                             startEditingLink();
                                         }
                                     }}
-                                    className="~p-1 ~rounded hover:~bg-gray-100 ~cursor-pointer"
+                                    className="p-1 rounded hover:bg-gray-100 cursor-pointer"
                                 >
-                                    <HiMiniLink className={clsx('~text-black', { '~text-white': darkMode, '~text-blue-600': isLinkActive && !darkMode, '~text-blue-400': isLinkActive && darkMode })} size={14} />
+                                    <HiMiniLink className={clsx('text-black', { 'text-white': darkMode, 'text-blue-600': isLinkActive && !darkMode, 'text-blue-400': isLinkActive && darkMode })} size={14} />
                                 </button>
                             </PopoverTrigger>
                             <PopoverContent 
                                 side='bottom'
                                 align="center"
                                 sideOffset={5}
-                                className="~z-[99999] ~bg-white ~border ~border-gray-300 ~shadow-lg ~fixed"
+                                className="z-[99999] bg-white border border-gray-300 shadow-lg fixed"
                                 onOpenAutoFocus={(e) => {
                                     e.preventDefault();
                                     setTimeout(() => {
@@ -229,7 +233,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                         placeholder='https://'
                                         value={url}
                                         onChange={e => setUrl(e.target.value)}
-                                        className="~border ~border-gray-300 ~rounded ~p-1 ~w-48"
+                                        className="border border-gray-300 rounded p-1 w-48"
                                         onKeyDown={e => {
                                             if (e.key === 'Enter' && !isApplyDisabled) {
                                                 e.preventDefault();
@@ -240,10 +244,10 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                         }}
                                         autoFocus
                                     />
-                                    <div className="~flex ~justify-between ~gap-2 ~mt-2">
-                                        <div className="~flex ~gap-2">
+                                    <div className="flex justify-between gap-2 mt-2">
+                                        <div className="flex gap-2">
                                             <Button
-                                                className="hover:~no-underline"
+                                                className="hover:no-underline"
                                                 onClick={cancelLinkEditing}
                                                 variant={'link'}
                                                 size="sm"
@@ -252,7 +256,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                             </Button>
                                             {isLinkActive && (
                                                 <Button
-                                                    className="hover:~no-underline ~ml-2 ~text-red-600"
+                                                    className="hover:no-underline ml-2 text-red-600"
                                                     onClick={removeLink}
                                                     variant={'link'}
                                                     size="sm"
@@ -262,7 +266,7 @@ export const BubbleMenu = ({ editor, darkMode }: BubbleMenuProps) => {
                                             )}
                                         </div>
                                         <Button
-                                            className="hover:~no-underline"
+                                            className="hover:no-underline"
                                             onClick={applyLink}
                                             variant={'link'}
                                             disabled={isApplyDisabled}

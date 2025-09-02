@@ -20,15 +20,15 @@ const HTMLTextareaEditor: React.FC<{
     darkMode?: boolean;
     onHtmlChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }> = ({ htmlContent, darkMode, onHtmlChange }) => (
-    <div className="~relative">
+    <div className="relative">
         <Textarea
             value={htmlContent}
             onChange={onHtmlChange}
             className={clsx(
-                '~w-full ~min-h-[20rem] ~border-gray-300 ~outline-none focus-visible:~ring-0 ~rounded-lg ~rounded-t-none ~border-t-0 ~font-mono ~text-sm ~resize-y',
+                'w-full min-h-[20rem] border-gray-300 outline-hidden focus-visible:ring-0 rounded-lg rounded-t-none border-t-0 font-mono text-sm resize-y',
                 {
-                    'dark:~bg-gray-800 dark:~text-gray-200': darkMode,
-                    'dark:~border-gray-600': darkMode,
+                    'dark:bg-gray-800 dark:text-gray-200': darkMode,
+                    'dark:border-gray-600': darkMode,
                 }
             )}
             placeholder="Enter HTML content..."
@@ -44,7 +44,7 @@ const VisualEditor: React.FC<{
     darkMode?: boolean;
     className?: string;
 }> = ({ editor, content, darkMode, className }) => (
-    <div className="~relative">
+    <div className="relative">
         {/* BubbleMenu for this specific editor instance */}
         <BubbleMenu editor={editor} />
         
@@ -52,10 +52,10 @@ const VisualEditor: React.FC<{
             editor={editor}
             content={content}
             className={clsx(
-                '~prose ~prose-sm sm:~prose-base lg:~prose-lg xl:~prose-2xl [&>div]:~min-h-[20rem] [&>div]:~max-h-[40rem] [&>div]:~overflow-scroll [&>div]:~outline-transparent [&>div]:~border-none ~rounded-bl-lg ~rounded-br-lg ~border-[1px] ~border-solid ~border-gray-300 ~p-2 ~max-w-full',
+                'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl [&>div]:min-h-[20rem] [&>div]:max-h-[40rem] [&>div]:overflow-scroll [&>div]:outline-transparent [&>div]:border-none rounded-bl-lg rounded-br-lg border-[1px] border-solid border-gray-300 p-2 max-w-full',
                 {
-                    '~bg-gray-800 ~text-gray-200': darkMode,
-                    '~border-[1px] ~border-gray-600': darkMode,
+                    'bg-gray-800 text-gray-200': darkMode,
+                    'border-[1px] border-gray-600': darkMode,
                 },
                 className
             )}

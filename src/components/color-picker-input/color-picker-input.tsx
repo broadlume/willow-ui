@@ -20,9 +20,9 @@ const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
   tabIndex = -1,
 }) => {
   return (
-    <div className={`~flex ~gap-2 ${className}`}>
+    <div className={`flex gap-2 ${className}`}>
       <Input
-        className={`~w-14 ~p-1 ~rounded ${colorPickerInputClasses}`}
+        className={`w-14 p-1 rounded-sm ${colorPickerInputClasses}`}
         type="color"
         value={color}
         name={name}
@@ -30,7 +30,7 @@ const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
         onChange={(e) => setColor(e.target.value)}
       />
       <Input
-        className={`~w-24 ~rounded ~border ${textInputClasses}`}
+        className={`w-24 rounded-sm border ${textInputClasses}`}
         type="text"
         value={color}
         name={name}

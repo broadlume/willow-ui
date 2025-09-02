@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Editor as TiptapEditor, useEditor, UseEditorOptions } from '@tiptap/react';
+import {
+  Editor as TiptapEditor,
+  useEditor,
+  UseEditorOptions,
+} from '@tiptap/react';
 import { TextSelection } from '@tiptap/pm/state';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 // Extensions
 import StarterKit from '@tiptap/starter-kit';
@@ -20,7 +24,6 @@ import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Gapcursor from '@tiptap/extension-gapcursor';
 
-
 // Custom Extensions
 import { Video } from './extensions/video';
 import { LineHeight } from './extensions/line-height';
@@ -30,21 +33,26 @@ import { Indentation } from './extensions/indentation';
 // import { AutocompleteNode } from './nodes/autocomplete-node';
 
 // contexts
-import { NodeViewContext, NodeViewContextType } from './context/node-view-context';
+import {
+  NodeViewContext,
+  NodeViewContextType,
+} from './context/node-view-context';
 
 // Components
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
-import { SlashCommand } from './extensions/slash-command';
+import {  SlashCommand  } from './extensions/slash-command';
 
 export type EditorProps = {
-  content?: string,
-  onChange?: (html: string) => void,
-  onBlur?: (html: string) => void,
-  dropdownItems?: { label: string, value: string }[],
-  dropdownPlaceholder?: string,
-  autocompleteFetchOptions?: (query: string) => Promise<{ label: string; value: string }[]>;
+  content?: string;
+  onChange?: (html: string) => void;
+  onBlur?: (html: string) => void;
+  dropdownItems?: { label: string; value: string }[];
+  dropdownPlaceholder?: string;
+  autocompleteFetchOptions?: (
+    query: string
+  ) => Promise<{ label: string; value: string }[]>;
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -72,7 +80,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   // List of Tiptap Editor Extensions
   const extensions = [
     StarterKit.configure({
-      gapcursor: false
+      gapcursor: false,
     }),
     Gapcursor,
     Link.configure({ openOnClick: true }),
@@ -81,7 +89,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
     TableRow,
     TableCell,
     TableHeader,
-    TextAlign.configure({ types: ['heading', 'paragraph'], alignments: ['left', 'center', 'right'] }),
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+      alignments: ['left', 'center', 'right'],
+    }),
     Underline,
     Highlight,
     CodeBlock,
@@ -101,17 +112,17 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const EditorConfig: UseEditorOptions = {
     extensions,
     content,
-    onUpdate: ({ editor, }) => handleUpdate(editor),
-    onBlur: ({ editor, }) => {
+    onUpdate: ({ editor }) => handleUpdate(editor),
+    onBlur: ({ editor }) => {
       const html = editor.getHTML();
       props.onBlur?.(html);
     },
     editorProps: {
       attributes: {
         class: clsx(
-          'focus:~outline-none ~not-prose ~overflow-auto',
-          darkMode ? '!~text-white' : '~text-black'
-        )
+          'focus:outline-hidden not-prose overflow-auto',
+          darkMode ? '!text-white' : 'text-black'
+        ),
       },
     }
   };
@@ -188,13 +199,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
   return (
     <NodeViewContext.Provider value={nodeViewContextValue}>
       <div
-        onClick={e => e.stopPropagation()}
-        onKeyDown={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         {
           showEditorInDialog && dialogEditor && (
             <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-              <DialogContent className='~max-w-[90vw] ~gap-0 ~p-10' onPointerDownOutside={(e) => {
+              <DialogContent className='max-w-[90vw] gap-0 p-10' onPointerDownOutside={(e) => {
                 // Allow BubbleMenu interactions by checking if the target is part of a tippy popper or popover
                 const target = e.target as Element;
                 if (target && (
@@ -218,9 +229,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
                   toggleDarkMode={() => setDarkMode((v) => !v)}
                   className={
                     clsx({
-                      '~bg-gray-100': !darkMode,
-                      '~text-gray-800': !darkMode,
-                      '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+                      'bg-gray-100': !darkMode,
+                      'text-gray-800': !darkMode,
+                      'bg-gray-900 text-gray-200 border-gray-600': darkMode,
                     })
                   }
                 />
@@ -238,25 +249,22 @@ export const Editor: React.FC<EditorProps> = (props) => {
           )
         }
 
-        {
-          !showEditorInDialog && editor && (
-            <>
-              {/* Menu */}
-              <Menu editor={editor}
-                setShowEditorInDialog={setShowEditorInDialog}
-                showEditorInDialog={showEditorInDialog}
-                showRawHtml={showRawHtml}
-                toggleRawHtml={handleToggleRawHtml}
-                darkMode={darkMode}
-                toggleDarkMode={() => setDarkMode((v) => !v)}
-                className={
-                  clsx({
-                    '~bg-gray-100': !darkMode,
-                    '~text-gray-800': !darkMode,
-                    '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
-                  })
-                }
-              />
+        {!showEditorInDialog && editor && (
+          <>
+            {/* Menu */}
+            <Menu
+              editor={editor}
+              setShowEditorInDialog={setShowEditorInDialog}
+              showEditorInDialog={showEditorInDialog}
+              showRawHtml={showRawHtml}
+              toggleRawHtml={handleToggleRawHtml}
+              darkMode={darkMode}
+              toggleDarkMode={() => setDarkMode((v) => !v)}
+              className={clsx({
+                'bg-surface-pri text-text-pri': !darkMode,
+                'border-gray-700 bg-gray-900 text-white': darkMode,
+              })}
+            />
 
               {/* Editor */}
               <EditorContent

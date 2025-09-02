@@ -8,7 +8,13 @@ import { FiSun, FiMoon } from 'react-icons/fi';
 
 // Components
 import { MenuLink } from './menu-link';
-import { MenuItemDivider, MenuItemDefinition, getAllMenuItems, MenuItemRenderProps, getL3MenuContent } from './menu-items'; // Import the new items array
+import {
+  MenuItemDivider,
+  MenuItemDefinition,
+  getAllMenuItems,
+  MenuItemRenderProps,
+  getL3MenuContent,
+} from './menu-items'; // Import the new items array
 import { MenuItemWithTooltip } from './menu-item-with-tooltip';
 
 interface MenuProps {
@@ -27,8 +33,8 @@ type L2MenuType = 'video' | 'embed' | 'link' | 'image';
 // Define the static width of the "More" button and the dark mode button
 const MORE_BUTTON_WIDTH = 40; // Approximate width of the more button + its padding/margin
 const DARK_MODE_BUTTON_WIDTH = 40; // Approximate width of the dark mode button + its padding/margin
-const MENU_PADDING = 32; // Total horizontal padding of the menu (~p-[0.625em_1em_0.625em_1em] = 1em left + 1em right = 32px)
-const GAP_WIDTH = 16; // Tailwind ~gap-4 means 16px gap
+const MENU_PADDING = 32; // Total horizontal padding of the menu (p-[0.625em_1em_0.625em_1em] = 1em left + 1em right = 32px)
+const GAP_WIDTH = 16; // Tailwind gap-4 means 16px gap
 
 export const Menu = ({
   editor,
@@ -53,14 +59,17 @@ export const Menu = ({
   const [visibleItems, setVisibleItems] = useState<MenuItemDefinition[]>([]);
   const [hiddenItems, setHiddenItems] = useState<MenuItemDefinition[]>([]);
 
-  const setL2MenuTypeHandler = useCallback((type: L2MenuType) => {
-    if (expandedMenuL2Type === type && expandedMenuL2) {
-      setExpandedMenuL2(false);
-    } else {
-      setExpandedMenuL2(true);
-    }
-    setExpandedMenuL2Type(type);
-  }, [expandedMenuL2, expandedMenuL2Type]);
+  const setL2MenuTypeHandler = useCallback(
+    (type: L2MenuType) => {
+      if (expandedMenuL2Type === type && expandedMenuL2) {
+        setExpandedMenuL2(false);
+      } else {
+        setExpandedMenuL2(true);
+      }
+      setExpandedMenuL2Type(type);
+    },
+    [expandedMenuL2, expandedMenuL2Type]
+  );
 
   // Use ResizeObserver to get the available width of the menu container
   useEffect(() => {
@@ -98,11 +107,14 @@ export const Menu = ({
       const itemRenderedWidth = item.widthEstimate + GAP_WIDTH;
 
       // Prioritize 'primary' group items to stay visible if possible
-      if (item.group === 'primary' && currentWidth + itemRenderedWidth <= availableWidth) {
+      if (
+        item.group === 'primary' &&
+        currentWidth + itemRenderedWidth <= availableWidth
+      ) {
         tempVisible.push(item);
         currentWidth += itemRenderedWidth;
         if (item.dividerAfter) {
-          currentWidth += (0.5 + GAP_WIDTH); // Divider width + gap
+          currentWidth += 0.5 + GAP_WIDTH; // Divider width + gap
         }
       } else if (item.group === 'secondary') {
         tempHidden.push(item); // Secondary items always start in hidden
@@ -122,10 +134,8 @@ export const Menu = ({
       // and move items to `tempHidden` until `currentWidth` is sufficient.
     }
 
-
     setVisibleItems(tempVisible);
     setHiddenItems(tempHidden);
-
   }, [availableWidth]);
 
   const commonMenuItemProps: MenuItemRenderProps = {
@@ -147,7 +157,7 @@ export const Menu = ({
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
-    setExpandedMenuL2
+    setExpandedMenuL2,
   };
 
   return (
@@ -155,12 +165,12 @@ export const Menu = ({
       <div
         ref={menuRef} // Attach ref to the menu container
         className={clsx(
-          '~flex ~w-full ~flex-wrap ~rounded-tl-lg ~rounded-tr-lg ~border-[1px] ~border-b-0 ~border-solid ~border-gray-300 ~p-[0.625em_1em_0.625em_1em] ~text-lg',
+          'flex w-full flex-wrap rounded-tl-md rounded-tr-md border-[1px] border-b-0 border-border-pri px-4 py-2 text-lg',
           className
         )}
       >
-        <div className='~flex ~w-full ~items-center ~justify-between'>
-          <div className={clsx('~flex ~flex-wrap ~gap-4')}>
+        <div className='flex w-full items-center justify-between'>
+          <div className={clsx('flex flex-wrap items-center gap-4')}>
             {visibleItems.map((item, index) => (
               <React.Fragment key={item.id}>
                 {item.render(commonMenuItemProps)}
@@ -168,40 +178,54 @@ export const Menu = ({
               </React.Fragment>
             ))}
           </div>
-          <div className='~flex ~items-center ~gap-2'>
-            <MenuItemWithTooltip key={"menu-link-tool-tip" + "theme"} tooltipContent={
-              darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
-            }> {/* Wrap with Tooltip */}
-            <MenuLink
-              title={
-                darkMode ? (
-                  <FiSun
-                    className={clsx('~text-black', { '~text-white': darkMode })}
-                  />
-                ) : (
-                  <FiMoon
-                    className={clsx('~text-black', { '~text-white': darkMode })}
-                  />
-                )
+          <div className='flex items-center gap-2'>
+            <MenuItemWithTooltip
+              key={'menu-link-tool-tip' + 'theme'}
+              tooltipContent={
+                darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
               }
-              eventHandler={() => toggleDarkMode && toggleDarkMode()}
-            />
+            >
+              {' '}
+              {/* Wrap with Tooltip */}
+              <MenuLink
+                title={
+                  darkMode ? (
+                    <FiSun
+                      className={clsx('text-black', {
+                        'text-white': darkMode,
+                      })}
+                    />
+                  ) : (
+                    <FiMoon
+                      className={clsx('text-black', {
+                        'text-white': darkMode,
+                      })}
+                    />
+                  )
+                }
+                eventHandler={() => toggleDarkMode && toggleDarkMode()}
+              />
             </MenuItemWithTooltip>
             {hiddenItems.length > 0 && (
-              <MenuItemWithTooltip key={"menu-link-tool-tip" + "more"} tooltipContent='More'>
-              <MenuLink
-                className=''
-                title={
-                  <MdOutlineMoreVert
-                    className={clsx('~text-black', { '~text-white': darkMode })}
-                    size={18}
-                  />
-                }
-                eventHandler={() => {
-                  setExpandedMenu(!expandedMenu);
-                  setExpandedMenuL2(false); // Close L2 menu when L1 is toggled
-                }}
-              />
+              <MenuItemWithTooltip
+                key={'menu-link-tool-tip' + 'more'}
+                tooltipContent='More'
+              >
+                <MenuLink
+                  className=''
+                  title={
+                    <MdOutlineMoreVert
+                      className={clsx('text-black', {
+                        'text-white': darkMode,
+                      })}
+                      size={18}
+                    />
+                  }
+                  eventHandler={() => {
+                    setExpandedMenu(!expandedMenu);
+                    setExpandedMenuL2(false); // Close L2 menu when L1 is toggled
+                  }}
+                />
               </MenuItemWithTooltip>
             )}
           </div>
@@ -210,12 +234,11 @@ export const Menu = ({
       {/* Expanded Menu */}
       <div
         className={clsx(
-          '~hidden ~w-full ~flex-wrap ~justify-end ~gap-5 ~border-l-[1px] ~border-r-[1px] ~border-solid ~border-gray-300 ~p-3',
+          'hidden w-full flex-wrap justify-end gap-5 border-l-[1px] border-r-[1px] border-solid border-gray-300 p-3',
           {
-            '!~flex': expandedMenu,
-            '~bg-gray-100': !darkMode,
-            '~text-gray-800': !darkMode,
-            '~bg-gray-900 ~text-gray-200 ~border-gray-600': darkMode,
+            '!flex': expandedMenu,
+            'bg-surface-pri text-text-pri': !darkMode,
+            'bg-gray-900 text-white': darkMode,
           }
         )}
       >
@@ -230,12 +253,11 @@ export const Menu = ({
       {/* Expanded Menu L2*/}
       <div
         className={clsx(
-          '~hidden ~w-full ~justify-end ~gap-2 ~border-l-[1px] ~border-r-[1px] ~border-t-2  ~border-solid ~border-gray-300 ~border-t-white ~bg-[#F3F3F3] ~p-3',
+          'hidden w-full justify-end gap-2 border-l-[1px] border-r-[1px] border-t-2  border-solid border-gray-300 border-t-white bg-[#F3F3F3] p-3',
           {
-            '!~flex': expandedMenuL2,
-            '~bg-gray-100': !darkMode,
-            '~text-gray-800': !darkMode,
-            '~bg-gray-900 ~text-gray-200 ~border-gray-600 ~border-t-gray-400': darkMode,
+            '!flex': expandedMenuL2,
+            'bg-surface-pri text-text-pri': !darkMode,
+            'bg-gray-900 text-white border-gray-600 border-t-gray-400': darkMode,
           }
         )}
       >

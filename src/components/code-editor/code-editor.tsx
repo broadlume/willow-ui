@@ -97,8 +97,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         }
     };
 
-    const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
-        editorRef.current = editor;
+  const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+    editorRef.current = editor;
 
         // Dispose of any existing providers
         providersRef.current.forEach(provider => provider.dispose());
@@ -159,31 +159,33 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             });
         }
 
-        editor.onDidChangeModelContent(() => {
-            const position = editor.getPosition();
-            const model = editor.getModel();
-            if (!position || !model) return;
+    editor.onDidChangeModelContent(() => {
+      const position = editor.getPosition();
+      const model = editor.getModel();
+      if (!position || !model) return;
 
-            const textBeforeCursor = model.getValueInRange({
-                startLineNumber: position.lineNumber,
-                startColumn: 1,
-                endLineNumber: position.lineNumber,
-                endColumn: position.column,
-            });
+      const textBeforeCursor = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn: 1,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column,
+      });
 
-            if (textBeforeCursor.endsWith('{{')) {
-                editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
-            }
-        });
-    };
+      if (textBeforeCursor.endsWith('{{')) {
+        editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+      }
+    });
+  };
 
-    useEffect(() => {
-        if (!editorRef.current) return;
-        const editorDomNode = editorRef.current.getDomNode?.();
-        if (!editorDomNode) return;
+  useEffect(() => {
+    if (!editorRef.current) return;
+    const editorDomNode = editorRef.current.getDomNode?.();
+    if (!editorDomNode) return;
 
-        const suggestWidget = editorDomNode.ownerDocument.querySelector('.monaco-editor .suggest-widget .tree');
-        if (!suggestWidget) return;
+    const suggestWidget = editorDomNode.ownerDocument.querySelector(
+      '.monaco-editor .suggest-widget .tree'
+    );
+    if (!suggestWidget) return;
 
         const onScroll = (_e: Event) => {
             if (suggestWidget.scrollTop + suggestWidget.clientHeight >= suggestWidget.scrollHeight) {
@@ -203,11 +205,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         };
     }, []);
 
-    const formatCode = () => {
-        if (!editorRef.current) return;
+  const formatCode = () => {
+    if (!editorRef.current) return;
 
-        const currentCode = editorRef.current.getValue();
-        let formattedCode = currentCode;
+    const currentCode = editorRef.current.getValue();
+    let formattedCode = currentCode;
 
         try {
             formattedCode = prettier.format(currentCode, {
@@ -218,29 +220,32 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             console.error('Error formatting code:', error);
         }
 
-        editorRef.current.setValue(formattedCode);
-    };
+    editorRef.current.setValue(formattedCode);
+  };
 
-    const getPrettierParser = (lang: string) => {
-        switch (lang) {
-            case 'html':
-            case 'liquid':
-                return 'html';
-            case 'css':
-                return 'css';
-            case 'javascript':
-            case 'json':
-                return 'babel';
-            default:
-                return 'babel';
-        }
-    };
+  const getPrettierParser = (lang: string) => {
+    switch (lang) {
+      case 'html':
+      case 'liquid':
+        return 'html';
+      case 'css':
+        return 'css';
+      case 'javascript':
+      case 'json':
+        return 'babel';
+      default:
+        return 'babel';
+    }
+  };
 
-    const onChange = useCallback((value: string | undefined) => {
-        const updatedCode = value ?? '';
-        setCode(updatedCode);
-        passedOnChange?.(updatedCode);
-    }, [passedOnChange]);
+  const onChange = useCallback(
+    (value: string | undefined) => {
+      const updatedCode = value ?? '';
+      setCode(updatedCode);
+      passedOnChange?.(updatedCode);
+    },
+    [passedOnChange]
+  );
 
     const toggleTheme = () => {
         setTheme((prev) => prev === 'light' ? 'dark' : 'light');
@@ -279,45 +284,45 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     return (
         <div className={
             clsx(
-                '~w-full ~h-[440px] ~border ~rounded-lg ~overflow-hidden ~flex ~flex-col',
+                'w-full h-[440px] border rounded-lg overflow-hidden flex flex-col',
                 {
-                    '~bg-[#fafafa] ~border-[#e5e5e6]': isLightTheme,
-                    '~bg-[#282c34] ~border-[#3e4451]': isDarkTheme,
+                    'bg-[#fafafa] border-[#e5e5e6]': isLightTheme,
+                    'bg-[#282c34] border-[#3e4451]': isDarkTheme,
                 },
             )
         }>
             {/* Header Bar */}
             <div className={
                 clsx(
-                    '~border-b ~px-2.5 ~py-2 ~flex ~justify-between ~items-center ~h-[40px]',
+                    'border-b px-2.5 py-2 flex justify-between items-center h-[40px]',
                     {
-                        '~bg-[#fafafa] ~border-[#e5e5e6]': isLightTheme,
-                        '~bg-[#282c34] ~border-[#3e4451]': isDarkTheme,
+                        'bg-[#fafafa] border-[#e5e5e6]': isLightTheme,
+                        'bg-[#282c34] border-[#3e4451]': isDarkTheme,
                     },
                 )
             }>
                 {/* Label */}
-                <div className='~text-xs ~capitalize ~flex ~items-center ~gap-1'>
-                    <HiCodeBracketSquare size={14} className='~text-[#6038E8]' />
+                <div className='text-xs capitalize flex items-center gap-1'>
+                    <HiCodeBracketSquare size={14} className='text-[#6038E8]' />
                     <span className={
                         clsx(
                             {
-                                '~text-[#383a42]': isLightTheme,
-                                '~text-[#abb2bf]': isDarkTheme,
+                                'text-[#383a42]': isLightTheme,
+                                'text-[#abb2bf]': isDarkTheme,
                             }
                         )
                     }>{language}</span>
                 </div>
 
                 {/* Center Status Message */}
-                <div className='~flex-1 ~flex ~justify-center ~items-center'>
+                <div className='flex-1 flex justify-center items-center'>
                     {statusMessage && (
                         <div className={
                             clsx(
-                                '~text-xs ~px-3 ~py-1 ~rounded-full ~font-medium ~transition-all ~duration-300 ~ease-in-out ~animate-scale-up',
+                                'text-xs px-3 py-1 rounded-full font-medium transition-all duration-300 ease-in-out animate-scale-up',
                                 {
-                                    '~bg-[#6038E8]/10 ~text-[#6038E8] ~border ~border-[#6038E8]/20': isLightTheme,
-                                    '~bg-[#6038E8]/20 ~text-[#8B5CF6] ~border ~border-[#6038E8]/30': isDarkTheme,
+                                    'bg-[#6038E8]/10 text-[#6038E8] border border-[#6038E8]/20': isLightTheme,
+                                    'bg-[#6038E8]/20 text-[#8B5CF6] border border-[#6038E8]/30': isDarkTheme,
                                 }
                             )
                         }>
@@ -327,11 +332,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 </div>
 
                 {/* Toolbar */}
-                <div className='~flex ~items-center ~gap-4 ~relative'>
+                <div className='flex items-center gap-4 relative'>
                     {/* AI Icon */}
-                    <div className='~flex ~items-center ~gap-1 ~cursor-pointer'>
+                    <div className='flex items-center gap-1 cursor-pointer'>
                         <AIIcon />
-                        <span className='~text-sm ~font-normal ~text-[#6038E8]'>Ai</span>
+                        <span className='text-sm font-normal text-[#6038E8]'>Ai</span>
                     </div>
 
                     {/* Theme Toggle */}
@@ -340,8 +345,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                         className={
                             clsx(
                                 {
-                                    '~text-[#383a42]': isLightTheme,
-                                    '~text-[#abb2bf]': isDarkTheme,
+                                    'text-[#383a42]': isLightTheme,
+                                    'text-[#abb2bf]': isDarkTheme,
                                 }
                             )
                         }
@@ -358,19 +363,19 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                             className={
                                 clsx(
                                     {
-                                        '~text-[#383a42]': isLightTheme,
-                                        '~text-[#abb2bf]': isDarkTheme,
+                                        'text-[#383a42]': isLightTheme,
+                                        'text-[#abb2bf]': isDarkTheme,
                                     }
                                 )
                             }
                         >
                             <HiEllipsisVertical size={24} />
                         </PopoverTrigger>
-                        <PopoverContent className='~w-28 ~flex ~flex-col ~items-start ~gap-2 ~p-2' alignOffset={-90}>
+                        <PopoverContent className='w-28 flex flex-col items-start gap-2 p-2' alignOffset={-90}>
                             <Button
                                 type="button"
                                 variant='link'
-                                className='hover:~no-underline ~text-[#1A1A1A] ~gap-2'
+                                className='hover:no-underline text-[#1A1A1A] gap-2'
                                 onClick={() => formatCode()}
                             >
                                 <HiPaintBrush />
@@ -379,7 +384,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                             <Button
                                 type="button"
                                 variant='link'
-                                className='hover:~no-underline ~text-[#1A1A1A] ~gap-2'
+                                className='hover:no-underline text-[#1A1A1A] gap-2'
                                 onClick={() => copyCode()}
                             >
                                 <HiClipboardDocumentCheck />

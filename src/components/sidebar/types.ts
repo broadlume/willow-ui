@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from "react";
+import { ComponentType, ReactNode } from 'react';
 
 export type SidebarItemProps = {
   label: string;
@@ -25,6 +25,9 @@ export type SidebarProps = {
     menuLinkClass?: string;
   };
   defaultParentOpen?: boolean;
+  classNames?: {
+    asideClassName?: string;
+  };
 };
 
 export type IconType = ComponentType<{ className?: string }>;

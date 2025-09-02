@@ -1,13 +1,20 @@
-import { FC, useState } from "react";
-import { HiChevronDown, HiChevronRight } from "react-icons/hi2";
-import { SidebarSection } from "./components/sidebar-section";
-import { SidebarItemProps, SidebarProps } from "./types";
+import clsx from 'clsx';
+import { FC, useState } from 'react';
+import { HiChevronDown, HiChevronRight } from 'react-icons/hi2';
+import { SidebarSection } from './components/sidebar-section';
+import { SidebarItemProps, SidebarProps } from './types';
 import { isLocationActive } from "./utils/link-matcher";
 
-const getInitialOpenSections = (pathname: string, items: SidebarItemProps[]): Record<string, boolean> => {
+const getInitialOpenSections = (
+  pathname: string,
+  items: SidebarItemProps[]
+): Record<string, boolean> => {
   const openSections: Record<string, boolean> = {};
 
-  const traverse = (nodes: SidebarItemProps[], path: string[] = []): boolean => {
+  const traverse = (
+    nodes: SidebarItemProps[],
+    path: string[] = []
+  ): boolean => {
     for (const node of nodes) {
       if (isLocationActive(pathname, node)) {
         for (const label of path) openSections[label] = true;
@@ -46,19 +53,23 @@ export const Sidebar: FC<SidebarProps> = ({
   downArrow = HiChevronDown,
   className,
   defaultParentOpen = false,
+  classNames = {
+    asideClassName: '',
+  },
 }) => {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
-    const initialOpen = getInitialOpenSections(location, items);
-    if (defaultParentOpen) {
-      items.forEach(item => {
-        if (item.items?.length) {
-          initialOpen[item.label] = true;
-        }
-      });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+    () => {
+      const initialOpen = getInitialOpenSections(location, items);
+      if (defaultParentOpen) {
+        items.forEach((item) => {
+          if (item.items?.length) {
+            initialOpen[item.label] = true;
+          }
+        });
+      }
+      return initialOpen;
     }
-    return initialOpen;
-  });
-
+  );
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({
@@ -72,7 +83,12 @@ export const Sidebar: FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="~w-64 ~h-screen ~border-r ~py-6 ~px-8 ~bg-neutral-100 ~text-sm ~flex ~flex-col ~gap-6">
+    <aside
+      className={clsx(
+        'w-64 h-screen border-r px-8 bg-surface-pri text-base flex flex-col gap-6',
+        classNames.asideClassName
+      )}
+    >
       {items
         .filter((item) => !item.hidden)
         .map((item, key) => (

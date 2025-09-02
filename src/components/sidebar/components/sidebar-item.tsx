@@ -1,9 +1,9 @@
-import clsx from "clsx";
-import { FC } from "react";
-import { IconType, SidebarItemProps } from "../types";
+import clsx from 'clsx';
+import { FC } from 'react';
+import { IconType, SidebarItemProps } from '../types';
 import { getPrimaryLink, hasNavigableLink, isLocationActive } from "../utils/link-matcher";
-import { SidebarLink } from "./sidebar-link";
-import { ToggleIcon } from "./toggle-icon";
+import { SidebarLink } from './sidebar-link';
+import { ToggleIcon } from './toggle-icon';
 
 type Props = {
   item: SidebarItemProps;
@@ -55,15 +55,20 @@ export const SidebarItem: FC<Props> = ({
     <>
       <div
         className={clsx(
-          "~flex ~items-center ~justify-between ~pl-4 ~py-1 ~cursor-pointer ~text-black hover:~text-violet-600",
+          'flex items-center justify-between pl-4 py-1 cursor-pointer text-text-pri hover:text-text-brand',
           className?.menuClass
-        )} onClick={() => toggleSection(item.label)}
+        )}
+        onClick={() => toggleSection(item.label)}
       >
         <span>{item.label}</span>
-        <ToggleIcon isOpen={openSections[item.label]} rightArrow={rightArrow} downArrow={downArrow} />
+        <ToggleIcon
+          isOpen={openSections[item.label]}
+          rightArrow={rightArrow}
+          downArrow={downArrow}
+        />
       </div>
       {openSections[item.label] && hasGrandchildren && (
-        <ul className="~mt-2 ~ml-4 ~border-l ~border-gray-200 ~space-y-2 ~text-[14px]">
+        <ul className='mt-2 ml-4 border-l border-border-sec space-y-2 text-base'>
           {item?.items?.map((grandchild, key) => {
             const isGrandChildActive = isLocationActive(location, grandchild);
             const grandchildPrimaryLink = getPrimaryLink(grandchild);

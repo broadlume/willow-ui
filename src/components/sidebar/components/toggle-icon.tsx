@@ -1,5 +1,5 @@
-import type { FC } from "react";
-import { IconType } from "../types";
+import type { FC } from 'react';
+import { IconType } from '../types';
 
 export const ToggleIcon: FC<{
   isOpen: boolean;
@@ -7,5 +7,5 @@ export const ToggleIcon: FC<{
   downArrow: IconType;
 }> = ({ isOpen, rightArrow, downArrow }) => {
   const Icon = isOpen ? downArrow : rightArrow;
-  return <Icon className="~w-4 ~h-4 ~text-neutral-500" />;
+  return <Icon className='w-4 h-4 text-text-opt' />;
 };
