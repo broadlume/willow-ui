@@ -36,8 +36,8 @@
   ],
   "scripts": {
     "start": "npm run storybook",
-    "build": "vite build",
-    "build:tsup": "tsup",
+    "build:vite": "vite build",
+    "build": "tsup",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepublishOnly": "npm run build",
