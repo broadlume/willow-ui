@@ -16,7 +16,7 @@ const statusStyles: Record<StatusVariant, string> = {
   warning: 'bg-yellow-100',
   error: 'bg-red-100',
   info: 'bg-blue-100',
-  default: ''
+  default: '',
 };
 
 const variantStyles = {
@@ -24,22 +24,21 @@ const variantStyles = {
     root: '',
     header: 'py-4',
     content: 'pt-0 pb-4',
-    item: 'border-b'
+    item: 'border-b',
   },
   bordered: {
     root: 'border border-b rounded-2xl shadow-sm overflow-hidden',
     header: 'p-4',
     content: 'pt-0 pb-4 px-4',
-    item: 'border-b last:border-b-0 first:rounded-t-lg last:rounded-b-lg overflow-hidden'
+    item: 'border-b last:border-b-0 first:rounded-t-lg last:rounded-b-lg overflow-hidden',
   },
   separated: {
     root: 'space-y-4 rounded-2xl',
     header: 'p-4',
     content: 'border-t p-4',
-    item: 'border border-t rounded-2xl overflow-hidden shadow-sm bg-white'
-  }
+    item: 'border border-t rounded-2xl overflow-hidden shadow-sm bg-white',
+  },
 } as const;
-
 
 /** A vertically stacked set of interactive headings that each reveal a section of content. */
 const Accordion = React.forwardRef<
@@ -110,7 +109,7 @@ const AccordionTrigger = React.forwardRef<
     const variantClasses = variantStyles[variant].header;
 
     return (
-      <AccordionPrimitive.Header className="flex w-full">
+      <AccordionPrimitive.Header className='flex w-full'>
         {caretOnly ? (
           <div
             className={cn(
@@ -126,7 +125,7 @@ const AccordionTrigger = React.forwardRef<
                 className={cn(
                   '[&[data-state=open]>svg]:rotate-180',
                   caretAlign === 'left' &&
-                  '-rotate-90 [&[data-state=open]>svg]:rotate-90'
+                    '-rotate-90 [&[data-state=open]>svg]:rotate-90'
                 )}
                 {...props}
               >
@@ -134,7 +133,9 @@ const AccordionTrigger = React.forwardRef<
                   className={cn(
                     'h-4 w-4 shrink-0 text-primary transition-transform duration-200',
                     caretClasses,
-                    caretAlign === 'right' ? 'order-last ml-auto' : 'order-first'
+                    caretAlign === 'right'
+                      ? 'order-last ml-auto'
+                      : 'order-first'
                   )}
                 />
               </AccordionPrimitive.Trigger>
@@ -161,7 +162,7 @@ const AccordionTrigger = React.forwardRef<
               />
             )}
 
-            <span className="flex-1 text-left">{children}</span>
+            <span className='flex-1 text-left'>{children}</span>
 
             {caretAlign === 'right' && !noCaret && (
               <ChevronDown
@@ -197,11 +198,7 @@ const AccordionContent = React.forwardRef<
       {...props}
     >
       <div
-        className={cn(
-          'bg-white last:rounded-b-lg',
-          variantClasses,
-          className
-        )}
+        className={cn('bg-white last:rounded-b-lg', variantClasses, className)}
       >
         {children}
       </div>
