@@ -126,7 +126,7 @@ const AccordionTrigger = React.forwardRef<
                 className={cn(
                   '[&[data-state=open]>svg]:rotate-180',
                   caretAlign === 'left' &&
-                    '-rotate-90 [&[data-state=open]>svg]:rotate-90'
+                  '-rotate-90 [&[data-state=open]>svg]:rotate-90'
                 )}
                 {...props}
               >
