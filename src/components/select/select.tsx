@@ -4,6 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 
 import { cn } from '@src/lib/utils';
 import { selectVariants } from './select-variants';
+import { HiMiniXCircle } from 'react-icons/hi2';
 
 /** Displays a list of options for the user to pick from—triggered by a button. */
 const Select = SelectPrimitive.Root;
@@ -16,22 +17,40 @@ type SelectTriggerProps = React.ComponentPropsWithoutRef<
   typeof SelectPrimitive.Trigger
 > & {
   icon?: React.ReactNode;
+  onClear?: () => void;
+  value?: string;
+  showClear?: boolean;
 };
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, children, icon, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(selectVariants({ className }))}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      {icon ?? <CaretSortIcon className='h-4 w-4 opacity-50' />}
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
+>(({ className, children, icon, onClear, value, showClear, ...props }, ref) => (
+  <div className='relative'>
+    <SelectPrimitive.Trigger
+      ref={ref}
+      className={cn(selectVariants({ className }))}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        {icon ?? <CaretSortIcon className='h-4 w-4 opacity-50' />}
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+    {showClear && value && onClear && (
+      <button
+        type='button'
+        className='absolute right-8 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 hover:opacity-100 z-10 hover:cursor-pointer text-icon-pri'
+        onClick={(e) => {
+          e.stopPropagation();
+          onClear();
+        }}
+        aria-label='Clear selection'
+      >
+        <HiMiniXCircle className='h-4 w-4' />
+      </button>
+    )}
+  </div>
 ));
 
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
@@ -88,14 +107,14 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 outline-none',
+      'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-8 outline-none',
       'focus:bg-surface-cta focus:text-text-cta2',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
     {...props}
   >
-    <span className='absolute right-2 flex h-3.5 w-3.5 items-center justify-center'>
+    <span className='absolute left-2 flex h-3.5 w-3.5 items-center justify-center'>
       <SelectPrimitive.ItemIndicator>
         <CheckIcon className='h-4 w-4' />
       </SelectPrimitive.ItemIndicator>
