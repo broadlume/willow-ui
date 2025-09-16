@@ -36,7 +36,7 @@ const variantStyles = {
     root: 'space-y-4 rounded-2xl',
     header: 'p-4',
     content: 'border-t p-4',
-    item: 'border border-t rounded-2xl overflow-hidden shadow-sm bg-white',
+    item: 'border border-t rounded-2xl overflow-hidden shadow-sm',
   },
 } as const;
 
@@ -53,7 +53,7 @@ const Accordion = React.forwardRef<
     <AccordionVariantContext.Provider value={variant}>
       <AccordionPrimitive.Root
         ref={ref}
-        className={cn('tw-reset bg-white', variantClasses, className)}
+        className={cn('tw-reset', variantClasses, className)}
         {...props}
       >
         {children}
@@ -193,12 +193,11 @@ const AccordionContent = React.forwardRef<
       ref={ref}
       className={cn(
         'overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
-        'bg-white'
       )}
       {...props}
     >
       <div
-        className={cn('bg-white last:rounded-b-lg', variantClasses, className)}
+        className={cn('last:rounded-b-lg', variantClasses, className)}
       >
         {children}
       </div>
