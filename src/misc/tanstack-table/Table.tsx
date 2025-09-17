@@ -749,7 +749,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal'>Item Per page</p>
+          <p className='text-xs font-normal'>Item Per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'

@@ -109,7 +109,10 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         </div>
 
         {inputProps?.error ? (
-          <div className='mt-1 text-xs font-normal text-text-destructive flex flex-row items-center gap-1'>
+          <div
+            data-testid='slots-error'
+            className='mt-1 text-xs font-normal flex flex-row items-center gap-1'
+          >
             <HiExclamationCircle className='h-3 w-3' />
             {inputProps?.error}
           </div>

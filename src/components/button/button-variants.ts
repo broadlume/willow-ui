@@ -27,7 +27,7 @@ const buttonVariants = cva(
         default: '',
         sm: 'text-[10px]',
         lg: 'text-base',
-        icon: 'h-12 w-12 p-0 !outline-none',
+        icon: 'h-12 w-12 p-0 !outline-none focus:ring-0 focus-visible:ring-offset-0',
       },
     },
     compoundVariants: [

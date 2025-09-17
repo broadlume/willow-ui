@@ -44,13 +44,21 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   showCloseIcon?: boolean;
+  onClose?: () => void;
 }
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
 >(
   (
-    { side = 'right', className, children, showCloseIcon = false, ...props },
+    {
+      side = 'right',
+      className,
+      children,
+      onClose = () => null,
+      showCloseIcon = true,
+      ...props
+    },
     ref
   ) => (
     <SheetPortal>
@@ -62,7 +70,14 @@ const SheetContent = React.forwardRef<
       >
         {children}
         {showCloseIcon && (
-          <SheetPrimitive.Close className='ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none'>
+          <SheetPrimitive.Close
+            className={cn(
+              'absolute right-3 top-3 rounded-xs opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none',
+              'ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2',
+              'data-[state=open]:bg-accent data-[state=open]:text-muted-foreground'
+            )}
+            onClick={onClose}
+          >
             <HiMiniXCircle className='h-5 w-5 text-icon-pri' />
             <span className='sr-only'>Close</span>
           </SheetPrimitive.Close>

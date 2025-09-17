@@ -30,8 +30,7 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
     {
       'h-8 flex items-center py-1 px-4': hasChildren,
       'h-6 block transition-colors duration-150 font-semibold': !hasChildren,
-      'pl-3 border-l-4 border-l-text-brand text-text-brand':
-        hasChildren && isActive,
+      'border-l-4 border-l-text-brand text-text-brand': hasChildren && isActive,
       'pl-4': hasChildren && !isActive,
       'text-text-brand': !hasChildren && isActive,
     },
