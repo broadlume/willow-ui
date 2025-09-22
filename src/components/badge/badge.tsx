@@ -5,7 +5,7 @@ import { cn } from '@src/lib/utils';
 
 const badgeVariants = cva(
   [
-    'tw-reset font-medium text-2xs inline-flex cursor-default items-center rounded px-2 py-1.5 transition-colors',
+    'tw-reset font-medium text-xs inline-flex cursor-default items-center rounded-sm px-2 py-1 transition-colors gap-2.5',
     'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
     'h-5',
   ],
@@ -13,12 +13,14 @@ const badgeVariants = cva(
     variants: {
       /** Variant color of the badge. */
       variant: {
-        default: 'border-transparent bg-surface-cta text-text-pri ',
-        secondary: 'border-transparent bg-(--var(--grey-10%)) text-icon-pri',
-        success: 'border-transparent  bg-(--var(--green-100)) text-(--var(--green-600))' ,
+        default: 'border-transparent bg-surface-cta-bg text-surface-cta',
+        secondary: 'border-transparent bg-surface-opt text-icon-pri',
+        success: 'border-transparent  bg-surface-success text-text-success',
         destructive:
-          'border-transparent bg-(--var(--red-50)) text-(--var(--red-500))',
-        outline: 'text-text-pri border-border-sec bg-surface-pri',
+          'border-transparent bg-surface-destructive-bg text-text-destructive',
+        warning:
+          'border-transparent bg-surface-progress text-text-progress',
+        outline: 'border border-border-sec bg-surface-pri text-text-pri',
       },
       /** Relative size of the badge. */ 
       size: {
