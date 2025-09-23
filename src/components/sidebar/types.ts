@@ -4,9 +4,9 @@ export type SidebarItemProps = {
   label: string;
   link?: string;
   links?: string[]; // Support for multiple links
-  linkPattern?: string; // Support for regex pattern matching
   hidden?: boolean;
   items?: SidebarItemProps[];
+  linkPattern?: string; // Support for regex pattern matching
 };
 
 export type SidebarProps = {

@@ -3,7 +3,7 @@ import { IconType, SidebarItemProps } from '../types';
 import { SidebarItem } from './sidebar-item';
 
 type Props = {
-  items: SidebarItemProps[];
+  items: SidebarItemProps['items'];
   location: string;
   openSections: Record<string, boolean>;
   toggleSection: (label: string) => void;
@@ -33,7 +33,7 @@ export const SidebarItemList: FC<Props> = ({
 }) => {
   return (
     <ul className='mt-2 ml-1 border-l border-border-sec space-y-2 text-base'>
-      {items.map((child, key) => (
+      {items?.map((child, key) => (
         <li key={child.label + key}>
           <SidebarItem
             item={child}

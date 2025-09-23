@@ -72,7 +72,9 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
             )}
           >
             {label}
-            {inputProps.required && <span className='text-text-brand'>*</span>}
+            {inputProps.required && (
+              <span className='text-text-destructive'>*</span>
+            )}
           </label>
         )}
 
@@ -111,7 +113,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         {inputProps?.error ? (
           <div
             data-testid='slots-error'
-            className='mt-1 text-xs font-normal flex flex-row items-center gap-1'
+            className='mt-1 text-xs font-normal flex flex-row items-center gap-1 text-text-destructive'
           >
             <HiExclamationCircle className='h-3 w-3' />
             {inputProps?.error}

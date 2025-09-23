@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import { FC } from 'react';
 import { IconType, SidebarItemProps } from '../types';
-import { getPrimaryLink, hasNavigableLink, isLocationActive } from "../utils/link-matcher";
+import {
+  getPrimaryLink,
+  hasNavigableLink,
+  isLocationActive,
+} from '../utils/link-matcher';
 import { SidebarLink } from './sidebar-link';
 import { ToggleIcon } from './toggle-icon';
 
@@ -37,7 +41,6 @@ export const SidebarItem: FC<Props> = ({
   const isChildActive = isLocationActive(location, item);
   const hasGrandchildren = item.items?.length;
   const primaryLink = getPrimaryLink(item);
-
   if (hasNavigableLink(item) && primaryLink) {
     return (
       <SidebarLink
@@ -72,11 +75,11 @@ export const SidebarItem: FC<Props> = ({
           {item?.items?.map((grandchild, key) => {
             const isGrandChildActive = isLocationActive(location, grandchild);
             const grandchildPrimaryLink = getPrimaryLink(grandchild);
-            
+
             if (!grandchildPrimaryLink) {
               return null;
             }
-            
+
             return (
               <li key={grandchild.label + key}>
                 <SidebarLink

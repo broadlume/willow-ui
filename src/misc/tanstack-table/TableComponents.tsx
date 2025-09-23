@@ -15,6 +15,7 @@ const Table = React.forwardRef<
     <table
       ref={ref}
       className={clsx('w-full caption-bottom text-sm', className)}
+      style={{ tableLayout: 'fixed', ...props.style }}
       {...props}
     />
   </div>
@@ -87,8 +88,8 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground w-fit text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-5',
-      '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-5', // apply margin-top to td inside th if td has button[role=checkbox]
+      'text-muted-foreground text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
+      '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-4', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}
     {...props}
@@ -151,7 +152,9 @@ const DraggableColumnHeader = <TData, TValue>({
     position: 'relative',
     transform: CSS.Translate.toString(transform),
     whiteSpace: 'nowrap',
-    width: header.column.getSize(),
+    width: `${header.column.getSize()}px`,
+    minWidth: `${header.column.getSize()}px`,
+    maxWidth: `${header.column.getSize()}px`,
     transition,
     zIndex: isDragging ? 10 : 1,
   };
@@ -182,7 +185,7 @@ const DraggableColumnHeader = <TData, TValue>({
         {header.isPlaceholder
           ? null
           : flexRender(header.column.columnDef.header, header.getContext())}
-        {header.column.getCanSort() && header.column.getIsSorted() ? (
+        {header.column.getCanSort() ? (
           <div className='flex h-4 flex-col items-center'>
             <HiMiniChevronUp
               data-testid={'data-table-header-asc-' + header.column.id}

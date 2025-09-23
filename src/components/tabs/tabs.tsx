@@ -11,11 +11,12 @@ import { cn } from '@src/lib/utils';
 import { cva } from 'class-variance-authority';
 
 const tabListVariants = cva(
-  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-text-brand text-sm',
+  'relative inline-flex h-9 items-center justify-center bg-surface-pri text-text-brand text-sm gap-4',
   {
     variants: {
       variant: {
-        default: 'border-b border-border-sec',
+        default:
+          'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-border-sec after:content-[""]',
         pills: 'rounded-full border border-border-brand p-1',
       },
     },
@@ -26,15 +27,15 @@ const tabListVariants = cva(
 );
 
 const sliderVariants = cva(
-  'pointer-events-none absolute transition-all duration-300 ease-in-out text-sm',
+  'pointer-events-none absolute transition-all duration-300 ease-in-out text-sm z-10',
   {
     variants: {
       variant: {
-        default: 'border-border-brand',
+        default: 'bottom-0 h-0.5 bg-border-brand',
         pills: 'bottom-1 top-1 rounded-full bg-surface-brand',
       },
       orientation: {
-        horizontal: 'left-0 h-full border-b-2',
+        horizontal: 'left-0',
         vertical: 'top-0 w-full border-r-2',
       },
     },
@@ -63,10 +64,10 @@ const tabTriggerVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'h-full border-b border-border px-3 pb-3',
+          'h-full px-3 pb-3',
           'data-[state=inactive]:text-text-opt data-[state=active]:text-foreground'
         ),
-        pills:cn(
+        pills: cn(
           'px-3 py-1',
           'z-10 rounded-full text-foreground data-[state=active]:text-white'
         ),

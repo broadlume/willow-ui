@@ -10,13 +10,22 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { TableRow } from './TableComponents';
+
+// Extend TanStack Table column meta interface
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData, TValue> {
+    isGrow?: boolean;
+    widthPercentage?: number;
+  }
+}
 
 export type DataProps = Partial<{
   'data-testid': string;
   id: string;
   className: string;
+  style?: React.CSSProperties;
 }>;
 
 export interface DataTableProps<TData, TValue> {
