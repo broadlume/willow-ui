@@ -15,6 +15,7 @@ interface InputWithSlotsProps
     inputClass?: string;
   };
   label?: string;
+  tooltip?: JSX.Element;
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
@@ -56,7 +57,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
       labelClass: '',
       inputClass: '',
     },
-
+    tooltip,
     label,
     wrapperProps,
     ...inputProps
@@ -67,7 +68,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
           <label
             htmlFor='price'
             className={cn(
-              'mb-2 block text-base font-normal text-text-pri',
+              'mb-2 text-base font-normal text-text-pri items-center flex',
               classes?.labelClass
             )}
           >
@@ -75,6 +76,8 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
             {inputProps.required && (
               <span className='text-text-destructive'>*</span>
             )}
+
+            {tooltip}
           </label>
         )}
 
