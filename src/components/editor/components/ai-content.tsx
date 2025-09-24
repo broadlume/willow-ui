@@ -109,7 +109,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
   }, [loading]);
 
   return (
-    <div className='flex flex-col items-start gap-6 flex-1'>
+    <div className='flex flex-col items-start gap-6 flex-1 max-h-[80vh] overflow-auto'>
       <DialogDescription className='flex flex-col gap-3 w-full flex-1'>
         <DialogHeader>
           <div data-testid='add-redirects-header'>
@@ -236,56 +236,68 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
           </form>
         </Form>
       </DialogDescription>
+
+      <div className='flex-1 flex flex-col gap-2 w-full'>
+        <>
+          <h3>Output:</h3>
+          <Textarea
+            value={generatedContent}
+            onChange={(e) => setGeneratedContent(e.target.value)}
+            className='w-full h-32'
+          />
+          <Button
+            type='button'
+            className='self-end w-fit'
+            onClick={() => {
+              const htmlContent = generatedContent
+                .split('\n')
+                .map((line) => {
+                  const trimmedLine = line.trim();
+                  if (trimmedLine.length === 0) return null;
+                  return {
+                    type: 'paragraph',
+                    content: [
+                      {
+                        type: 'text',
+                        text: trimmedLine,
+                      },
+                    ],
+                  };
+                })
+                .filter((el) => el);
+              if (from && to) {
+                // Insert the generated content at the current selection
+                htmlContent.map((el) => {
+                  editor
+                    .chain()
+                    .focus()
+                    .deleteRange({ from, to })
+                    .insertContent(el)
+                    .run();
+                  editor
+                    .chain()
+                    .focus()
+                    .deleteRange({ from, to })
+                    .insertContent('<br />')
+                    .run();
+                });
+              } else {
+                // If no selection, just insert at the end
+                htmlContent.map((el) => {
+                  editor.chain().focus().insertContent(el).run();
+                  editor.chain().focus().insertContent('<br />').run();
+                });
+              }
+              setGeneratedContent(''); // Clear the generated content after inserting
+              form.reset(); // Reset the form after inserting
+              closeDialog();
+            }}
+          >
+            Insert Content in Editor
+          </Button>
+        </>
+      </div>
     </div>
-    // <div className='flex-1 flex flex-col gap-2'>
-    //   {
-    //     generatedContent && (
-    //       <>
-    //         <h3>Output:</h3>
-    //         <Textarea value={generatedContent} onChange={e => setGeneratedContent(e.target.value)} className='w-full h-32' />
-    //         <Button
-    //           type='button'
-    //           className='mt-4'
-    //           onClick={() => {
-    //             const htmlContent = generatedContent.split('\n').map(line => {
-    //               const trimmedLine = line.trim();
-    //               if (trimmedLine.length === 0) return null;
-    //               return {
-    //                 type: 'paragraph',
-    //                 content: [{
-    //                   type: 'text',
-    //                   text: trimmedLine,
-    //                 }]
-    //               };
-    //             }).filter(el => el);
-    //             if (from && to) {
-    //               // Insert the generated content at the current selection
-    //               htmlContent.map(
-    //                 el => {
-    //                   editor.chain().focus().deleteRange({ from, to }).insertContent(el).run();
-    //                   editor.chain().focus().deleteRange({ from, to }).insertContent('<br />').run();
-    //                 }
-    //               )
-    //             } else {
-    //               // If no selection, just insert at the end
-    //               htmlContent.map(
-    //                 el => {
-    //                   editor.chain().focus().insertContent(el).run();
-    //                   editor.chain().focus().insertContent('<br />').run();
-    //                 }
-    //               )
-    //             }
-    //             setGeneratedContent(''); // Clear the generated content after inserting
-    //             form.reset(); // Reset the form after inserting
-    //             closeDialog();
-    //           }}
-    //         >
-    //           Insert Content in Editor
-    //         </Button>
-    //       </>
-    //     )
-    //   }
-    // </div>
   );
 };
 
