@@ -66,7 +66,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
       <div className={cn('flex flex-col', classes?.textFieldWrapClass)}>
         {label && (
           <label
-            htmlFor='price'
+            htmlFor={inputProps?.name}
             className={cn(
               'mb-2 text-base font-normal text-text-pri items-center flex',
               classes?.labelClass

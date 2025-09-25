@@ -6,40 +6,18 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@components/button';
 import { Input } from '@components/input/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/select';
 import { Textarea } from '@components/textarea/textarea';
 import { Label } from '@components/label/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormField, FormItem, FormMessage } from '@components/form/form';
-import { DialogFooter, DialogHeader } from '@components/dialog/dialog';
+import { DialogHeader } from '@components/dialog/dialog';
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { Loader } from '@components/Loader/Loader';
-import { CardContent } from '@components/card/card';
 
 interface AIContentProps {
   editor: Editor;
   closeDialog: () => void;
 }
-
-const tones = [
-  'Friendly',
-  'Professional',
-  'Conversational',
-  'Helpful',
-  'Authoritative',
-  'Cheerful',
-  'Empathetic',
-  'Neutral',
-  'Witty',
-  'Direct',
-  'Custom',
-] as const;
 
 const AIContent = ({ editor, closeDialog }: AIContentProps) => {
   const [loading, setLoading] = useState(false);
@@ -50,8 +28,6 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
     prompt: z.string().min(2, {
       message: 'Prompt must be at least 2 characters.',
     }),
-    tone: z.enum(tones),
-    customTone: z.string().optional(),
     targetedAudience: z.string().optional(),
   });
 
@@ -59,20 +35,13 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: editor.state.doc.textBetween(from, to, ' ') || '',
-      tone: 'Neutral',
-      customTone: '',
     },
   });
 
-  const handleFormSubmit = async (tone: string, text: string) => {
-    let finalTone = tone;
-    if (tone === 'Custom') {
-      finalTone = form.getValues('customTone') || '';
-    }
-
+  const handleFormSubmit = async (text: string) => {
     const targetedAudience =
       form.getValues('targetedAudience') || 'general audience';
-    const prompt = `Rewrite the following text in ${finalTone.toLowerCase()} tone for the ${targetedAudience} and make sure if the following text is a request to generate a content then do that first and then change the tone: "${text}"`;
+    const prompt = `"${text}" for the ${targetedAudience} and remove extra words, need only the content.`;
 
     setLoading(true);
 
@@ -95,7 +64,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
       );
       setGeneratedContent(aiResponse.data.data.text);
     } catch (error) {
-      console.error('Error updating text tone:', error);
+      console.error('Error generating text:', error);
     } finally {
       setLoading(false);
     }
@@ -123,7 +92,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
           <form
             className='flex flex-col flex-1 p-5 bg-surface-pri gap-4 rounded'
             onSubmit={form.handleSubmit((data) =>
-              handleFormSubmit(data.tone, data.prompt)
+              handleFormSubmit(data.prompt)
             )}
           >
             <FormField
@@ -142,52 +111,6 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
               )}
             />
             <div className='flex gap-3 w-full'>
-              <FormField
-                control={form.control}
-                name='tone'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
-                    <Label>Choose a tone:</Label>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a tone' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {tones.map((tone) => (
-                          <SelectItem key={tone} value={tone}>
-                            {tone}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className='text-text-destructive font-normal' />
-                  </FormItem>
-                )}
-              />
-              {form.watch('tone') === 'Custom' && (
-                <FormField
-                  control={form.control}
-                  name='customTone'
-                  render={({ field }) => (
-                    <FormItem className='flex flex-col gap-2'>
-                      <Label>Custom Tone:</Label>
-                      <Input
-                        type='text'
-                        placeholder='Enter custom tone'
-                        {...field}
-                        value={field.value}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                        }}
-                      />
-                      <FormMessage className='text-text-destructive font-normal' />
-                    </FormItem>
-                  )}
-                />
-              )}
               <FormField
                 control={form.control}
                 name='targetedAudience'
@@ -217,7 +140,7 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
                 type='submit'
                 disabled={loading}
                 onClick={form.handleSubmit((data) =>
-                  handleFormSubmit(data.tone, data.prompt)
+                  handleFormSubmit(data.prompt)
                 )}
               >
                 {renderIcon}
