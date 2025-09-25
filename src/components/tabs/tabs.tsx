@@ -107,64 +107,78 @@ const Tabs = ({
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, children, ...props }, forwardedRef) => {
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const internalRef = useRef<React.ElementRef<typeof TabsPrimitive.List>>(null);
-  const ref = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    isShowBottomHighligher?: boolean;
+  }
+>(
+  (
+    { className, children, isShowBottomHighligher = true, ...props },
+    forwardedRef
+  ) => {
+    const sliderRef = useRef<HTMLDivElement>(null);
+    const internalRef =
+      useRef<React.ElementRef<typeof TabsPrimitive.List>>(null);
+    const ref =
+      (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
 
-  // get variant from context
-  const { variant, orientation } = useContext(TabsContext);
+    // get variant from context
+    const { variant, orientation } = useContext(TabsContext);
 
-  // track if it's the first render
-  const [isFirstRender, setIsFirstRender] = useState(true);
+    // track if it's the first render
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
-  useLayoutEffect(() => {
-    // technically doesn't run on window resize, but we're ignoring that
-    function updateSlider() {
-      const container = ref.current;
-      const activeTab = container?.querySelector('[data-state="active"]');
-      if (activeTab && sliderRef.current) {
-        const activeTabElement = activeTab as HTMLElement;
-        if (orientation === 'horizontal') {
-          sliderRef.current.style.transform = `translateX(${activeTabElement.offsetLeft}px)`;
-          sliderRef.current.style.width = `${activeTabElement.offsetWidth}px`;
-        } else {
-          sliderRef.current.style.transform = `translateY(${activeTabElement.offsetTop}px)`;
-          sliderRef.current.style.height = `${activeTabElement.offsetHeight}px`;
+    useLayoutEffect(() => {
+      // technically doesn't run on window resize, but we're ignoring that
+      function updateSlider() {
+        const container = ref.current;
+        const activeTab = container?.querySelector('[data-state="active"]');
+        if (activeTab && sliderRef.current) {
+          const activeTabElement = activeTab as HTMLElement;
+          if (orientation === 'horizontal') {
+            sliderRef.current.style.transform = `translateX(${activeTabElement.offsetLeft}px)`;
+            sliderRef.current.style.width = `${activeTabElement.offsetWidth}px`;
+          } else {
+            sliderRef.current.style.transform = `translateY(${activeTabElement.offsetTop}px)`;
+            sliderRef.current.style.height = `${activeTabElement.offsetHeight}px`;
+          }
+          // after updating the slider position, set isFirstRender to false
+          setIsFirstRender(false);
         }
-        // after updating the slider position, set isFirstRender to false
-        setIsFirstRender(false);
       }
-    }
 
-    updateSlider();
+      updateSlider();
 
-    const observer = new MutationObserver(updateSlider);
-    observer.observe((ref as React.MutableRefObject<HTMLDivElement>).current, {
-      attributes: true,
-      subtree: true,
-    });
-    return () => observer.disconnect();
-  }, [ref]);
+      const observer = new MutationObserver(updateSlider);
+      observer.observe(
+        (ref as React.MutableRefObject<HTMLDivElement>).current,
+        {
+          attributes: true,
+          subtree: true,
+        }
+      );
+      return () => observer.disconnect();
+    }, [ref]);
 
-  return (
-    <TabsPrimitive.List
-      ref={ref}
-      className={cn(tabListVariants({ variant }), className)}
-      {...props}
-    >
-      <div // slider
-        ref={sliderRef}
-        className={cn(
-          sliderVariants({ variant, orientation }),
-          isFirstRender ? 'transition-none' : ''
+    return (
+      <TabsPrimitive.List
+        ref={ref}
+        className={cn(tabListVariants({ variant }), className)}
+        {...props}
+      >
+        {isShowBottomHighligher && (
+          <div // slider
+            ref={sliderRef}
+            className={cn(
+              sliderVariants({ variant, orientation }),
+              isFirstRender ? 'transition-none' : ''
+            )}
+          />
         )}
-      />
-      {children}
-    </TabsPrimitive.List>
-  );
-});
+        {children}
+      </TabsPrimitive.List>
+    );
+  }
+);
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
