@@ -24,9 +24,9 @@ jobs:
         # 👇 Adds Chromatic as a step in the workflow
       - name: Publish to Chromatic
         uses: chromaui/action@v13
-        env:
-          NODE_OPTIONS: --max-old-space-size=8192
         # Chromatic GitHub Action options
         with:
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          env:
+          NODE_OPTIONS: --max-old-space-size=8192
