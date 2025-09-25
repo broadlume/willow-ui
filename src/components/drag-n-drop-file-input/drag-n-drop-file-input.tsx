@@ -5,8 +5,9 @@ import clsx from 'clsx';
 import { Trash2 } from 'lucide-react';
 
 interface DragNDropFileInputProps {
-  file: File;
-  setFile: (updater: File) => void;
+  file: File | File[] | null;
+  setFile?: (updater: File) => void;
+  setMultipleFiles?: (updater: File[]) => void;
   infoMessage?: string;
   topIcon?: React.ReactNode;
   label?: string;
@@ -34,6 +35,7 @@ interface DragNDropFileInputProps {
  * @param {Object} props - Component properties.
  * @param {File} props.file - The currently selected file.
  * @param {function} props.setFile - A function to update the selected file.
+ * @param {function} [props.setMultipleFiles] - Optional function to update multiple selected files.
  * @param {string} [props.infoMessage] - Optional message to display below the input.
  * @param {Object} [props.classNames] - Optional object to customize CSS class names for different parts of the component.
  * @param {string} [props.classNames.root] - CSS class for the root element.
@@ -57,6 +59,7 @@ interface DragNDropFileInputProps {
 const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   file,
   setFile,
+  setMultipleFiles,
   infoMessage,
   topIcon,
   label = 'Drag and drop your file here or',
@@ -76,27 +79,35 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
 }) => {
   const fileInput = useRef<HTMLInputElement>(null);
   const [onDrag, setOnDrag] = useState(false);
+  const isMultiple = !!otherProps?.input?.multiple;
 
   const dropHandler = (ev: React.DragEvent<HTMLDivElement>) => {
     setOnDrag(false);
-    console.log('File(s) dropped');
-
-    // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
 
+    const droppedFiles: File[] = [];
+
     if (ev.dataTransfer.items) {
-      // Use DataTransferItemList interface to access the file(s)
+      // Use DataTransferItemList interface
       [...ev.dataTransfer.items].forEach((item) => {
-        // If dropped items aren't files, reject them
         if (item.kind === 'file') {
-          setDroppedFile(item.getAsFile());
+          const file = item.getAsFile();
+          if (file && validateFile(file)) droppedFiles.push(file);
         }
       });
     } else {
-      // Use DataTransfer interface to access the file(s)
+      // Use DataTransfer interface
       [...ev.dataTransfer.files].forEach((file) => {
-        setDroppedFile(file);
+        if (validateFile(file)) droppedFiles.push(file);
       });
+    }
+
+    // If multiple files mode
+    if (otherProps?.input?.multiple) {
+      setMultipleFiles?.(droppedFiles);
+    } else {
+      // single file mode, just take the first
+      setFile?.(droppedFiles[0] ?? file);
     }
   };
 
@@ -112,12 +123,6 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       validArray.includes(`*`) ||
       validArray.includes(file?.type as string)
     );
-  };
-
-  const setDroppedFile = (file: File | undefined | null) => {
-    if (file && validateFile(file)) {
-      setFile(file);
-    }
   };
 
   const dragOverHandler = (ev: React.DragEvent<HTMLDivElement>) => {
@@ -141,11 +146,14 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateFile(e?.target?.files?.[0])) {
-      console.log('File selected:', e.target.files?.[0]);
-      if (e.target.files?.length) {
-        setFile(e.target.files?.[0]);
-      }
+    if (!e.target.files?.length) return;
+
+    const filesArray = Array.from(e.target.files).filter(validateFile);
+
+    if (isMultiple) {
+      setMultipleFiles?.(filesArray);
+    } else {
+      setFile?.(filesArray[0] ?? null);
     }
   };
 
@@ -155,8 +163,7 @@ const DragNDropFileInput: React.FC<DragNDropFileInputProps> = ({
       onDragOver={(event) => dragOverHandler(event)}
       onDragLeave={(event) => dragLeaveHandler(event)}
       className={clsx(
-        `flex w-full flex-col items-center justify-center rounded-md border-2 border-surface-cta bg-surface-pri p-8 ${
-          onDrag ? 'border-[#1FA384]' : 'border-[#E8E8E8]'
+        `flex w-full flex-col items-center justify-center rounded-md border-2 border-surface-cta bg-surface-pri p-8 ${onDrag ? 'border-[#1FA384]' : 'border-[#E8E8E8]'
         } `,
         classNames.root
       )}
