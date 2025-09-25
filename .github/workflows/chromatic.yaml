@@ -29,4 +29,4 @@ jobs:
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           env:
-          NODE_OPTIONS: --max-old-space-size=8192
+            NODE_OPTIONS: --max-old-space-size=8192
