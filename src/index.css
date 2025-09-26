@@ -127,7 +127,7 @@
   --color-text-destructive: var(--color-red-500);
   --color-text-invert: var(--color-grey-0);
   --color-text-success: var(--color-green-600);
-  --color-text-progress: var(--color-yellow-600);
+  --color-text-progress: var(--color-yellow-500);
 
   --color-surface-pri: var(--color-grey-0);
   --color-surface-sec: var(--color-grey-5);
@@ -136,6 +136,7 @@
   --color-surface-brand: var(--color-primary-100);
   --color-surface-cta: var(--color-cta-100);
   --color-surface-cta-bg: var(--color-cta-15);
+  --color-surface-destructive-bg: var(--color-red-50);
   --color-surface-destructive: var(--color-red-500);
   --color-surface-invert: var(--color-grey-90);
   --color-surface-success: var(--color-green-100);
