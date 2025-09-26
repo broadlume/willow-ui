@@ -1,6 +1,10 @@
 import { FC } from 'react';
 import { IconType, SidebarItemProps } from '../types';
-import { getPrimaryLink, hasNavigableLink, isLocationActive } from "../utils/link-matcher";
+import {
+  getPrimaryLink,
+  hasNavigableLink,
+  isLocationActive,
+} from '../utils/link-matcher';
 import { SidebarItemList } from './sidebar-item-list';
 import { SidebarLink } from './sidebar-link';
 import { ToggleIcon } from './toggle-icon';

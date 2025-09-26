@@ -33,7 +33,7 @@ function Calendar({
         nav: cn('flex items-center space-x-1', classNames?.nav),
         nav_button: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-7 w-7 p-0',
+          'h-7 w-7 p-0 disabled:bg-transparent',
           classNames?.nav_button
         ),
         nav_button_previous: cn(
@@ -41,10 +41,7 @@ function Calendar({
           classNames?.nav_button_previous
         ),
         nav_button_next: cn('absolute right-1', classNames?.nav_button_next),
-        table: cn(
-          'table-fixed border-collapse space-y-1',
-          classNames?.table
-        ),
+        table: cn('table-fixed border-collapse space-y-1', classNames?.table),
         head_row: cn('', classNames?.head_row),
         head_cell: cn(
           'caption-1 w-8 text-center text-sm font-normal text-muted-foreground mb-2',
@@ -60,7 +57,7 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: 'ghost' }),
-          'h-8 w-8 p-0 font-normal aria-selected:opacity-100',
+          'h-8 w-8 p-0 font-normal aria-selected:opacity-100 disabled:!bg-transparent',
           classNames?.day
         ),
         day_selected: cn(
@@ -79,7 +76,7 @@ function Calendar({
           classNames?.day_outside
         ),
         day_disabled: cn(
-          'text-muted-foreground opacity-50',
+          'text-muted-foreground opacity-50 !bg-transparent',
           classNames?.day_disabled
         ),
         day_range_middle: cn(

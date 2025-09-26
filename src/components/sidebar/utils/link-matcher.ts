@@ -3,17 +3,22 @@ import { SidebarItemProps } from '../types';
 /**
  * Checks if the current location matches any of the item's links or patterns
  */
-export const isLocationActive = (location: string, item: SidebarItemProps): boolean => {
+export const isLocationActive = (
+  location: string,
+  item: SidebarItemProps
+): boolean => {
   // Check single link (backward compatibility)
   if (item.link) {
-    if (location === item.link || location + "/" === item.link) {
+    if (location === item.link || location + '/' === item.link) {
       return true;
     }
   }
 
   // Check multiple links
   if (item.links && Array.isArray(item.links)) {
-    return item.links.some(link => location === link || location + "/" === link);
+    return item.links.some(
+      (link) => location === link || location + '/' === link
+    );
   }
 
   // Check pattern matching
@@ -22,7 +27,10 @@ export const isLocationActive = (location: string, item: SidebarItemProps): bool
       const regex = new RegExp(item.linkPattern);
       return regex.test(location);
     } catch (error) {
-      console.warn(`Invalid regex pattern in sidebar item "${item.label}": ${item.linkPattern}`, error);
+      console.warn(
+        `Invalid regex pattern in sidebar item "${item.label}": ${item.linkPattern}`,
+        error
+      );
       return false;
     }
   }
@@ -38,11 +46,11 @@ export const getPrimaryLink = (item: SidebarItemProps): string | null => {
   if (item.link) {
     return item.link;
   }
-  
+
   if (item.links && Array.isArray(item.links) && item.links.length > 0) {
     return item.links[0];
   }
-  
+
   return null;
 };
 

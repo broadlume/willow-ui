@@ -131,7 +131,7 @@ const AccordionTrigger = React.forwardRef<
               >
                 <ChevronDown
                   className={cn(
-                    'h-4 w-4 shrink-0 text-primary transition-transform duration-200',
+                    'h-4 w-4 p-2 shrink-0 text-primary transition-transform duration-200',
                     caretClasses,
                     caretAlign === 'right'
                       ? 'order-last ml-auto'
@@ -156,7 +156,7 @@ const AccordionTrigger = React.forwardRef<
             {caretAlign === 'left' && !noCaret && (
               <ChevronDown
                 className={cn(
-                  'h-4 w-4 shrink-0 text-primary transition-transform duration-200',
+                  'h-4 w-4 p-2 shrink-0 text-primary transition-transform duration-200',
                   caretClasses
                 )}
               />
@@ -167,7 +167,7 @@ const AccordionTrigger = React.forwardRef<
             {caretAlign === 'right' && !noCaret && (
               <ChevronDown
                 className={cn(
-                  'h-4 w-4 shrink-0 text-primary transition-transform duration-200',
+                  'h-4 w-4 p-2 shrink-0 text-primary transition-transform duration-200',
                   caretClasses
                 )}
               />
@@ -192,13 +192,11 @@ const AccordionContent = React.forwardRef<
     <AccordionPrimitive.Content
       ref={ref}
       className={cn(
-        'overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+        'overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
       )}
       {...props}
     >
-      <div
-        className={cn('last:rounded-b-lg', variantClasses, className)}
-      >
+      <div className={cn('last:rounded-b-lg', variantClasses, className)}>
         {children}
       </div>
     </AccordionPrimitive.Content>

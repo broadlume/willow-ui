@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -39,7 +39,7 @@
     "build:vite": "vite build",
     "build": "tsup",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "build-storybook": "NODE_OPTIONS=--max-old-space-size=8192 storybook build",
     "prepublishOnly": "npm run build",
     "bundle-analyze": "npx vite-bundle-analyzer",
     "type-check": "tsc --noEmit",

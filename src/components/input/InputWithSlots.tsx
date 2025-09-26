@@ -15,6 +15,7 @@ interface InputWithSlotsProps
     inputClass?: string;
   };
   label?: string;
+  tooltip?: JSX.Element;
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
@@ -56,7 +57,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
       labelClass: '',
       inputClass: '',
     },
-
+    tooltip,
     label,
     wrapperProps,
     ...inputProps
@@ -65,14 +66,18 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
       <div className={cn('flex flex-col', classes?.textFieldWrapClass)}>
         {label && (
           <label
-            htmlFor='price'
+            htmlFor={inputProps?.name}
             className={cn(
-              'mb-2 block text-base font-normal text-text-pri',
+              'mb-2 text-base font-normal text-text-pri items-center flex',
               classes?.labelClass
             )}
           >
             {label}
-            {inputProps.required && <span className='text-text-brand'>*</span>}
+            {inputProps.required && (
+              <span className='text-text-destructive'>*</span>
+            )}
+
+            {tooltip}
           </label>
         )}
 
@@ -109,7 +114,10 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         </div>
 
         {inputProps?.error ? (
-          <div className='mt-1 text-xs font-normal text-text-destructive flex flex-row items-center gap-1'>
+          <div
+            data-testid='slots-error'
+            className='mt-1 text-xs font-normal flex flex-row items-center gap-1 text-text-destructive'
+          >
             <HiExclamationCircle className='h-3 w-3' />
             {inputProps?.error}
           </div>

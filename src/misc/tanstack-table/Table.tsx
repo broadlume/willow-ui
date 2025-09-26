@@ -564,7 +564,17 @@ export function useDataTable<TData, TValue>({
                               isDraggable={draggableColumnIds.includes(
                                 header.column.id
                               )}
-                              itemProps={itemProps}
+                              itemProps={{
+                                ...itemProps,
+                                tableHead: {
+                                  style: {
+                                    ...(itemProps?.tableHead?.style || {}),
+                                    width: `${header.getSize()}px`,
+                                  },
+                                  // @ts-expect-error test
+                                  colSpan: header.colSpan,
+                                },
+                              }}
                             />
                           );
                         })}
@@ -666,6 +676,12 @@ export function useDataTable<TData, TValue>({
                   'last:px-3',
                   itemProps?.tableCell?.className
                 )}
+                style={{
+                  ...(itemProps?.tableCell?.style || {}),
+                  width: `${cell.column.getSize()}px`,
+                  minWidth: `${cell.column.getSize()}px`,
+                  maxWidth: `${cell.column.getSize()}px`,
+                }}
               >
                 {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
                 {isFirstCell && renderDraggableIcon && (
@@ -749,7 +765,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal'>Item Per page</p>
+          <p className='text-xs font-normal capitalize'>Items Per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'
