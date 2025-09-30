@@ -607,7 +607,7 @@ export function useDataTable<TData, TValue>({
                         key={row.id}
                         onClick={(event) => handleRowClick({ event, row })}
                         {...bodyRowProps(row)}
-                        className={clsx(bodyRowProps(row)?.className)}
+                        className={clsx( 'hover:!bg-surface-sec',bodyRowProps(row)?.className)}
                         data-state={row.getIsSelected() && 'selected'}
                         data-testid={'data-table-row-' + row.id}
                       >
@@ -765,7 +765,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal capitalize'>Items Per Page</p>
+          <p className='text-xs font-normal'>Items per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'
