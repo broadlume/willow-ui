@@ -31,12 +31,12 @@ const sliderVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bottom-0 h-0.5 bg-border-brand',
+        default: 'bottom-0 h-0.5 bg-border-brand/15 border-l-2',
         pills: 'bottom-1 top-1 rounded-full bg-surface-brand',
       },
       orientation: {
         horizontal: 'left-0',
-        vertical: 'top-0 w-full border-r-2',
+        vertical: 'top-0 w-full border-l-2 border-border-brand',
       },
     },
     // TODO: compound variant may make default pill variant effectively redundant
