@@ -11,11 +11,11 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className='relative w-full'>
+  <div className='relative w-full overflow-x-auto'>
     <table
       ref={ref}
       className={clsx('w-full caption-bottom text-sm', className)}
-      style={{ tableLayout: 'fixed', ...props.style }}
+      style={{ tableLayout: 'auto', minWidth: '100%', ...props.style }}
       {...props}
     />
   </div>
@@ -181,7 +181,7 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
-          'flex items-center gap-2 !p-0 font-semibold text-text-pri',
+          'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
             'cursor-grab': isDraggable && !isDragging,

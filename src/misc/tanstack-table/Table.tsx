@@ -519,6 +519,7 @@ export function useDataTable<TData, TValue>({
               'max-h-[65vh] min-h-[0px] overflow-y-auto':
                 itemProps?.tableWrapper?.enableStickyHeader,
             },
+            'overflow-x-auto',
             itemProps?.tableWrapper?.className
           )}
         >

@@ -264,3 +264,40 @@ const TanstackTableWithHeaderOverlayToast = () => {
 export const WithHeaderOverlayToast: Story = {
   render: (args) => <TanstackTableWithHeaderOverlayToast />,
 };
+
+// Story for DataTable with horizontal scrolling when content overflows
+const TanstackTableWithHorizontalScrolling = () => {
+  const { CustomDataTable } = useDataTable({
+    columns: columns,
+    data: payments,
+    tableParams: {
+      manualPagination: false,
+    },
+    enableRowSelection: true,
+    includeLoading: false,
+    initialPagination: { pageIndex: 0, pageSize: 10 },
+    pageSizeOptions: [5, 10, 20],
+    itemProps: {
+      tableWrapper: {
+        className: 'max-w-[200px]', // Constrain width to force horizontal scrolling
+      },
+    },
+  });
+
+  return (
+    <div className='max-w-[800px] mx-auto p-4'>
+      <h3 className='mb-4 text-lg font-semibold'>
+        Table with Horizontal Scrolling
+      </h3>
+      <p className='mb-4 text-sm text-gray-600'>
+        This table has many columns that exceed the container width,
+        demonstrating horizontal scrolling functionality.
+      </p>
+      <CustomDataTable />
+    </div>
+  );
+};
+
+export const WithHorizontalScrolling: Story = {
+  render: (args) => <TanstackTableWithHorizontalScrolling />,
+};
