@@ -147,14 +147,21 @@ const DraggableColumnHeader = <TData, TValue>({
     // disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
   });
 
+  console.log(
+    'header.column.id',
+    header.column.id,
+    header.column.getSize(),
+    header.column
+  );
+
   const style: React.CSSProperties = {
     opacity: isDragging ? 0.8 : 1,
     position: 'relative',
     transform: CSS.Translate.toString(transform),
     whiteSpace: 'nowrap',
-    width: `${header.column.getSize()}px`,
-    minWidth: `${header.column.getSize()}px`,
-    maxWidth: `${header.column.getSize()}px`,
+    width: `${header.column.columnDef.size}px`,
+    minWidth: `${header.column.columnDef.minSize}px`,
+    maxWidth: `${header.column.columnDef.maxSize}px`,
     transition,
     zIndex: isDragging ? 10 : 1,
   };
@@ -181,6 +188,7 @@ const DraggableColumnHeader = <TData, TValue>({
             'cursor-move': !isDragging,
           }
         )}
+        style={itemProps?.tableHead?.style}
       >
         {header.isPlaceholder
           ? null

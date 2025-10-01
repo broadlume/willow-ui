@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import HeaderOverlayToast from './HeaderOverlayToast';
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -79,6 +80,7 @@ export function useDataTable<TData, TValue>({
   enableSingleSelection = false,
   noRecordFoundMessage = 'There are no records to display',
   pageSizeOptions = [5, 10, 20, 50],
+  headerOverlayToast,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -556,27 +558,104 @@ export function useDataTable<TData, TValue>({
                         items={columnOrder}
                         strategy={horizontalListSortingStrategy}
                       >
-                        {headerGroup.headers.map((header) => {
-                          return (
-                            <DraggableColumnHeader
-                              key={header.id}
-                              header={header}
-                              isDraggable={draggableColumnIds.includes(
-                                header.column.id
-                              )}
-                              itemProps={{
-                                ...itemProps,
-                                tableHead: {
-                                  style: {
-                                    ...(itemProps?.tableHead?.style || {}),
+                        {headerGroup.headers.map((header, index) => {
+                          // Check if toast should be shown
+                          const showToast =
+                            headerOverlayToast &&
+                            enableRowSelection &&
+                            table.getSelectedRowModel().rows.length > 0;
+
+                          if (showToast) {
+                            if (index === 0) {
+                              // First column: Keep checkbox with same width as body
+                              return (
+                                <DraggableColumnHeader
+                                  key={header.id}
+                                  header={header}
+                                  isDraggable={false}
+                                  itemProps={{
+                                    ...itemProps,
+                                    tableHead: {
+                                      style: {
+                                        ...(itemProps?.tableHead?.style || {}),
+                                        width: `${header.column.columnDef.size}px`,
+                                        minWidth: `${header.column.columnDef.minSize}px`,
+                                        maxWidth: `${header.column.columnDef.maxSize}px`,
+                                      },
+                                    },
+                                  }}
+                                />
+                              );
+                            } else if (index === 1) {
+                              // Second column: Toast spans remaining columns
+                              return (
+                                <TableCell
+                                  key={header.id}
+                                  {...itemProps?.tableHead}
+                                  colSpan={headerGroup.headers.length - 1}
+                                  className={clsx(
+                                    'p-0',
+                                    itemProps?.tableHead?.className
+                                  )}
+                                  style={{
+                                    width:
+                                      headerGroup.headers
+                                        .slice(1)
+                                        .reduce(
+                                          (sum, h) => sum + h.getSize(),
+                                          0
+                                        ) + 'px',
+                                  }}
+                                >
+                                  <HeaderOverlayToast
+                                    table={table}
+                                    onBulkAction={
+                                      headerOverlayToast.onBulkAction
+                                    }
+                                    actionLabel={headerOverlayToast.actionLabel}
+                                    className={headerOverlayToast.className}
+                                  />
+                                </TableCell>
+                              );
+                            } else {
+                              // Remaining columns: Hidden but maintain structure
+                              return (
+                                <TableCell
+                                  key={header.id}
+                                  style={{
+                                    display: 'none',
                                     width: `${header.getSize()}px`,
+                                    padding: 0,
+                                    border: 'none',
+                                  }}
+                                />
+                              );
+                            }
+                          } else {
+                            // Normal mode: Render all headers normally
+                            return (
+                              <DraggableColumnHeader
+                                key={header.id}
+                                header={header}
+                                isDraggable={draggableColumnIds.includes(
+                                  header.column.id
+                                )}
+                                itemProps={{
+                                  ...itemProps,
+                                  tableHead: {
+                                    style: {
+                                      ...(itemProps?.tableHead?.style || {}),
+                                      width: `${header.column.columnDef.size}px`,
+                                      minWidth: `${header.column.columnDef.minSize}px`,
+                                      maxWidth: `${header.column.columnDef.maxSize}px`,
+                                    },
+                                    // @ts-expect-error test
+                                    colSpan: header.colSpan,
                                   },
-                                  // @ts-expect-error test
-                                  colSpan: header.colSpan,
-                                },
-                              }}
-                            />
-                          );
+                                }}
+                              />
+                            );
+                          }
                         })}
                       </SortableContext>
                     </TableRow>
@@ -709,7 +788,7 @@ export function useDataTable<TData, TValue>({
   const Pagination = ({ itemProps }) => {
     const { pageCount, state } = useMemo(
       () => ({ pageCount: table.getPageCount(), state: table.getState() }),
-      [table]
+      []
     );
     const paginationButtons = useMemo(() => {
       const totalPages = pageCount;
@@ -765,7 +844,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal capitalize'>Items Per Page</p>
+          <p className='text-xs font-normal capitalize'>Items per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'

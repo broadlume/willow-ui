@@ -118,9 +118,13 @@ const TanstackTableWithDynamicNoDataFoundMessage = () => {
     },
     enableRowSelection: true,
     noRecordFoundMessage: (
-      <div className="~text-center ~py-8">
-        <h3 className="~text-lg ~font-semibold ~text-gray-700">No Data Available</h3>
-        <p className="~text-sm ~text-gray-500 ~mt-2">Try adjusting your filters or check back later.</p>
+      <div className='~text-center ~py-8'>
+        <h3 className='~text-lg ~font-semibold ~text-gray-700'>
+          No Data Available
+        </h3>
+        <p className='~text-sm ~text-gray-500 ~mt-2'>
+          Try adjusting your filters or check back later.
+        </p>
       </div>
     ),
     includeLoading: false,
@@ -142,16 +146,23 @@ const TanstackTableWithDynamicRowStyle = () => {
     },
     enableRowSelection: true,
     itemProps: {
-       tableBodyRow: (row) => ({
+      tableBodyRow: (row) => ({
         className: clsx({
           '~bg-green-50 hover:~bg-green-100': row.original.status === 'success',
           '~bg-red-50 hover:~bg-red-100': row.original.status === 'failed',
-          '~bg-blue-50 hover:~bg-blue-100': row.original.status === 'processing',
-          '~bg-yellow-50 hover:~bg-yellow-100': row.original.status === 'pending',
-          '~bg-gray-50 hover:~bg-gray-100': !['success', 'failed', 'processing', 'pending'].includes(row.original.status)
-        })
-      })
-    }
+          '~bg-blue-50 hover:~bg-blue-100':
+            row.original.status === 'processing',
+          '~bg-yellow-50 hover:~bg-yellow-100':
+            row.original.status === 'pending',
+          '~bg-gray-50 hover:~bg-gray-100': ![
+            'success',
+            'failed',
+            'processing',
+            'pending',
+          ].includes(row.original.status),
+        }),
+      }),
+    },
   });
   return <CustomDataTable />;
 };
@@ -171,9 +182,9 @@ const TanstackTableWithGlobalDynamicRowStyle = () => {
     enableRowSelection: true,
     itemProps: {
       tableBodyRow: {
-        className: '~bg-blue-50 hover:~bg-blue-100'
-      }
-    }
+        className: '~bg-blue-50 hover:~bg-blue-100',
+      },
+    },
   });
   return <CustomDataTable />;
 };
@@ -194,8 +205,8 @@ const TanstackTableWithStickyHeader = () => {
     initialPagination: { pageIndex: 0, pageSize: 20 },
     itemProps: {
       tableWrapper: {
-        enableStickyHeader: true
-      }
+        enableStickyHeader: true,
+      },
     },
   });
   return <CustomDataTable />;
@@ -224,4 +235,32 @@ export const WithDynamicPageSizeOptions: Story = {
   render: (args) => <TanstackTableWithDynamicPageSizeOptions />,
 };
 
+// Story for DataTable with Header Overlay Toast - Now using the updated CustomDataTable
+const TanstackTableWithHeaderOverlayToast = () => {
+  const { CustomDataTable } = useDataTable({
+    columns: columns,
+    data: payments,
+    tableParams: {
+      manualPagination: false,
+    },
+    enableRowSelection: true,
+    includeLoading: false,
+    initialPagination: { pageIndex: 0, pageSize: 25 },
+    pageSizeOptions: [10, 25, 50, 100],
+    headerOverlayToast: {
+      onBulkAction: (selectedRows) => {
+        console.log('Header overlay bulk action on:', selectedRows);
+        alert(
+          `Processing ${selectedRows.length} selected items from header overlay toast!`
+        );
+      },
+      actionLabel: 'Delete Selected',
+      className: '',
+    },
+  });
 
+  return <CustomDataTable />;
+};
+export const WithHeaderOverlayToast: Story = {
+  render: (args) => <TanstackTableWithHeaderOverlayToast />,
+};

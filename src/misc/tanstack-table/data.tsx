@@ -23,6 +23,9 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: 'amount',
+    size: 40,
+    minSize: 40,
+    maxSize: 100,
     header: () => <div className='text-right'>Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));

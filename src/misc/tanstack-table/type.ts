@@ -59,6 +59,11 @@ export interface DataTableProps<TData, TValue> {
       { row: Row<TData> } & Parameters<typeof TableRow>[0]
     >
   ) => JSX.Element;
+  headerOverlayToast?: {
+    onBulkAction?: (selectedRows: TData[]) => void;
+    actionLabel?: string;
+    className?: string;
+  };
   onRowDrop?: (args: {
     location: DragLocationHistory;
     source: ElementDragPayload;
