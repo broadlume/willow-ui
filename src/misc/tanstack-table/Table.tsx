@@ -820,7 +820,7 @@ export function useDataTable<TData, TValue>({
           data-testid={'go-to-page-' + item}
           className={clsx(
             'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-text-pri shadow-none disabled:bg-transparent',
-            currentPage === item ? 'border border-[#CCCCCC]' : '',
+            currentPage === item ? 'border border-border-primary' : '',
             itemProps?.pagination?.page?.className
           )}
           variant={currentPage === item ? 'outline' : 'ghost'}
@@ -893,7 +893,7 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
@@ -908,7 +908,7 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}

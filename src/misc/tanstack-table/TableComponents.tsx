@@ -144,15 +144,7 @@ const DraggableColumnHeader = <TData, TValue>({
   } = useSortable({
     id: header.column.id,
     disabled: !isDraggable,
-    // disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
   });
-
-  console.log(
-    'header.column.id',
-    header.column.id,
-    header.column.getSize(),
-    header.column
-  );
 
   const style: React.CSSProperties = {
     opacity: isDragging ? 0.8 : 1,
@@ -173,7 +165,11 @@ const DraggableColumnHeader = <TData, TValue>({
       style={style}
       // colSpan={header.colSpan}
       {...itemProps?.tableHead}
-      className={clsx('py-3 text-text-pri', itemProps?.tableHead?.className)}
+      className={clsx(
+        'py-3 text-text-pri',
+
+        itemProps?.tableHead?.className
+      )}
     >
       <TableCell
         data-testid={'data-table-header-cell-' + header.column.id}
@@ -182,6 +178,7 @@ const DraggableColumnHeader = <TData, TValue>({
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
           'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
+          'last:justify-center',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
             'cursor-grab': isDraggable && !isDragging,
