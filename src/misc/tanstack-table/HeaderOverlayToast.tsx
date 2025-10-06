@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from '@tanstack/react-table';
 
 interface HeaderOverlayToastProps<TData = unknown> {
@@ -16,16 +16,48 @@ export function HeaderOverlayToast<TData>({
 }: HeaderOverlayToastProps<TData>) {
   const selectedRows = table.getSelectedRowModel().rows;
   const selectedCount = selectedRows.length;
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
-  if (selectedCount === 0) {
+  useEffect(() => {
+    if (selectedCount > 0) {
+      // Show toast: First render, then animate in
+      setShouldRender(true);
+      // Small delay to ensure DOM is rendered before animation
+      const timer = setTimeout(() => setIsVisible(true), 10);
+      return () => clearTimeout(timer);
+    } else {
+      // Hide toast: First animate out, then remove from DOM
+      setIsVisible(false);
+      // Wait for animation to complete before removing from DOM
+      const timer = setTimeout(() => setShouldRender(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedCount]);
+
+  if (!shouldRender) {
     return null;
   }
 
   const selectedData = selectedRows.map((row) => row.original);
 
   return (
-    <div className={`${className}`}>
-      <div className='flex items-center justify-between'>
+    <div
+      className={`
+        transform transition-all duration-200 ease-in-out
+        ${
+          isVisible
+            ? 'translate-y-0 opacity-100'
+            : '-translate-y-full opacity-0'
+        }
+        ${className}
+      `}
+      style={{
+        // Ensure smooth animation by setting initial state
+        willChange: 'transform, opacity',
+      }}
+    >
+      <div className='flex items-center justify-between p-3 bg-blue-50 border-b border-blue-200'>
         <div className='flex items-center space-x-2 text-blue-800'>
           <span className='font-medium text-sm'>
             {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected

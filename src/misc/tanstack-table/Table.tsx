@@ -8,7 +8,6 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import HeaderOverlayToast from './HeaderOverlayToast';
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -25,7 +24,13 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -42,6 +47,7 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
+  HeaderGroup,
   Table,
   TableBody,
   TableCell,
@@ -493,6 +499,8 @@ export function useDataTable<TData, TValue>({
     [itemProps?.tableBodyRow]
   );
 
+  const tableHederGroups = useMemo(() => table.getHeaderGroups(), [table]);
+
   /**
    * Render Data table Component
    */
@@ -545,121 +553,23 @@ export function useDataTable<TData, TValue>({
                     itemProps?.tableHeader?.className
                   )}
                 >
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow
-                      data-testid={'data-header-row-' + headerGroup.id}
-                      key={headerGroup.id}
-                      {...itemProps?.tableHeaderRow}
-                      className={clsx(
-                        'hover:!bg-transparent',
-                        itemProps?.tableHeaderRow?.className
-                      )}
-                    >
-                      <SortableContext
-                        items={columnOrder}
-                        strategy={horizontalListSortingStrategy}
-                      >
-                        {headerGroup.headers.map((header, index) => {
-                          // Check if toast should be shown
-                          const showToast =
-                            headerOverlayToast &&
-                            enableRowSelection &&
-                            table.getSelectedRowModel().rows.length > 0;
-
-                          if (showToast) {
-                            if (index === 0) {
-                              // First column: Keep checkbox with same width as body
-                              return (
-                                <DraggableColumnHeader
-                                  key={header.id}
-                                  header={header}
-                                  isDraggable={false}
-                                  itemProps={{
-                                    ...itemProps,
-                                    tableHead: {
-                                      style: {
-                                        ...(itemProps?.tableHead?.style || {}),
-                                        width: `${header.column.columnDef.size}px`,
-                                        minWidth: `${header.column.columnDef.minSize}px`,
-                                        maxWidth: `${header.column.columnDef.maxSize}px`,
-                                      },
-                                    },
-                                  }}
-                                />
-                              );
-                            } else if (index === 1) {
-                              // Second column: Toast spans remaining columns
-                              return (
-                                <TableCell
-                                  key={header.id}
-                                  {...itemProps?.tableHead}
-                                  colSpan={headerGroup.headers.length - 1}
-                                  className={clsx(
-                                    'p-0',
-                                    itemProps?.tableHead?.className
-                                  )}
-                                  style={{
-                                    width:
-                                      headerGroup.headers
-                                        .slice(1)
-                                        .reduce(
-                                          (sum, h) => sum + h.getSize(),
-                                          0
-                                        ) + 'px',
-                                  }}
-                                >
-                                  <HeaderOverlayToast
-                                    table={table}
-                                    onBulkAction={
-                                      headerOverlayToast.onBulkAction
-                                    }
-                                    actionLabel={headerOverlayToast.actionLabel}
-                                    className={headerOverlayToast.className}
-                                  />
-                                </TableCell>
-                              );
-                            } else {
-                              // Remaining columns: Hidden but maintain structure
-                              return (
-                                <TableCell
-                                  key={header.id}
-                                  style={{
-                                    display: 'none',
-                                    width: `${header.getSize()}px`,
-                                    padding: 0,
-                                    border: 'none',
-                                  }}
-                                />
-                              );
-                            }
-                          } else {
-                            // Normal mode: Render all headers normally
-                            return (
-                              <DraggableColumnHeader
-                                key={header.id}
-                                header={header}
-                                isDraggable={draggableColumnIds.includes(
-                                  header.column.id
-                                )}
-                                itemProps={{
-                                  ...itemProps,
-                                  tableHead: {
-                                    style: {
-                                      ...(itemProps?.tableHead?.style || {}),
-                                      width: `${header.column.columnDef.size}px`,
-                                      minWidth: `${header.column.columnDef.minSize}px`,
-                                      maxWidth: `${header.column.columnDef.maxSize}px`,
-                                    },
-                                    // @ts-expect-error test
-                                    colSpan: header.colSpan,
-                                  },
-                                }}
-                              />
-                            );
-                          }
-                        })}
-                      </SortableContext>
-                    </TableRow>
+                  {tableHederGroups.map((headerGroup) => (
+                    <HeaderGroup
+                      headerGroup={headerGroup}
+                      itemProps={itemProps}
+                      columnOrder={columnOrder}
+                      draggableColumnIds={draggableColumnIds}
+                      excludedRowIds={excludedRowIds}
+                      handleSelectAll={handleSelectAll}
+                      handleSelectionReset={handleSelectionReset}
+                      headerOverlayToast={headerOverlayToast}
+                      horizontalListSortingStrategy={
+                        horizontalListSortingStrategy
+                      }
+                      isSelectAllPages={isSelectAllPages}
+                      rowSelection={rowSelection}
+                      table={table}
+                    />
                   ))}
                 </TableHeader>
               ) : null}

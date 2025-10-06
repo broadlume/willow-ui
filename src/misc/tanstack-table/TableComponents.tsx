@@ -1,4 +1,4 @@
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header } from '@tanstack/react-table';
 
@@ -167,7 +167,7 @@ const DraggableColumnHeader = <TData, TValue>({
       {...itemProps?.tableHead}
       className={clsx(
         'py-3 text-text-pri',
-
+        'last:[>td]:justify-center',
         itemProps?.tableHead?.className
       )}
     >
@@ -178,7 +178,7 @@ const DraggableColumnHeader = <TData, TValue>({
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
           'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
-          'last:justify-center',
+          '',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
             'cursor-grab': isDraggable && !isDragging,
@@ -218,6 +218,223 @@ const DraggableColumnHeader = <TData, TValue>({
     </TableHead>
   );
 };
+
+export const HeaderGroup = React.memo(
+  ({
+    headerGroup,
+    itemProps,
+    columnOrder,
+    horizontalListSortingStrategy,
+    headerOverlayToast,
+    table,
+    rowSelection,
+    isSelectAllPages,
+    excludedRowIds,
+    handleSelectionReset,
+    handleSelectAll,
+    draggableColumnIds,
+  }: {
+    headerGroup: any;
+    itemProps: any;
+    columnOrder: string[];
+    horizontalListSortingStrategy: any;
+    headerOverlayToast: any;
+    table: any;
+    rowSelection: any;
+    isSelectAllPages: boolean;
+    excludedRowIds: any;
+    handleSelectionReset: any;
+    handleSelectAll: any;
+    draggableColumnIds: string[];
+  }) => {
+    return (
+      <TableRow
+        data-testid={'data-header-row-' + headerGroup.id}
+        key={headerGroup.id}
+        {...itemProps?.tableHeaderRow}
+        className={clsx(
+          'hover:!bg-transparent',
+          itemProps?.tableHeaderRow?.className
+        )}
+      >
+        <SortableContext
+          items={columnOrder}
+          strategy={horizontalListSortingStrategy}
+        >
+          <HeaderGroupRow
+            headerGroup={headerGroup}
+            headerOverlayToast={headerOverlayToast}
+            itemProps={itemProps}
+            table={table}
+            rowSelection={rowSelection}
+            isSelectAllPages={isSelectAllPages}
+            excludedRowIds={excludedRowIds}
+            handleSelectionReset={handleSelectionReset}
+            handleSelectAll={handleSelectAll}
+            draggableColumnIds={draggableColumnIds}
+          />
+        </SortableContext>
+      </TableRow>
+    );
+  }
+);
+
+export const HeaderGroupRow = React.memo(
+  ({
+    headerGroup,
+    headerOverlayToast,
+    itemProps,
+    table,
+    rowSelection,
+    isSelectAllPages,
+    excludedRowIds,
+    handleSelectionReset,
+    handleSelectAll,
+    draggableColumnIds,
+  }: {
+    headerGroup: any;
+    headerOverlayToast: any;
+    itemProps: any;
+    table: any;
+    rowSelection: any;
+    isSelectAllPages: boolean;
+    excludedRowIds: any;
+    handleSelectionReset: any;
+    handleSelectAll: any;
+    draggableColumnIds: string[];
+  }) => {
+    // Memoize toast detection to prevent recalculation on every render
+    const { toastIndex, toastContent } = React.useMemo(() => {
+      let toastIndex = -1;
+      let toastContent: React.ReactNode = null;
+
+      // Check each header to find the first one that returns a toast component
+      for (let i = 0; i < headerGroup.headers.length; i++) {
+        const content = headerOverlayToast?.({
+          header: headerGroup.headers[i],
+          index: i,
+          itemProps: itemProps,
+          table: table,
+          rowSelection: {
+            rowSelection,
+            isSelectAllPages,
+            excludedRowIds,
+            handleSelectionReset,
+            handleSelectAll,
+          },
+        });
+        if (content?.condition && toastIndex === -1) {
+          toastIndex = i;
+          toastContent = content.component;
+          break;
+        }
+      }
+
+      return { toastIndex, toastContent };
+    }, [
+      headerGroup.headers,
+      headerOverlayToast,
+      itemProps,
+      rowSelection,
+      isSelectAllPages,
+      excludedRowIds,
+      handleSelectionReset,
+      handleSelectAll,
+    ]);
+
+    // Memoize the rendered headers to prevent re-renders
+    const renderedHeaders = React.useMemo(() => {
+      return headerGroup.headers.map((header, index) => {
+        // Only enter toast mode if we have both a valid index AND actual content
+        if (toastIndex !== -1 && toastContent) {
+          // Toast mode: One of the columns has a toast
+          if (index === toastIndex) {
+            // This is the toast column: Render toast spanning all remaining columns
+            return (
+              <TableCell
+                key={header.id}
+                {...itemProps?.tableHead}
+                colSpan={headerGroup.headers.length - index}
+                className={clsx('!p-0', itemProps?.tableHead?.className)}
+                style={{
+                  width:
+                    headerGroup.headers
+                      .slice(index)
+                      .reduce((sum, h) => sum + h.getSize(), 0) + 'px',
+                }}
+              >
+                {toastContent}
+              </TableCell>
+            );
+          } else if (index > toastIndex) {
+            // Columns after toast: Hidden since toast spans across them
+            return (
+              <TableCell
+                key={header.id}
+                style={{
+                  display: 'none',
+                  width: `${header.getSize()}px`,
+                  padding: 0,
+                  border: 'none',
+                }}
+              />
+            );
+          } else {
+            // Columns before toast: Render normal headers
+            return (
+              <DraggableColumnHeader
+                key={header.id}
+                header={header}
+                isDraggable={draggableColumnIds.includes(header.column.id)}
+                itemProps={{
+                  ...itemProps,
+                  tableHead: {
+                    style: {
+                      ...(itemProps?.tableHead?.style || {}),
+                      width: `${header.column.columnDef.size}px`,
+                      minWidth: `${header.column.columnDef.minSize}px`,
+                      maxWidth: `${header.column.columnDef.maxSize}px`,
+                    },
+                    colSpan: header.colSpan,
+                  },
+                }}
+              />
+            );
+          }
+        } else {
+          // Normal mode: No toast, render all headers normally
+          return (
+            <DraggableColumnHeader
+              key={header.id}
+              header={header}
+              isDraggable={draggableColumnIds.includes(header.column.id)}
+              itemProps={{
+                ...itemProps,
+                tableHead: {
+                  style: {
+                    ...(itemProps?.tableHead?.style || {}),
+                    width: `${header.column.columnDef.size}px`,
+                    minWidth: `${header.column.columnDef.minSize}px`,
+                    maxWidth: `${header.column.columnDef.maxSize}px`,
+                  },
+                  colSpan: header.colSpan,
+                },
+              }}
+            />
+          );
+        }
+      });
+    }, [
+      headerGroup.headers,
+      toastIndex,
+      toastContent,
+      itemProps,
+      draggableColumnIds,
+    ]);
+
+    return renderedHeaders;
+  }
+);
 
 export {
   DraggableColumnHeader,

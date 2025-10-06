@@ -5,9 +5,11 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import {
   ColumnDef,
+  Header,
   PaginationState,
   Row,
   SortingState,
+  Table,
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
@@ -59,10 +61,21 @@ export interface DataTableProps<TData, TValue> {
       { row: Row<TData> } & Parameters<typeof TableRow>[0]
     >
   ) => JSX.Element;
-  headerOverlayToast?: {
-    onBulkAction?: (selectedRows: TData[]) => void;
-    actionLabel?: string;
-    className?: string;
+  headerOverlayToast?: (data: {
+    header: Header<TData, unknown>;
+    index: number;
+    itemProps?: DataTableProps<TData, unknown>['itemProps'];
+    table: Table<TData>;
+    rowSelection: {
+      rowSelection: Record<string, boolean>;
+      isSelectAllPages: boolean;
+      excludedRowIds: Record<string, boolean>;
+      handleSelectionReset: () => void;
+      handleSelectAll: () => void;
+    };
+  }) => {
+    condition?: boolean;
+    component?: React.JSX.Element;
   };
   onRowDrop?: (args: {
     location: DragLocationHistory;
