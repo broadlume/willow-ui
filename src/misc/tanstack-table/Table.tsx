@@ -8,6 +8,9 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+
+import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
+import { Loader } from '@components/Loader/Loader';
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -24,18 +27,14 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import React, {
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import clsx from 'clsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
   HiMiniChevronRight,
 } from 'react-icons/hi2';
+import { RiDraggable } from 'react-icons/ri';
 import {
   Button,
   Checkbox,
@@ -47,7 +46,6 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
-  HeaderGroup,
   Table,
   TableBody,
   TableCell,
@@ -55,15 +53,11 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
-import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
-import clsx from 'clsx';
 import {
   primaryButton,
   wasMultiSelectKeyUsed,
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
-import { Loader } from '@components/Loader/Loader';
-import { RiDraggable } from 'react-icons/ri';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -86,7 +80,6 @@ export function useDataTable<TData, TValue>({
   enableSingleSelection = false,
   noRecordFoundMessage = 'There are no records to display',
   pageSizeOptions = [5, 10, 20, 50],
-  headerOverlayToast,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -265,7 +258,7 @@ export function useDataTable<TData, TValue>({
         return (
           <Checkbox
             data-testid={'table-header-select-checkbox'}
-            checked={isChecked || isIndeterminate ? true : false}
+            checked={isIndeterminate ? 'indeterminate' : isChecked}
             data-state={
               isIndeterminate
                 ? 'indeterminate'
@@ -499,8 +492,6 @@ export function useDataTable<TData, TValue>({
     [itemProps?.tableBodyRow]
   );
 
-  const tableHederGroups = useMemo(() => table.getHeaderGroups(), [table]);
-
   /**
    * Render Data table Component
    */
@@ -553,23 +544,44 @@ export function useDataTable<TData, TValue>({
                     itemProps?.tableHeader?.className
                   )}
                 >
-                  {tableHederGroups.map((headerGroup) => (
-                    <HeaderGroup
-                      headerGroup={headerGroup}
-                      itemProps={itemProps}
-                      columnOrder={columnOrder}
-                      draggableColumnIds={draggableColumnIds}
-                      excludedRowIds={excludedRowIds}
-                      handleSelectAll={handleSelectAll}
-                      handleSelectionReset={handleSelectionReset}
-                      headerOverlayToast={headerOverlayToast}
-                      horizontalListSortingStrategy={
-                        horizontalListSortingStrategy
-                      }
-                      isSelectAllPages={isSelectAllPages}
-                      rowSelection={rowSelection}
-                      table={table}
-                    />
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow
+                      data-testid={'data-header-row-' + headerGroup.id}
+                      key={headerGroup.id}
+                      {...itemProps?.tableHeaderRow}
+                      className={clsx(
+                        'hover:!bg-transparent',
+                        itemProps?.tableHeaderRow?.className
+                      )}
+                    >
+                      <SortableContext
+                        items={columnOrder}
+                        strategy={horizontalListSortingStrategy}
+                      >
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <DraggableColumnHeader
+                              key={header.id}
+                              header={header}
+                              isDraggable={draggableColumnIds.includes(
+                                header.column.id
+                              )}
+                              itemProps={{
+                                ...itemProps,
+                                tableHead: {
+                                  style: {
+                                    ...(itemProps?.tableHead?.style || {}),
+                                    width: `${header.getSize()}px`,
+                                  },
+                                  // @ts-expect-error test
+                                  colSpan: header.colSpan,
+                                },
+                              }}
+                            />
+                          );
+                        })}
+                      </SortableContext>
+                    </TableRow>
                   ))}
                 </TableHeader>
               ) : null}
