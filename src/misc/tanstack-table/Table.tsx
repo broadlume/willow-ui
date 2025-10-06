@@ -8,6 +8,9 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+
+import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
+import { Loader } from '@components/Loader/Loader';
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -24,12 +27,14 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import clsx from 'clsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   HiChevronDown,
   HiMiniChevronLeft,
   HiMiniChevronRight,
 } from 'react-icons/hi2';
+import { RiDraggable } from 'react-icons/ri';
 import {
   Button,
   Checkbox,
@@ -48,15 +53,11 @@ import {
   TableRow,
 } from './TableComponents';
 import { DataTableProps } from './type';
-import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
-import clsx from 'clsx';
 import {
   primaryButton,
   wasMultiSelectKeyUsed,
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
-import { Loader } from '@components/Loader/Loader';
-import { RiDraggable } from 'react-icons/ri';
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -257,7 +258,7 @@ export function useDataTable<TData, TValue>({
         return (
           <Checkbox
             data-testid={'table-header-select-checkbox'}
-            checked={isChecked || isIndeterminate ? true : false}
+            checked={isIndeterminate ? 'indeterminate' : isChecked}
             data-state={
               isIndeterminate
                 ? 'indeterminate'
@@ -517,6 +518,7 @@ export function useDataTable<TData, TValue>({
               'max-h-[65vh] min-h-[0px] overflow-y-auto':
                 itemProps?.tableWrapper?.enableStickyHeader,
             },
+            'overflow-x-auto',
             itemProps?.tableWrapper?.className
           )}
         >
@@ -709,7 +711,7 @@ export function useDataTable<TData, TValue>({
   const Pagination = ({ itemProps }) => {
     const { pageCount, state } = useMemo(
       () => ({ pageCount: table.getPageCount(), state: table.getState() }),
-      [table]
+      []
     );
     const paginationButtons = useMemo(() => {
       const totalPages = pageCount;
@@ -740,7 +742,7 @@ export function useDataTable<TData, TValue>({
           data-testid={'go-to-page-' + item}
           className={clsx(
             'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-text-pri shadow-none disabled:bg-transparent',
-            currentPage === item ? 'border border-[#CCCCCC]' : '',
+            currentPage === item ? 'border border-border-primary' : '',
             itemProps?.pagination?.page?.className
           )}
           variant={currentPage === item ? 'outline' : 'ghost'}
@@ -765,7 +767,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal capitalize'>Items Per Page</p>
+          <p className='text-xs font-normal capitalize'>Items per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'
@@ -813,7 +815,7 @@ export function useDataTable<TData, TValue>({
             data-testid='go-to-previous-page'
             disabled={!table.getCanPreviousPage()}
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.leftChevron?.className
             )}
           >
@@ -828,7 +830,7 @@ export function useDataTable<TData, TValue>({
             onClick={table.nextPage}
             data-testid='go-to-next-page'
             className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-[#1A6CFF] p-2 font-normal text-white shadow-none hover:bg-[#1A6CFF] hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
+              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
               itemProps?.pagination?.rightChevron?.className
             )}
             disabled={!table.getCanNextPage()}

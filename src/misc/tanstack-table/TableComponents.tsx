@@ -1,4 +1,4 @@
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header } from '@tanstack/react-table';
 
@@ -11,11 +11,11 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className='relative w-full'>
+  <div className='relative w-full overflow-x-auto'>
     <table
       ref={ref}
       className={clsx('w-full caption-bottom text-sm', className)}
-      style={{ tableLayout: 'fixed', ...props.style }}
+      style={{ tableLayout: 'auto', minWidth: '100%', ...props.style }}
       {...props}
     />
   </div>
@@ -144,7 +144,6 @@ const DraggableColumnHeader = <TData, TValue>({
   } = useSortable({
     id: header.column.id,
     disabled: !isDraggable,
-    // disabled: ['select', 'action', 'showHideCol'].includes(header.column.id),
   });
 
   const style: React.CSSProperties = {
@@ -152,9 +151,9 @@ const DraggableColumnHeader = <TData, TValue>({
     position: 'relative',
     transform: CSS.Translate.toString(transform),
     whiteSpace: 'nowrap',
-    width: `${header.column.getSize()}px`,
-    minWidth: `${header.column.getSize()}px`,
-    maxWidth: `${header.column.getSize()}px`,
+    width: `${header.column.columnDef.size}px`,
+    minWidth: `${header.column.columnDef.minSize}px`,
+    maxWidth: `${header.column.columnDef.maxSize}px`,
     transition,
     zIndex: isDragging ? 10 : 1,
   };
@@ -166,7 +165,11 @@ const DraggableColumnHeader = <TData, TValue>({
       style={style}
       // colSpan={header.colSpan}
       {...itemProps?.tableHead}
-      className={clsx('py-3 text-text-pri', itemProps?.tableHead?.className)}
+      className={clsx(
+        'py-3 text-text-pri',
+        'last:[>td]:justify-center',
+        itemProps?.tableHead?.className
+      )}
     >
       <TableCell
         data-testid={'data-table-header-cell-' + header.column.id}
@@ -174,13 +177,15 @@ const DraggableColumnHeader = <TData, TValue>({
         {...(isDraggable ? listeners : {})}
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
-          'flex items-center gap-2 !p-0 font-semibold text-text-pri',
+          'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
+          '',
           {
             'cursor-pointer select-none': header.column.getCanSort(),
             'cursor-grab': isDraggable && !isDragging,
             'cursor-move': !isDragging,
           }
         )}
+        style={itemProps?.tableHead?.style}
       >
         {header.isPlaceholder
           ? null

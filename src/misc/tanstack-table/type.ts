@@ -5,9 +5,11 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
 import {
   ColumnDef,
+  Header,
   PaginationState,
   Row,
   SortingState,
+  Table,
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
