@@ -3,7 +3,7 @@ import { useDataTable } from './Table';
 import { columns, Payment, payments } from './data';
 import { useState } from 'react';
 import clsx from 'clsx';
-import HeaderOverlayToast from './HeaderOverlayToast';
+// import HeaderOverlayToast from './HeaderOverlayToast';
 
 const TanStackTable = () => {
   const { CustomDataTable, table } = useDataTable({
@@ -329,601 +329,601 @@ export const WithDynamicPageSizeOptions: Story = {
 };
 
 // Story for DataTable with Header Overlay Toast at index 0 (includes checkbox column)
-const TanstackTableWithHeaderOverlayToast = () => {
-  const { CustomDataTable, table, rowSelection } = useDataTable({
-    columns: columns,
-    data: payments,
-    tableParams: {
-      manualPagination: false,
-    },
-    enableRowSelection: true,
-    includeLoading: false,
-    initialPagination: { pageIndex: 0, pageSize: 25 },
-    pageSizeOptions: [10, 25, 50, 100],
-    // Toast at index 0 (spans all columns including checkbox column)
-    headerOverlayToast: ({ header, index, itemProps }) => {
-      const selectedRows = table.getSelectedRowModel().rows;
-      const selectedCount = selectedRows.length;
+// const TanstackTableWithHeaderOverlayToast = () => {
+//   const { CustomDataTable, table, rowSelection } = useDataTable({
+//     columns: columns,
+//     data: payments,
+//     tableParams: {
+//       manualPagination: false,
+//     },
+//     enableRowSelection: true,
+//     includeLoading: false,
+//     initialPagination: { pageIndex: 0, pageSize: 25 },
+//     pageSizeOptions: [10, 25, 50, 100],
+//     // Toast at index 0 (spans all columns including checkbox column)
+//     headerOverlayToast: ({ header, index, itemProps }) => {
+//       const selectedRows = table.getSelectedRowModel().rows;
+//       const selectedCount = selectedRows.length;
 
-      // Only show toast at index 0 when items are selected
-      if (index !== 0 || selectedCount === 0) {
-        return null;
-      }
+//       // Only show toast at index 0 when items are selected
+//       if (index !== 0 || selectedCount === 0) {
+//         return null;
+//       }
 
-      // Toast spans all columns from index 0 - with animation and itemProps access
-      return (
-        <div
-          className={`
-            transform transition-all duration-200 ease-in-out
-            translate-y-0 opacity-100
-            flex items-center justify-between p-3 bg-blue-50 border-b border-blue-200 w-full
-            ${itemProps?.tableHead?.className || ''}
-          `}
-        >
-          <div className='flex items-center gap-3'>
-            {/* Include checkbox since we're starting from index 0 */}
-            <input
-              type='checkbox'
-              checked={true}
-              onChange={() => table.resetRowSelection()}
-              className='h-4 w-4'
-            />
-            <span className='text-blue-800 font-medium'>
-              {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
-              (Toast at index 0 with animation)
-            </span>
-          </div>
-          <div className='flex gap-2'>
-            <button
-              onClick={() => {
-                const selectedData = selectedRows.map((row) => row.original);
-                console.log('Custom bulk action on:', selectedData);
-                alert(`Processing ${selectedCount} selected items!`);
-              }}
-              className='bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700'
-            >
-              Custom Action
-            </button>
-            <button
-              onClick={() => {
-                table.resetRowSelection();
-                rowSelection.handleSelectionReset();
-              }}
-              className='text-blue-600 hover:text-blue-800 px-2 py-1 rounded'
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-      );
-    },
-  });
+//       // Toast spans all columns from index 0 - with animation and itemProps access
+//       return (
+//         <div
+//           className={`
+//             transform transition-all duration-200 ease-in-out
+//             translate-y-0 opacity-100
+//             flex items-center justify-between p-3 bg-blue-50 border-b border-blue-200 w-full
+//             ${itemProps?.tableHead?.className || ''}
+//           `}
+//         >
+//           <div className='flex items-center gap-3'>
+//             {/* Include checkbox since we're starting from index 0 */}
+//             <input
+//               type='checkbox'
+//               checked={true}
+//               onChange={() => table.resetRowSelection()}
+//               className='h-4 w-4'
+//             />
+//             <span className='text-blue-800 font-medium'>
+//               {selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
+//               (Toast at index 0 with animation)
+//             </span>
+//           </div>
+//           <div className='flex gap-2'>
+//             <button
+//               onClick={() => {
+//                 const selectedData = selectedRows.map((row) => row.original);
+//                 console.log('Custom bulk action on:', selectedData);
+//                 alert(`Processing ${selectedCount} selected items!`);
+//               }}
+//               className='bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700'
+//             >
+//               Custom Action
+//             </button>
+//             <button
+//               onClick={() => {
+//                 table.resetRowSelection();
+//                 rowSelection.handleSelectionReset();
+//               }}
+//               className='text-blue-600 hover:text-blue-800 px-2 py-1 rounded'
+//             >
+//               Clear
+//             </button>
+//           </div>
+//         </div>
+//       );
+//     },
+//   });
 
-  return <CustomDataTable />;
-};
-export const WithHeaderOverlayToast: Story = {
-  render: (args) => <TanstackTableWithHeaderOverlayToast />,
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Toast at Index 0 (Full Width)
+//   return <CustomDataTable />;
+// };
+// export const WithHeaderOverlayToast: Story = {
+//   render: (args) => <TanstackTableWithHeaderOverlayToast />,
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Toast at Index 0 (Full Width)
 
-This example demonstrates a toast that appears at index 0, spanning the entire table width including the checkbox area.
+// This example demonstrates a toast that appears at index 0, spanning the entire table width including the checkbox area.
 
-**Key Features:**
-- Toast replaces all header columns when items are selected
-- User manages checkbox within the toast component
-- Full control over the entire header area
-- Smooth slide-in animation with 200ms duration
+// **Key Features:**
+// - Toast replaces all header columns when items are selected
+// - User manages checkbox within the toast component
+// - Full control over the entire header area
+// - Smooth slide-in animation with 200ms duration
 
-**Use Cases:**
-- Complete header replacement for bulk operations
-- Custom selection UI with integrated actions
-- Full-width notifications or status messages
+// **Use Cases:**
+// - Complete header replacement for bulk operations
+// - Custom selection UI with integrated actions
+// - Full-width notifications or status messages
 
-**Code Pattern:**
-\`\`\`typescript
-headerOverlayToast: (header, index, itemProps) => {
-  if (index !== 0 || selectedCount === 0) return null;
-  
-  return (
-    <div className="transform transition-all duration-200 ease-in-out translate-y-0 opacity-100">
-      {/* Include checkbox + content */}
-      <input type="checkbox" />
-      <span>Selection info</span>
-      <button>Actions</button>
-    </div>
-  );
-}
-\`\`\`
+// **Code Pattern:**
+// \`\`\`typescript
+// headerOverlayToast: (header, index, itemProps) => {
+//   if (index !== 0 || selectedCount === 0) return null;
 
-**Best Practices:**
-- Include checkbox in your component when using index 0
-- Use \`itemProps?.tableHead?.className\` for consistent styling
-- Add animation classes for smooth transitions
-        `,
-      },
-    },
-  },
-};
+//   return (
+//     <div className="transform transition-all duration-200 ease-in-out translate-y-0 opacity-100">
+//       {/* Include checkbox + content */}
+//       <input type="checkbox" />
+//       <span>Selection info</span>
+//       <button>Actions</button>
+//     </div>
+//   );
+// }
+// \`\`\`
 
-// Story showing toast at index 1 (preserves checkbox column, no checkbox in toast)
-const TanstackTableWithAdvancedHeaderToast = () => {
-  const { CustomDataTable, table } = useDataTable({
-    columns: columns,
-    data: payments,
-    tableParams: {
-      manualPagination: false,
-    },
-    enableRowSelection: true,
-    includeLoading: false,
-    initialPagination: { pageIndex: 0, pageSize: 10 },
-    headerOverlayToast: ({ header, index, itemProps }) => {
-      const selectedRows = table.getSelectedRowModel().rows;
+// **Best Practices:**
+// - Include checkbox in your component when using index 0
+// - Use \`itemProps?.tableHead?.className\` for consistent styling
+// - Add animation classes for smooth transitions
+//         `,
+//       },
+//     },
+//   },
+// };
 
-      // Only show toast at index 1 when items are selected
-      if (index !== 1 || selectedRows.length === 0) return null;
+// // Story showing toast at index 1 (preserves checkbox column, no checkbox in toast)
+// const TanstackTableWithAdvancedHeaderToast = () => {
+//   const { CustomDataTable, table } = useDataTable({
+//     columns: columns,
+//     data: payments,
+//     tableParams: {
+//       manualPagination: false,
+//     },
+//     enableRowSelection: true,
+//     includeLoading: false,
+//     initialPagination: { pageIndex: 0, pageSize: 10 },
+//     headerOverlayToast: ({ header, index, itemProps }) => {
+//       const selectedRows = table.getSelectedRowModel().rows;
 
-      const isMultipleSelected = selectedRows.length > 1;
+//       // Only show toast at index 1 when items are selected
+//       if (index !== 1 || selectedRows.length === 0) return null;
 
-      // Toast at index 1 with slide animation and itemProps access
-      return (
-        <div
-          className={`
-          transform transition-all duration-300 ease-in-out
-          translate-y-0 opacity-100
-          flex items-center justify-between p-3 w-full border-b
-          ${
-            isMultipleSelected
-              ? 'bg-red-50 border-red-200'
-              : 'bg-yellow-50 border-yellow-200'
-          }
-          ${itemProps?.tableHead?.className || ''}
-        `}
-        >
-          <div className='flex items-center gap-2'>
-            <span
-              className={`font-semibold ${
-                isMultipleSelected ? 'text-red-800' : 'text-yellow-800'
-              }`}
-            >
-              {selectedRows.length} payment
-              {selectedRows.length !== 1 ? 's' : ''} selected (Toast at index 1
-              with animation)
-            </span>
-            {isMultipleSelected && (
-              <span className='text-red-600 text-xs'>
-                (Bulk operations available)
-              </span>
-            )}
-          </div>
-          <div className='flex gap-2'>
-            <button
-              onClick={() => {
-                console.log('Header info:', header.id, 'Index:', index);
-                alert(
-                  `Custom action from header ${header.id} at index ${index}`
-                );
-              }}
-              className={`px-3 py-1 rounded text-sm text-white ${
-                isMultipleSelected
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : 'bg-yellow-600 hover:bg-yellow-700'
-              }`}
-            >
-              {isMultipleSelected ? 'Bulk Delete' : 'Process'}
-            </button>
-            <button
-              onClick={() => table.resetRowSelection()}
-              className='text-gray-600 hover:text-gray-800 px-2 py-1 rounded border'
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      );
-    },
-  });
+//       const isMultipleSelected = selectedRows.length > 1;
 
-  return <CustomDataTable />;
-};
+//       // Toast at index 1 with slide animation and itemProps access
+//       return (
+//         <div
+//           className={`
+//           transform transition-all duration-300 ease-in-out
+//           translate-y-0 opacity-100
+//           flex items-center justify-between p-3 w-full border-b
+//           ${
+//             isMultipleSelected
+//               ? 'bg-red-50 border-red-200'
+//               : 'bg-yellow-50 border-yellow-200'
+//           }
+//           ${itemProps?.tableHead?.className || ''}
+//         `}
+//         >
+//           <div className='flex items-center gap-2'>
+//             <span
+//               className={`font-semibold ${
+//                 isMultipleSelected ? 'text-red-800' : 'text-yellow-800'
+//               }`}
+//             >
+//               {selectedRows.length} payment
+//               {selectedRows.length !== 1 ? 's' : ''} selected (Toast at index 1
+//               with animation)
+//             </span>
+//             {isMultipleSelected && (
+//               <span className='text-red-600 text-xs'>
+//                 (Bulk operations available)
+//               </span>
+//             )}
+//           </div>
+//           <div className='flex gap-2'>
+//             <button
+//               onClick={() => {
+//                 console.log('Header info:', header.id, 'Index:', index);
+//                 alert(
+//                   `Custom action from header ${header.id} at index ${index}`
+//                 );
+//               }}
+//               className={`px-3 py-1 rounded text-sm text-white ${
+//                 isMultipleSelected
+//                   ? 'bg-red-600 hover:bg-red-700'
+//                   : 'bg-yellow-600 hover:bg-yellow-700'
+//               }`}
+//             >
+//               {isMultipleSelected ? 'Bulk Delete' : 'Process'}
+//             </button>
+//             <button
+//               onClick={() => table.resetRowSelection()}
+//               className='text-gray-600 hover:text-gray-800 px-2 py-1 rounded border'
+//             >
+//               ✕
+//             </button>
+//           </div>
+//         </div>
+//       );
+//     },
+//   });
 
-export const WithAdvancedHeaderToast: Story = {
-  render: (args) => <TanstackTableWithAdvancedHeaderToast />,
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Toast at Index 1 (Preserves Checkbox)
+//   return <CustomDataTable />;
+// };
 
-This example shows a toast at index 1, which preserves the normal checkbox column while displaying the toast in the remaining columns.
+// export const WithAdvancedHeaderToast: Story = {
+//   render: (args) => <TanstackTableWithAdvancedHeaderToast />,
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Toast at Index 1 (Preserves Checkbox)
 
-**Key Features:**
-- Normal checkbox column remains functional
-- Toast spans from index 1 to the end of the table
-- System handles row selection automatically
-- No need to manage checkbox in toast component
-- Conditional styling based on selection count
+// This example shows a toast at index 1, which preserves the normal checkbox column while displaying the toast in the remaining columns.
 
-**Use Cases:**
-- Bulk actions while keeping standard selection UI
-- Multi-state toasts (different colors/actions based on selection)
-- Preserving familiar checkbox behavior
+// **Key Features:**
+// - Normal checkbox column remains functional
+// - Toast spans from index 1 to the end of the table
+// - System handles row selection automatically
+// - No need to manage checkbox in toast component
+// - Conditional styling based on selection count
 
-**Code Pattern:**
-\`\`\`typescript
-headerOverlayToast: (header, index, itemProps) => {
-  if (index !== 1 || selectedRows.length === 0) return null;
-  
-  const isMultiple = selectedRows.length > 1;
-  
-  return (
-    <div className={\`transform transition-all duration-300 ease-in-out 
-      \${isMultiple ? 'bg-red-50' : 'bg-yellow-50'}\`}>
-      {/* No checkbox needed - system handles it */}
-      <span>Selection status</span>
-      <button>Bulk action</button>
-    </div>
-  );
-}
-\`\`\`
+// **Use Cases:**
+// - Bulk actions while keeping standard selection UI
+// - Multi-state toasts (different colors/actions based on selection)
+// - Preserving familiar checkbox behavior
 
-**Advantages:**
-- Familiar checkbox behavior for users
-- Cleaner toast component (no checkbox logic)
-- System handles selection state automatically
-- Easy to implement conditional styling
-        `,
-      },
-    },
-  },
-};
+// **Code Pattern:**
+// \`\`\`typescript
+// headerOverlayToast: (header, index, itemProps) => {
+//   if (index !== 1 || selectedRows.length === 0) return null;
 
-// Story showing toast at index 2 (preserves checkbox and first data column)
-const TanstackTableWithPermanentToast = () => {
-  const { CustomDataTable, table } = useDataTable({
-    columns: columns,
-    data: payments,
-    tableParams: {
-      manualPagination: false,
-    },
-    enableRowSelection: true,
-    includeLoading: false,
-    initialPagination: { pageIndex: 0, pageSize: 10 },
-    headerOverlayToast: ({ header, index }) => {
-      const selectedRows = table.getSelectedRowModel().rows;
-      const selectedCount = selectedRows.length;
+//   const isMultiple = selectedRows.length > 1;
 
-      // Only show toast at index 2 (preserves checkbox and first data column)
-      if (index !== 2) return null;
+//   return (
+//     <div className={\`transform transition-all duration-300 ease-in-out
+//       \${isMultiple ? 'bg-red-50' : 'bg-yellow-50'}\`}>
+//       {/* No checkbox needed - system handles it */}
+//       <span>Selection status</span>
+//       <button>Bulk action</button>
+//     </div>
+//   );
+// }
+// \`\`\`
 
-      // Always show toast at index 2 (spans remaining columns)
-      return (
-        <div className='flex items-center justify-between p-3 bg-green-50 border-b border-green-200 w-full'>
-          <div className='flex items-center gap-3'>
-            <span className='text-green-800 font-medium'>
-              {selectedCount > 0
-                ? `${selectedCount} item${
-                    selectedCount !== 1 ? 's' : ''
-                  } selected (Toast at index 2)`
-                : 'Select items to perform actions (Toast at index 2)'}
-            </span>
-          </div>
-          <div className='flex gap-2'>
-            <button
-              onClick={() => table.toggleAllRowsSelected()}
-              className='bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700'
-            >
-              Select All
-            </button>
-            {selectedCount > 0 && (
-              <button
-                onClick={() => table.resetRowSelection()}
-                className='text-green-600 hover:text-green-800 px-2 py-1 rounded border border-green-300'
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    },
-  });
+// **Advantages:**
+// - Familiar checkbox behavior for users
+// - Cleaner toast component (no checkbox logic)
+// - System handles selection state automatically
+// - Easy to implement conditional styling
+//         `,
+//       },
+//     },
+//   },
+// };
 
-  return <CustomDataTable />;
-};
+// // Story showing toast at index 2 (preserves checkbox and first data column)
+// const TanstackTableWithPermanentToast = () => {
+//   const { CustomDataTable, table } = useDataTable({
+//     columns: columns,
+//     data: payments,
+//     tableParams: {
+//       manualPagination: false,
+//     },
+//     enableRowSelection: true,
+//     includeLoading: false,
+//     initialPagination: { pageIndex: 0, pageSize: 10 },
+//     headerOverlayToast: ({ header, index }) => {
+//       const selectedRows = table.getSelectedRowModel().rows;
+//       const selectedCount = selectedRows.length;
 
-export const WithPermanentToast: Story = {
-  render: (args) => <TanstackTableWithPermanentToast />,
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Toast at Index 2 (Preserves Multiple Columns)
+//       // Only show toast at index 2 (preserves checkbox and first data column)
+//       if (index !== 2) return null;
 
-This example demonstrates a toast at index 2, preserving both the checkbox column and the first data column while showing the toast in remaining columns.
+//       // Always show toast at index 2 (spans remaining columns)
+//       return (
+//         <div className='flex items-center justify-between p-3 bg-green-50 border-b border-green-200 w-full'>
+//           <div className='flex items-center gap-3'>
+//             <span className='text-green-800 font-medium'>
+//               {selectedCount > 0
+//                 ? `${selectedCount} item${
+//                     selectedCount !== 1 ? 's' : ''
+//                   } selected (Toast at index 2)`
+//                 : 'Select items to perform actions (Toast at index 2)'}
+//             </span>
+//           </div>
+//           <div className='flex gap-2'>
+//             <button
+//               onClick={() => table.toggleAllRowsSelected()}
+//               className='bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700'
+//             >
+//               Select All
+//             </button>
+//             {selectedCount > 0 && (
+//               <button
+//                 onClick={() => table.resetRowSelection()}
+//                 className='text-green-600 hover:text-green-800 px-2 py-1 rounded border border-green-300'
+//               >
+//                 Clear
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       );
+//     },
+//   });
 
-**Key Features:**
-- Checkbox column + first data column remain visible
-- Toast spans from index 2 onwards
-- Always visible (not dependent on selection)
-- Useful for persistent actions or status
+//   return <CustomDataTable />;
+// };
 
-**Use Cases:**
-- Contextual actions with column visibility
-- Persistent action bars or status indicators
-- Progressive disclosure of functionality
-- Mixed content (data + actions)
+// export const WithPermanentToast: Story = {
+//   render: (args) => <TanstackTableWithPermanentToast />,
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Toast at Index 2 (Preserves Multiple Columns)
 
-**Code Pattern:**
-\`\`\`typescript
-headerOverlayToast: (header, index) => {
-  if (index !== 2) return null; // Only show at index 2
-  
-  // Always show toast (or add conditions as needed)
-  return (
-    <div className="flex items-center justify-between p-3 bg-green-50">
-      <span>Status or helper text</span>
-      <button>Persistent action</button>
-    </div>
-  );
-}
-\`\`\`
+// This example demonstrates a toast at index 2, preserving both the checkbox column and the first data column while showing the toast in remaining columns.
 
-**Benefits:**
-- Maintains data context (first column visible)
-- Provides persistent functionality
-- Balances content and actions
-- Flexible positioning strategy
-        `,
-      },
-    },
-  },
-};
+// **Key Features:**
+// - Checkbox column + first data column remain visible
+// - Toast spans from index 2 onwards
+// - Always visible (not dependent on selection)
+// - Useful for persistent actions or status
 
-// Story showing multiple index conditions (only first match will render)
-const TanstackTableWithConditionalPositioning = () => {
-  const { CustomDataTable, table } = useDataTable({
-    columns: columns,
-    data: payments,
-    tableParams: {
-      manualPagination: false,
-    },
-    enableRowSelection: true,
-    includeLoading: false,
-    initialPagination: { pageIndex: 0, pageSize: 10 },
-    headerOverlayToast: ({ header, index }) => {
-      const selectedRows = table.getSelectedRowModel().rows;
-      const selectedCount = selectedRows.length;
+// **Use Cases:**
+// - Contextual actions with column visibility
+// - Persistent action bars or status indicators
+// - Progressive disclosure of functionality
+// - Mixed content (data + actions)
 
-      // Complex conditional logic - different positions based on selection count
-      if (selectedCount >= 5 && index === 0) {
-        // When 5+ selected: Toast at index 0 (spans all, includes checkbox area)
-        return (
-          <div className='flex items-center justify-between p-3 bg-purple-50 border-b border-purple-200 w-full'>
-            <span className='text-purple-800 font-medium'>
-              🚨 {selectedCount} items selected - Bulk mode active (Toast at
-              index 0)
-            </span>
-            <button
-              onClick={() => alert('Bulk processing all selected items!')}
-              className='bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700'
-            >
-              Bulk Process All
-            </button>
-          </div>
-        );
-      } else if (selectedCount >= 2 && selectedCount < 5 && index === 1) {
-        // When 2-4 selected: Toast at index 1 (preserves checkbox column)
-        return (
-          <div className='flex items-center justify-between p-3 bg-orange-50 border-b border-orange-200 w-full'>
-            <span className='text-orange-800 font-medium'>
-              {selectedCount} items selected - Multi-select mode (Toast at index
-              1)
-            </span>
-            <button
-              onClick={() => table.resetRowSelection()}
-              className='bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700'
-            >
-              Clear Selection
-            </button>
-          </div>
-        );
-      } else if (selectedCount === 1 && index === 2) {
-        // When 1 selected: Toast at index 2 (preserves checkbox + first data column)
-        return (
-          <div className='flex items-center justify-between p-3 bg-blue-50 border-b border-blue-200 w-full'>
-            <span className='text-blue-800 font-medium'>
-              Single item selected (Toast at index 2)
-            </span>
-            <button
-              onClick={() => alert('Processing single item!')}
-              className='bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700'
-            >
-              Process Item
-            </button>
-          </div>
-        );
-      }
+// **Code Pattern:**
+// \`\`\`typescript
+// headerOverlayToast: (header, index) => {
+//   if (index !== 2) return null; // Only show at index 2
 
-      // No conditions met: Show normal headers
-      return null;
-    },
-  });
+//   // Always show toast (or add conditions as needed)
+//   return (
+//     <div className="flex items-center justify-between p-3 bg-green-50">
+//       <span>Status or helper text</span>
+//       <button>Persistent action</button>
+//     </div>
+//   );
+// }
+// \`\`\`
 
-  return <CustomDataTable />;
-};
+// **Benefits:**
+// - Maintains data context (first column visible)
+// - Provides persistent functionality
+// - Balances content and actions
+// - Flexible positioning strategy
+//         `,
+//       },
+//     },
+//   },
+// };
 
-export const WithConditionalPositioning: Story = {
-  render: (args) => <TanstackTableWithConditionalPositioning />,
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Advanced Conditional Positioning
+// // Story showing multiple index conditions (only first match will render)
+// const TanstackTableWithConditionalPositioning = () => {
+//   const { CustomDataTable, table } = useDataTable({
+//     columns: columns,
+//     data: payments,
+//     tableParams: {
+//       manualPagination: false,
+//     },
+//     enableRowSelection: true,
+//     includeLoading: false,
+//     initialPagination: { pageIndex: 0, pageSize: 10 },
+//     headerOverlayToast: ({ header, index }) => {
+//       const selectedRows = table.getSelectedRowModel().rows;
+//       const selectedCount = selectedRows.length;
 
-This example showcases complex conditional logic where the toast position and appearance change based on different selection states.
+//       // Complex conditional logic - different positions based on selection count
+//       if (selectedCount >= 5 && index === 0) {
+//         // When 5+ selected: Toast at index 0 (spans all, includes checkbox area)
+//         return (
+//           <div className='flex items-center justify-between p-3 bg-purple-50 border-b border-purple-200 w-full'>
+//             <span className='text-purple-800 font-medium'>
+//               🚨 {selectedCount} items selected - Bulk mode active (Toast at
+//               index 0)
+//             </span>
+//             <button
+//               onClick={() => alert('Bulk processing all selected items!')}
+//               className='bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700'
+//             >
+//               Bulk Process All
+//             </button>
+//           </div>
+//         );
+//       } else if (selectedCount >= 2 && selectedCount < 5 && index === 1) {
+//         // When 2-4 selected: Toast at index 1 (preserves checkbox column)
+//         return (
+//           <div className='flex items-center justify-between p-3 bg-orange-50 border-b border-orange-200 w-full'>
+//             <span className='text-orange-800 font-medium'>
+//               {selectedCount} items selected - Multi-select mode (Toast at index
+//               1)
+//             </span>
+//             <button
+//               onClick={() => table.resetRowSelection()}
+//               className='bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700'
+//             >
+//               Clear Selection
+//             </button>
+//           </div>
+//         );
+//       } else if (selectedCount === 1 && index === 2) {
+//         // When 1 selected: Toast at index 2 (preserves checkbox + first data column)
+//         return (
+//           <div className='flex items-center justify-between p-3 bg-blue-50 border-b border-blue-200 w-full'>
+//             <span className='text-blue-800 font-medium'>
+//               Single item selected (Toast at index 2)
+//             </span>
+//             <button
+//               onClick={() => alert('Processing single item!')}
+//               className='bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700'
+//             >
+//               Process Item
+//             </button>
+//           </div>
+//         );
+//       }
 
-**Dynamic Positioning Logic:**
-- **5+ items selected**: Toast at index 0 (full width, bulk mode)
-- **2-4 items selected**: Toast at index 1 (preserves checkbox)  
-- **1 item selected**: Toast at index 2 (preserves checkbox + first column)
-- **0 items selected**: Normal headers
+//       // No conditions met: Show normal headers
+//       return null;
+//     },
+//   });
 
-**Key Features:**
-- Single toast enforcement (first match wins)
-- Different UI states for different scenarios
-- Progressive functionality based on selection count
-- Visual hierarchy through positioning and styling
+//   return <CustomDataTable />;
+// };
 
-**Code Pattern:**
-\`\`\`typescript
-headerOverlayToast: (header, index) => {
-  const selectedCount = table.getSelectedRowModel().rows.length;
-  
-  // Bulk mode: 5+ selections at index 0
-  if (selectedCount >= 5 && index === 0) {
-    return <BulkModeToast />;
-  }
-  
-  // Multi-select mode: 2-4 selections at index 1  
-  if (selectedCount >= 2 && selectedCount < 5 && index === 1) {
-    return <MultiSelectToast />;
-  }
-  
-  // Single select mode: 1 selection at index 2
-  if (selectedCount === 1 && index === 2) {
-    return <SingleSelectToast />;
-  }
-  
-  return null; // Normal headers
-}
-\`\`\`
+// export const WithConditionalPositioning: Story = {
+//   render: (args) => <TanstackTableWithConditionalPositioning />,
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Advanced Conditional Positioning
 
-**Advanced Techniques:**
-- State-driven positioning strategies
-- Progressive UI disclosure
-- Context-aware functionality
-- Visual feedback for different modes
+// This example showcases complex conditional logic where the toast position and appearance change based on different selection states.
 
-**Use Cases:**
-- Complex workflows with multiple selection states
-- Progressive enhancement of functionality
-- State-dependent UI changes
-- Advanced bulk operation interfaces
-        `,
-      },
-    },
-  },
-};
+// **Dynamic Positioning Logic:**
+// - **5+ items selected**: Toast at index 0 (full width, bulk mode)
+// - **2-4 items selected**: Toast at index 1 (preserves checkbox)
+// - **1 item selected**: Toast at index 2 (preserves checkbox + first column)
+// - **0 items selected**: Normal headers
 
-// Story showing usage of the HeaderOverlayToast component with animations
-const TanstackTableWithAnimatedHeaderOverlayToast = () => {
-  const { CustomDataTable, table } = useDataTable({
-    columns: columns,
-    data: payments,
-    tableParams: {
-      manualPagination: false,
-    },
-    enableRowSelection: true,
-    includeLoading: false,
-    initialPagination: { pageIndex: 0, pageSize: 15 },
-    headerOverlayToast: ({ header, index, itemProps }) => {
-      // Only show at index 0
-      if (index !== 0) return null;
+// **Key Features:**
+// - Single toast enforcement (first match wins)
+// - Different UI states for different scenarios
+// - Progressive functionality based on selection count
+// - Visual hierarchy through positioning and styling
 
-      // Use the HeaderOverlayToast component with animations
-      return (
-        <HeaderOverlayToast
-          table={table}
-          onBulkAction={(selectedRows) => {
-            console.log('Bulk action on:', selectedRows);
-            alert(
-              `Processing ${selectedRows.length} items using HeaderOverlayToast component!`
-            );
-          }}
-          actionLabel='Bulk Process'
-          className={itemProps?.tableHead?.className}
-        />
-      );
-    },
-  });
+// **Code Pattern:**
+// \`\`\`typescript
+// headerOverlayToast: (header, index) => {
+//   const selectedCount = table.getSelectedRowModel().rows.length;
 
-  return <CustomDataTable />;
-};
+//   // Bulk mode: 5+ selections at index 0
+//   if (selectedCount >= 5 && index === 0) {
+//     return <BulkModeToast />;
+//   }
 
-export const WithAnimatedHeaderOverlayToast: Story = {
-  render: (args) => <TanstackTableWithAnimatedHeaderOverlayToast />,
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Using the Built-in HeaderOverlayToast Component
+//   // Multi-select mode: 2-4 selections at index 1
+//   if (selectedCount >= 2 && selectedCount < 5 && index === 1) {
+//     return <MultiSelectToast />;
+//   }
 
-This example demonstrates how to use the pre-built \`HeaderOverlayToast\` component which includes built-in animations and standard functionality.
+//   // Single select mode: 1 selection at index 2
+//   if (selectedCount === 1 && index === 2) {
+//     return <SingleSelectToast />;
+//   }
 
-**Built-in Features:**
-- Automatic slide-in/slide-out animations
-- Standard selection display and actions
-- Configurable action button and callback
-- Consistent styling and behavior
-- Proper state management for smooth animations
+//   return null; // Normal headers
+// }
+// \`\`\`
 
-**Component Props:**
-- \`table\`: TanStack table instance
-- \`onBulkAction\`: Callback function for bulk operations
-- \`actionLabel\`: Text for the action button
-- \`className\`: Additional CSS classes
+// **Advanced Techniques:**
+// - State-driven positioning strategies
+// - Progressive UI disclosure
+// - Context-aware functionality
+// - Visual feedback for different modes
 
-**Animation Details:**
-- **Slide In**: 200ms ease-in-out from top (-translate-y-full → translate-y-0)
-- **Slide Out**: 200ms ease-in-out to top (translate-y-0 → -translate-y-full)
-- **State Management**: Uses \`shouldRender\` and \`isVisible\` for clean DOM handling
-- **Performance**: Optimized with \`willChange\` CSS property
+// **Use Cases:**
+// - Complex workflows with multiple selection states
+// - Progressive enhancement of functionality
+// - State-dependent UI changes
+// - Advanced bulk operation interfaces
+//         `,
+//       },
+//     },
+//   },
+// };
 
-**Usage Pattern:**
-\`\`\`typescript
-headerOverlayToast: (header, index, itemProps) => {
-  if (index !== 0) return null; // Choose your index
-  
-  return (
-    <HeaderOverlayToast
-      table={table}
-      onBulkAction={(selectedRows) => {
-        // Handle bulk operations
-        console.log('Processing:', selectedRows);
-      }}
-      actionLabel="Process Items"
-      className={itemProps?.tableHead?.className}
-    />
-  );
-}
-\`\`\`
+// // Story showing usage of the HeaderOverlayToast component with animations
+// const TanstackTableWithAnimatedHeaderOverlayToast = () => {
+//   const { CustomDataTable, table } = useDataTable({
+//     columns: columns,
+//     data: payments,
+//     tableParams: {
+//       manualPagination: false,
+//     },
+//     enableRowSelection: true,
+//     includeLoading: false,
+//     initialPagination: { pageIndex: 0, pageSize: 15 },
+//     headerOverlayToast: ({ header, index, itemProps }) => {
+//       // Only show at index 0
+//       if (index !== 0) return null;
 
-**Benefits of Built-in Component:**
-- Consistent behavior across applications
-- Pre-tested animations and state management
-- Standard UX patterns
-- Reduced development time
-- Accessibility considerations built-in
+//       // Use the HeaderOverlayToast component with animations
+//       return (
+//         <HeaderOverlayToast
+//           table={table}
+//           onBulkAction={(selectedRows) => {
+//             console.log('Bulk action on:', selectedRows);
+//             alert(
+//               `Processing ${selectedRows.length} items using HeaderOverlayToast component!`
+//             );
+//           }}
+//           actionLabel='Bulk Process'
+//           className={itemProps?.tableHead?.className}
+//         />
+//       );
+//     },
+//   });
 
-**Customization Options:**
-- Custom action labels and callbacks
-- Additional CSS classes through itemProps
-- Positioning through index parameter
-- Conditional rendering based on your logic
+//   return <CustomDataTable />;
+// };
 
-**When to Use:**
-- Standard bulk operations interface
-- Quick implementation needs
-- Consistent design requirements
-- When you want proven UX patterns
-        `,
-      },
-    },
-  },
-};
+// export const WithAnimatedHeaderOverlayToast: Story = {
+//   render: (args) => <TanstackTableWithAnimatedHeaderOverlayToast />,
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Using the Built-in HeaderOverlayToast Component
+
+// This example demonstrates how to use the pre-built \`HeaderOverlayToast\` component which includes built-in animations and standard functionality.
+
+// **Built-in Features:**
+// - Automatic slide-in/slide-out animations
+// - Standard selection display and actions
+// - Configurable action button and callback
+// - Consistent styling and behavior
+// - Proper state management for smooth animations
+
+// **Component Props:**
+// - \`table\`: TanStack table instance
+// - \`onBulkAction\`: Callback function for bulk operations
+// - \`actionLabel\`: Text for the action button
+// - \`className\`: Additional CSS classes
+
+// **Animation Details:**
+// - **Slide In**: 200ms ease-in-out from top (-translate-y-full → translate-y-0)
+// - **Slide Out**: 200ms ease-in-out to top (translate-y-0 → -translate-y-full)
+// - **State Management**: Uses \`shouldRender\` and \`isVisible\` for clean DOM handling
+// - **Performance**: Optimized with \`willChange\` CSS property
+
+// **Usage Pattern:**
+// \`\`\`typescript
+// headerOverlayToast: (header, index, itemProps) => {
+//   if (index !== 0) return null; // Choose your index
+
+//   return (
+//     <HeaderOverlayToast
+//       table={table}
+//       onBulkAction={(selectedRows) => {
+//         // Handle bulk operations
+//         console.log('Processing:', selectedRows);
+//       }}
+//       actionLabel="Process Items"
+//       className={itemProps?.tableHead?.className}
+//     />
+//   );
+// }
+// \`\`\`
+
+// **Benefits of Built-in Component:**
+// - Consistent behavior across applications
+// - Pre-tested animations and state management
+// - Standard UX patterns
+// - Reduced development time
+// - Accessibility considerations built-in
+
+// **Customization Options:**
+// - Custom action labels and callbacks
+// - Additional CSS classes through itemProps
+// - Positioning through index parameter
+// - Conditional rendering based on your logic
+
+// **When to Use:**
+// - Standard bulk operations interface
+// - Quick implementation needs
+// - Consistent design requirements
+// - When you want proven UX patterns
+//         `,
+//       },
+//     },
+//   },
+// };
 
 // Story for DataTable with horizontal scrolling when content overflows
 const TanstackTableWithHorizontalScrolling = () => {
@@ -962,140 +962,140 @@ export const WithHorizontalScrolling: Story = {
   render: (args) => <TanstackTableWithHorizontalScrolling />,
 };
 
-// Documentation-only story for comprehensive usage guide
-const HeaderOverlayToastGuide = () => null;
+// // Documentation-only story for comprehensive usage guide
+// const HeaderOverlayToastGuide = () => null;
 
-export const HeaderOverlayToastCompleteGuide: Story = {
-  render: () => (
-    <div className='p-8 max-w-4xl mx-auto'>
-      <h1 className='text-3xl font-bold mb-6'>
-        Header Overlay Toast - Complete Implementation Guide
-      </h1>
+// export const HeaderOverlayToastCompleteGuide: Story = {
+//   render: () => (
+//     <div className='p-8 max-w-4xl mx-auto'>
+//       <h1 className='text-3xl font-bold mb-6'>
+//         Header Overlay Toast - Complete Implementation Guide
+//       </h1>
 
-      <div className='prose max-w-none'>
-        <h2>📋 Quick Reference</h2>
-        <div className='bg-gray-50 p-4 rounded-lg mb-6'>
-          <pre>{`headerOverlayToast: (header, index, itemProps) => {
-  // Conditional logic for when to show toast
-  if (condition && index === targetIndex) {
-    return <YourToastComponent />;
-  }
-  return null; // Normal headers
-}`}</pre>
-        </div>
+//       <div className='prose max-w-none'>
+//         <h2>📋 Quick Reference</h2>
+//         <div className='bg-gray-50 p-4 rounded-lg mb-6'>
+//           <pre>{`headerOverlayToast: (header, index, itemProps) => {
+//   // Conditional logic for when to show toast
+//   if (condition && index === targetIndex) {
+//     return <YourToastComponent />;
+//   }
+//   return null; // Normal headers
+// }`}</pre>
+//         </div>
 
-        <h2>🎯 Positioning Strategy Guide</h2>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
-          <div className='border rounded-lg p-4'>
-            <h3 className='font-semibold text-blue-600'>
-              Index 0 - Full Width
-            </h3>
-            <ul className='text-sm mt-2 space-y-1'>
-              <li>✅ Complete header control</li>
-              <li>✅ Custom checkbox handling</li>
-              <li>⚠️ Must manage selection UI</li>
-              <li>🎯 Best for: Brand new UX</li>
-            </ul>
-          </div>
-          <div className='border rounded-lg p-4'>
-            <h3 className='font-semibold text-green-600'>
-              Index 1 - Preserve Checkbox
-            </h3>
-            <ul className='text-sm mt-2 space-y-1'>
-              <li>✅ Standard checkbox behavior</li>
-              <li>✅ Focus on bulk actions</li>
-              <li>✅ Familiar UX patterns</li>
-              <li>🎯 Best for: Most use cases</li>
-            </ul>
-          </div>
-          <div className='border rounded-lg p-4'>
-            <h3 className='font-semibold text-purple-600'>
-              Index 2+ - Contextual
-            </h3>
-            <ul className='text-sm mt-2 space-y-1'>
-              <li>✅ Preserve data context</li>
-              <li>✅ Progressive disclosure</li>
-              <li>✅ Mixed content strategy</li>
-              <li>🎯 Best for: Complex layouts</li>
-            </ul>
-          </div>
-        </div>
+//         <h2>🎯 Positioning Strategy Guide</h2>
+//         <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+//           <div className='border rounded-lg p-4'>
+//             <h3 className='font-semibold text-blue-600'>
+//               Index 0 - Full Width
+//             </h3>
+//             <ul className='text-sm mt-2 space-y-1'>
+//               <li>✅ Complete header control</li>
+//               <li>✅ Custom checkbox handling</li>
+//               <li>⚠️ Must manage selection UI</li>
+//               <li>🎯 Best for: Brand new UX</li>
+//             </ul>
+//           </div>
+//           <div className='border rounded-lg p-4'>
+//             <h3 className='font-semibold text-green-600'>
+//               Index 1 - Preserve Checkbox
+//             </h3>
+//             <ul className='text-sm mt-2 space-y-1'>
+//               <li>✅ Standard checkbox behavior</li>
+//               <li>✅ Focus on bulk actions</li>
+//               <li>✅ Familiar UX patterns</li>
+//               <li>🎯 Best for: Most use cases</li>
+//             </ul>
+//           </div>
+//           <div className='border rounded-lg p-4'>
+//             <h3 className='font-semibold text-purple-600'>
+//               Index 2+ - Contextual
+//             </h3>
+//             <ul className='text-sm mt-2 space-y-1'>
+//               <li>✅ Preserve data context</li>
+//               <li>✅ Progressive disclosure</li>
+//               <li>✅ Mixed content strategy</li>
+//               <li>🎯 Best for: Complex layouts</li>
+//             </ul>
+//           </div>
+//         </div>
 
-        <h2>🎨 Animation Implementation</h2>
-        <div className='bg-blue-50 p-4 rounded-lg mb-6'>
-          <h4 className='font-semibold mb-2'>Manual Animation Classes:</h4>
-          <pre>{`className="transform transition-all duration-200 ease-in-out translate-y-0 opacity-100"`}</pre>
+//         <h2>🎨 Animation Implementation</h2>
+//         <div className='bg-blue-50 p-4 rounded-lg mb-6'>
+//           <h4 className='font-semibold mb-2'>Manual Animation Classes:</h4>
+//           <pre>{`className="transform transition-all duration-200 ease-in-out translate-y-0 opacity-100"`}</pre>
 
-          <h4 className='font-semibold mb-2 mt-4'>
-            Built-in HeaderOverlayToast Component:
-          </h4>
-          <pre>{`<HeaderOverlayToast 
-  table={table}
-  onBulkAction={handleBulkAction}
-  actionLabel="Process"
-  className={itemProps?.tableHead?.className}
-/>`}</pre>
-        </div>
+//           <h4 className='font-semibold mb-2 mt-4'>
+//             Built-in HeaderOverlayToast Component:
+//           </h4>
+//           <pre>{`<HeaderOverlayToast
+//   table={table}
+//   onBulkAction={handleBulkAction}
+//   actionLabel="Process"
+//   className={itemProps?.tableHead?.className}
+// />`}</pre>
+//         </div>
 
-        <h2>⚙️ Common Patterns & Best Practices</h2>
-        <div className='space-y-4 mb-6'>
-          <div className='border-l-4 border-green-400 pl-4'>
-            <h4 className='font-semibold'>✅ Do:</h4>
-            <ul className='text-sm space-y-1'>
-              <li>
-                Use index 1 for most bulk operations (preserves familiar
-                checkbox UX)
-              </li>
-              <li>
-                Include itemProps?.tableHead?.className for consistent styling
-              </li>
-              <li>Return null when you want normal headers</li>
-              <li>Use smooth animations (200-300ms duration)</li>
-              <li>Test with different selection counts and states</li>
-            </ul>
-          </div>
+//         <h2>⚙️ Common Patterns & Best Practices</h2>
+//         <div className='space-y-4 mb-6'>
+//           <div className='border-l-4 border-green-400 pl-4'>
+//             <h4 className='font-semibold'>✅ Do:</h4>
+//             <ul className='text-sm space-y-1'>
+//               <li>
+//                 Use index 1 for most bulk operations (preserves familiar
+//                 checkbox UX)
+//               </li>
+//               <li>
+//                 Include itemProps?.tableHead?.className for consistent styling
+//               </li>
+//               <li>Return null when you want normal headers</li>
+//               <li>Use smooth animations (200-300ms duration)</li>
+//               <li>Test with different selection counts and states</li>
+//             </ul>
+//           </div>
 
-          <div className='border-l-4 border-red-400 pl-4'>
-            <h4 className='font-semibold'>❌ Don't:</h4>
-            <ul className='text-sm space-y-1'>
-              <li>
-                Return components from multiple indexes (first match wins)
-              </li>
-              <li>Forget to handle the empty selection state</li>
-              <li>Override system checkbox behavior unnecessarily</li>
-              <li>Use overly complex animation timing</li>
-              <li>Ignore responsive design considerations</li>
-            </ul>
-          </div>
-        </div>
+//           <div className='border-l-4 border-red-400 pl-4'>
+//             <h4 className='font-semibold'>❌ Don't:</h4>
+//             <ul className='text-sm space-y-1'>
+//               <li>
+//                 Return components from multiple indexes (first match wins)
+//               </li>
+//               <li>Forget to handle the empty selection state</li>
+//               <li>Override system checkbox behavior unnecessarily</li>
+//               <li>Use overly complex animation timing</li>
+//               <li>Ignore responsive design considerations</li>
+//             </ul>
+//           </div>
+//         </div>
 
-        <h2>🔧 Implementation Checklist</h2>
-        <div className='bg-gray-50 p-4 rounded-lg'>
-          <ul className='space-y-2 text-sm'>
-            <li>□ Choose appropriate index based on UX requirements</li>
-            <li>□ Implement conditional logic for when to show toast</li>
-            <li>□ Add smooth animations (manual or use HeaderOverlayToast)</li>
-            <li>□ Include itemProps for consistent styling</li>
-            <li>□ Test with various selection states (0, 1, multiple)</li>
-            <li>□ Verify responsive behavior</li>
-            <li>□ Ensure accessibility compliance</li>
-            <li>□ Test animation performance</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: `
-### Complete Implementation Guide
+//         <h2>🔧 Implementation Checklist</h2>
+//         <div className='bg-gray-50 p-4 rounded-lg'>
+//           <ul className='space-y-2 text-sm'>
+//             <li>□ Choose appropriate index based on UX requirements</li>
+//             <li>□ Implement conditional logic for when to show toast</li>
+//             <li>□ Add smooth animations (manual or use HeaderOverlayToast)</li>
+//             <li>□ Include itemProps for consistent styling</li>
+//             <li>□ Test with various selection states (0, 1, multiple)</li>
+//             <li>□ Verify responsive behavior</li>
+//             <li>□ Ensure accessibility compliance</li>
+//             <li>□ Test animation performance</li>
+//           </ul>
+//         </div>
+//       </div>
+//     </div>
+//   ),
+//   parameters: {
+//     docs: {
+//       description: {
+//         story: `
+// ### Complete Implementation Guide
 
-This comprehensive guide covers all aspects of implementing header overlay toasts. Use this as your reference when building custom toast functionality.
+// This comprehensive guide covers all aspects of implementing header overlay toasts. Use this as your reference when building custom toast functionality.
 
-The guide includes positioning strategies, animation techniques, best practices, and common patterns to help you implement the perfect toast solution for your use case.
-        `,
-      },
-    },
-  },
-};
+// The guide includes positioning strategies, animation techniques, best practices, and common patterns to help you implement the perfect toast solution for your use case.
+//         `,
+//       },
+//     },
+//   },
+// };
