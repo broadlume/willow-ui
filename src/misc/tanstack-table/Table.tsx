@@ -530,7 +530,7 @@ export function useDataTable<TData, TValue>({
             <Table
               data-testid='data-table'
               {...itemProps?.table}
-              className={itemProps?.table?.className}
+              className={`${itemProps?.table?.className} text-text-pri`}
             >
               {table.getRowModel().rows?.length ? (
                 <TableHeader
@@ -767,7 +767,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.itemPerPage?.className
           )}
         >
-          <p className='text-xs font-normal capitalize'>Items per Page</p>
+          <p className='text-xs font-normal'>Items per Page</p>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             defaultValue='10'

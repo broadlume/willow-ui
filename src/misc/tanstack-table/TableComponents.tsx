@@ -185,7 +185,8 @@ const DraggableColumnHeader = <TData, TValue>({
             'cursor-move': !isDragging,
           }
         )}
-        style={itemProps?.tableHead?.style}
+        // for checked commented this code in future we remove this
+        // style={itemProps?.tableHead?.style}
       >
         {header.isPlaceholder
           ? null
