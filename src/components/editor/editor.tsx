@@ -206,6 +206,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   return (
     <NodeViewContext.Provider value={nodeViewContextValue}>
       <div
+        className={clsx({ dark: darkMode })}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
