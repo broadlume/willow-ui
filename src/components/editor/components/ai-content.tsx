@@ -17,9 +17,10 @@ import { Loader } from '@components/Loader/Loader';
 interface AIContentProps {
   editor: Editor;
   closeDialog: () => void;
+  hostname: string;
 }
 
-const AIContent = ({ editor, closeDialog }: AIContentProps) => {
+const AIContent = ({ editor, closeDialog, hostname }: AIContentProps) => {
   const [loading, setLoading] = useState(false);
   const { from, to } = editor.state.selection;
   const [generatedContent, setGeneratedContent] = useState('');
@@ -47,8 +48,9 @@ const AIContent = ({ editor, closeDialog }: AIContentProps) => {
 
     try {
       // Call the API to get the rewritten text
+      const apiUrl = `${hostname}/ai/generate`;
       const aiResponse = await axios.post(
-        'https://api.cms.my.dev.broadlume.com/ai/generate',
+        apiUrl,
         {
           messages: [
             {

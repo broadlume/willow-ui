@@ -26,6 +26,7 @@ interface MenuProps {
   darkMode?: boolean;
   toggleDarkMode?: () => void;
   className?: string;
+  hostname: string;
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -44,6 +45,7 @@ export const Menu = ({
   className,
   darkMode,
   toggleDarkMode,
+  hostname,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -77,7 +79,9 @@ export const Menu = ({
       const entry = entries[0];
       if (entry) {
         const newWidth = entry.contentRect.width;
-        setAvailableWidth(newWidth - MORE_BUTTON_WIDTH - DARK_MODE_BUTTON_WIDTH - MENU_PADDING);
+        setAvailableWidth(
+          newWidth - MORE_BUTTON_WIDTH - DARK_MODE_BUTTON_WIDTH - MENU_PADDING
+        );
       }
     });
 
@@ -146,6 +150,7 @@ export const Menu = ({
     showEditorInDialog,
     toggleRawHtml,
     setL2MenuType: setL2MenuTypeHandler,
+    hostname,
     fontColor,
     setFontColor,
     l2Link,
@@ -257,7 +262,8 @@ export const Menu = ({
           {
             '!flex': expandedMenuL2,
             'bg-surface-pri text-text-pri': !darkMode,
-            'bg-gray-900 text-white border-gray-600 border-t-gray-400': darkMode,
+            'bg-gray-900 text-white border-gray-600 border-t-gray-400':
+              darkMode,
           }
         )}
       >
