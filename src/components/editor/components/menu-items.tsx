@@ -52,6 +52,7 @@ export interface MenuItemRenderProps {
   showEditorInDialog?: boolean;
   toggleRawHtml?: () => void;
   setL2MenuType?: (type: L2MenuType) => void;
+  hostname: string;
   // Add any other props needed by specific menu items
   fontColor?: string; // For the color picker
   setFontColor?: (color: string) => void;
@@ -127,7 +128,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
   {
     id: 'ai-button',
     widthEstimate: 60,
-    render: ({ editor, darkMode }) => (
+    render: ({ editor, darkMode, hostname }) => (
       <MenuLink
         title={
           <DialogMenuItem
@@ -139,7 +140,11 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             }
             // dialogClassName='p-2 !max-w-5xl !h-5/6'
             content={({ closeDialog }) => (
-              <AIContent editor={editor} closeDialog={closeDialog} />
+              <AIContent
+                editor={editor}
+                closeDialog={closeDialog}
+                hostname={hostname}
+              />
             )}
           />
         }

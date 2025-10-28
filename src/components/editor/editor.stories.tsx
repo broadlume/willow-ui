@@ -18,10 +18,10 @@ const EditorComponent = () => {
       { id: '2', name: 'Jane Smith' },
       { id: '3', name: 'Peter Jones' },
     ];
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
     return users
-      .filter(user => user.name.toLowerCase().includes(query.toLowerCase()))
-      .map(user => ({ label: user.name, value: user.id }));
+      .filter((user) => user.name.toLowerCase().includes(query.toLowerCase()))
+      .map((user) => ({ label: user.name, value: user.id }));
   }, []);
 
   return (
@@ -29,9 +29,10 @@ const EditorComponent = () => {
       onChange={(html) => console.log('Content changed:', html)}
       onBlur={(html) => console.log('Content blurred:', html)}
       autocompleteFetchOptions={fetchUsersFromApi}
+      hostname='https://api.cms.my.dev.broadlume.com'
     />
   );
-}
+};
 
 export const Demo: Story = {
   render: () => <EditorComponent />,

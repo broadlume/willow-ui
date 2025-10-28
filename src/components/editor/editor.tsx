@@ -42,7 +42,7 @@ import {
 import { Dialog, DialogContent } from '@components/dialog/dialog';
 import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
-import {  SlashCommand  } from './extensions/slash-command';
+import { SlashCommand } from './extensions/slash-command';
 
 export type EditorProps = {
   content?: string;
@@ -53,6 +53,7 @@ export type EditorProps = {
   autocompleteFetchOptions?: (
     query: string
   ) => Promise<{ label: string; value: string }[]>;
+  hostname: string;
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -105,7 +106,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     LineHeight,
     Indentation,
     // AutocompleteNode,
-    SlashCommand
+    SlashCommand,
   ];
 
   // Initialize the Tiptap editor with the provided content and extensions
@@ -124,7 +125,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
           darkMode ? '!text-white' : 'text-black'
         ),
       },
-    }
+    },
   };
 
   const editor = useEditor(EditorConfig);
@@ -133,10 +134,14 @@ export const Editor: React.FC<EditorProps> = (props) => {
     onUpdate: ({ editor }) => handleUpdate(editor),
   });
 
-  const nodeViewContextValue = useMemo<NodeViewContextType>(() => ({
-    fetchOptions: props.autocompleteFetchOptions || (() => Promise.resolve([])),
-    darkMode,
-  }), [props.autocompleteFetchOptions, darkMode]);
+  const nodeViewContextValue = useMemo<NodeViewContextType>(
+    () => ({
+      fetchOptions:
+        props.autocompleteFetchOptions || (() => Promise.resolve([])),
+      darkMode,
+    }),
+    [props.autocompleteFetchOptions, darkMode]
+  );
 
   const activeEditor = showEditorInDialog ? dialogEditor : editor;
 
@@ -185,7 +190,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
             dialogEditor.state.doc.resolve(newFrom),
             dialogEditor.state.doc.resolve(newTo)
           );
-          dialogEditor.view.dispatch(dialogEditor.state.tr.setSelection(textSelection));
+          dialogEditor.view.dispatch(
+            dialogEditor.state.tr.setSelection(textSelection)
+          );
         } catch (error) {
           // If cursor restoration fails, just place cursor at the end
           dialogEditor.commands.focus('end');
@@ -202,52 +209,57 @@ export const Editor: React.FC<EditorProps> = (props) => {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        {
-          showEditorInDialog && dialogEditor && (
-            <Dialog open={showEditorInDialog} onOpenChange={setShowEditorInDialog}>
-              <DialogContent className='max-w-[90vw] gap-0 p-10' onPointerDownOutside={(e) => {
+        {showEditorInDialog && dialogEditor && (
+          <Dialog
+            open={showEditorInDialog}
+            onOpenChange={setShowEditorInDialog}
+          >
+            <DialogContent
+              className='max-w-[90vw] gap-0 p-10'
+              onPointerDownOutside={(e) => {
                 // Allow BubbleMenu interactions by checking if the target is part of a tippy popper or popover
                 const target = e.target as Element;
-                if (target && (
-                  target.closest('[data-tippy-root]') || 
-                  target.closest('[data-radix-popper-content-wrapper]') ||
-                  target.closest('[data-radix-popover-content]') ||
-                  target.closest('.tippy-popper') ||
-                  target.closest('[role="tooltip"]') ||
-                  target.closest('[role="dialog"]') ||
-                  target.closest('[data-state="open"]')
-                )) {
+                if (
+                  target &&
+                  (target.closest('[data-tippy-root]') ||
+                    target.closest('[data-radix-popper-content-wrapper]') ||
+                    target.closest('[data-radix-popover-content]') ||
+                    target.closest('.tippy-popper') ||
+                    target.closest('[role="tooltip"]') ||
+                    target.closest('[role="dialog"]') ||
+                    target.closest('[data-state="open"]'))
+                ) {
                   return; // Allow the event to proceed for BubbleMenu/Popover interactions
                 }
                 e.preventDefault();
-              }}>
-                {/* Menu */}
-                <Menu editor={dialogEditor}
-                  showRawHtml={showRawHtml}
-                  toggleRawHtml={handleToggleRawHtml}
-                  darkMode={darkMode}
-                  toggleDarkMode={() => setDarkMode((v) => !v)}
-                  className={
-                    clsx({
-                      'bg-gray-100': !darkMode,
-                      'text-gray-800': !darkMode,
-                      'bg-gray-900 text-gray-200 border-gray-600': darkMode,
-                    })
-                  }
-                />
+              }}
+            >
+              {/* Menu */}
+              <Menu
+                editor={dialogEditor}
+                showRawHtml={showRawHtml}
+                toggleRawHtml={handleToggleRawHtml}
+                darkMode={darkMode}
+                toggleDarkMode={() => setDarkMode((v) => !v)}
+                hostname={props.hostname}
+                className={clsx({
+                  'bg-gray-100': !darkMode,
+                  'text-gray-800': !darkMode,
+                  'bg-gray-900 text-gray-200 border-gray-600': darkMode,
+                })}
+              />
 
-                {/* Editor */}
-                <EditorContent
-                  editor={dialogEditor}
-                  content={content}
-                  setContent={handleContentChange}
-                  darkMode={darkMode}
-                  markdownMode={showRawHtml}
-                />
-              </DialogContent>
-            </Dialog>
-          )
-        }
+              {/* Editor */}
+              <EditorContent
+                editor={dialogEditor}
+                content={content}
+                setContent={handleContentChange}
+                darkMode={darkMode}
+                markdownMode={showRawHtml}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
         {!showEditorInDialog && editor && (
           <>
@@ -260,23 +272,23 @@ export const Editor: React.FC<EditorProps> = (props) => {
               toggleRawHtml={handleToggleRawHtml}
               darkMode={darkMode}
               toggleDarkMode={() => setDarkMode((v) => !v)}
+              hostname={props.hostname}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
               })}
             />
 
-              {/* Editor */}
-              <EditorContent
-                editor={editor}
-                content={content}
-                setContent={handleContentChange}
-                darkMode={darkMode}
-                markdownMode={showRawHtml}
-              />
-            </>
-          )
-        }
+            {/* Editor */}
+            <EditorContent
+              editor={editor}
+              content={content}
+              setContent={handleContentChange}
+              darkMode={darkMode}
+              markdownMode={showRawHtml}
+            />
+          </>
+        )}
       </div>
     </NodeViewContext.Provider>
   );
