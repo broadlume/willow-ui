@@ -74,7 +74,7 @@ const DialogContent = React.forwardRef<
             className={cn(
               'absolute right-3 top-3 rounded-xs opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none',
               'ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2',
-              'data-[state=open]:bg-accent data-[state=open]:text-muted-foreground'
+              'data-[state=open]:bg-accent data-[state=open]:text-muted-foreground cursor-pointer'
             )}
             onClick={onClose}
           >
