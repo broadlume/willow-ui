@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
