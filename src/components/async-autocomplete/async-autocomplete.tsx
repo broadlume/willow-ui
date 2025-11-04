@@ -19,6 +19,19 @@ type Props = {
   selectedData?: AsyncAutocompleteItem | null;
   wrapClassName?: string;
   placeholder?: string;
+  /**
+ * Optional additional props for customizing the internal AsyncInputSearch component.
+ * 
+ * @property {object} inputProps - Props passed directly to the AsyncInputSearch component,
+ * excluding core props like 'items', 'onSelect', 'onScroll', 'onSearch', 'renderItem', and 'getKey'
+ * (which are already managed by AsyncAutocomplete internally).
+ * 
+ * This allows consumers of AsyncAutocomplete to override or extend certain input behaviors or styles,
+ * such as custom placeholder text, debounce delay, or additional classNames and html events.
+ */
+  additionalProps?: {
+    inputProps?: Omit<Parameters<typeof AsyncInputSearch>[0] & {}, 'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'>;
+  }
 };
 
 /**
@@ -43,6 +56,7 @@ export const AsyncAutocomplete = ({
   onSelect,
   selectedData,
   wrapClassName,
+  additionalProps={},
   placeholder = 'Search...',
 }: Props) => {
   const [open, setOpen] = useState(false);
@@ -62,6 +76,7 @@ export const AsyncAutocomplete = ({
       </PopoverTrigger>
       <PopoverContent className='min-w-[300px] p-0'>
         <AsyncInputSearch
+          {...additionalProps.inputProps}
           items={data}
           onScroll={onScroll}
           onSearch={onSearch}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Command, CommandInput, CommandList } from '@src/index';
 
 type AsyncInputSearchProps<T> = {
+  commandInputProps?:Parameters<typeof CommandInput>[0];
   items: T[];
   onScroll: () => void;
   onSearch: (query: string) => void;
@@ -34,6 +35,7 @@ type AsyncInputSearchProps<T> = {
  * @returns {JSX.Element} The rendered async input search component.
  */
 export function AsyncInputSearch<T>({
+  commandInputProps={},
   items,
   onScroll,
   onSearch,
@@ -56,6 +58,7 @@ export function AsyncInputSearch<T>({
   return (
     <Command className={wrapClassName}>
       <CommandInput
+        {...commandInputProps}
         placeholder={placeholder}
         className='h-9'
         onValueChange={(q) => onSearch(q)}
