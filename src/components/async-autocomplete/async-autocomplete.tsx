@@ -34,10 +34,10 @@ type Props = {
       Parameters<typeof AsyncInputSearch>[0] & {},
       'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'
     >;
+    popoverContentProps?: React.HTMLAttributes<HTMLDivElement>;
   };
   showClear?: boolean;
   onClear?: () => void;
-  popoverContentProps?: React.HTMLAttributes<HTMLDivElement>;
   classNames?: {
     buttonClassName?: string;
     popoverContentClassName?: string;
@@ -78,7 +78,6 @@ export const AsyncAutocomplete = ({
   placeholder = 'Search...',
   showClear,
   onClear,
-  popoverContentProps,
   classNames,
 }: Props) => {
   const [open, setOpen] = useState(false);
@@ -112,7 +111,7 @@ export const AsyncAutocomplete = ({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        {...popoverContentProps}
+        {...additionalProps.popoverContentProps}
         className={`w-[var(--radix-popover-trigger-width)] p-0 ${classNames?.popoverContentClassName}`}
       >
         <AsyncInputSearch
