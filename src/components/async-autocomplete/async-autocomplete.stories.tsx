@@ -70,6 +70,13 @@ export const Interactive: Story = {
           onSelect={handleSelect}
           onScroll={handleScroll}
           selectedData={selectedData}
+          additionalProps={{
+            inputProps: {
+              commandInputProps: {
+                onBlur: () => console.log('Input blurred')
+              }
+            }
+          }}
           wrapClassName='w-80'
         />
       </div>
