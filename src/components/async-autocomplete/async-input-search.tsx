@@ -2,10 +2,10 @@ import React from 'react';
 import { Command, CommandInput, CommandList } from '@src/index';
 
 type AsyncInputSearchProps<T> = {
-  commandInputProps?:Parameters<typeof CommandInput>[0];
+  commandInputProps?: Parameters<typeof CommandInput>[0];
   items: T[];
   onScroll: () => void;
-  onSearch: (query: string) => void;
+  onSearch?: (query: string) => void;
   onSelect: (item: T) => void;
   selectedItem?: T | null;
   wrapClassName?: string;
@@ -24,7 +24,7 @@ type AsyncInputSearchProps<T> = {
  * @param {Object} props - The props for the component.
  * @param {T[]} props.items - The array of items to display in the list.
  * @param {() => void} props.onScroll - Callback invoked when the user scrolls to the bottom of the list.
- * @param {(query: string) => void} props.onSearch - Callback invoked when the search input value changes.
+ * @param {(query: string) => void} [props.onSearch] - Optional callback invoked when the search input value changes. If not provided, search input will not be shown.
  * @param {(item: T) => void} props.onSelect - Callback invoked when an item is selected.
  * @param {T | undefined} props.selectedItem - The currently selected item.
  * @param {string} [props.wrapClassName] - Optional class name for the wrapper element.
@@ -35,7 +35,7 @@ type AsyncInputSearchProps<T> = {
  * @returns {JSX.Element} The rendered async input search component.
  */
 export function AsyncInputSearch<T>({
-  commandInputProps={},
+  commandInputProps = {},
   items,
   onScroll,
   onSearch,
@@ -57,12 +57,14 @@ export function AsyncInputSearch<T>({
 
   return (
     <Command className={wrapClassName}>
-      <CommandInput
-        {...commandInputProps}
-        placeholder={placeholder}
-        className='h-9'
-        onValueChange={(q) => onSearch(q)}
-      />
+      {onSearch && (
+        <CommandInput
+          {...commandInputProps}
+          placeholder={placeholder}
+          className='h-9'
+          onValueChange={(q) => onSearch(q)}
+        />
+      )}
       <CommandList onScroll={handleScroll}>
         {items.length ? (
           <div className='min-w-[300px]'>
