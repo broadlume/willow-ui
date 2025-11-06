@@ -73,11 +73,13 @@ export const Interactive: Story = {
           additionalProps={{
             inputProps: {
               commandInputProps: {
-                onBlur: () => console.log('Input blurred')
-              }
-            }
+                onBlur: () => console.log('Input blurred'),
+              },
+            },
           }}
-          wrapClassName='w-80'
+          classNames={{
+            wrapperClassName: 'w-[300px]',
+          }}
         />
       </div>
     );

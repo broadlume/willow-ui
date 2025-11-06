@@ -12,6 +12,7 @@ type AsyncInputSearchProps<T> = {
   placeholder?: string;
   renderItem: (item: T, isSelected: boolean) => React.ReactNode;
   getKey: (item: T) => string | number;
+  dataTestId?: (item: T) => string;
 };
 
 /**
@@ -31,6 +32,7 @@ type AsyncInputSearchProps<T> = {
  * @param {string} [props.placeholder] - Placeholder text for the search input.
  * @param {(item: T, isSelected: boolean) => React.ReactNode} props.renderItem - Function to render each item.
  * @param {(item: T) => React.Key} props.getKey - Function to get a unique key for each item.
+ * @param {(item: T) => string} [props.getLabel] - Optional function to get a label for test IDs. If provided, each option will have a data-testid of "{label}-option".
  *
  * @returns {JSX.Element} The rendered async input search component.
  */
@@ -45,6 +47,7 @@ export function AsyncInputSearch<T>({
   placeholder = 'Search...',
   renderItem,
   getKey,
+  dataTestId,
 }: AsyncInputSearchProps<T>) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -67,7 +70,7 @@ export function AsyncInputSearch<T>({
       )}
       <CommandList onScroll={handleScroll}>
         {items.length ? (
-          <div className='min-w-[300px]'>
+          <>
             {items.map((item) => {
               const key = getKey(item);
               const isSelected = selectedItem && getKey(selectedItem) === key;
@@ -76,12 +79,13 @@ export function AsyncInputSearch<T>({
                   key={key}
                   onClick={() => onSelect(item)}
                   className='hover:bg-slate-100 cursor-pointer rounded-xs px-2 py-1.5 text-sm'
+                  data-testid={dataTestId ? `${dataTestId(item)}-option` : ''}
                 >
                   {renderItem(item, Boolean(isSelected))}
                 </div>
               );
             })}
-          </div>
+          </>
         ) : (
           <div className='py-6 text-center text-sm'>No results found.</div>
         )}

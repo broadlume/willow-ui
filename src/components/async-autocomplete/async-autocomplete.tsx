@@ -43,6 +43,7 @@ type Props = {
     popoverContentClassName?: string;
     wrapperClassName?: string;
   };
+  dataTestId?: string;
 };
 
 /**
@@ -79,18 +80,20 @@ export const AsyncAutocomplete = ({
   showClear,
   onClear,
   classNames,
+  dataTestId,
 }: Props) => {
   const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className={`relative ${classNames?.wrapperClassName}`}>
+        <div className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}>
           <Button
             variant='outline'
             role='combobox'
             aria-expanded={open}
             aria-label='async-autocomplete'
-            className={`min-w-[300px] justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
+            data-testid={dataTestId ? `${dataTestId}-button` : ''}
+            className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
           >
             {selectedData ? selectedData.label : placeholder}
             <RxCaretSort />
@@ -112,6 +115,7 @@ export const AsyncAutocomplete = ({
       </PopoverTrigger>
       <PopoverContent
         {...additionalProps.popoverContentProps}
+        data-testid={dataTestId ? `${dataTestId}-list` : ''}
         className={`w-[var(--radix-popover-trigger-width)] p-0 ${classNames?.popoverContentClassName}`}
       >
         <AsyncInputSearch
@@ -127,6 +131,7 @@ export const AsyncAutocomplete = ({
           wrapClassName={wrapClassName}
           placeholder={placeholder}
           getKey={(item) => item.value}
+          dataTestId={(item) => item.label}
           renderItem={(item, isSelected) => (
             <div className='flex flex-col justify-between'>
               <div className='flex items-center justify-between'>
