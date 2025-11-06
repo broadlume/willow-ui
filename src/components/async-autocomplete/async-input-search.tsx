@@ -12,7 +12,6 @@ type AsyncInputSearchProps<T> = {
   placeholder?: string;
   renderItem: (item: T, isSelected: boolean) => React.ReactNode;
   getKey: (item: T) => string | number;
-  dataTestId?: (item: T) => string;
 };
 
 /**
@@ -47,7 +46,6 @@ export function AsyncInputSearch<T>({
   placeholder = 'Search...',
   renderItem,
   getKey,
-  dataTestId,
 }: AsyncInputSearchProps<T>) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -79,7 +77,7 @@ export function AsyncInputSearch<T>({
                   key={key}
                   onClick={() => onSelect(item)}
                   className='hover:bg-slate-100 cursor-pointer rounded-xs px-2 py-1.5 text-sm'
-                  data-testid={dataTestId ? `${dataTestId(item)}-option` : ''}
+                  data-testid={key + '-option'}
                 >
                   {renderItem(item, Boolean(isSelected))}
                 </div>
