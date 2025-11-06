@@ -2,13 +2,29 @@ import { HiCheck, HiMiniXCircle } from 'react-icons/hi2';
 import { Button, Popover, PopoverContent, PopoverTrigger } from '@src/index';
 import { useState } from 'react';
 import { AsyncInputSearch } from './async-input-search';
-
 import { RxCaretSort } from 'react-icons/rx';
 
 interface AsyncAutocompleteItem {
   value: string;
   label: string;
   description?: string;
+}
+
+interface AdditionalProps {
+  inputProps?: Omit<
+    Parameters<typeof AsyncInputSearch>[0],
+    'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'
+  >;
+  popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
+    Record<`data-${string}`, string>;
+  buttonProps?: React.ComponentProps<typeof Button> &
+    Record<`data-${string}`, string>;
+}
+
+interface ClassNames {
+  buttonClassName?: string;
+  popoverContentClassName?: string;
+  wrapperClassName?: string;
 }
 
 type Props = {
@@ -20,29 +36,22 @@ type Props = {
   wrapClassName?: string;
   placeholder?: string;
   /**
-   * Optional additional props for customizing the internal AsyncInputSearch component.
+   * Optional additional props for customizing the internal components.
    *
    * @property {object} inputProps - Props passed directly to the AsyncInputSearch component,
    * excluding core props like 'items', 'onSelect', 'onScroll', 'onSearch', 'renderItem', and 'getKey'
    * (which are already managed by AsyncAutocomplete internally).
+   * @property {object} popoverContentProps - Props passed to the PopoverContent component.
+   * @property {object} buttonProps - Props passed to the trigger Button component.
    *
-   * This allows consumers of AsyncAutocomplete to override or extend certain input behaviors or styles,
-   * such as custom placeholder text, debounce delay, or additional classNames and html events.
+   * This allows consumers of AsyncAutocomplete to override or extend certain behaviors or styles,
+   * such as custom placeholder text, debounce delay, additional classNames, and html events.
    */
-  additionalProps?: {
-    inputProps?: Omit<
-      Parameters<typeof AsyncInputSearch>[0] & {},
-      'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'
-    >;
-    popoverContentProps?: React.HTMLAttributes<HTMLDivElement>;
-  };
+  additionalProps?: AdditionalProps;
   showClear?: boolean;
   onClear?: () => void;
-  classNames?: {
-    buttonClassName?: string;
-    popoverContentClassName?: string;
-    wrapperClassName?: string;
-  };
+  classNames?: ClassNames;
+  dataTestId?: string;
 };
 
 /**
@@ -59,7 +68,10 @@ type Props = {
  * @param {string} [props.placeholder='Search...'] - Placeholder text for the search input.
  * @param {boolean} [props.showClear] - Whether to show the clear button when there's a selection.
  * @param {() => void} [props.onClear] - Callback triggered when the clear button is clicked.
- * @param {React.HTMLAttributes<HTMLDivElement>} [props.popoverContentProps] - Additional props to pass to the PopoverContent (onWheel, onMouseEnter, etc.).
+ * @param {Object} [props.additionalProps] - Additional props for customizing internal components.
+ * @param {Object} [props.additionalProps.inputProps] - Props passed to the AsyncInputSearch component.
+ * @param {Object} [props.additionalProps.popoverContentProps] - Props passed to the PopoverContent component.
+ * @param {Object} [props.additionalProps.buttonProps] - Props passed to the trigger Button component.
  * @param {Object} [props.classNames] - Object containing className overrides for different parts of the component.
  * @param {string} [props.classNames.buttonClassName] - Class name for the trigger button.
  * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
@@ -74,7 +86,7 @@ export const AsyncAutocomplete = ({
   onSelect,
   selectedData,
   wrapClassName,
-  additionalProps = {},
+  additionalProps,
   placeholder = 'Search...',
   showClear,
   onClear,
@@ -84,13 +96,14 @@ export const AsyncAutocomplete = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className={`relative ${classNames?.wrapperClassName}`}>
+        <div className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}>
           <Button
+            {...additionalProps?.buttonProps}
             variant='outline'
             role='combobox'
             aria-expanded={open}
             aria-label='async-autocomplete'
-            className={`min-w-[300px] justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
+            className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
           >
             {selectedData ? selectedData.label : placeholder}
             <RxCaretSort />
@@ -111,11 +124,11 @@ export const AsyncAutocomplete = ({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        {...additionalProps.popoverContentProps}
+        {...additionalProps?.popoverContentProps}
         className={`w-[var(--radix-popover-trigger-width)] p-0 ${classNames?.popoverContentClassName}`}
       >
         <AsyncInputSearch
-          {...additionalProps.inputProps}
+          {...additionalProps?.inputProps}
           items={data}
           onScroll={onScroll}
           onSearch={onSearch}
