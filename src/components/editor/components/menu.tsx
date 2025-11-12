@@ -27,6 +27,8 @@ interface MenuProps {
   toggleDarkMode?: () => void;
   className?: string;
   hostname: string;
+  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -46,6 +48,8 @@ export const Menu = ({
   darkMode,
   toggleDarkMode,
   hostname,
+  onImageBrowseClick,
+  onImageDrop,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -159,6 +163,8 @@ export const Menu = ({
     setL2EmbedLink,
     l2Image,
     setL2Image,
+    onImageBrowseClick,
+    onImageDrop,
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
@@ -276,7 +282,9 @@ export const Menu = ({
           setL2EmbedLink,
           l2Image,
           setL2Image,
-          setExpandedMenuL2
+          setExpandedMenuL2,
+          onImageBrowseClick,
+          onImageDrop
         )}
       </div>
       {/* Expanded Menu L2*/}
