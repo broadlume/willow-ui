@@ -1,3 +1,13 @@
+import { CalendarIcon } from '@radix-ui/react-icons';
+import {
+  Button,
+  Calendar,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@src/index';
+import { cn } from '@src/lib/utils';
+import { format } from 'date-fns';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActiveModifiers,
@@ -6,16 +16,6 @@ import {
   DayPickerRangeProps,
   DayPickerSingleProps,
 } from 'react-day-picker';
-import { format } from 'date-fns';
-import {
-  Button,
-  Calendar,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@src/index';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { cn } from '@src/lib/utils';
 
 export type DatePickerMode = 'single' | 'range';
 export type DateSelection = Date | DateRange | undefined;
@@ -25,6 +25,7 @@ interface DatePickerPropsBase {
   selected?: DateSelection;
   mode?: DatePickerMode;
   trigger?: React.ReactElement;
+  open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   popoverContentProps?: React.ComponentProps<typeof PopoverContent>;
 }
@@ -59,13 +60,17 @@ export const DatePicker = ({
   selected,
   onSelect,
   trigger,
+  open: controlledOpen,
   onOpenChange,
   popoverContentProps,
   ...props
 }: DatePickerProps) => {
   const [_selected, _setSelected] = useState<DateSelection>(selected);
   const [buttonText, setButtonText] = useState<string>('');
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  // Use controlled open state if provided, otherwise use internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
   function _onSelect(
     selection: (Date & DateRange) | undefined,
@@ -137,7 +142,9 @@ export const DatePicker = ({
     <Popover
       open={open}
       onOpenChange={(isOpen) => {
-        setOpen(isOpen);
+        if (controlledOpen === undefined) {
+          setInternalOpen(isOpen);
+        }
         onOpenChange?.(isOpen);
       }}
     >
