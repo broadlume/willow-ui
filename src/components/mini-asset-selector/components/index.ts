@@ -5,4 +5,3 @@ export { DragDropZone } from './DragDropZone';
 export * from './types';
 export { useFileHandler, useDragAndDrop, isImageFile } from './hooks';
 export * from './utils';
-export * from './debug';
