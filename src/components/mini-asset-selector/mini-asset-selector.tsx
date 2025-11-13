@@ -66,6 +66,8 @@ export interface MiniAssetSelectorProps {
   error?: boolean;
   /** Error message for form validation */
   errorMessage?: string;
+  /** Paste event handler for the URL input */
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -98,6 +100,7 @@ export const MiniAssetSelector = forwardRef<HTMLDivElement, MiniAssetSelectorPro
   onBlur,
   error = false,
   errorMessage,
+  onPaste,
 }, ref) => {
   const [state, dispatch] = useReducer(assetSelectorReducer, initialState);
 
@@ -377,6 +380,7 @@ export const MiniAssetSelector = forwardRef<HTMLDivElement, MiniAssetSelectorPro
           onKeyDown={handleInputKeyDown}
           onFileChange={handleFileChange}
           onBlur={onBlur}
+          onPaste={onPaste}
         />
 
         <ImagePreview

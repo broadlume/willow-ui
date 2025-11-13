@@ -26,6 +26,7 @@ export interface URLInputProps {
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
 }
 
 export const URLInput: React.FC<URLInputProps> = ({
@@ -51,6 +52,7 @@ export const URLInput: React.FC<URLInputProps> = ({
   onKeyDown,
   onFileChange,
   onBlur,
+  onPaste,
 }) => {
   return (
     <>
@@ -66,6 +68,7 @@ export const URLInput: React.FC<URLInputProps> = ({
         onChange={onChange}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
+        onPaste={onPaste}
         disabled={loading || disabled}
         postfixSlot={
           showBrowseButton ? (

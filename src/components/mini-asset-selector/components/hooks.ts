@@ -1,11 +1,8 @@
 import React, { DragEvent } from 'react';
 import { AssetSelectorAction } from './types';
-import { debugFileObject } from './debug';
 
 // Helper function to check if file is an image
 export const isImageFile = (file: File): boolean => {
-  // Debug the file object
-  debugFileObject(file, 'isImageFile validation');
   
   // Ensure file object has necessary properties
   if (!file || typeof file !== 'object') {
@@ -146,9 +143,6 @@ export const useDragAndDrop = (
     
     try {
       const file = e.dataTransfer.files?.[0];
-      
-      // Debug the file object when dropped
-      debugFileObject(file, 'Drag Drop Event');
       
       if (file) {
         // Additional safety check for file object
