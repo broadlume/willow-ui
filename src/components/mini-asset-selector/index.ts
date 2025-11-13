@@ -1,0 +1,1 @@
+export { MiniAssetSelector, type MiniAssetSelectorProps } from './mini-asset-selector';

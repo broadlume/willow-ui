@@ -54,6 +54,8 @@ export type EditorProps = {
     query: string
   ) => Promise<{ label: string; value: string }[]>;
   hostname: string;
+  onImageBrowseClick?: (editor: TiptapEditor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  onImageDrop?: (editor: TiptapEditor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -243,6 +245,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
                 hostname={props.hostname}
+                onImageBrowseClick={props.onImageBrowseClick}
+                onImageDrop={props.onImageDrop}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -274,6 +278,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
               darkMode={darkMode}
               toggleDarkMode={() => setDarkMode((v) => !v)}
               hostname={props.hostname}
+              onImageBrowseClick={props.onImageBrowseClick}
+              onImageDrop={props.onImageDrop}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
