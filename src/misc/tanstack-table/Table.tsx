@@ -674,7 +674,11 @@ export function useDataTable<TData, TValue>({
                 className={clsx(
                   // Always add padding-left to the first cell to reserve space
                   // and position the cell relatively for the absolute span.
-                  isFirstCell ? 'relative first:pl-[30px]' : '', // Adjust 30px based on icon size
+                  isFirstCell
+                    ? enableRowSelection
+                      ? 'relative first:pl-[30px]'
+                      : 'first:pl-[16px]'
+                    : '', // Adjust 30px based on icon size
                   'last:px-3',
                   itemProps?.tableCell?.className
                 )}
