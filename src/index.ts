@@ -52,3 +52,4 @@ export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
 export * from '@src/misc/custom-data-table/custom-data-table';
 export * from '@src/misc/tanstack-table/Table';
+export * from '@src/lib/hooks/useColumnVisibility'
