@@ -85,6 +85,7 @@ export const useFileHandler = (
         name: file.name,
         size: file.size,
         isDataUrl: true, // Mark this as a data URL from dropped file
+        file: file, // Include the original File object
       },
     });
 
@@ -98,6 +99,7 @@ export const useFileHandler = (
           name: file.name,
           size: file.size,
           isDataUrl: true, // Mark this as a data URL
+          file: file, // Include the original File object
         },
       });
       dispatch({ type: 'SET_INPUT_VALUE', payload: '' });
