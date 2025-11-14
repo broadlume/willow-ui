@@ -110,6 +110,11 @@ const DefaultExample = (args: Partial<MiniAssetSelectorProps>) => {
         selectedURL={selectedURL}
         onSelectedURL={setSelectedURL}
         name={args.name || 'asset-selector'}
+        onImageNameClick={
+          e => {
+            console.log('image clicked', e);
+          }
+        }
       />
     </div>
   );
