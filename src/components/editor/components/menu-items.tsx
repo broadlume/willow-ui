@@ -34,6 +34,7 @@ import { ReactComponent as AIIcon } from './ai-icon.svg';
 import { ColorPickerInput } from '@components/color-picker-input/color-picker-input';
 import { Button } from '@components/button';
 import { Input } from '@components/input/input';
+import { MiniAssetSelector } from '@components/mini-asset-selector';
 
 import AIContent from './ai-content';
 import { MenuLink } from './menu-link';
@@ -62,6 +63,8 @@ export interface MenuItemRenderProps {
   setL2EmbedLink?: (link: string) => void;
   l2Image?: string;
   setL2Image?: (image: string) => void;
+  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
   expandedMenu?: boolean; // For More button to hide sub-menus
   setExpandedMenu?: (expanded: boolean) => void;
   expandedMenuL2?: boolean; // For More button to hide sub-menus
@@ -148,7 +151,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             )}
           />
         }
-        eventHandler={() => {}}
+        eventHandler={() => { }}
       />
     ),
     dividerAfter: true,
@@ -168,7 +171,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             darkMode={darkMode}
           />
         }
-        eventHandler={() => {}}
+        eventHandler={() => { }}
       />
     ),
     dividerAfter: true,
@@ -301,7 +304,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
               darkMode={darkMode}
             />
           }
-          eventHandler={() => {}}
+          eventHandler={() => { }}
         />
       </MenuItemWithTooltip>
     ),
@@ -514,7 +517,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
               darkMode={darkMode}
             />
           }
-          eventHandler={() => {}}
+          eventHandler={() => { }}
         />
       </MenuItemWithTooltip>
     ),
@@ -737,7 +740,9 @@ export const getL3MenuContent = (
   setL2EmbedLink: (link: string) => void,
   l2Image: string | undefined,
   setL2Image: (image: string) => void,
-  setExpandedMenuL2: (expanded: boolean) => void
+  setExpandedMenuL2: (expanded: boolean) => void,
+  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void,
+  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void
 ) => {
   switch (expandedMenuL2Type) {
     case 'link':
@@ -839,46 +844,63 @@ export const getL3MenuContent = (
       );
     case 'image':
       return (
-        <>
-          <Input
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-              }
-            }}
-            type='url'
-            placeholder='https://'
-            value={l2Image}
-            className='rounded-md border-[1px] border-solid border-gray-300 p-2'
-            onChange={(e) => setL2Image(e.target.value)}
-          />
-          <Button
-            type='button'
-            variant='default'
-            className='rounded-3xl px-8'
-            disabled={!l2Image || !isURL(l2Image, { require_protocol: true })}
-            onClick={() => {
-              if (l2Image && isURL(l2Image, { require_protocol: true })) {
-                editor.commands.setImage({ src: l2Image });
+        <div className="flex flex-col gap-2 w-full">
+          <div className="flex-1">
+            <MiniAssetSelector
+              selectedURL={l2Image}
+              onSelectedURL={(url) => {
+                if (url) {
+                  setL2Image(url);
+                }
+              }}
+              onSelectedFile={(file) => {
+                if (file && onImageDrop) {
+                  // Call custom onDrop handler if provided
+                  onImageDrop(editor, file, setL2Image);
+                } else if (file) {
+                  // Default behavior: create object URL for the file
+                  const fileUrl = URL.createObjectURL(file);
+                  setL2Image(fileUrl);
+                }
+              }}
+              placeholder="Enter Image URL here or Drag & drop here"
+              browseButtonText="Browse Assets"
+              onBrowseClick={() => onImageBrowseClick?.(editor, setL2Image)}
+              className="w-full"
+              showBrowseButton={true}
+              fullWidth={true}
+            />
+          </div>
+          <div className='flex justify-end gap-4'>
+            <Button
+              type='button'
+              variant='default'
+              className='rounded-3xl px-8 flex-shrink-0'
+              disabled={!l2Image}
+              onClick={() => {
+                if (l2Image) {
+                  editor.chain().focus().setImage({ src: l2Image }).run();
+                  setL2Image('');
+                  setExpandedMenuL2(false);
+                }
+              }}
+            >
+              Insert
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
+              onClick={() => {
                 setL2Image('');
                 setExpandedMenuL2(false);
-              }
-            }}
-          >
-            Submit
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
-            onClick={() => {
-              setL2Image('');
-              setExpandedMenuL2(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </>
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+
       );
 
     default:

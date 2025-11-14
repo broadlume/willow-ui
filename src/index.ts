@@ -45,9 +45,9 @@ export * from '@components/code-editor/code-editor';
 export * from '@components/Loader/Loader';
 export * from '@components/async-autocomplete/async-autocomplete';
 export * from '@components/sidebar/sidebar';
+export * from '@components/mini-asset-selector/mini-asset-selector';
 export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
-
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
