@@ -20,7 +20,7 @@ import type { DateRange } from 'react-day-picker';
 import { HiAdjustments, HiOutlineSearch } from 'react-icons/hi';
 import { HiMiniCalendarDays, HiOutlineXCircle } from 'react-icons/hi2';
 import { CountBadge } from './count-badge';
-import type { FilterConfig, FilterPanelProps, FilterValues } from './types';
+import type { FilterPanelProps, FilterValues } from './types';
 
 /**
  * Reusable filter panel component with support for checkbox and date range filters
@@ -49,10 +49,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   const [dateRanges, setDateRanges] = useState<
     Record<string, DateRange | undefined>
   >({});
-  // Date picker open states for each filter
-  const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>(
-    {}
-  );
 
   // Initialize filters with all options selected by default
   useEffect(() => {
@@ -99,16 +95,9 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           to: range.to.toISOString(),
         },
       });
-      // Close DatePicker automatically when both dates are selected
-      setDatePickerOpen((prev) => ({ ...prev, [key]: false }));
     } else if (!range) {
       onFiltersChange({ ...filters, [key]: null });
     }
-  };
-
-  // Toggle DatePicker open state for calendar icon
-  const toggleDatePicker = (key: string) => {
-    setDatePickerOpen((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   // Reset all filters to their default empty state
@@ -125,7 +114,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     onFiltersChange(cleared);
     setSearchTerms({});
     setDateRanges({});
-    setDatePickerOpen({});
   };
 
   // Filter options based on search term
@@ -184,89 +172,71 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                   // Date range filter section
                   <div
                     key={key}
-                    className='w-full border-b border-[#E5E5E5] px-1 py-3'
+                    className='w-full border-b border-[#E5E5E5] px-1 py-1'
                   >
-                    <div className='flex w-full items-center justify-between'>
-                      <span>{label}</span>
-
-                      <div className='flex gap-4 items-center'>
-                        {filters[key] && <CountBadge count={1} />}
-
-                        {/* Calendar icon toggles date picker */}
-                        <HiMiniCalendarDays
-                          className='cursor-pointer text-[#666666]'
-                          size={13}
-                          onClick={() => toggleDatePicker(key)}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Display selected date range with clear option */}
-                    {filters[key] && (
-                      <div
-                        className='mb-2 mt-2 flex h-[24px] w-[172px] cursor-pointer items-center justify-between gap-[8px] rounded-[4px] bg-[#FFFFFF] px-[4px] py-[4px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'
-                        onClick={() => toggleDatePicker(key)}
-                      >
-                        <span className='text-[13px] text-[#1A1A1A]'>
-                          {formatDate(
-                            (filters[key] as { from: string; to: string }).from,
-                            'mm-dd-yyyy'
-                          )}{' '}
-                          to{' '}
-                          {formatDate(
-                            (filters[key] as { from: string; to: string }).to,
-                            'mm-dd-yyyy'
-                          )}
-                        </span>
-                        <button
-                          type='button'
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDateRangeChange(key, undefined);
+                    {filters[key] ? (
+                      // Show selected date range with clear option when dates are selected
+                      <>
+                        {/* Display selected date range with clear option */}
+                        <div className='mb-2 flex h-[24px] w-[172px] cursor-pointer items-center justify-between gap-[8px] rounded-[4px] bg-[#FFFFFF] px-[4px] py-[4px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
+                          <span className='text-[13px] text-[#1A1A1A]'>
+                            {formatDate(
+                              (filters[key] as { from: string; to: string })
+                                .from,
+                              'mm-dd-yyyy'
+                            )}{' '}
+                            to{' '}
+                            {formatDate(
+                              (filters[key] as { from: string; to: string }).to,
+                              'mm-dd-yyyy'
+                            )}
+                          </span>
+                          <button
+                            type='button'
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDateRangeChange(key, undefined);
+                            }}
+                            className='rounded text-[#1A6CFF] hover:text-[#1A1A1A]'
+                          >
+                            <HiOutlineXCircle
+                              className='!h-[16px] !w-[16px]'
+                              color='#1A6CFF'
+                            />
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      // Show label and date picker when no dates are selected
+                      <div className='flex w-full items-center justify-between'>
+                        <span>{label}</span>
+                        {/* Date picker component */}
+                        <DatePicker
+                          mode='range'
+                          selected={dateRanges[key]}
+                          onOpenChange={(open) => {
+                            if (!open) {
+                              // Clear temporary date range state when picker closes
+                              setDateRanges((prev) => ({
+                                ...prev,
+                                [key]: undefined,
+                              }));
+                            }
                           }}
-                          className='rounded text-[#1A6CFF] hover:text-[#1A1A1A]'
-                        >
-                          <HiOutlineXCircle
-                            className='!h-[16px] !w-[16px]'
-                            color='#1A6CFF'
-                          />
-                        </button>
+                          onSelect={(range: DateRange | undefined) => {
+                            handleDateRangeChange(key, range);
+                          }}
+                          trigger={
+                            <Button variant={'ghost'} className='p-1'>
+                              <HiMiniCalendarDays
+                                className='w-4 h-4'
+                                color='#666666'
+                              />
+                            </Button>
+                          }
+                        />
                       </div>
                     )}
-
-                    {/* Date picker component */}
-                    <DatePicker
-                      mode='range'
-                      selected={dateRanges[key]}
-                      open={datePickerOpen[key] || false}
-                      onOpenChange={(open) => {
-                        setDatePickerOpen((prev) => ({ ...prev, [key]: open }));
-                        if (!open) {
-                          // Clear temporary date range state when picker closes
-                          setDateRanges((prev) => ({
-                            ...prev,
-                            [key]: undefined,
-                          }));
-                        }
-                      }}
-                      onSelect={(range: DateRange | undefined) => {
-                        handleDateRangeChange(key, range);
-                      }}
-                      trigger={
-                        <button
-                          type='button'
-                          style={{
-                            position: 'absolute',
-                            left: '-1px',
-                            top: '-1px',
-                            width: '1px',
-                            height: '1px',
-                            opacity: 0,
-                            overflow: 'hidden',
-                          }}
-                        />
-                      }
-                    />
                   </div>
                 ) : (
                   // Checkbox filter section
