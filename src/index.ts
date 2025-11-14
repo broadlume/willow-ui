@@ -48,6 +48,7 @@ export * from '@components/sidebar/sidebar';
 export * from '@components/mini-asset-selector/mini-asset-selector';
 export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
+
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';

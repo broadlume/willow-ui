@@ -5,16 +5,38 @@ export interface FilterValues {
 export interface FilterConfig {
   key: string;
   label: string;
-  options: string[];
+  type: 'select' | 'dateRange' | 'api-select';
+  options?: string[];
   canSelectAll?: boolean;
   searchable?: boolean;
-  type: 'select' | 'dateRange';
+}
+
+export interface AllAvailableItems {
+  id: string;
+  label: string;
+}
+
+export interface ApiSelectFilterConfig
+  extends Omit<FilterConfig, 'type' | 'options'> {
+  type: 'api-select';
+  hookKey: string;
+  apiOptions?: Record<string, string | number | boolean | undefined>;
+  unselectedItems?: string[];
+  allAvailableItems?: AllAvailableItems[];
+  totalItemsCount?: number;
+  isLoading?: boolean;
+  isError?: boolean;
+  isFetchingNextPage?: boolean;
+  hasNextPage?: boolean;
+  onLoadMore?: () => void;
+  onToggleItem?: (itemId: string) => void;
+  isInitialization?: boolean;
 }
 
 export interface FilterPanelProps<T extends FilterValues = FilterValues> {
   filters: T;
   onFiltersChange: (filters: T) => void;
-  filterConfig: FilterConfig[];
+  filterConfig: (FilterConfig | ApiSelectFilterConfig)[];
   isLoading?: boolean;
   formatDate?: (date: string, format: string) => string;
 }
