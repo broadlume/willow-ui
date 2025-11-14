@@ -68,6 +68,8 @@ export interface MiniAssetSelectorProps {
   errorMessage?: string;
   /** Paste event handler for the URL input */
   onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  /** Callback when the image name/preview is clicked - passes image data */
+  onImageNameClick?: (imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void;
 }
 
 /**
@@ -101,6 +103,7 @@ export const MiniAssetSelector = forwardRef<HTMLDivElement, MiniAssetSelectorPro
   error = false,
   errorMessage,
   onPaste,
+  onImageNameClick,
 }, ref) => {
   const [state, dispatch] = useReducer(assetSelectorReducer, initialState);
 
@@ -115,6 +118,7 @@ export const MiniAssetSelector = forwardRef<HTMLDivElement, MiniAssetSelectorPro
     dragError,
     imageError,
     isDataUrl,
+    originalFile,
   } = state;
 
   // Helper function to handle value changes (React Hook Form compatibility)
@@ -392,6 +396,8 @@ export const MiniAssetSelector = forwardRef<HTMLDivElement, MiniAssetSelectorPro
           disabled={disabled}
           onRemove={handleRemoveImage}
           onImageError={handleImageError}
+          onImageNameClick={onImageNameClick}
+          originalFile={originalFile}
         />
       </div>
     </DragDropZone>

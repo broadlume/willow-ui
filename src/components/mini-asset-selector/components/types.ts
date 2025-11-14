@@ -13,10 +13,11 @@ export interface AssetSelectorState {
   dragError: boolean;
   imageError: boolean;
   isDataUrl: boolean; // New flag to track if current image is from a dropped file
+  originalFile: File | null; // Store the original File object for dropped/selected files
 }
 
 export type AssetSelectorAction =
-  | { type: 'SET_IMAGE'; payload: { image: string; name?: string; size?: number; isDataUrl?: boolean } }
+  | { type: 'SET_IMAGE'; payload: { image: string; name?: string; size?: number; isDataUrl?: boolean; file?: File | null } }
   | { type: 'SET_INPUT_VALUE'; payload: string }
   | { type: 'SET_INPUT_ERROR'; payload: string | null }
   | { type: 'SET_DRAG_STATE'; payload: { active: boolean; error: boolean } }
@@ -36,6 +37,7 @@ export const initialState: AssetSelectorState = {
   dragError: false,
   imageError: false,
   isDataUrl: false,
+  originalFile: null,
 };
 
 export const assetSelectorReducer = (
@@ -52,6 +54,7 @@ export const assetSelectorReducer = (
         imageError: false,
         inputError: null,
         isDataUrl: action.payload.isDataUrl || false,
+        originalFile: action.payload.file || null,
       };
     case 'SET_INPUT_VALUE':
       return {
@@ -82,6 +85,7 @@ export const assetSelectorReducer = (
         imageError: action.payload,
         imageName: action.payload ? null : state.imageName,
         imageSize: action.payload ? null : state.imageSize,
+        originalFile: action.payload ? null : state.originalFile,
       };
     case 'CLEAR_PREVIEW':
       return {
@@ -91,6 +95,7 @@ export const assetSelectorReducer = (
         imageSize: null,
         imageError: false,
         isDataUrl: false,
+        originalFile: null,
       };
     case 'RESET_STATE':
       return {
