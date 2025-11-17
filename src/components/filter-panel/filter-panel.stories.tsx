@@ -77,12 +77,12 @@ const dateFilterConfig: FilterConfig[] = [
 
 // Stable filter values that match the component's expectations
 const defaultFilters: FilterValues = {
-  categories: mockCategories,
-  brands: mockBrands,
+  categories: [],
+  brands: [],
 };
 
 const dateRangeFilters: FilterValues = {
-  categories: mockCategories,
+  categories: [],
   dateRange: null,
 };
 
@@ -124,17 +124,17 @@ const SafeFilterPanel = ({
   formatDate?: (date: string, format: string) => string;
 }) => {
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
-  const isInitializedRef = useRef(false);
+  const initializationCallCount = useRef(0);
 
-  // Prevent the component's initialization effect from running
+  // Handle filter changes while preventing initialization loops
   const handleFiltersChange = useCallback((newFilters: FilterValues) => {
-    // Only update if this is not the initial automatic call
-    if (isInitializedRef.current) {
+    initializationCallCount.current += 1;
+    
+    // Skip the first automatic call from FilterPanel's useEffect initialization
+    // But allow all subsequent calls (user interactions)
+    if (initializationCallCount.current > 1) {
       console.log('Filters changed:', newFilters);
       setFilters(newFilters);
-    } else {
-      // Mark as initialized after the first call
-      isInitializedRef.current = true;
     }
   }, []);
 

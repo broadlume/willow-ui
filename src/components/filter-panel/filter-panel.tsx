@@ -55,24 +55,26 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   // Refs for infinite scroll containers
   const scrollContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Initialize filters with all options selected by default
+  // Initialize empty filters only if not already set
   useEffect(() => {
     const initialized: T = { ...filters };
+    let hasChanges = false;
+
     filterConfig.forEach((config) => {
       const { key, type } = config;
-      if (
-        type === 'select' &&
-        (!filters[key] || (filters[key] as string[]).length === 0) &&
-        'options' in config &&
-        config.options
-      ) {
-        (initialized as Record<string, unknown>)[key] = [...config.options];
+      if (type === 'select' && filters[key] === undefined) {
+        (initialized as Record<string, unknown>)[key] = [];
+        hasChanges = true;
       }
       if (type === 'dateRange' && filters[key] === undefined) {
         (initialized as Record<string, unknown>)[key] = null;
+        hasChanges = true;
       }
     });
-    onFiltersChange(initialized);
+
+    if (hasChanges) {
+      onFiltersChange(initialized);
+    }
   }, [filterConfig, filters, onFiltersChange]);
 
   // Toggle individual checkbox filter values
@@ -81,13 +83,17 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     const newValues = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
-    onFiltersChange({ ...filters, [key]: newValues });
+
+    const newFilters = { ...filters, [key]: newValues };
+    onFiltersChange(newFilters);
   };
 
   // Handle select all/deselect all for checkbox filters
   const handleSelectAll = (key: string, allValues: string[]) => {
     const current = (filters[key] as string[]) || [];
-    const newValues = current.length === allValues.length ? [] : [...allValues];
+    // Check if all available options are currently selected
+    const allSelected = allValues.every((value) => current.includes(value));
+    const newValues = allSelected ? [] : [...allValues];
     onFiltersChange({ ...filters, [key]: newValues });
   };
 
@@ -111,13 +117,41 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   // Reset all filters to their default empty state
   const handleClearAll = () => {
     const cleared = { ...filters };
-    filterConfig.forEach(({ key, type }) => {
-      (
-        cleared as Record<
-          string,
-          string[] | { from: string; to: string } | null
-        >
-      )[key] = type === 'dateRange' ? null : [];
+    filterConfig.forEach((config) => {
+      const { key, type } = config;
+
+      if (type === 'dateRange') {
+        (
+          cleared as Record<
+            string,
+            string[] | { from: string; to: string } | null
+          >
+        )[key] = null;
+      } else if ('hookKey' in config) {
+        // Handle API-based filters
+        const apiConfig = config as ApiSelectFilterConfig;
+        // Clear all selected items by toggling each one
+        if (apiConfig.selectedItems && apiConfig.onToggleItem) {
+          apiConfig.selectedItems.forEach((itemId) => {
+            apiConfig.onToggleItem!(itemId);
+          });
+        }
+        // Also clear from local filters state
+        (
+          cleared as Record<
+            string,
+            string[] | { from: string; to: string } | null
+          >
+        )[key] = [];
+      } else {
+        // Handle regular select filters
+        (
+          cleared as Record<
+            string,
+            string[] | { from: string; to: string } | null
+          >
+        )[key] = [];
+      }
     });
     onFiltersChange(cleared);
     setSearchTerms({});
@@ -137,13 +171,21 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
         const element = event.currentTarget;
         const { scrollTop, scrollHeight, clientHeight } = element;
 
-        // Calculate if we're near the bottom
+        // Calculate if we're near the bottom with better precision
+        const scrollBottom = scrollTop + clientHeight;
         const isAtBottom =
-          scrollTop + clientHeight >= scrollHeight - INFINITE_SCROLL_THRESHOLD;
+          scrollBottom >= scrollHeight - INFINITE_SCROLL_THRESHOLD;
+
+        // More permissive check for small containers
+        const isNearBottom = scrollBottom >= scrollHeight * 0.85; // 85% scrolled
+
+        // Use the more permissive check for small containers
+        const shouldLoadMore =
+          isAtBottom || (scrollHeight < 300 && isNearBottom);
 
         // Trigger load more if conditions are met
         if (
-          isAtBottom &&
+          shouldLoadMore &&
           config.hasNextPage &&
           !config.isFetchingNextPage &&
           config.onLoadMore
@@ -290,23 +332,18 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                         const config = filterConfig.find((f) => f.key === key);
                         if (config && 'hookKey' in config) {
                           const apiConfig = config as ApiSelectFilterConfig;
-                          if (apiConfig?.unselectedItems) {
-                            const totalCount = apiConfig.totalItemsCount || 0;
+                          if (apiConfig?.selectedItems) {
                             const selectedCount =
-                              totalCount - apiConfig.unselectedItems.length;
-                            if (
-                              selectedCount !== totalCount &&
-                              selectedCount > 0
-                            ) {
+                              apiConfig.selectedItems.length;
+                            if (selectedCount > 0) {
                               return <CountBadge count={selectedCount} />;
                             }
                           }
                         } else {
-                          // Static select filters
+                          // Static select filters - show count when any items are selected
                           if (
                             Array.isArray(filters[key]) &&
-                            (filters[key] as string[]).length > 0 &&
-                            (filters[key] as string[]).length < options.length
+                            (filters[key] as string[]).length > 0
                           ) {
                             return (
                               <CountBadge
@@ -354,9 +391,9 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                               {apiConfig.allAvailableItems?.map(
                                 (item, index) => {
                                   const isChecked =
-                                    !apiConfig.unselectedItems?.includes(
+                                    apiConfig.selectedItems?.includes(
                                       item.id
-                                    );
+                                    ) || false;
                                   return (
                                     <div
                                       key={`${item.id}-${index}`}
@@ -388,7 +425,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                               {apiConfig.hasNextPage &&
                                 apiConfig.isFetchingNextPage && (
                                   <div className='text-[12px] text-[#9CA3AF] p-2 text-center'>
-                                    Loading...
+                                    Loading more...
                                   </div>
                                 )}
 

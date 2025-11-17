@@ -21,7 +21,7 @@ export interface ApiSelectFilterConfig
   type: 'api-select';
   hookKey: string;
   apiOptions?: Record<string, string | number | boolean | undefined>;
-  unselectedItems?: string[];
+  selectedItems?: string[];
   allAvailableItems?: AllAvailableItems[];
   totalItemsCount?: number;
   isLoading?: boolean;
