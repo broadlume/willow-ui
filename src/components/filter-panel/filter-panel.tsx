@@ -1,29 +1,15 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@components/accordion/accordion';
+import { Accordion } from '@components/accordion/accordion';
 import { Button } from '@components/button';
-
-import { Checkbox } from '@components/checkbox/checkbox';
-import { DatePicker } from '@components/date-picker/date-picker';
-import { Input } from '@components/input/input';
-import { Label } from '@components/label/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { DateRange } from 'react-day-picker';
-import { HiAdjustments, HiOutlineSearch } from 'react-icons/hi';
-import { HiMiniCalendarDays, HiOutlineXCircle } from 'react-icons/hi2';
-import { CountBadge } from './count-badge';
-import { ApiSelectFilterConfig, FilterPanelProps, FilterValues } from './types';
-
-// Threshold for infinite scroll trigger (pixels from bottom)
-const INFINITE_SCROLL_THRESHOLD = 50;
+import { HiAdjustments } from 'react-icons/hi';
+import { DateRangeFilter } from './components/date-range-filter';
+import { SelectFilterItem } from './components/select-filter-item';
+import { useFilterPanel } from './hooks/use-filter-panel';
+import { FilterPanelProps, FilterValues } from './types';
 
 /**
  * Reusable filter panel component with support for checkbox, date range, and API-based infinite scroll filters
@@ -32,7 +18,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   filters,
   onFiltersChange,
   filterConfig,
-  isLoading = true,
+  isLoading = false,
   formatDate = (date: string, format: string) => {
     const d = new Date(date);
     if (format === 'mm-dd-yyyy') {
@@ -44,169 +30,22 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     return d.toLocaleDateString();
   },
 }: FilterPanelProps<T>) => {
-  // Popover state management
-  const [isOpen, setIsOpen] = useState(false);
-  // Search terms for filtering options within each filter
-  const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
-  // Date range picker states
-  const [dateRanges, setDateRanges] = useState<
-    Record<string, DateRange | undefined>
-  >({});
-  // Refs for infinite scroll containers
-  const scrollContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  // Initialize empty filters only if not already set
-  useEffect(() => {
-    const initialized: T = { ...filters };
-    let hasChanges = false;
-
-    filterConfig.forEach((config) => {
-      const { key, type } = config;
-      if (type === 'select' && filters[key] === undefined) {
-        (initialized as Record<string, unknown>)[key] = [];
-        hasChanges = true;
-      }
-      if (type === 'dateRange' && filters[key] === undefined) {
-        (initialized as Record<string, unknown>)[key] = null;
-        hasChanges = true;
-      }
-    });
-
-    if (hasChanges) {
-      onFiltersChange(initialized);
-    }
-  }, [filterConfig, filters, onFiltersChange]);
-
-  // Toggle individual checkbox filter values
-  const handleCheckboxChange = (key: string, value: string) => {
-    const current = (filters[key] as string[]) || [];
-    const newValues = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value];
-
-    const newFilters = { ...filters, [key]: newValues };
-    onFiltersChange(newFilters);
-  };
-
-  // Handle select all/deselect all for checkbox filters
-  const handleSelectAll = (key: string, allValues: string[]) => {
-    const current = (filters[key] as string[]) || [];
-    // Check if all available options are currently selected
-    const allSelected = allValues.every((value) => current.includes(value));
-    const newValues = allSelected ? [] : [...allValues];
-    onFiltersChange({ ...filters, [key]: newValues });
-  };
-
-  // Handle date range selection and filtering
-  const handleDateRangeChange = (key: string, range: DateRange | undefined) => {
-    setDateRanges((prev) => ({ ...prev, [key]: range }));
-
-    if (range?.from && range?.to) {
-      onFiltersChange({
-        ...filters,
-        [key]: {
-          from: range.from.toISOString(),
-          to: range.to.toISOString(),
-        },
-      });
-    } else if (!range) {
-      onFiltersChange({ ...filters, [key]: null });
-    }
-  };
-
-  // Reset all filters to their default empty state
-  const handleClearAll = () => {
-    const cleared = { ...filters };
-    filterConfig.forEach((config) => {
-      const { key, type } = config;
-
-      if (type === 'dateRange') {
-        (
-          cleared as Record<
-            string,
-            string[] | { from: string; to: string } | null
-          >
-        )[key] = null;
-      } else if ('hookKey' in config) {
-        // Handle API-based filters
-        const apiConfig = config as ApiSelectFilterConfig;
-        // Clear all selected items by toggling each one
-        if (apiConfig.selectedItems && apiConfig.onToggleItem) {
-          apiConfig.selectedItems.forEach((itemId) => {
-            apiConfig.onToggleItem!(itemId);
-          });
-        }
-        // Also clear from local filters state
-        (
-          cleared as Record<
-            string,
-            string[] | { from: string; to: string } | null
-          >
-        )[key] = [];
-      } else {
-        // Handle regular select filters
-        (
-          cleared as Record<
-            string,
-            string[] | { from: string; to: string } | null
-          >
-        )[key] = [];
-      }
-    });
-    onFiltersChange(cleared);
-    setSearchTerms({});
-    setDateRanges({});
-  };
-
-  // Filter options based on search term
-  const filterOptions = (options: string[], term: string) =>
-    options.filter((option) =>
-      option.toLowerCase().includes(term.toLowerCase())
-    );
-
-  // Handle infinite scroll for API-based filters
-  const handleScroll = useCallback(
-    (key: string, config: ApiSelectFilterConfig) => {
-      return (event: React.UIEvent<HTMLDivElement>) => {
-        const element = event.currentTarget;
-        const { scrollTop, scrollHeight, clientHeight } = element;
-
-        // Calculate if we're near the bottom with better precision
-        const scrollBottom = scrollTop + clientHeight;
-        const isAtBottom =
-          scrollBottom >= scrollHeight - INFINITE_SCROLL_THRESHOLD;
-
-        // More permissive check for small containers
-        const isNearBottom = scrollBottom >= scrollHeight * 0.85; // 85% scrolled
-
-        // Use the more permissive check for small containers
-        const shouldLoadMore =
-          isAtBottom || (scrollHeight < 300 && isNearBottom);
-
-        // Trigger load more if conditions are met
-        if (
-          shouldLoadMore &&
-          config.hasNextPage &&
-          !config.isFetchingNextPage &&
-          config.onLoadMore
-        ) {
-          config.onLoadMore();
-        }
-      };
-    },
-    []
-  );
-
-  // Count active filters for badge display
-  const activeFiltersCount = useMemo(
-    () =>
-      Object.entries(filters).filter(([key, val]) => {
-        const filter = filterConfig.find((f) => f.key === key);
-        if (filter?.type === 'dateRange') return val !== null;
-        return Array.isArray(val) && val.length > 0;
-      }).length,
-    [filters, filterConfig]
-  );
+  // Use the custom hook for all filter panel logic
+  const {
+    isOpen,
+    setIsOpen,
+    searchTerms,
+    setSearchTerms,
+    dateRanges,
+    scrollContainerRefs,
+    activeFiltersCount,
+    handleCheckboxChange,
+    handleSelectAll,
+    handleDateRangeChange,
+    handleClearAll,
+    handleScroll,
+    filterOptions,
+  } = useFilterPanel({ filters, onFiltersChange, filterConfig });
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -235,305 +74,38 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
             {filterConfig.map((config) => {
-              const { key, label, type } = config;
-              const options = ('options' in config ? config.options : []) || [];
-              const canSelectAll =
-                ('canSelectAll' in config ? config.canSelectAll : true) ?? true;
-              const searchable =
-                ('searchable' in config ? config.searchable : false) ?? false;
+              const { key, type } = config;
 
               return type === 'dateRange' ? (
-                // Date range filter section
-                <div
+                <DateRangeFilter
                   key={key}
-                  className='w-full border-b border-[#E5E5E5] px-1 py-1'
-                >
-                  {filters[key] ? (
-                    // Show selected date range with clear option when dates are selected
-                    <>
-                      {/* Display selected date range with clear option */}
-                      <div className='px-1 py-1 flex h-[24px] w-[169px] cursor-pointer items-center justify-between rounded-[4px] bg-[#FFFFFF] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
-                        <span className='text-[13px] text-[#1A1A1A]'>
-                          {formatDate(
-                            (filters[key] as { from: string; to: string }).from,
-                            'mm-dd-yyyy'
-                          )}{' '}
-                          to{' '}
-                          {formatDate(
-                            (filters[key] as { from: string; to: string }).to,
-                            'mm-dd-yyyy'
-                          )}
-                        </span>
-                        <button
-                          type='button'
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDateRangeChange(key, undefined);
-                          }}
-                          className='rounded text-[#1A6CFF] hover:text-[#1A1A1A]'
-                        >
-                          <HiOutlineXCircle
-                            className='!h-[16px] !w-[16px]'
-                            color='#1A6CFF'
-                          />
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    // Show label and date picker when no dates are selected
-                    <div className='flex w-full items-center justify-between'>
-                      <span>{label}</span>
-                      {/* Date picker component */}
-                      <DatePicker
-                        mode='range'
-                        selected={dateRanges[key]}
-                        onOpenChange={(open) => {
-                          if (!open) {
-                            // Clear temporary date range state when picker closes
-                            setDateRanges((prev) => ({
-                              ...prev,
-                              [key]: undefined,
-                            }));
-                          }
-                        }}
-                        onSelect={(range: DateRange | undefined) => {
-                          handleDateRangeChange(key, range);
-                        }}
-                        trigger={
-                          <Button variant={'ghost'} className='p-1'>
-                            <HiMiniCalendarDays
-                              className='w-4 h-4'
-                              color='#666666'
-                            />
-                          </Button>
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
+                  filterKey={key}
+                  label={config.label}
+                  selectedRange={
+                    filters[key] as { from: string; to: string } | null
+                  }
+                  tempRange={dateRanges[key]}
+                  formatDate={formatDate}
+                  onDateRangeChange={handleDateRangeChange}
+                />
               ) : (
-                // Checkbox filter section (static or API-based)
-                <AccordionItem
+                <SelectFilterItem
                   key={key}
-                  value={key}
-                  className='w-full border-b border-[#E5E5E5] px-1 py-1'
-                >
-                  <AccordionTrigger
-                    className='flex items-center justify-between py-2 text-[14px] font-normal text-[#1A1A1A] hover:no-underline'
-                    caretClasses='h-2 w-4 text-[#666666]'
-                  >
-                    <div className='flex w-full items-center justify-between'>
-                      <div className='flex items-center gap-2'>
-                        <span>{label}</span>
-                      </div>
-
-                      {/* Show count of selected filters */}
-                      {(() => {
-                        const config = filterConfig.find((f) => f.key === key);
-                        if (config && 'hookKey' in config) {
-                          const apiConfig = config as ApiSelectFilterConfig;
-                          if (apiConfig?.selectedItems) {
-                            const selectedCount =
-                              apiConfig.selectedItems.length;
-                            if (selectedCount > 0) {
-                              return <CountBadge count={selectedCount} />;
-                            }
-                          }
-                        } else {
-                          // Static select filters - show count when any items are selected
-                          if (
-                            Array.isArray(filters[key]) &&
-                            (filters[key] as string[]).length > 0
-                          ) {
-                            return (
-                              <CountBadge
-                                count={(filters[key] as string[]).length}
-                              />
-                            );
-                          }
-                        }
-                        return null;
-                      })()}
-                    </div>
-                  </AccordionTrigger>
-
-                  <AccordionContent className='space-y-3 pb-3'>
-                    {(() => {
-                      const config = filterConfig.find((f) => f.key === key);
-                      if (config && 'hookKey' in config) {
-                        const apiConfig = config as ApiSelectFilterConfig;
-                        return (
-                          <div className='ml-2 mt-1 space-y-2'>
-                            <div
-                              ref={(el) => {
-                                scrollContainerRefs.current[key] = el;
-                              }}
-                              className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'
-                              onScroll={handleScroll(key, apiConfig)}
-                            >
-                              {/* Loading state for initial load */}
-                              {apiConfig.isLoading &&
-                                (!apiConfig.allAvailableItems ||
-                                  apiConfig.allAvailableItems.length === 0) && (
-                                  <div className='text-[12px] text-[#9CA3AF] p-2'>
-                                    Loading...
-                                  </div>
-                                )}
-
-                              {/* Error state */}
-                              {apiConfig.isError && (
-                                <div className='text-[12px] text-red-500 p-2'>
-                                  Error loading data
-                                </div>
-                              )}
-
-                              {/* Render available items */}
-                              {apiConfig.allAvailableItems?.map(
-                                (item, index) => {
-                                  const isChecked =
-                                    apiConfig.selectedItems?.includes(
-                                      item.id
-                                    ) || false;
-                                  return (
-                                    <div
-                                      key={`${item.id}-${index}`}
-                                      className='flex items-center gap-2'
-                                    >
-                                      <Checkbox
-                                        className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
-                                        id={`${key}-${item.id}`}
-                                        checked={isChecked}
-                                        onCheckedChange={() => {
-                                          if (apiConfig.onToggleItem) {
-                                            apiConfig.onToggleItem(item.id);
-                                          }
-                                        }}
-                                        disabled={isLoading}
-                                      />
-                                      <Label
-                                        htmlFor={`${key}-${item.id}`}
-                                        className='cursor-pointer text-[14px]'
-                                      >
-                                        {item.label}
-                                      </Label>
-                                    </div>
-                                  );
-                                }
-                              )}
-
-                              {/* Loading more indicator */}
-                              {apiConfig.hasNextPage &&
-                                apiConfig.isFetchingNextPage && (
-                                  <div className='text-[12px] text-[#9CA3AF] p-2 text-center'>
-                                    Loading more...
-                                  </div>
-                                )}
-
-                              {/* Spacer for scrolling */}
-                              {(apiConfig.allAvailableItems?.length || 0) >
-                                0 && <div className='h-2' />}
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      // Static select filters (original implementation)
-                      return (
-                        <>
-                          {/* Search input for filtering options */}
-                          {searchable && (
-                            <div className='relative'>
-                              <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]' />
-                              <Input
-                                placeholder='Search'
-                                value={searchTerms[key] || ''}
-                                onChange={(e) =>
-                                  setSearchTerms({
-                                    ...searchTerms,
-                                    [key]: e.target.value,
-                                  })
-                                }
-                                className='h-8 w-full rounded-md border border-[#E5E5E5] pl-8 text-[13px]'
-                              />
-                            </div>
-                          )}
-
-                          <div className='ml-2 mt-1 space-y-2'>
-                            <div className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'>
-                              {/* Select all/deselect all option */}
-                              {canSelectAll && (
-                                <div
-                                  key={`${key}-select-all`}
-                                  className='flex items-center gap-2'
-                                >
-                                  <Checkbox
-                                    className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
-                                    id={`${key}-select-all`}
-                                    checked={
-                                      (filters[key] as string[])?.length ===
-                                      options.length
-                                        ? true
-                                        : (filters[key] as string[])?.length > 0
-                                        ? 'indeterminate'
-                                        : false
-                                    }
-                                    data-state={
-                                      (filters[key] as string[])?.length ===
-                                      options.length
-                                        ? 'checked'
-                                        : (filters[key] as string[])?.length > 0
-                                        ? 'indeterminate'
-                                        : 'unchecked'
-                                    }
-                                    onCheckedChange={() =>
-                                      handleSelectAll(key, options)
-                                    }
-                                    disabled={isLoading}
-                                  />
-                                  <Label
-                                    htmlFor={`${key}-select-all`}
-                                    className='cursor-pointer text-[14px] text-[#1A1A1A]'
-                                  >
-                                    Select All
-                                  </Label>
-                                </div>
-                              )}
-
-                              {/* Individual filter options */}
-                              {filterOptions(
-                                options,
-                                searchTerms[key] || ''
-                              ).map((option) => (
-                                <div
-                                  key={option}
-                                  className='flex items-center gap-2'
-                                >
-                                  <Checkbox
-                                    className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
-                                    id={`${key}-${option}`}
-                                    checked={(
-                                      filters[key] as string[]
-                                    )?.includes(option)}
-                                    onCheckedChange={() =>
-                                      handleCheckboxChange(key, option)
-                                    }
-                                    disabled={isLoading}
-                                  />
-                                  <Label
-                                    htmlFor={`${key}-${option}`}
-                                    className='cursor-pointer text-[14px]'
-                                  >
-                                    {option}
-                                  </Label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })()}
-                  </AccordionContent>
-                </AccordionItem>
+                  config={config}
+                  selectedValues={(filters[key] as string[]) || []}
+                  searchTerm={searchTerms[key] || ''}
+                  isLoading={isLoading}
+                  onSearchChange={(key: string, term: string) => {
+                    setSearchTerms((prev) => ({ ...prev, [key]: term }));
+                  }}
+                  onCheckboxChange={handleCheckboxChange}
+                  onSelectAll={handleSelectAll}
+                  onScroll={handleScroll}
+                  scrollRef={(key: string) => (el: HTMLDivElement | null) => {
+                    scrollContainerRefs.current[key] = el;
+                  }}
+                  filterOptions={filterOptions}
+                />
               );
             })}
           </Accordion>
