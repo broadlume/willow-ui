@@ -16,6 +16,12 @@ export interface AllAvailableItems {
   label: string;
 }
 
+export interface ApiSelectFilterState {
+  isSelectAll: boolean;
+  includeItems: string[];
+  excludeItems: string[];
+}
+
 export interface ApiSelectFilterConfig
   extends Omit<FilterConfig, 'type' | 'options'> {
   type: 'api-select';
@@ -31,6 +37,10 @@ export interface ApiSelectFilterConfig
   onLoadMore?: () => void;
   onToggleItem?: (itemId: string) => void;
   isInitialization?: boolean;
+  // New properties for select all functionality
+  filterState?: ApiSelectFilterState;
+  onSelectAllToggle?: (isSelectAll: boolean) => void;
+  onUpdateFilterState?: (state: ApiSelectFilterState) => void;
 }
 
 export interface FilterPanelProps<T extends FilterValues = FilterValues> {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { FilterPanel } from './filter-panel';
-import type { FilterConfig, FilterValues } from './types';
+import type { ApiSelectFilterState, FilterConfig, FilterValues } from './types';
 
 const meta: Meta<typeof FilterPanel> = {
   component: FilterPanel,
@@ -9,7 +9,8 @@ const meta: Meta<typeof FilterPanel> = {
   parameters: {
     docs: {
       description: {
-        component: 'A reusable filter panel component with support for checkbox, date range, and API-based filters.',
+        component:
+          'A reusable filter panel component with support for checkbox, date range, and API-based filters.',
       },
     },
   },
@@ -111,12 +112,12 @@ const minimalConfig: FilterConfig[] = [
 ];
 
 // Wrapper component that prevents initialization loops
-const SafeFilterPanel = ({ 
-  initialFilters, 
-  filterConfig, 
+const SafeFilterPanel = ({
+  initialFilters,
+  filterConfig,
   isLoading = false,
   formatDate,
-  ...props 
+  ...props
 }: {
   initialFilters: FilterValues;
   filterConfig: FilterConfig[];
@@ -129,7 +130,7 @@ const SafeFilterPanel = ({
   // Handle filter changes while preventing initialization loops
   const handleFiltersChange = useCallback((newFilters: FilterValues) => {
     initializationCallCount.current += 1;
-    
+
     // Skip the first automatic call from FilterPanel's useEffect initialization
     // But allow all subsequent calls (user interactions)
     if (initializationCallCount.current > 1) {
@@ -139,7 +140,7 @@ const SafeFilterPanel = ({
   }, []);
 
   return (
-    <div className="p-4">
+    <div className='p-4'>
       <FilterPanel
         filters={filters}
         onFiltersChange={handleFiltersChange}
@@ -148,9 +149,9 @@ const SafeFilterPanel = ({
         formatDate={formatDate}
         {...props}
       />
-      <div className="mt-4 p-4 bg-gray-100 rounded">
-        <h3 className="font-semibold mb-2">Current Filters:</h3>
-        <pre className="text-sm">{JSON.stringify(filters, null, 2)}</pre>
+      <div className='mt-4 p-4 bg-gray-100 rounded'>
+        <h3 className='font-semibold mb-2'>Current Filters:</h3>
+        <pre className='text-sm'>{JSON.stringify(filters, null, 2)}</pre>
       </div>
     </div>
   );
@@ -189,7 +190,7 @@ export const PreSelected: Story = {
         type: 'dateRange' as const,
       },
     ];
-    
+
     return (
       <SafeFilterPanel
         initialFilters={preselectedFilters}
@@ -269,5 +270,125 @@ export const CustomDateFormatting: Story = {
         isLoading={false}
       />
     );
+  },
+};
+
+/** Filter panel with API-based select options demonstrating select all functionality */
+export const WithApiSelect: Story = {
+  render: () => {
+    // Mock API data
+    const mockApiItems = Array.from({ length: 150 }, (_, i) => ({
+      id: `item-${i + 1}`,
+      label: `API Item ${i + 1}`,
+    }));
+
+    const ApiSelectDemo = () => {
+      const [allItems, setAllItems] = useState(mockApiItems.slice(0, 20));
+      const [hasNextPage, setHasNextPage] = useState(true);
+      const [isLoading, setIsLoading] = useState(false);
+      const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+      const [filterState, setFilterState] = useState<ApiSelectFilterState>({
+        isSelectAll: false,
+        includeItems: [],
+        excludeItems: [],
+      });
+
+      const filters = { apiItems: [] };
+      const [currentFilters, setCurrentFilters] = useState(filters);
+
+      const handleLoadMore = useCallback(() => {
+        if (isFetchingNextPage || !hasNextPage) return;
+
+        setIsFetchingNextPage(true);
+        // Simulate API delay
+        setTimeout(() => {
+          const nextIndex = allItems.length;
+          const nextItems = mockApiItems.slice(nextIndex, nextIndex + 20);
+
+          setAllItems((prev) => [...prev, ...nextItems]);
+          setHasNextPage(nextIndex + 20 < mockApiItems.length);
+          setIsFetchingNextPage(false);
+        }, 1000);
+      }, [allItems.length, isFetchingNextPage, hasNextPage]);
+
+      const handleItemToggle = useCallback((itemId: string) => {
+        console.log('Item toggled:', itemId);
+        // The filter panel will handle the state update through onUpdateFilterState
+      }, []);
+
+      const handleUpdateFilterState = useCallback(
+        (newState: ApiSelectFilterState) => {
+          setFilterState(newState);
+          console.log('Filter state updated:', newState);
+        },
+        []
+      );
+
+      const apiFilterConfig = [
+        {
+          key: 'apiItems',
+          label: 'API Items (With Select All)',
+          type: 'api-select' as const,
+          hookKey: 'apiItems',
+          canSelectAll: true,
+          allAvailableItems: allItems,
+          totalItemsCount: mockApiItems.length,
+          isLoading: isLoading,
+          isError: false,
+          isFetchingNextPage: isFetchingNextPage,
+          hasNextPage: hasNextPage,
+          onLoadMore: handleLoadMore,
+          onToggleItem: handleItemToggle,
+          filterState: filterState,
+          onUpdateFilterState: handleUpdateFilterState,
+        },
+      ];
+
+      return (
+        <div className='p-4'>
+          <FilterPanel
+            filters={currentFilters}
+            onFiltersChange={setCurrentFilters}
+            filterConfig={apiFilterConfig}
+            isLoading={false}
+          />
+
+          <div className='mt-4 p-4 bg-gray-100 rounded'>
+            <h3 className='font-semibold mb-2'>Current API Filter State:</h3>
+            <div className='text-sm space-y-2'>
+              <div>
+                <strong>Select All:</strong>{' '}
+                {filterState.isSelectAll ? 'Yes' : 'No'}
+              </div>
+              <div>
+                <strong>Include Items:</strong>{' '}
+                {filterState.includeItems.length}
+              </div>
+              <div>
+                <strong>Exclude Items:</strong>{' '}
+                {filterState.excludeItems.length}
+              </div>
+              <div>
+                <strong>Loaded Items:</strong> {allItems.length} of{' '}
+                {mockApiItems.length}
+              </div>
+              <div>
+                <strong>Has More:</strong> {hasNextPage ? 'Yes' : 'No'}
+              </div>
+            </div>
+            <details className='mt-2'>
+              <summary className='cursor-pointer font-medium'>
+                Full State Details
+              </summary>
+              <pre className='mt-2 text-xs overflow-auto'>
+                {JSON.stringify(filterState, null, 2)}
+              </pre>
+            </details>
+          </div>
+        </div>
+      );
+    };
+
+    return <ApiSelectDemo />;
   },
 };

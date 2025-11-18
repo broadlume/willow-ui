@@ -41,10 +41,13 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     activeFiltersCount,
     handleCheckboxChange,
     handleSelectAll,
+    handleApiSelectAll,
+    handleApiItemToggle,
     handleDateRangeChange,
     handleClearAll,
     handleScroll,
     filterOptions,
+    getApiFilterState,
   } = useFilterPanel({ filters, onFiltersChange, filterConfig });
 
   return (
@@ -100,11 +103,16 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                   }}
                   onCheckboxChange={handleCheckboxChange}
                   onSelectAll={handleSelectAll}
+                  onApiSelectAll={handleApiSelectAll}
+                  onApiItemToggle={handleApiItemToggle}
                   onScroll={handleScroll}
                   scrollRef={(key: string) => (el: HTMLDivElement | null) => {
                     scrollContainerRefs.current[key] = el;
                   }}
                   filterOptions={filterOptions}
+                  apiFilterState={
+                    'hookKey' in config ? getApiFilterState(key) : undefined
+                  }
                 />
               );
             })}

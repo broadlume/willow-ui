@@ -1,7 +1,7 @@
 import {
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from '@components/accordion/accordion';
 import { CountBadge } from '../count-badge';
 import { ApiSelectFilterConfig, FilterConfig } from '../types';
@@ -16,12 +16,15 @@ interface SelectFilterItemProps {
   onSearchChange: (key: string, term: string) => void;
   onCheckboxChange: (key: string, value: string) => void;
   onSelectAll: (key: string, allValues: string[]) => void;
+  onApiSelectAll?: (key: string, isSelectAll: boolean) => void;
+  onApiItemToggle?: (key: string, itemId: string) => void;
   onScroll: (
     key: string,
     config: ApiSelectFilterConfig
   ) => (event: React.UIEvent<HTMLDivElement>) => void;
   scrollRef: (key: string) => (el: HTMLDivElement | null) => void;
   filterOptions: (options: string[], term: string) => string[];
+  apiFilterState?: import('../types').ApiSelectFilterState;
 }
 
 export const SelectFilterItem = ({
@@ -32,9 +35,12 @@ export const SelectFilterItem = ({
   onSearchChange,
   onCheckboxChange,
   onSelectAll,
+  onApiSelectAll,
+  onApiItemToggle,
   onScroll,
   scrollRef,
   filterOptions,
+  apiFilterState,
 }: SelectFilterItemProps) => {
   const { key, label } = config;
   const options = ('options' in config ? config.options : []) || [];
@@ -63,10 +69,23 @@ export const SelectFilterItem = ({
 
           {/* Show count of selected filters */}
           {(() => {
-            if (isApiFilter && apiConfig?.selectedItems) {
-              const selectedCount = apiConfig.selectedItems.length;
-              if (selectedCount > 0) {
-                return <CountBadge count={selectedCount} />;
+            if (isApiFilter && apiConfig) {
+              const filterState = apiFilterState || {
+                isSelectAll: false,
+                includeItems: [],
+                excludeItems: [],
+              };
+
+              if (filterState.isSelectAll) {
+                // Show total count minus excluded items
+                const totalCount = apiConfig.totalItemsCount || 0;
+                const selectedCount =
+                  totalCount - filterState.excludeItems.length;
+                if (selectedCount > 0) {
+                  return <CountBadge count={selectedCount} />;
+                }
+              } else if (filterState.includeItems.length > 0) {
+                return <CountBadge count={filterState.includeItems.length} />;
               }
             } else {
               // Static select filters - show count when any items are selected
@@ -83,10 +102,15 @@ export const SelectFilterItem = ({
         {isApiFilter && apiConfig ? (
           <ApiFilterList
             filterKey={key}
-            config={apiConfig}
+            config={{
+              ...apiConfig,
+              filterState: apiFilterState,
+            }}
             isLoading={isLoading}
             onScroll={onScroll(key, apiConfig)}
             scrollRef={scrollRef(key)}
+            onSelectAll={onApiSelectAll || (() => {})}
+            onItemToggle={onApiItemToggle}
           />
         ) : (
           <StaticFilterList
