@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
+import { format } from 'date-fns';
 import { HiAdjustments } from 'react-icons/hi';
 import { DateRangeFilter } from './components/date-range-filter';
 import { SelectFilterItem } from './components/select-filter-item';
@@ -19,15 +20,12 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   onFiltersChange,
   filterConfig,
   isLoading = false,
-  formatDate = (date: string, format: string) => {
-    const d = new Date(date);
-    if (format === 'mm-dd-yyyy') {
-      return `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d
-        .getDate()
-        .toString()
-        .padStart(2, '0')}-${d.getFullYear()}`;
+  formatDate = (date: string, formatPattern: string) => {
+    const parsedDate = new Date(date);
+    if (formatPattern === 'mm-dd-yyyy') {
+      return format(parsedDate, 'MM-dd-yyyy');
     }
-    return d.toLocaleDateString();
+    return format(parsedDate, 'P'); // Default locale date format
   },
 }: FilterPanelProps<T>) => {
   // Use the custom hook for all filter panel logic

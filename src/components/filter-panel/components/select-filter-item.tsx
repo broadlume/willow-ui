@@ -89,7 +89,7 @@ export const SelectFilterItem = ({
               }
             } else {
               // Static select filters - show count when any items are selected
-              if (selectedValues.length > 0) {
+              if (selectedValues?.length > 0) {
                 return <CountBadge count={selectedValues.length} />;
               }
             }
@@ -98,6 +98,11 @@ export const SelectFilterItem = ({
         </div>
       </AccordionTrigger>
 
+      {/* 
+        - If the filter is backed by a paginated API (`isApiFilter`), render `ApiFilterList`, 
+          which supports server-driven include/exclude logic, infinite scrolling, and select-all flags.
+        - Otherwise, fall back to `StaticFilterList` for simple client-side filtering of static options.
+      */}
       <AccordionContent className='space-y-3 pb-3'>
         {isApiFilter && apiConfig ? (
           <ApiFilterList

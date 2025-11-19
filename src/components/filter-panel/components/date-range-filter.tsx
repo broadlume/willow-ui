@@ -38,7 +38,7 @@ export const DateRangeFilter = ({
             className='rounded text-[--color-cta-100] cursor-pointer'
           >
             <HiOutlineXCircle
-              className='!h-[16px] !w-[16px]'
+              className='!h-4 !w-4'
               color='var(--color-cta-100)'
             />
           </button>

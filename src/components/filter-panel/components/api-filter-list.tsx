@@ -111,13 +111,11 @@ export const ApiFilterList = ({
         onScroll={onScroll}
       >
         {/* Loading state for initial load */}
-        {config.isLoading &&
-          (!config.allAvailableItems ||
-            config.allAvailableItems.length === 0) && (
-            <div className='text-[12px] text-[--color-grey-30] p-2'>
-              Loading...
-            </div>
-          )}
+        {config.isLoading && !config.allAvailableItems?.length && (
+          <div className='text-[12px] text-[--color-grey-30] p-2'>
+            Loading...
+          </div>
+        )}
 
         {/* Error state */}
         {config.isError && (
