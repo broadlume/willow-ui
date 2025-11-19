@@ -59,7 +59,7 @@ export const SelectFilterItem = ({
       className='w-full border-b border-[--color-border] px-1 py-1'
     >
       <AccordionTrigger
-        className='flex items-center justify-between py-2 text-[14px] font-normal text-[--color-grey-90] hover:no-underline'
+        className='flex items-center justify-between py-2 text-sm font-normal text-[--color-grey-90] hover:no-underline'
         caretClasses='h-2 w-4 text-[--color-grey-60]'
       >
         <div className='flex w-full items-center justify-between'>

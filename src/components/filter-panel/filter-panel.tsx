@@ -56,12 +56,12 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           id='filter-button'
           variant='outline'
           size='sm'
-          className='border-border-pri ml-1 !rounded-md border bg-transparent px-2'
+          className='border-border-pri ml-1 rounded-md! border bg-transparent px-2'
           aria-label='Filter'
         >
           <HiAdjustments className='rotate-90 text-base' />
           {activeFiltersCount > 0 && (
-            <span className='bg-surface-cta absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-[0.625rem] font-medium text-white'>
+            <span className='bg-surface-cta absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-2xs font-medium text-white'>
               {activeFiltersCount}
             </span>
           )}
@@ -70,7 +70,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
 
       <PopoverContent
         align='end'
-        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-[14px] font-normal leading-[100%] shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
+        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal leading-[100%] shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
       >
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
@@ -122,7 +122,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           <Button
             variant='default'
             onClick={handleClearAll}
-            className='mx-auto flex h-[32px] w-[206px] items-center justify-center !rounded-[2px] !bg-[var(--color-red-100)] text-[12px] font-medium !text-[var(--color-red-500)]'
+            className='mx-auto flex h-8 w-[206px] items-center justify-center rounded-sm! bg-red-100! text-xs font-medium text-(--color-red-500)!'
           >
             Clear All
           </Button>

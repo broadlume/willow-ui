@@ -84,7 +84,7 @@ export const ApiFilterList = ({
         config.allAvailableItems.length > 0 && (
           <div className='flex items-center gap-2 pb-2 border-b border-[--color-border]'>
             <Checkbox
-              className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[--color-grey-20]'
+              className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
               id={`${filterKey}-select-all`}
               checked={
                 isSelectAllIndeterminate()
@@ -98,7 +98,7 @@ export const ApiFilterList = ({
             />
             <Label
               htmlFor={`${filterKey}-select-all`}
-              className='cursor-pointer text-[14px] font-medium'
+              className='cursor-pointer text-sm font-medium'
             >
               Select All
             </Label>
@@ -112,14 +112,12 @@ export const ApiFilterList = ({
       >
         {/* Loading state for initial load */}
         {config.isLoading && !config.allAvailableItems?.length && (
-          <div className='text-[12px] text-[--color-grey-30] p-2'>
-            Loading...
-          </div>
+          <div className='text-xs text-[--color-grey-30] p-2'>Loading...</div>
         )}
 
         {/* Error state */}
         {config.isError && (
-          <div className='text-[12px] text-red-500 p-2'>Error loading data</div>
+          <div className='text-xs text-red-500 p-2'>Error loading data</div>
         )}
 
         {/* Render available items */}
@@ -131,7 +129,7 @@ export const ApiFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC] [var(--color-green-500)]'
+                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
                 id={`${filterKey}-${item.id}`}
                 checked={isChecked}
                 onCheckedChange={() => {
@@ -146,7 +144,7 @@ export const ApiFilterList = ({
               />
               <Label
                 htmlFor={`${filterKey}-${item.id}`}
-                className='cursor-pointer text-[14px]'
+                className='cursor-pointer text-sm'
               >
                 {item.label}
               </Label>
@@ -156,7 +154,7 @@ export const ApiFilterList = ({
 
         {/* Loading more indicator */}
         {config.hasNextPage && config.isFetchingNextPage && (
-          <div className='text-[12px] text-[--color-grey-30] p-2 text-center'>
+          <div className='text-xs text-[--color-grey-30] p-2 text-center'>
             Loading...
           </div>
         )}

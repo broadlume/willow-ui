@@ -24,8 +24,8 @@ export const DateRangeFilter = ({
     <div className='w-full border-b border-[--color-border] px-1 py-1'>
       {selectedRange ? (
         // Show selected date range with clear option when dates are selected
-        <div className='px-1 py-1 flex h-[24px] w-[169px] cursor-pointer items-center justify-between rounded-[4px] bg-[--color-grey-0] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
-          <span className='text-[13px] text-[--color-grey-90]'>
+        <div className='px-1 py-1 flex h-6 w-[169px] cursor-pointer items-center justify-between rounded bg-[--color-grey-0] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
+          <span className='text-xs text-[--color-grey-90]'>
             {formatDate(selectedRange.from, 'mm-dd-yyyy')} to{' '}
             {formatDate(selectedRange.to, 'mm-dd-yyyy')}
           </span>
@@ -38,7 +38,7 @@ export const DateRangeFilter = ({
             className='rounded text-[--color-cta-100] cursor-pointer'
           >
             <HiOutlineXCircle
-              className='!h-4 !w-4'
+              className='h-4! w-4!'
               color='var(--color-cta-100)'
             />
           </button>
