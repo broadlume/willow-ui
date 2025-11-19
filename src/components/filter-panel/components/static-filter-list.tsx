@@ -42,7 +42,7 @@ export const StaticFilterList = ({
             placeholder='Search'
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className='h-8 w-full rounded-md border border-border-pri! pl-8 text-sm'
+            className='h-8 w-full rounded-md border !border-border-pri pl-8 text-sm'
           />
         </div>
       )}
@@ -56,19 +56,19 @@ export const StaticFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! data-[state=indeterminate]:border-surface-cta! data-[state=indeterminate]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
                 id={`${filterKey}-select-all`}
+                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
                 checked={
                   selectedValues?.length === options.length
                     ? true
-                    : selectedValues?.length > 0
+                    : selectedValues?.length
                     ? 'indeterminate'
                     : false
                 }
                 data-state={
                   selectedValues?.length === options.length
                     ? 'checked'
-                    : selectedValues?.length > 0
+                    : selectedValues?.length
                     ? 'indeterminate'
                     : 'unchecked'
                 }
@@ -88,9 +88,9 @@ export const StaticFilterList = ({
           {filteredOptions.map((option) => (
             <div key={option} className='flex items-center gap-2'>
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
-                id={`${filterKey}-${option}`}
+                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
                 checked={selectedValues?.includes(option)}
+                id={`${filterKey}-${option}`}
                 onCheckedChange={() => onCheckboxChange(option)}
                 disabled={isLoading}
               />

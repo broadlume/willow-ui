@@ -116,13 +116,11 @@ const SafeFilterPanel = ({
   initialFilters,
   filterConfig,
   isLoading = false,
-  formatDate,
   ...props
 }: {
   initialFilters: FilterValues;
   filterConfig: FilterConfig[];
   isLoading?: boolean;
-  formatDate?: (date: string, format: string) => string;
 }) => {
   const [filters, setFilters] = useState<FilterValues>(initialFilters);
   const initializationCallCount = useRef(0);
@@ -146,7 +144,6 @@ const SafeFilterPanel = ({
         onFiltersChange={handleFiltersChange}
         filterConfig={filterConfig}
         isLoading={isLoading}
-        formatDate={formatDate}
         {...props}
       />
       <div className='mt-4 p-4 bg-gray-100 rounded'>
@@ -250,23 +247,10 @@ export const CustomDateFormatting: Story = {
       },
     ];
 
-    const customDateFormatter = (date: string, format: string) => {
-      const d = new Date(date);
-      if (format === 'mm-dd-yyyy') {
-        return d.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: '2-digit',
-        });
-      }
-      return d.toLocaleDateString();
-    };
-
     return (
       <SafeFilterPanel
         initialFilters={customFilters}
         filterConfig={customConfig}
-        formatDate={customDateFormatter}
         isLoading={false}
       />
     );

@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
-import { format } from 'date-fns';
 import { HiAdjustments } from 'react-icons/hi';
 import { DateRangeFilter } from './components/date-range-filter';
 import { SelectFilterItem } from './components/select-filter-item';
@@ -20,13 +19,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   onFiltersChange,
   filterConfig,
   isLoading = false,
-  formatDate = (date: string, formatPattern: string) => {
-    const parsedDate = new Date(date);
-    if (formatPattern === 'mm-dd-yyyy') {
-      return format(parsedDate, 'MM-dd-yyyy');
-    }
-    return format(parsedDate, 'P'); // Default locale date format
-  },
 }: FilterPanelProps<T>) => {
   // Use the custom hook for all filter panel logic
   const {
@@ -56,7 +48,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           id='filter-button'
           variant='outline'
           size='sm'
-          className='border-border-pri ml-1 rounded-md! border bg-transparent px-2'
+          className='border-border-pri ml-1 !rounded-md border bg-transparent px-2'
           aria-label='Filter'
         >
           <HiAdjustments className='rotate-90 text-base' />
@@ -70,7 +62,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
 
       <PopoverContent
         align='end'
-        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal leading-[100%] shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
+        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
       >
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
@@ -86,7 +78,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                     filters[key] as { from: string; to: string } | null
                   }
                   tempRange={dateRanges[key]}
-                  formatDate={formatDate}
                   onDateRangeChange={handleDateRangeChange}
                 />
               ) : (
@@ -122,7 +113,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           <Button
             variant='default'
             onClick={handleClearAll}
-            className='mx-auto flex h-8 w-[206px] items-center justify-center rounded-sm! bg-red-100! text-xs font-medium text-surface-destructive!'
+            className='mx-auto flex h-8 w-[206px] items-center justify-center !rounded-sm !bg-red-100 text-xs font-medium !text-text-destructive'
           >
             Clear All
           </Button>

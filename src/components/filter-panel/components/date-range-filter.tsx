@@ -1,5 +1,6 @@
 import { Button } from '@components/button';
 import { DatePicker } from '@components/date-picker/date-picker';
+import { format } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { HiMiniCalendarDays, HiOutlineXCircle } from 'react-icons/hi2';
 
@@ -9,7 +10,6 @@ interface DateRangeFilterProps {
   selectedRange: { from: string; to: string } | null;
   tempRange: DateRange | undefined;
   onDateRangeChange: (key: string, range: DateRange | undefined) => void;
-  formatDate: (date: string, format: string) => string;
 }
 
 export const DateRangeFilter = ({
@@ -18,7 +18,6 @@ export const DateRangeFilter = ({
   selectedRange,
   tempRange,
   onDateRangeChange,
-  formatDate,
 }: DateRangeFilterProps) => {
   return (
     <div className='w-full border-b border-border-sec px-1 py-1'>
@@ -26,8 +25,8 @@ export const DateRangeFilter = ({
         // Show selected date range with clear option when dates are selected
         <div className='px-1 py-1 flex h-6 w-[169px] cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
           <span className='text-xs text-text-pri'>
-            {formatDate(selectedRange.from, 'mm-dd-yyyy')} to{' '}
-            {formatDate(selectedRange.to, 'mm-dd-yyyy')}
+            {format(new Date(selectedRange.from), 'MM-dd-yyyy')} to{' '}
+            {format(new Date(selectedRange.to), 'MM-dd-yyyy')}
           </span>
           <button
             type='button'
@@ -37,10 +36,7 @@ export const DateRangeFilter = ({
             }}
             className='rounded text-text-cta cursor-pointer'
           >
-            <HiOutlineXCircle
-              className='h-4! w-4!'
-              color='var(--color-text-cta)'
-            />
+            <HiOutlineXCircle className='h-4 w-4 text-text-cta' />
           </button>
         </div>
       ) : (
@@ -62,10 +58,7 @@ export const DateRangeFilter = ({
             }}
             trigger={
               <Button variant={'ghost'} className='p-1'>
-                <HiMiniCalendarDays
-                  className='w-4 h-4'
-                  color='var(--color-grey-60)'
-                />
+                <HiMiniCalendarDays className='w-4 h-4 text-icon-pri' />
               </Button>
             }
           />

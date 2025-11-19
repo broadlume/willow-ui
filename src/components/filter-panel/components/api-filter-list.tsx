@@ -79,31 +79,29 @@ export const ApiFilterList = ({
   return (
     <div className='ml-2 mt-1 space-y-2'>
       {/* Select All Checkbox */}
-      {canSelectAll &&
-        config.allAvailableItems &&
-        config.allAvailableItems.length > 0 && (
-          <div className='flex items-center gap-2 pb-2 border-b border-border-sec'>
-            <Checkbox
-              className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
-              id={`${filterKey}-select-all`}
-              checked={
-                isSelectAllIndeterminate()
-                  ? 'indeterminate'
-                  : isSelectAllChecked()
-              }
-              onCheckedChange={(checked) => {
-                onSelectAll(filterKey, !!checked);
-              }}
-              disabled={isLoading}
-            />
-            <Label
-              htmlFor={`${filterKey}-select-all`}
-              className='cursor-pointer text-sm font-medium'
-            >
-              Select All
-            </Label>
-          </div>
-        )}
+      {canSelectAll && config.allAvailableItems?.length && (
+        <div className='flex items-center gap-2 pb-2 border-b border-border-sec'>
+          <Checkbox
+            className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
+            id={`${filterKey}-select-all`}
+            checked={
+              isSelectAllIndeterminate()
+                ? 'indeterminate'
+                : isSelectAllChecked()
+            }
+            onCheckedChange={(checked) => {
+              onSelectAll(filterKey, !!checked);
+            }}
+            disabled={isLoading}
+          />
+          <Label
+            htmlFor={`${filterKey}-select-all`}
+            className='cursor-pointer text-sm font-medium'
+          >
+            Select All
+          </Label>
+        </div>
+      )}
 
       <div
         ref={scrollRef}
@@ -129,7 +127,7 @@ export const ApiFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
+                className='data-[state=checked]:!border-surface-cta` data-[state=checked]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
                 id={`${filterKey}-${item.id}`}
                 checked={isChecked}
                 onCheckedChange={() => {
@@ -160,7 +158,7 @@ export const ApiFilterList = ({
         )}
 
         {/* Spacer for scrolling */}
-        {(config.allAvailableItems?.length || 0) > 0 && <div className='h-2' />}
+        {Boolean(config.allAvailableItems?.length) && <div className='h-2' />}
       </div>
     </div>
   );

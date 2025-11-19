@@ -48,5 +48,4 @@ export interface FilterPanelProps<T extends FilterValues = FilterValues> {
   onFiltersChange: (filters: T) => void;
   filterConfig: (FilterConfig | ApiSelectFilterConfig)[];
   isLoading?: boolean;
-  formatDate?: (date: string, format: string) => string;
 }

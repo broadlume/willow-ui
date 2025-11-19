@@ -3,6 +3,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@components/accordion/accordion';
+import { useMemo } from 'react';
 import { CountBadge } from '../count-badge';
 import { ApiSelectFilterConfig, FilterConfig } from '../types';
 import { ApiFilterList } from './api-filter-list';
@@ -52,6 +53,34 @@ export const SelectFilterItem = ({
   const isApiFilter = 'hookKey' in config;
   const apiConfig = isApiFilter ? (config as ApiSelectFilterConfig) : null;
 
+  // Memoized count badge calculation
+  const countBadge = useMemo(() => {
+    if (isApiFilter && apiConfig) {
+      const filterState = apiFilterState || {
+        isSelectAll: false,
+        includeItems: [],
+        excludeItems: [],
+      };
+
+      if (filterState.isSelectAll) {
+        // Show total count minus excluded items
+        const totalCount = apiConfig.totalItemsCount || 0;
+        const selectedCount = totalCount - filterState.excludeItems.length;
+        if (selectedCount > 0) {
+          return <CountBadge count={selectedCount} />;
+        }
+      } else if (filterState.includeItems.length > 0) {
+        return <CountBadge count={filterState.includeItems.length} />;
+      }
+    } else {
+      // Static select filters - show count when any items are selected
+      if (selectedValues?.length > 0) {
+        return <CountBadge count={selectedValues.length} />;
+      }
+    }
+    return null;
+  }, [apiConfig, apiFilterState, selectedValues]);
+
   return (
     <AccordionItem
       key={key}
@@ -68,33 +97,7 @@ export const SelectFilterItem = ({
           </div>
 
           {/* Show count of selected filters */}
-          {(() => {
-            if (isApiFilter && apiConfig) {
-              const filterState = apiFilterState || {
-                isSelectAll: false,
-                includeItems: [],
-                excludeItems: [],
-              };
-
-              if (filterState.isSelectAll) {
-                // Show total count minus excluded items
-                const totalCount = apiConfig.totalItemsCount || 0;
-                const selectedCount =
-                  totalCount - filterState.excludeItems.length;
-                if (selectedCount > 0) {
-                  return <CountBadge count={selectedCount} />;
-                }
-              } else if (filterState.includeItems.length > 0) {
-                return <CountBadge count={filterState.includeItems.length} />;
-              }
-            } else {
-              // Static select filters - show count when any items are selected
-              if (selectedValues?.length > 0) {
-                return <CountBadge count={selectedValues.length} />;
-              }
-            }
-            return null;
-          })()}
+          {countBadge}
         </div>
       </AccordionTrigger>
 
