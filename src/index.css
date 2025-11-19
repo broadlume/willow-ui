@@ -156,6 +156,7 @@
   --color-border-cta: var(--color-cta-100);
   --color-border-destructive: var(--color-red-500);
   --color-border-invert: var(--color-grey-90);
+  --color-border: #e5e5e5;
 
   --spacing-50: 4px;
 

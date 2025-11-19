@@ -37,12 +37,12 @@ export const StaticFilterList = ({
       {/* Search input for filtering options */}
       {searchable && (
         <div className='relative'>
-          <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]' />
+          <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[--color-grey-60]' />
           <Input
             placeholder='Search'
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className='h-8 w-full rounded-md border border-[#E5E5E5] pl-8 text-[13px]'
+            className='h-8 w-full rounded-md border border-[--color-grey-20] pl-8 text-[13px]'
           />
         </div>
       )}
@@ -56,7 +56,7 @@ export const StaticFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
+                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[--color-grey-20]'
                 id={`${filterKey}-select-all`}
                 checked={
                   selectedValues?.length === options.length
@@ -77,7 +77,7 @@ export const StaticFilterList = ({
               />
               <Label
                 htmlFor={`${filterKey}-select-all`}
-                className='cursor-pointer text-[14px] text-[#1A1A1A]'
+                className='cursor-pointer text-[14px] text-[--color-grey-90]'
               >
                 Select All
               </Label>
@@ -88,7 +88,7 @@ export const StaticFilterList = ({
           {filteredOptions.map((option) => (
             <div key={option} className='flex items-center gap-2'>
               <Checkbox
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
+                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[--color-grey-20]'
                 id={`${filterKey}-${option}`}
                 checked={selectedValues?.includes(option)}
                 onCheckedChange={() => onCheckboxChange(option)}

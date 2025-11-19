@@ -124,7 +124,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           <Button
             variant='default'
             onClick={handleClearAll}
-            className='mx-auto flex h-[32px] w-[206px] items-center justify-center !rounded-[2px] !bg-[#FEE2E2] text-[12px] font-medium !text-[#E00000]'
+            className='mx-auto flex h-[32px] w-[206px] items-center justify-center !rounded-[2px] !bg-[var(--color-red-100)] text-[12px] font-medium !text-[var(--color-red-500)]'
           >
             Clear All
           </Button>

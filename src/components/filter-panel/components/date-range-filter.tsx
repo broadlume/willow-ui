@@ -20,14 +20,12 @@ export const DateRangeFilter = ({
   onDateRangeChange,
   formatDate,
 }: DateRangeFilterProps) => {
-  console.log('DateRangeFilter render:', { filterKey, selectedRange, tempRange });
-  
   return (
-    <div className='w-full border-b border-[#E5E5E5] px-1 py-1'>
+    <div className='w-full border-b border-[--color-border] px-1 py-1'>
       {selectedRange ? (
         // Show selected date range with clear option when dates are selected
-        <div className='px-1 py-1 flex h-[24px] w-[169px] cursor-pointer items-center justify-between rounded-[4px] bg-[#FFFFFF] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
-          <span className='text-[13px] text-[#1A1A1A]'>
+        <div className='px-1 py-1 flex h-[24px] w-[169px] cursor-pointer items-center justify-between rounded-[4px] bg-[--color-grey-0] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
+          <span className='text-[13px] text-[--color-grey-90]'>
             {formatDate(selectedRange.from, 'mm-dd-yyyy')} to{' '}
             {formatDate(selectedRange.to, 'mm-dd-yyyy')}
           </span>
@@ -37,11 +35,11 @@ export const DateRangeFilter = ({
               e.stopPropagation();
               onDateRangeChange(filterKey, undefined);
             }}
-            className='rounded text-[#1A6CFF] cursor-pointer'
+            className='rounded text-[--color-cta-100] cursor-pointer'
           >
             <HiOutlineXCircle
               className='!h-[16px] !w-[16px]'
-              color='#1A6CFF'
+              color='var(--color-cta-100)'
             />
           </button>
         </div>
@@ -64,7 +62,10 @@ export const DateRangeFilter = ({
             }}
             trigger={
               <Button variant={'ghost'} className='p-1'>
-                <HiMiniCalendarDays className='w-4 h-4' color='#666666' />
+                <HiMiniCalendarDays
+                  className='w-4 h-4'
+                  color='var(--color-grey-60)'
+                />
               </Button>
             }
           />

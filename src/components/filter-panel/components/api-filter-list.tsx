@@ -82,9 +82,9 @@ export const ApiFilterList = ({
       {canSelectAll &&
         config.allAvailableItems &&
         config.allAvailableItems.length > 0 && (
-          <div className='flex items-center gap-2 pb-2 border-b border-[#E5E5E5]'>
+          <div className='flex items-center gap-2 pb-2 border-b border-[--color-border]'>
             <Checkbox
-              className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[#CCCCCC]'
+              className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-[14px] w-[14px] !rounded-[4px] border !border-[--color-grey-20]'
               id={`${filterKey}-select-all`}
               checked={
                 isSelectAllIndeterminate()
@@ -114,7 +114,9 @@ export const ApiFilterList = ({
         {config.isLoading &&
           (!config.allAvailableItems ||
             config.allAvailableItems.length === 0) && (
-            <div className='text-[12px] text-[#9CA3AF] p-2'>Loading...</div>
+            <div className='text-[12px] text-[--color-grey-30] p-2'>
+              Loading...
+            </div>
           )}
 
         {/* Error state */}
@@ -156,7 +158,7 @@ export const ApiFilterList = ({
 
         {/* Loading more indicator */}
         {config.hasNextPage && config.isFetchingNextPage && (
-          <div className='text-[12px] text-[#9CA3AF] p-2 text-center'>
+          <div className='text-[12px] text-[--color-grey-30] p-2 text-center'>
             Loading...
           </div>
         )}

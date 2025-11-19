@@ -56,11 +56,11 @@ export const SelectFilterItem = ({
     <AccordionItem
       key={key}
       value={key}
-      className='w-full border-b border-[#E5E5E5] px-1 py-1'
+      className='w-full border-b border-[--color-border] px-1 py-1'
     >
       <AccordionTrigger
-        className='flex items-center justify-between py-2 text-[14px] font-normal text-[#1A1A1A] hover:no-underline'
-        caretClasses='h-2 w-4 text-[#666666]'
+        className='flex items-center justify-between py-2 text-[14px] font-normal text-[--color-grey-90] hover:no-underline'
+        caretClasses='h-2 w-4 text-[--color-grey-60]'
       >
         <div className='flex w-full items-center justify-between'>
           <div className='flex items-center gap-2'>
