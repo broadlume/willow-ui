@@ -132,7 +132,6 @@ const SafeFilterPanel = ({
     // Skip the first automatic call from FilterPanel's useEffect initialization
     // But allow all subsequent calls (user interactions)
     if (initializationCallCount.current > 1) {
-      console.log('Filters changed:', newFilters);
       setFilters(newFilters);
     }
   }, []);
@@ -296,14 +295,12 @@ export const WithApiSelect: Story = {
       }, [allItems.length, isFetchingNextPage, hasNextPage]);
 
       const handleItemToggle = useCallback((itemId: string) => {
-        console.log('Item toggled:', itemId);
         // The filter panel will handle the state update through onUpdateFilterState
       }, []);
 
       const handleUpdateFilterState = useCallback(
         (newState: ApiSelectFilterState) => {
           setFilterState(newState);
-          console.log('Filter state updated:', newState);
         },
         []
       );

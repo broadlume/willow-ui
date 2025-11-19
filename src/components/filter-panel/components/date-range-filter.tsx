@@ -53,7 +53,6 @@ export const DateRangeFilter = ({
               }
             }}
             onSelect={(range: DateRange | undefined) => {
-              console.log('Date selected in picker:', range);
               onDateRangeChange(filterKey, range);
             }}
             trigger={
