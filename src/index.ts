@@ -46,8 +46,13 @@ export * from '@components/Loader/Loader';
 export * from '@components/async-autocomplete/async-autocomplete';
 export * from '@components/sidebar/sidebar';
 export * from '@components/mini-asset-selector/mini-asset-selector';
+export * from '@components/columns-manager/columns-manager';
+export * from '@components/filter-panel/filter-panel';
+export * from '@components/filter-panel/types';
+
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
 export * from '@src/misc/custom-data-table/custom-data-table';
 export * from '@src/misc/tanstack-table/Table';
+export * from '@src/lib/hooks/useColumnVisibility'
