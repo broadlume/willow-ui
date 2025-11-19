@@ -261,7 +261,7 @@ export const CustomDateFormatting: Story = {
 export const WithApiSelect: Story = {
   render: () => {
     // Mock API data
-    const mockApiItems = Array.from({ length: 150 }, (_, i) => ({
+    const mockApiItems = Array.from({ length: 30 }, (_, i) => ({
       id: `item-${i + 1}`,
       label: `API Item ${i + 1}`,
     }));
@@ -314,6 +314,7 @@ export const WithApiSelect: Story = {
           label: 'API Items (With Select All)',
           type: 'api-select' as const,
           hookKey: 'apiItems',
+          searchable: true,
           canSelectAll: true,
           allAvailableItems: allItems,
           totalItemsCount: mockApiItems.length,

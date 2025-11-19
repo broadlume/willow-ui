@@ -131,6 +131,7 @@
 
   --color-surface-pri: var(--color-grey-0);
   --color-surface-sec: var(--color-grey-5);
+  --color-surface-ter: var(--color-red-100);
   --color-surface-opt: var(--color-grey-10);
   --color-surface-more: var(--color-grey-0);
   --color-surface-brand: var(--color-primary-100);

@@ -114,6 +114,8 @@ export const SelectFilterItem = ({
               ...apiConfig,
               filterState: apiFilterState,
             }}
+            searchTerm={searchTerm}
+            onSearchChange={(term) => onSearchChange(key, term)}
             isLoading={isLoading}
             onScroll={onScroll(key, apiConfig)}
             scrollRef={scrollRef(key)}
