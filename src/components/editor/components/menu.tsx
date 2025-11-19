@@ -27,8 +27,9 @@ interface MenuProps {
   toggleDarkMode?: () => void;
   className?: string;
   hostname: string;
-  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  onImageBrowseClick?: (editor: Editor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void; // Callback for custom asset manager integration with URL and metadata setter
   onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
+  onImageNameClick?: (editor: Editor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void; // Callback for when image name is clicked
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -50,6 +51,7 @@ export const Menu = ({
   hostname,
   onImageBrowseClick,
   onImageDrop,
+  onImageNameClick,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -58,6 +60,7 @@ export const Menu = ({
   const [l2Link, setL2Link] = useState<string>();
   const [l2EmbedLink, setL2EmbedLink] = useState<string>();
   const [l2Image, setL2Image] = useState<string>();
+  const [l2ImageMetadata, setL2ImageMetadata] = useState<Record<string, string>>();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const [availableWidth, setAvailableWidth] = useState(0);
@@ -163,8 +166,11 @@ export const Menu = ({
     setL2EmbedLink,
     l2Image,
     setL2Image,
+    l2ImageMetadata,
+    setL2ImageMetadata,
     onImageBrowseClick,
     onImageDrop,
+    onImageNameClick,
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
@@ -282,9 +288,12 @@ export const Menu = ({
           setL2EmbedLink,
           l2Image,
           setL2Image,
+          l2ImageMetadata,
+          setL2ImageMetadata,
           setExpandedMenuL2,
           onImageBrowseClick,
-          onImageDrop
+          onImageDrop,
+          onImageNameClick
         )}
       </div>
       {/* Expanded Menu L2*/}

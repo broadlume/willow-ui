@@ -28,6 +28,7 @@ import Gapcursor from '@tiptap/extension-gapcursor';
 import { Video } from './extensions/video';
 import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
+import { CustomImage } from './extensions/custom-image';
 
 // Custom Nodes
 // import { AutocompleteNode } from './nodes/autocomplete-node';
@@ -54,8 +55,9 @@ export type EditorProps = {
     query: string
   ) => Promise<{ label: string; value: string }[]>;
   hostname: string;
-  onImageBrowseClick?: (editor: TiptapEditor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  onImageBrowseClick?: (editor: TiptapEditor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void; // Callback for custom asset manager integration with URL and metadata setter
   onImageDrop?: (editor: TiptapEditor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
+  onImageNameClick?: (editor: TiptapEditor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void; // Callback for when image name is clicked
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -87,7 +89,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     }),
     Gapcursor,
     Link.configure({ openOnClick: true }),
-    Image,
+    CustomImage,
     Table.configure({ resizable: true }),
     TableRow,
     TableCell,
@@ -247,6 +249,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 hostname={props.hostname}
                 onImageBrowseClick={props.onImageBrowseClick}
                 onImageDrop={props.onImageDrop}
+                onImageNameClick={props.onImageNameClick}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -280,6 +283,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
               hostname={props.hostname}
               onImageBrowseClick={props.onImageBrowseClick}
               onImageDrop={props.onImageDrop}
+              onImageNameClick={props.onImageNameClick}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
