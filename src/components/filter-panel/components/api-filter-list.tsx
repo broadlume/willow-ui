@@ -82,9 +82,9 @@ export const ApiFilterList = ({
       {canSelectAll &&
         config.allAvailableItems &&
         config.allAvailableItems.length > 0 && (
-          <div className='flex items-center gap-2 pb-2 border-b border-[--color-border]'>
+          <div className='flex items-center gap-2 pb-2 border-b border-border-sec'>
             <Checkbox
-              className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
+              className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
               id={`${filterKey}-select-all`}
               checked={
                 isSelectAllIndeterminate()
@@ -112,7 +112,7 @@ export const ApiFilterList = ({
       >
         {/* Loading state for initial load */}
         {config.isLoading && !config.allAvailableItems?.length && (
-          <div className='text-xs text-[--color-grey-30] p-2'>Loading...</div>
+          <div className='text-xs text-text-opt p-2'>Loading...</div>
         )}
 
         {/* Error state */}
@@ -129,7 +129,7 @@ export const ApiFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
+                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
                 id={`${filterKey}-${item.id}`}
                 checked={isChecked}
                 onCheckedChange={() => {
@@ -154,7 +154,7 @@ export const ApiFilterList = ({
 
         {/* Loading more indicator */}
         {config.hasNextPage && config.isFetchingNextPage && (
-          <div className='text-xs text-[--color-grey-30] p-2 text-center'>
+          <div className='text-xs text-text-opt p-2 text-center'>
             Loading...
           </div>
         )}

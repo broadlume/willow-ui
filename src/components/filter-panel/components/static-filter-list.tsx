@@ -37,12 +37,12 @@ export const StaticFilterList = ({
       {/* Search input for filtering options */}
       {searchable && (
         <div className='relative'>
-          <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[--color-grey-60]' />
+          <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-icon-pri' />
           <Input
             placeholder='Search'
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className='h-8 w-full rounded-md border border-[--color-grey-20] pl-8 text-sm'
+            className='h-8 w-full rounded-md border border-border-pri! pl-8 text-sm'
           />
         </div>
       )}
@@ -56,7 +56,7 @@ export const StaticFilterList = ({
               className='flex items-center gap-2'
             >
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! data-[state=indeterminate]:border-surface-cta! data-[state=indeterminate]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
+                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! data-[state=indeterminate]:border-surface-cta! data-[state=indeterminate]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
                 id={`${filterKey}-select-all`}
                 checked={
                   selectedValues?.length === options.length
@@ -77,7 +77,7 @@ export const StaticFilterList = ({
               />
               <Label
                 htmlFor={`${filterKey}-select-all`}
-                className='cursor-pointer text-sm text-[--color-grey-90]'
+                className='cursor-pointer text-sm text-text-pri'
               >
                 Select All
               </Label>
@@ -88,7 +88,7 @@ export const StaticFilterList = ({
           {filteredOptions.map((option) => (
             <div key={option} className='flex items-center gap-2'>
               <Checkbox
-                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-[--color-grey-20]!'
+                className='data-[state=checked]:border-surface-cta! data-[state=checked]:bg-surface-cta! h-3.5 w-3.5 rounded! border border-border-pri!'
                 id={`${filterKey}-${option}`}
                 checked={selectedValues?.includes(option)}
                 onCheckedChange={() => onCheckboxChange(option)}
