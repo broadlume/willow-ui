@@ -85,6 +85,7 @@ export const SelectFilterItem = ({
     <AccordionItem
       key={key}
       value={key}
+      data-testid={`${key}-accordion-item`}
       className='w-full border-b border-border-sec px-1 py-1'
     >
       <AccordionTrigger
