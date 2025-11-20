@@ -44,41 +44,47 @@ export const CustomImage = Node.create<CustomImageOptions>({
         default: null,
         parseHTML: element => element.getAttribute('src'),
         renderHTML: attributes => {
-          return {
-            src: attributes.src,
-          };
+          if (attributes.src) {
+            return { src: attributes.src };
+          }
+          return {};
         },
       },
       alt: {
         default: null,
         parseHTML: element => element.getAttribute('alt'),
         renderHTML: attributes => {
-          return {
-            alt: attributes.alt,
-          };
+          if (attributes.alt) {
+            return { alt: attributes.alt };
+          }
+          return {};
         },
       },
       title: {
         default: null,
         parseHTML: element => element.getAttribute('title'),
         renderHTML: attributes => {
-          return {
-            title: attributes.title,
-          };
+          if (attributes.title) {
+            return { title: attributes.title };
+          }
+          return {};
         },
       },
-      // Accept any attribute dynamically
-      allAttributes: {
+      // Dynamic attributes storage
+      dynamicAttrs: {
         default: {},
-        parseHTML: element => {
-          const allAttrs: Record<string, string> = {};
+        parseHTML: (element: HTMLElement) => {
+          const dynamicAttrs: Record<string, string> = {};
           Array.from(element.attributes).forEach(attr => {
-            allAttrs[attr.name] = attr.value;
+            // Skip standard attributes that are handled separately
+            if (!['src', 'alt', 'title'].includes(attr.name)) {
+              dynamicAttrs[attr.name] = attr.value;
+            }
           });
-          return allAttrs;
+          return dynamicAttrs;
         },
-        renderHTML: attributes => {
-          return attributes.allAttributes || {};
+        renderHTML: (attributes: Record<string, unknown>) => {
+          return (attributes.dynamicAttrs as Record<string, string>) || {};
         },
       },
     };
@@ -93,18 +99,15 @@ export const CustomImage = Node.create<CustomImageOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const standardAttrs = {
-      src: HTMLAttributes.src,
-      alt: HTMLAttributes.alt,
-      title: HTMLAttributes.title,
-    };
+    // Get all attributes from HTMLAttributes
+    const allAttrs = { ...HTMLAttributes };
     
-    const customAttrs = HTMLAttributes.allAttributes || {};
-    const allAttrs = { ...standardAttrs, ...customAttrs };
+    // Remove internal TipTap attributes that shouldn't be on the HTML element
+    delete allAttrs.dynamicAttrs;
     
     // Remove any null/undefined values
     Object.keys(allAttrs).forEach(key => {
-      if (allAttrs[key] === null || allAttrs[key] === undefined) {
+      if (!allAttrs[key]) {
         delete allAttrs[key];
       }
     });
@@ -117,10 +120,15 @@ export const CustomImage = Node.create<CustomImageOptions>({
       setCustomImage:
         (options) =>
         ({ commands }) => {
+          const { src, alt, title, ...dynamicAttrs } = options;
+          
           return commands.insertContent({
             type: this.name,
             attrs: {
-              allAttributes: options,
+              src: src || null,
+              alt: alt || null,
+              title: title || null,
+              dynamicAttrs: dynamicAttrs,
             },
           });
         },
