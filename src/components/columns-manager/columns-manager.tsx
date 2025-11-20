@@ -22,6 +22,7 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent
+        data-testid='column-manager-sheet'
         className='w-[400px] overflow-auto p-0'
         showCloseIcon={false}
       >

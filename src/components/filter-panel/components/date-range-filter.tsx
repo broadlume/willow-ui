@@ -20,10 +20,16 @@ export const DateRangeFilter = ({
   onDateRangeChange,
 }: DateRangeFilterProps) => {
   return (
-    <div className='w-full border-b border-border-sec px-1 py-1'>
+    <div
+      className='w-full border-b border-border-sec px-1 py-1'
+      data-testid={`date-range-filter-${filterKey}`}
+    >
       {selectedRange ? (
         // Show selected date range with clear option when dates are selected
-        <div className='px-1 py-1 flex h-6 w-[169px] cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'>
+        <div
+          data-testid={`date-range-filter-selected-range-${filterKey}`}
+          className='px-1 py-1 flex h-6 w-[169px] cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06),_0_1px_3px_rgba(0,0,0,0.1)]'
+        >
           <span className='text-xs text-text-pri'>
             {format(new Date(selectedRange.from), 'MM-dd-yyyy')} to{' '}
             {format(new Date(selectedRange.to), 'MM-dd-yyyy')}
@@ -41,7 +47,10 @@ export const DateRangeFilter = ({
         </div>
       ) : (
         // Show label and date picker when no dates are selected
-        <div className='flex w-full items-center justify-between'>
+        <div
+          className='flex w-full items-center justify-between'
+          data-testid={`date-range-filter-${filterKey}`}
+        >
           <span>{label}</span>
           <DatePicker
             mode='range'

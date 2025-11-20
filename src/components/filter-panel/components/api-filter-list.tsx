@@ -93,7 +93,10 @@ export const ApiFilterList = ({
     <>
       {/* Search input for filtering options */}
       {config.searchable && (
-        <div className='relative'>
+        <div
+          className='relative'
+          data-testid={`${filterKey}-api-list-search-input`}
+        >
           <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-icon-pri' />
           <Input
             placeholder='Search'
@@ -104,7 +107,10 @@ export const ApiFilterList = ({
         </div>
       )}
 
-      <div className='ml-2 mt-1 space-y-2'>
+      <div
+        className='ml-2 mt-1 space-y-2'
+        data-testid={`${filterKey}-api-list`}
+      >
         <div
           ref={scrollRef}
           className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'

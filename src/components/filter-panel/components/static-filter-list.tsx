@@ -36,7 +36,7 @@ export const StaticFilterList = ({
     <>
       {/* Search input for filtering options */}
       {searchable && (
-        <div className='relative'>
+        <div className='relative' data-testid={`${filterKey}-search-input`}>
           <HiOutlineSearch className='absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-icon-pri' />
           <Input
             placeholder='Search'
@@ -47,7 +47,10 @@ export const StaticFilterList = ({
         </div>
       )}
 
-      <div className='ml-2 mt-1 space-y-2'>
+      <div
+        className='ml-2 mt-1 space-y-2'
+        data-testid={`${filterKey}-static-list`}
+      >
         <div className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'>
           {/* Select all/deselect all option */}
           {canSelectAll && (

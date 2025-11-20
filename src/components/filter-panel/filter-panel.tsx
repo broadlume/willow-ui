@@ -42,7 +42,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger data-testid='filter-panel-popover-trigger'>
         {/* Filter toggle button with active count badge */}
         <Button
           id='filter-button'
@@ -61,6 +61,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
       </PopoverTrigger>
 
       <PopoverContent
+        data-testid='filter-panel-popover-content'
         align='end'
         className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
       >
@@ -113,6 +114,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           <Button
             variant='default'
             onClick={handleClearAll}
+            data-testid='filter-panel-clear-all-button'
             className='mx-auto flex h-8 w-[206px] items-center justify-center !rounded-sm !bg-surface-ter text-xs font-medium !text-text-destructive'
           >
             Clear All
