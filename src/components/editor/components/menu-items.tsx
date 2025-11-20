@@ -63,8 +63,11 @@ export interface MenuItemRenderProps {
   setL2EmbedLink?: (link: string) => void;
   l2Image?: string;
   setL2Image?: (image: string) => void;
-  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void; // Callback for custom asset manager integration with URL setter
+  l2ImageMetadata?: Record<string, string>;
+  setL2ImageMetadata?: (metadata: Record<string, string>) => void;
+  onImageBrowseClick?: (editor: Editor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void; // Callback for custom asset manager integration with URL and metadata setter
   onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
+  onImageNameClick?: (editor: Editor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void; // Callback for when image name is clicked
   expandedMenu?: boolean; // For More button to hide sub-menus
   setExpandedMenu?: (expanded: boolean) => void;
   expandedMenuL2?: boolean; // For More button to hide sub-menus
@@ -740,9 +743,12 @@ export const getL3MenuContent = (
   setL2EmbedLink: (link: string) => void,
   l2Image: string | undefined,
   setL2Image: (image: string) => void,
+  l2ImageMetadata: Record<string, string> | undefined,
+  setL2ImageMetadata: (metadata: Record<string, string>) => void,
   setExpandedMenuL2: (expanded: boolean) => void,
-  onImageBrowseClick?: (editor: Editor, setUrl: (url: string) => void) => void,
-  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void
+  onImageBrowseClick?: (editor: Editor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void,
+  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void,
+  onImageNameClick?: (editor: Editor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void
 ) => {
   switch (expandedMenuL2Type) {
     case 'link':
@@ -865,7 +871,13 @@ export const getL3MenuContent = (
               }}
               placeholder="Enter Image URL here or Drag & drop here"
               browseButtonText="Browse Assets"
-              onBrowseClick={() => onImageBrowseClick?.(editor, setL2Image)}
+              onBrowseClick={() => onImageBrowseClick?.(editor, (data) => {
+                setL2Image(data.url);
+                if (data.metadata) {
+                  setL2ImageMetadata(data.metadata);
+                }
+              })}
+              onImageNameClick={(imageData) => onImageNameClick?.(editor, imageData)}
               className="w-full"
               showBrowseButton={true}
               fullWidth={true}
@@ -879,8 +891,26 @@ export const getL3MenuContent = (
               disabled={!l2Image}
               onClick={() => {
                 if (l2Image) {
-                  editor.chain().focus().setImage({ src: l2Image }).run();
+                  // Create image attributes with metadata
+                  const imageAttrs: Record<string, string> = { src: l2Image };
+                  
+                  // Add metadata as image attributes
+                  if (l2ImageMetadata) {
+                    // Standard HTML image attributes
+                    if (l2ImageMetadata['alt-text']) imageAttrs.alt = l2ImageMetadata['alt-text'];
+                    if (l2ImageMetadata.width) imageAttrs.width = l2ImageMetadata.width;
+                    if (l2ImageMetadata.height) imageAttrs.height = l2ImageMetadata.height;
+                    if (l2ImageMetadata.title) imageAttrs.title = l2ImageMetadata.title;
+                    
+                    // Custom metadata as data attributes
+                    Object.entries(l2ImageMetadata).forEach(([key, value]) => {
+                        imageAttrs[key] = value;
+                    });
+                  }
+                  
+                  editor.chain().focus().setCustomImage(imageAttrs).run();
                   setL2Image('');
+                  setL2ImageMetadata({});
                   setExpandedMenuL2(false);
                 }
               }}

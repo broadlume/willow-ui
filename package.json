@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -146,7 +146,6 @@
     "@tiptap/extension-floating-menu": "^2.10.3",
     "@tiptap/extension-gapcursor": "^2.14.0",
     "@tiptap/extension-highlight": "^2.10.3",
-    "@tiptap/extension-image": "^2.12.0",
     "@tiptap/extension-link": "^2.10.3",
     "@tiptap/extension-placeholder": "^2.11.5",
     "@tiptap/extension-table": "^2.10.3",
