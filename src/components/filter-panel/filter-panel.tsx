@@ -63,7 +63,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
       <PopoverContent
         data-testid='filter-panel-popover-content'
         align='end'
-        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal shadow-[0_2px_8px_rgba(0,0,0,0.1)]'
+        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm'
       >
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
