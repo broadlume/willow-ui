@@ -8,17 +8,17 @@ export interface CustomImageOptions {
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    customImage: {
+    image: {
       /**
        * Add an image with any attributes
        */
-      setImage: (options: Record<string, string | undefined>) => ReturnType;
+      setCustomImage: (options: Record<string, string | undefined>) => ReturnType;
     };
   }
 }
 
 export const CustomImage = Node.create<CustomImageOptions>({
-  name: 'customImage',
+  name: 'image',
 
   addOptions() {
     return {
@@ -40,6 +40,33 @@ export const CustomImage = Node.create<CustomImageOptions>({
 
   addAttributes() {
     return {
+      src: {
+        default: null,
+        parseHTML: element => element.getAttribute('src'),
+        renderHTML: attributes => {
+          return {
+            src: attributes.src,
+          };
+        },
+      },
+      alt: {
+        default: null,
+        parseHTML: element => element.getAttribute('alt'),
+        renderHTML: attributes => {
+          return {
+            alt: attributes.alt,
+          };
+        },
+      },
+      title: {
+        default: null,
+        parseHTML: element => element.getAttribute('title'),
+        renderHTML: attributes => {
+          return {
+            title: attributes.title,
+          };
+        },
+      },
       // Accept any attribute dynamically
       allAttributes: {
         default: {},
@@ -66,12 +93,28 @@ export const CustomImage = Node.create<CustomImageOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes.allAttributes || {})];
+    const standardAttrs = {
+      src: HTMLAttributes.src,
+      alt: HTMLAttributes.alt,
+      title: HTMLAttributes.title,
+    };
+    
+    const customAttrs = HTMLAttributes.allAttributes || {};
+    const allAttrs = { ...standardAttrs, ...customAttrs };
+    
+    // Remove any null/undefined values
+    Object.keys(allAttrs).forEach(key => {
+      if (allAttrs[key] === null || allAttrs[key] === undefined) {
+        delete allAttrs[key];
+      }
+    });
+    
+    return ['img', mergeAttributes(this.options.HTMLAttributes, allAttrs)];
   },
 
   addCommands() {
     return {
-      setImage:
+      setCustomImage:
         (options) =>
         ({ commands }) => {
           return commands.insertContent({

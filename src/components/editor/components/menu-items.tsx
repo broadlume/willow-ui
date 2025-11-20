@@ -904,18 +904,11 @@ export const getL3MenuContent = (
                     
                     // Custom metadata as data attributes
                     Object.entries(l2ImageMetadata).forEach(([key, value]) => {
-                      // Skip standard attributes we already handled
-                      if (!['alt-text', 'width', 'height', 'title'].includes(key)) {
-                        // Convert metadata keys to data attributes
-                        const dataAttr = `data-${key.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-                        imageAttrs[dataAttr] = value;
-                      }
+                        imageAttrs[key] = value;
                     });
                   }
                   
-                  editor.chain().focus().setImage({
-                    src: l2Image,
-                  }).run();
+                  editor.chain().focus().setCustomImage(imageAttrs).run();
                   setL2Image('');
                   setL2ImageMetadata({});
                   setExpandedMenuL2(false);
