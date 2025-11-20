@@ -63,7 +63,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
       <PopoverContent
         data-testid='filter-panel-popover-content'
         align='end'
-        className='flex max-h-[577px] w-[222px] flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm'
+        className='flex max-h-153 w-55.5 flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm'
       >
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
@@ -115,7 +115,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
             variant='default'
             onClick={handleClearAll}
             data-testid='filter-panel-clear-all-button'
-            className='mx-auto flex h-8 w-[206px] items-center justify-center !rounded-sm !bg-surface-ter text-xs font-medium !text-text-destructive'
+            className='mx-auto flex h-8 w-51.5 items-center justify-center !rounded-sm !bg-surface-ter text-xs font-medium !text-text-destructive'
           >
             Clear All
           </Button>

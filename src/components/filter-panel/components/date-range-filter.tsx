@@ -28,7 +28,7 @@ export const DateRangeFilter = ({
         // Show selected date range with clear option when dates are selected
         <div
           data-testid={`date-range-filter-selected-range-${filterKey}`}
-          className='px-1 py-1 flex h-6 w-[169px] cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-shadow-dropdown'
+          className='px-1 py-1 flex h-6 w-42.5 cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-shadow-dropdown'
         >
           <span className='text-xs text-text-pri'>
             {format(new Date(selectedRange.from), 'MM-dd-yyyy')} to{' '}
