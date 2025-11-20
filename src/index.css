@@ -131,6 +131,7 @@
 
   --color-surface-pri: var(--color-grey-0);
   --color-surface-sec: var(--color-grey-5);
+  --color-surface-ter: var(--color-red-100);
   --color-surface-opt: var(--color-grey-10);
   --color-surface-more: var(--color-grey-0);
   --color-surface-brand: var(--color-primary-100);
@@ -156,6 +157,9 @@
   --color-border-cta: var(--color-cta-100);
   --color-border-destructive: var(--color-red-500);
   --color-border-invert: var(--color-grey-90);
+
+  --shadow-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-shadow-dropdown: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
 
   --spacing-50: 4px;
 

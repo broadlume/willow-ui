@@ -178,7 +178,8 @@
     "styled-components": "^6.1.1",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
-    "tippy.js": "^6.3.7"
+    "tippy.js": "^6.3.7",
+    "zustand": "^5.0.8"
   },
   "bugs": {
     "url": "https://github.com/broadlume/willow-ui/issues"
