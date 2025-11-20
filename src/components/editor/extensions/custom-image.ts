@@ -107,7 +107,7 @@ export const CustomImage = Node.create<CustomImageOptions>({
     
     // Remove any null/undefined values
     Object.keys(allAttrs).forEach(key => {
-      if (allAttrs[key] === null || allAttrs[key] === undefined || allAttrs[key] === '') {
+      if (!allAttrs[key]) {
         delete allAttrs[key];
       }
     });
