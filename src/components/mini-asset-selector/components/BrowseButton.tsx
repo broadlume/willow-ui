@@ -13,26 +13,30 @@ export interface BrowseButtonProps {
   loading?: boolean;
   hasImage?: boolean;
   name?: string;
+  multiple?: boolean;
   onBrowseClick?: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const BrowseButton: React.FC<BrowseButtonProps> = ({
-  browseButtonText = "Browse",
-  replaceButtonText = "Replace",
+  browseButtonText = 'Browse',
+  replaceButtonText = 'Replace',
   customBrowseButton,
   acceptedFileTypes = ['image/*'],
   disabled = false,
   loading = false,
   hasImage = false,
   name = 'asset',
+  multiple = true,
   onBrowseClick,
   onFileChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleBrowseClick = () => {
-    if (onBrowseClick) {
+    if (multiple) {
+      fileInputRef.current?.click();
+    } else if (onBrowseClick) {
       onBrowseClick();
     } else {
       fileInputRef.current?.click();
@@ -45,12 +49,13 @@ export const BrowseButton: React.FC<BrowseButtonProps> = ({
         {customBrowseButton}
         <Input
           ref={fileInputRef}
-          type="file"
+          type='file'
           accept={acceptedFileTypes.join(',')}
-          className="hidden"
-          data-testid="mini-asset-selector-file-input"
+          className='hidden'
+          data-testid='mini-asset-selector-file-input'
           onChange={onFileChange}
           disabled={loading || disabled}
+          multiple={multiple}
         />
       </div>
     );
@@ -65,25 +70,26 @@ export const BrowseButton: React.FC<BrowseButtonProps> = ({
         }
       )}
       onMouseDown={(e) => e.preventDefault()}
-      title="Upload Image"
+      title='Upload Image'
     >
       <Button
-        type="button"
-        className="bg-surface-cta font-thin gap-2 text-white py-0 h-7"
+        type='button'
+        className='bg-surface-cta font-thin gap-2 text-white py-0 h-7'
         onClick={handleBrowseClick}
         disabled={loading || disabled}
       >
-        <HiFolderOpen size={18} /> 
+        <HiFolderOpen size={18} />
         {hasImage ? replaceButtonText : browseButtonText}
       </Button>
       <Input
         ref={fileInputRef}
-        type="file"
+        type='file'
         accept={acceptedFileTypes.join(',')}
-        className="hidden"
-        data-testid="mini-asset-selector-file-input"
+        className='hidden'
+        data-testid='mini-asset-selector-file-input'
         onChange={onFileChange}
         disabled={loading || disabled}
+        multiple={multiple}
       />
     </div>
   );

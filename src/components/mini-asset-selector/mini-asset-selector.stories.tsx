@@ -5,15 +5,18 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../button';
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '../form/form';
-import { MiniAssetSelector, type MiniAssetSelectorProps } from './mini-asset-selector';
+import {
+  MiniAssetSelector,
+  type MiniAssetSelectorProps,
+} from './mini-asset-selector';
 
 const meta: Meta<typeof MiniAssetSelector> = {
   title: 'Components/MiniAssetSelector',
@@ -102,7 +105,7 @@ const DefaultExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -110,11 +113,9 @@ const DefaultExample = (args: Partial<MiniAssetSelectorProps>) => {
         selectedURL={selectedURL}
         onSelectedURL={setSelectedURL}
         name={args.name || 'asset-selector'}
-        onImageNameClick={
-          e => {
-            console.log('image clicked', e);
-          }
-        }
+        onImageNameClick={(e) => {
+          console.log('image clicked', e);
+        }}
       />
     </div>
   );
@@ -127,7 +128,7 @@ const PresetURLExample = (args: Partial<MiniAssetSelectorProps>) => {
   );
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -145,7 +146,7 @@ const DisabledExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -163,7 +164,7 @@ const CustomButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -184,11 +185,13 @@ const CustomBrowseExample = (args: Partial<MiniAssetSelectorProps>) => {
     // Simulate opening a custom asset manager
     alert('Custom asset manager would open here!');
     // In real usage, this would open your custom asset management modal
-    setSelectedURL('https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=600&fit=crop');
+    setSelectedURL(
+      'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=600&fit=crop'
+    );
   };
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -207,7 +210,7 @@ const RestrictionsExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -216,9 +219,9 @@ const RestrictionsExample = (args: Partial<MiniAssetSelectorProps>) => {
         onSelectedURL={setSelectedURL}
         name={args.name || 'asset-selector-restricted'}
       />
-      <div className="mt-4 text-sm text-gray-600">
+      <div className='mt-4 text-sm text-gray-600'>
         <p>Restrictions:</p>
-        <ul className="list-disc list-inside">
+        <ul className='list-disc list-inside'>
           <li>Max file size: 2MB</li>
           <li>Accepted types: JPEG, PNG only</li>
         </ul>
@@ -282,7 +285,7 @@ const NoBrowseButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -291,8 +294,11 @@ const NoBrowseButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
         onSelectedURL={setSelectedURL}
         name={args.name || 'asset-selector-no-browse'}
       />
-      <div className="mt-4 text-sm text-gray-600">
-        <p>This example shows the component without a browse button - only URL input and drag & drop work.</p>
+      <div className='mt-4 text-sm text-gray-600'>
+        <p>
+          This example shows the component without a browse button - only URL
+          input and drag & drop work.
+        </p>
       </div>
     </div>
   );
@@ -303,16 +309,20 @@ const CustomBrowseButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   const customButton = (
-    <button 
-      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-      onClick={() => alert('Custom browse button clicked! This could open a modal, redirect, etc.')}
+    <button
+      className='px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors'
+      onClick={() =>
+        alert(
+          'Custom browse button clicked! This could open a modal, redirect, etc.'
+        )
+      }
     >
       🎨 Custom Gallery
     </button>
   );
 
   return (
-    <div className="w-[600px]">
+    <div className='w-[600px]'>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -322,7 +332,7 @@ const CustomBrowseButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
         customBrowseButton={customButton}
         name={args.name || 'asset-selector-custom-button'}
       />
-      <div className="mt-4 text-sm text-gray-600">
+      <div className='mt-4 text-sm text-gray-600'>
         <p>This example uses a completely custom browse button component.</p>
         <p>Click the purple button to see custom behavior!</p>
       </div>
@@ -335,8 +345,8 @@ const NotFullWidthExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedURL, setSelectedURL] = useState<string | null>('');
 
   return (
-    <div className="w-[600px] border p-4">
-      <h3 className="mb-4 font-semibold">Container with fixed width</h3>
+    <div className='w-[600px] border p-4'>
+      <h3 className='mb-4 font-semibold'>Container with fixed width</h3>
       <MiniAssetSelector
         {...args}
         selectedFile={selectedFile}
@@ -345,8 +355,11 @@ const NotFullWidthExample = (args: Partial<MiniAssetSelectorProps>) => {
         onSelectedURL={setSelectedURL}
         name={args.name || 'asset-selector-not-full-width'}
       />
-      <div className="mt-4 text-sm text-gray-600">
-        <p>This example shows the component not taking full width of its container.</p>
+      <div className='mt-4 text-sm text-gray-600'>
+        <p>
+          This example shows the component not taking full width of its
+          container.
+        </p>
       </div>
     </div>
   );
@@ -395,11 +408,13 @@ export const NotFullWidth: Story = {
 // Form integration example schema
 const FormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  assetFile: z.union([
-    z.instanceof(File),
-    z.string().url('Please enter a valid URL'),
-    z.null(),
-  ]).optional(),
+  assetFile: z
+    .union([
+      z.instanceof(File),
+      z.string().url('Please enter a valid URL'),
+      z.null(),
+    ])
+    .optional(),
   description: z.string().optional(),
 });
 
@@ -418,30 +433,32 @@ const FormIntegrationExample = () => {
 
   const onSubmit = (values: FormValues) => {
     console.log('Form submitted:', values);
-    alert(`Form submitted! Check console for details. Asset: ${
-      values.assetFile instanceof File 
-        ? `File: ${values.assetFile.name}` 
-        : values.assetFile 
+    alert(
+      `Form submitted! Check console for details. Asset: ${
+        values.assetFile instanceof File
+          ? `File: ${values.assetFile.name}`
+          : values.assetFile
           ? `URL: ${values.assetFile}`
           : 'No asset selected'
-    }`);
+      }`
+    );
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className='w-full max-w-md mx-auto'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
           <FormField
             control={form.control}
-            name="title"
+            name='title'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <input 
-                    {...field} 
-                    placeholder="Enter title"
-                    className="w-full px-3 py-2 border rounded-md"
+                  <input
+                    {...field}
+                    placeholder='Enter title'
+                    className='w-full px-3 py-2 border rounded-md'
                   />
                 </FormControl>
                 <FormMessage />
@@ -451,7 +468,7 @@ const FormIntegrationExample = () => {
 
           <FormField
             control={form.control}
-            name="assetFile"
+            name='assetFile'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Asset Upload</FormLabel>
@@ -460,8 +477,8 @@ const FormIntegrationExample = () => {
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
-                    name="assetFile"
-                    placeholder="Upload image or enter URL"
+                    name='assetFile'
+                    placeholder='Upload image or enter URL'
                     fullWidth={true}
                     showBrowseButton={true}
                   />
@@ -476,15 +493,15 @@ const FormIntegrationExample = () => {
 
           <FormField
             control={form.control}
-            name="description"
+            name='description'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <textarea 
-                    {...field} 
-                    placeholder="Enter description (optional)"
-                    className="w-full px-3 py-2 border rounded-md"
+                  <textarea
+                    {...field}
+                    placeholder='Enter description (optional)'
+                    className='w-full px-3 py-2 border rounded-md'
                     rows={3}
                   />
                 </FormControl>
@@ -493,23 +510,25 @@ const FormIntegrationExample = () => {
             )}
           />
 
-          <div className="flex gap-2">
-            <Button type="submit" className="flex-1">
+          <div className='flex gap-2'>
+            <Button type='submit' className='flex-1'>
               Submit
             </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type='button'
+              variant='outline'
               onClick={() => form.reset()}
-              className="flex-1"
+              className='flex-1'
             >
               Reset
             </Button>
           </div>
 
-          <div className="text-sm text-gray-600">
-            <p><strong>Current Values:</strong></p>
-            <pre className="bg-gray-100 p-2 rounded text-xs mt-1">
+          <div className='text-sm text-gray-600'>
+            <p>
+              <strong>Current Values:</strong>
+            </p>
+            <pre className='bg-gray-100 p-2 rounded text-xs mt-1'>
               {JSON.stringify(form.watch(), null, 2)}
             </pre>
           </div>
@@ -527,6 +546,102 @@ export const FormIntegration: Story = {
       description: {
         story:
           'Demonstrates React Hook Form integration with the MiniAssetSelector. Shows form validation, error handling, and seamless integration with other form fields.',
+      },
+    },
+  },
+};
+
+// Multiple files example component
+const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState([
+    {
+      id: '1',
+      imageUrl: 'https://picsum.photos/200/200?random=1',
+      originalFile: 'product-image-1.jpg',
+    },
+    {
+      id: '2',
+      imageUrl: 'https://picsum.photos/200/200?random=2',
+      originalFile: 'product-image-2.jpg',
+    },
+    {
+      id: '3',
+      imageUrl: 'https://picsum.photos/200/200?random=1',
+      originalFile: 'product-image-3.jpg',
+    },
+    {
+      id: '4',
+      imageUrl: 'https://picsum.photos/200/200?random=2',
+      originalFile: 'product-image-4.jpg',
+    },
+    {
+      id: '5',
+      imageUrl: 'https://picsum.photos/200/200?random=1',
+      originalFile: 'product-image-5.jpg',
+    },
+    {
+      id: '6',
+      imageUrl: 'https://picsum.photos/200/200?random=2',
+      originalFile: 'product-image-6.jpg',
+    },
+  ]);
+
+  const handleFilesSelected = (files: File[]) => {
+    console.log('Selected files:', files);
+    setSelectedFiles(files);
+  };
+
+  const handleRemoveExistingImage = (id: string) => {
+    console.log('Remove existing image:', id);
+    setExistingImages((prev) => prev.filter((img) => img.id !== id));
+  };
+
+  return (
+    <div className='w-[600px]'>
+      <MiniAssetSelector
+        {...args}
+        multiple={true}
+        onSelectedFiles={handleFilesSelected}
+        existingImages={existingImages}
+        onRemoveExistingImage={handleRemoveExistingImage}
+        name={args.name || 'asset-selector-multiple'}
+      />
+
+      <div className='mt-4 text-sm text-gray-600'>
+        <p>
+          <strong>Features:</strong>
+        </p>
+        <ul className='list-disc list-inside'>
+          <li>Display existing/uploaded images with "Uploaded" badge</li>
+          <li>Select multiple files at once via browse button</li>
+          <li>Drag & drop multiple files</li>
+          <li>Click "Browse" again to add more files</li>
+          <li>
+            Remove individual files or existing images using the trash icon
+          </li>
+          <li>Files are added cumulatively (not replaced)</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+// Multiple files story
+export const MultipleFiles: Story = {
+  render: MultipleFilesExample,
+  args: {
+    name: 'asset-selector-multiple',
+    multiplePlaceholder: 'Drag & drop files here or click Browse',
+    browseButtonText: 'Browse',
+    acceptedFileTypes: ['image/*'],
+    maxFileSize: 10 * 1024 * 1024, // 10MB
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates multiple file upload functionality with existing/uploaded images. Users can see previously uploaded images with "Uploaded" badge, select multiple new files via browse button or drag & drop. New files are added to existing selection, and individual files or existing images can be removed.',
       },
     },
   },

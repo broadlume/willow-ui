@@ -3,7 +3,6 @@ import { AssetSelectorAction } from './types';
 
 // Helper function to check if file is an image
 export const isImageFile = (file: File): boolean => {
-  
   // Ensure file object has necessary properties
   if (!file || typeof file !== 'object') {
     console.warn('🚨 Invalid file object detected');
@@ -14,16 +13,26 @@ export const isImageFile = (file: File): boolean => {
   if (file.type && typeof file.type === 'string') {
     return file.type.startsWith('image/');
   }
-  
+
   // Fallback to file extension check
   if (file.name && typeof file.name === 'string') {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'];
+    const imageExtensions = [
+      '.jpg',
+      '.jpeg',
+      '.png',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg',
+    ];
     const fileName = file.name.toLowerCase();
-    return imageExtensions.some(ext => fileName.endsWith(ext));
+    return imageExtensions.some((ext) => fileName.endsWith(ext));
   }
 
   // If we can't determine, assume it's not an image
-  console.warn('🚨 Cannot determine if file is an image - missing type and name properties');
+  console.warn(
+    '🚨 Cannot determine if file is an image - missing type and name properties'
+  );
   return false;
 };
 
@@ -52,11 +61,14 @@ export const useFileHandler = (
 
     // Check file size
     if (file.size > maxSizeInBytes) {
-      return `File size must be less than ${(maxSizeInBytes / (1024 * 1024)).toFixed(1)}MB`;
+      return `File size must be less than ${(
+        maxSizeInBytes /
+        (1024 * 1024)
+      ).toFixed(1)}MB`;
     }
 
     // Check file type using helper function
-    const isValidType = acceptedFileTypes.some(type => {
+    const isValidType = acceptedFileTypes.some((type) => {
       if (type === 'image/*') {
         return isImageFile(file);
       }
@@ -70,7 +82,10 @@ export const useFileHandler = (
     return null;
   };
 
-  const processFile = (file: File, dispatch: React.Dispatch<AssetSelectorAction>) => {
+  const processFile = (
+    file: File,
+    dispatch: React.Dispatch<AssetSelectorAction>
+  ) => {
     const error = validateFile(file);
     if (error) {
       dispatch({ type: 'SET_INPUT_ERROR', payload: error });
@@ -104,7 +119,7 @@ export const useFileHandler = (
       });
       dispatch({ type: 'SET_INPUT_VALUE', payload: '' });
       dispatch({ type: 'SET_LOADING', payload: false });
-      
+
       // Now call the appropriate handlers after the file has been read
       if (onFileUpload) {
         onFileUpload(file);
@@ -117,12 +132,12 @@ export const useFileHandler = (
         }
       }
     };
-    
+
     reader.onerror = () => {
       dispatch({ type: 'SET_INPUT_ERROR', payload: 'Error reading file' });
       dispatch({ type: 'SET_LOADING', payload: false });
     };
-    
+
     reader.readAsDataURL(file);
     return true;
   };
@@ -134,37 +149,75 @@ export const useFileHandler = (
 export const useDragAndDrop = (
   loading: boolean,
   disabled: boolean,
-  processFile: (file: File, dispatch: React.Dispatch<AssetSelectorAction>) => boolean,
-  dispatch: React.Dispatch<AssetSelectorAction>
+  processFile: (
+    file: File,
+    dispatch: React.Dispatch<AssetSelectorAction>
+  ) => boolean,
+  dispatch: React.Dispatch<AssetSelectorAction>,
+  multiple?: boolean,
+  onMultipleFiles?: (files: File[]) => void
 ) => {
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     if (loading || disabled) return;
     e.preventDefault();
     e.stopPropagation();
-    dispatch({ type: 'SET_DRAG_STATE', payload: { active: false, error: false } });
-    
+    dispatch({
+      type: 'SET_DRAG_STATE',
+      payload: { active: false, error: false },
+    });
+
     try {
-      const file = e.dataTransfer.files?.[0];
-      
+      const files = e.dataTransfer.files;
+
+      if (multiple && files && files.length > 0) {
+        // Handle multiple files
+        const fileArray = Array.from(files);
+        if (onMultipleFiles) {
+          onMultipleFiles(fileArray);
+        }
+        return;
+      }
+
+      // Handle single file (existing behavior)
+      const file = files?.[0];
+
       if (file) {
         // Additional safety check for file object
         if (!file.name || typeof file.name !== 'string') {
-          dispatch({ type: 'SET_DRAG_STATE', payload: { active: false, error: true } });
-          dispatch({ type: 'SET_INPUT_ERROR', payload: 'Invalid file detected' });
+          dispatch({
+            type: 'SET_DRAG_STATE',
+            payload: { active: false, error: true },
+          });
+          dispatch({
+            type: 'SET_INPUT_ERROR',
+            payload: 'Invalid file detected',
+          });
           return;
         }
 
         if (isImageFile(file)) {
           processFile(file, dispatch);
         } else {
-          dispatch({ type: 'SET_DRAG_STATE', payload: { active: false, error: true } });
-          dispatch({ type: 'SET_INPUT_ERROR', payload: 'Please drop an image file' });
+          dispatch({
+            type: 'SET_DRAG_STATE',
+            payload: { active: false, error: true },
+          });
+          dispatch({
+            type: 'SET_INPUT_ERROR',
+            payload: 'Please drop an image file',
+          });
         }
       }
     } catch (error) {
       console.error('Error handling file drop:', error);
-      dispatch({ type: 'SET_DRAG_STATE', payload: { active: false, error: true } });
-      dispatch({ type: 'SET_INPUT_ERROR', payload: 'Error processing dropped file' });
+      dispatch({
+        type: 'SET_DRAG_STATE',
+        payload: { active: false, error: true },
+      });
+      dispatch({
+        type: 'SET_INPUT_ERROR',
+        payload: 'Error processing dropped file',
+      });
     }
   };
 
@@ -172,13 +225,31 @@ export const useDragAndDrop = (
     if (loading || disabled) return;
     e.preventDefault();
     e.stopPropagation();
-    dispatch({ type: 'SET_DRAG_STATE', payload: { active: true, error: false } });
-    
-    const item = e.dataTransfer.items?.[0];
-    if (item && item.type && !item.type.startsWith('image/')) {
-      dispatch({ type: 'SET_DRAG_STATE', payload: { active: true, error: true } });
+    dispatch({
+      type: 'SET_DRAG_STATE',
+      payload: { active: true, error: false },
+    });
+
+    if (multiple) {
+      // For multiple files, just show active state
+      dispatch({
+        type: 'SET_DRAG_STATE',
+        payload: { active: true, error: false },
+      });
     } else {
-      dispatch({ type: 'SET_DRAG_STATE', payload: { active: true, error: false } });
+      // For single file, validate type
+      const item = e.dataTransfer.items?.[0];
+      if (item && item.type && !item.type.startsWith('image/')) {
+        dispatch({
+          type: 'SET_DRAG_STATE',
+          payload: { active: true, error: true },
+        });
+      } else {
+        dispatch({
+          type: 'SET_DRAG_STATE',
+          payload: { active: true, error: false },
+        });
+      }
     }
   };
 
@@ -186,7 +257,10 @@ export const useDragAndDrop = (
     if (loading || disabled) return;
     e.preventDefault();
     e.stopPropagation();
-    dispatch({ type: 'SET_DRAG_STATE', payload: { active: false, error: false } });
+    dispatch({
+      type: 'SET_DRAG_STATE',
+      payload: { active: false, error: false },
+    });
   };
 
   return { handleDrop, handleDragOver, handleDragLeave };
