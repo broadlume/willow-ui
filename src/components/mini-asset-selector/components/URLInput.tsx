@@ -70,7 +70,13 @@ export const URLInput: React.FC<URLInputProps> = ({
               'w-full': fullWidth,
             }
           )}
-          value={""}
+          value={
+            selectedFilesCount > 0
+              ? `${selectedFilesCount} file${
+                  selectedFilesCount !== 1 ? 's' : ''
+                } selected`
+              : ''
+          }
           onChange={() => {}} // Read-only
           disabled={loading || disabled}
           readOnly
