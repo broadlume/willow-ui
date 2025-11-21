@@ -35,6 +35,7 @@ interface LazyLoadedSelectorProps<T> {
   isCms?: boolean;
   placeholderText?: string;
   storageKey?: string;
+  CustomItemComponent?: React.FC<{ item: T; onClick: (item: T) => void }>;
 }
 
 const LazyLoadedSelector = <T extends Items>({
@@ -45,6 +46,7 @@ const LazyLoadedSelector = <T extends Items>({
   wrapClassName = '',
   isCms,
   placeholderText = 'Search website',
+  CustomItemComponent,
   storageKey = 'favoriteClients',
 }: LazyLoadedSelectorProps<T>) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -99,6 +101,15 @@ const LazyLoadedSelector = <T extends Items>({
             className='px-2 py-1.5'
           >
             {items?.map((item) => {
+              if (CustomItemComponent) {
+                return (
+                  <CustomItemComponent
+                    item={item}
+                    key={item.id}
+                    onClick={handleSelect}
+                  />
+                );
+              }
               return (
                 <div
                   data-testid={'website-item-' + item?.name}
