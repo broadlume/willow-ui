@@ -77,7 +77,6 @@ export const URLInput: React.FC<URLInputProps> = ({
                 } selected`
               : ''
           }
-          onChange={() => {}} // Read-only
           disabled={loading || disabled}
           readOnly
           postfixSlot={
@@ -163,7 +162,7 @@ export const URLInput: React.FC<URLInputProps> = ({
         />
       )}
       {(inputError || errorMessage) && (
-        <div className='text-red-500 text-sm mt-1'>
+        <div className='text-text-destructive text-sm mt-1'>
           {errorMessage || inputError}
         </div>
       )}
