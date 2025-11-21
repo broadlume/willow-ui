@@ -20,6 +20,8 @@ export interface URLInputProps {
   customBrowseButton?: React.ReactNode;
   acceptedFileTypes?: string[];
   hasImage?: boolean;
+  multiple?: boolean;
+  selectedFilesCount?: number;
   onBrowseClick?: () => void;
   // Event handlers
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -31,7 +33,7 @@ export interface URLInputProps {
 
 export const URLInput: React.FC<URLInputProps> = ({
   value,
-  placeholder = "Enter Image URL here or Drag & drop here 1200 x 630 pixels (minimum 600 x 315 pixels)",
+  placeholder = 'Enter Image URL here or Drag & drop here 1200 x 630 pixels (minimum 600 x 315 pixels)',
   disabled = false,
   loading = false,
   fullWidth = true,
@@ -46,6 +48,8 @@ export const URLInput: React.FC<URLInputProps> = ({
   customBrowseButton,
   acceptedFileTypes,
   hasImage = false,
+  multiple = false,
+  selectedFilesCount = 0,
   onBrowseClick,
   // Event handlers
   onChange,
@@ -56,54 +60,104 @@ export const URLInput: React.FC<URLInputProps> = ({
 }) => {
   return (
     <>
-      <InputWithSlots
-        name={name}
-        className={clsx(
-          'h-10 placeholder:text-xs placeholder:!text-icon-pri focus-visible:outline-none items-center',
-          {
-            'w-full': fullWidth,
-          }
-        )}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
-        onPaste={onPaste}
-        disabled={loading || disabled}
-        postfixSlot={
-          showBrowseButton ? (
-            <BrowseButton
-              browseButtonText={browseButtonText}
-              replaceButtonText={replaceButtonText}
-              customBrowseButton={customBrowseButton}
-              acceptedFileTypes={acceptedFileTypes}
-              disabled={disabled}
-              loading={loading}
-              hasImage={hasImage}
-              name={name}
-              onBrowseClick={onBrowseClick}
-              onFileChange={onFileChange}
-            />
-          ) : undefined
-        }
-        placeholder={placeholder}
-        classes={{
-          inputClass: clsx(
-            'h-10 placeholder:text-sm focus-visible:outline-none',
+      {multiple ? (
+        // When multiple is true, show same design as URL input but read-only with file count
+        <InputWithSlots
+          name={name}
+          className={clsx(
+            'h-10 placeholder:text-xs placeholder:!text-icon-pri focus-visible:outline-none items-center',
             {
               'w-full': fullWidth,
             }
-          ),
-          textFieldWrapClass: fullWidth ? 'w-full' : undefined,
-        }}
-        wrapperProps={{
-          className: clsx('items-center !border-border-cta', {
-            'border-destructive': error || errorMessage || inputError,
-          }),
-        }}
-      />
+          )}
+          value={""}
+          onChange={() => {}} // Read-only
+          disabled={loading || disabled}
+          readOnly
+          postfixSlot={
+            showBrowseButton ? (
+              <BrowseButton
+                browseButtonText={browseButtonText}
+                replaceButtonText={replaceButtonText}
+                customBrowseButton={customBrowseButton}
+                acceptedFileTypes={acceptedFileTypes}
+                disabled={disabled}
+                loading={loading}
+                hasImage={false}
+                name={name}
+                multiple={multiple}
+                onBrowseClick={onBrowseClick}
+                onFileChange={onFileChange}
+              />
+            ) : undefined
+          }
+          placeholder={placeholder}
+          classes={{
+            inputClass: clsx(
+              'h-10 placeholder:text-sm focus-visible:outline-none cursor-default',
+              {
+                'w-full': fullWidth,
+              }
+            ),
+            textFieldWrapClass: fullWidth ? 'w-full' : undefined,
+          }}
+          wrapperProps={{
+            className: clsx('items-center !border-border-cta', {
+              'border-destructive': error || errorMessage || inputError,
+            }),
+          }}
+        />
+      ) : (
+        <InputWithSlots
+          name={name}
+          className={clsx(
+            'h-10 placeholder:text-xs placeholder:!text-icon-pri focus-visible:outline-none items-center',
+            {
+              'w-full': fullWidth,
+            }
+          )}
+          value={value}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          onBlur={onBlur}
+          onPaste={onPaste}
+          disabled={loading || disabled}
+          postfixSlot={
+            showBrowseButton ? (
+              <BrowseButton
+                browseButtonText={browseButtonText}
+                replaceButtonText={replaceButtonText}
+                customBrowseButton={customBrowseButton}
+                acceptedFileTypes={acceptedFileTypes}
+                disabled={disabled}
+                loading={loading}
+                hasImage={hasImage}
+                name={name}
+                multiple={multiple}
+                onBrowseClick={onBrowseClick}
+                onFileChange={onFileChange}
+              />
+            ) : undefined
+          }
+          placeholder={placeholder}
+          classes={{
+            inputClass: clsx(
+              'h-10 placeholder:text-sm focus-visible:outline-none',
+              {
+                'w-full': fullWidth,
+              }
+            ),
+            textFieldWrapClass: fullWidth ? 'w-full' : undefined,
+          }}
+          wrapperProps={{
+            className: clsx('items-center !border-border-cta', {
+              'border-destructive': error || errorMessage || inputError,
+            }),
+          }}
+        />
+      )}
       {(inputError || errorMessage) && (
-        <div className="text-red-500 text-sm mt-1">
+        <div className='text-red-500 text-sm mt-1'>
           {errorMessage || inputError}
         </div>
       )}

@@ -5,8 +5,10 @@ A versatile asset selector component that supports both file uploads and URL inp
 ## Features
 
 - **Dual Input Methods**: Support for both file uploads and URL input
-- **Drag & Drop**: Intuitive drag and drop interface for file uploads
-- **Image Preview**: Shows preview thumbnails for selected images
+- **Multiple File Upload**: Support for selecting and managing multiple files at once
+- **Existing Images Display**: Show previously uploaded images alongside new file selection
+- **Drag & Drop**: Intuitive drag and drop interface for file uploads (single and multiple)
+- **Image Preview**: Shows preview thumbnails for selected images with file size information
 - **Validation**: Built-in file size and type validation
 - **Customizable**: Configurable button text, placeholders, and restrictions
 - **Asset Manager Integration**: Customizable browse handler for asset management systems
@@ -57,6 +59,11 @@ function MyComponent() {
 | `showBrowseButton` | `boolean` | `true` | Whether to show the browse button |
 | `customBrowseButton` | `React.ReactNode` | - | Custom browse button component - if provided, replaces the default button |
 | `fullWidth` | `boolean` | `true` | Whether to make the component full width |
+| `multiple` | `boolean` | `false` | Whether to allow multiple file selection - when true, only file upload works (no URL input) |
+| `onSelectedFiles` | `(files: File[]) => void` | - | Callback when multiple files are selected (only used when multiple=true) |
+| `multiplePlaceholder` | `string` | "Drag & drop files here or click Browse" | Custom placeholder for multiple file mode |
+| `existingImages` | `Array<{id: string; imageUrl: string; originalFile: string;}>` | `[]` | Existing/uploaded images to display (only used when multiple=true) |
+| `onRemoveExistingImage` | `(id: string) => void` | - | Callback when an existing image is removed |
 
 ### React Hook Form Integration Props
 
@@ -172,6 +179,54 @@ const customButton = (
   className="w-96" // Apply your own width
 />
 ```
+
+### Multiple File Upload
+
+```tsx
+function MultipleFileUpload() {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState([
+    {
+      id: '1',
+      imageUrl: 'https://example.com/image1.jpg',
+      originalFile: 'product-image-1.jpg',
+    },
+    {
+      id: '2',
+      imageUrl: 'https://example.com/image2.jpg',
+      originalFile: 'product-image-2.jpg',
+    },
+  ]);
+
+  const handleRemoveExisting = (id: string) => {
+    // Call your API to delete the image
+    deleteImageFromAPI(id).then(() => {
+      setExistingImages(prev => prev.filter(img => img.id !== id));
+    });
+  };
+
+  return (
+    <MiniAssetSelector
+      name="multiple-files"
+      multiple={true}
+      onSelectedFiles={setSelectedFiles}
+      existingImages={existingImages}
+      onRemoveExistingImage={handleRemoveExisting}
+      multiplePlaceholder="Drag & drop files here or click Browse"
+      browseButtonText="Browse"
+      acceptedFileTypes={['image/*']}
+      maxFileSize={10 * 1024 * 1024} // 10MB
+    />
+  );
+}
+```
+
+**Multiple File Upload Features:**
+- Select multiple files at once via browse button
+- Drag & drop multiple files simultaneously
+- Display existing/uploaded images from API
+- Individual file removal for both new and existing files
+- Files are added cumulatively (not replaced)
 
 ## Styling
 
