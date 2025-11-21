@@ -27,12 +27,12 @@ function MyComponent() {
 
   return (
     <MiniAssetSelector
-      name="asset-selector"
+      name='asset-selector'
       selectedFile={selectedFile}
       onSelectedFile={setSelectedFile}
       selectedURL={selectedURL}
       onSelectedURL={setSelectedURL}
-      placeholder="Enter Image URL or drag & drop here"
+      placeholder='Enter Image URL or drag & drop here'
     />
   );
 }
@@ -40,40 +40,40 @@ function MyComponent() {
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `selectedFile` | `File \| null` | - | The currently selected file object |
-| `onSelectedFile` | `(file: File \| null) => void` | - | Callback when a file is selected |
-| `selectedURL` | `string \| null` | - | The currently selected URL string |
-| `onSelectedURL` | `(url: string \| null) => void` | - | Callback when a URL is selected |
-| `name` | `string` | `'asset'` | The name attribute for the input field |
-| `placeholder` | `string` | "Enter Image URL here or Drag & drop here 1200 x 630 pixels (minimum 600 x 315 pixels)" | Custom placeholder text |
-| `disabled` | `boolean` | `false` | Whether the component is disabled |
-| `browseButtonText` | `string` | "Browse" | Custom browse button text |
-| `replaceButtonText` | `string` | "Replace" | Custom replace button text |
-| `onBrowseClick` | `() => void` | - | Callback when browse button is clicked - allows custom asset manager integration |
-| `onFileUpload` | `(file: File) => void` | - | Custom file upload handler - if provided, will be called instead of default file handling |
-| `maxFileSize` | `number` | `10485760` (10MB) | Maximum file size in bytes |
-| `acceptedFileTypes` | `string[]` | `['image/*']` | Accepted file types |
-| `className` | `string` | - | Custom class name for the wrapper |
-| `showBrowseButton` | `boolean` | `true` | Whether to show the browse button |
-| `customBrowseButton` | `React.ReactNode` | - | Custom browse button component - if provided, replaces the default button |
-| `fullWidth` | `boolean` | `true` | Whether to make the component full width |
-| `multiple` | `boolean` | `false` | Whether to allow multiple file selection - when true, only file upload works (no URL input) |
-| `onSelectedFiles` | `(files: File[]) => void` | - | Callback when multiple files are selected (only used when multiple=true) |
-| `multiplePlaceholder` | `string` | "Drag & drop files here or click Browse" | Custom placeholder for multiple file mode |
-| `existingImages` | `Array<{id: string; imageUrl: string; originalFile: string;}>` | `[]` | Existing/uploaded images to display (only used when multiple=true) |
-| `onRemoveExistingImage` | `(id: string) => void` | - | Callback when an existing image is removed |
+| Prop                    | Type                                                           | Default                                                                                 | Description                                                                                 |
+| ----------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `selectedFile`          | `File \| null`                                                 | -                                                                                       | The currently selected file object                                                          |
+| `onSelectedFile`        | `(file: File \| null) => void`                                 | -                                                                                       | Callback when a file is selected                                                            |
+| `selectedURL`           | `string \| null`                                               | -                                                                                       | The currently selected URL string                                                           |
+| `onSelectedURL`         | `(url: string \| null) => void`                                | -                                                                                       | Callback when a URL is selected                                                             |
+| `name`                  | `string`                                                       | `'asset'`                                                                               | The name attribute for the input field                                                      |
+| `placeholder`           | `string`                                                       | "Enter Image URL here or Drag & drop here 1200 x 630 pixels (minimum 600 x 315 pixels)" | Custom placeholder text                                                                     |
+| `disabled`              | `boolean`                                                      | `false`                                                                                 | Whether the component is disabled                                                           |
+| `browseButtonText`      | `string`                                                       | "Browse"                                                                                | Custom browse button text                                                                   |
+| `replaceButtonText`     | `string`                                                       | "Replace"                                                                               | Custom replace button text                                                                  |
+| `onBrowseClick`         | `() => void`                                                   | -                                                                                       | Callback when browse button is clicked - allows custom asset manager integration            |
+| `onFileUpload`          | `(file: File) => void`                                         | -                                                                                       | Custom file upload handler - if provided, will be called instead of default file handling   |
+| `maxFileSize`           | `number`                                                       | `10485760` (10MB)                                                                       | Maximum file size in bytes                                                                  |
+| `acceptedFileTypes`     | `string[]`                                                     | `['image/*']`                                                                           | Accepted file types                                                                         |
+| `className`             | `string`                                                       | -                                                                                       | Custom class name for the wrapper                                                           |
+| `showBrowseButton`      | `boolean`                                                      | `true`                                                                                  | Whether to show the browse button                                                           |
+| `customBrowseButton`    | `React.ReactNode`                                              | -                                                                                       | Custom browse button component - if provided, replaces the default button                   |
+| `fullWidth`             | `boolean`                                                      | `true`                                                                                  | Whether to make the component full width                                                    |
+| `multiple`              | `boolean`                                                      | `false`                                                                                 | Whether to allow multiple file selection - when true, only file upload works (no URL input) |
+| `onSelectedFiles`       | `(files: File[]) => void`                                      | -                                                                                       | Callback when multiple files are selected (only used when multiple=true)                    |
+| `multiplePlaceholder`   | `string`                                                       | "Drag & drop files here or click Browse"                                                | Custom placeholder for multiple file mode                                                   |
+| `existingImages`        | `Array<{id: string; imageUrl: string; originalFile: string;}>` | `[]`                                                                                    | Existing/uploaded images to display (only used when multiple=true)                          |
+| `onRemoveExistingImage` | `(id: string) => void`                                         | -                                                                                       | Callback when an existing image is removed                                                  |
 
 ### React Hook Form Integration Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `File \| string \| null` | - | Value for controlled component usage (React Hook Form compatibility) |
-| `onChange` | `(value: File \| string \| null) => void` | - | Change handler for controlled component usage (React Hook Form compatibility) |
-| `onBlur` | `() => void` | - | Blur handler for form validation |
-| `error` | `boolean` | `false` | Error state for form validation |
-| `errorMessage` | `string` | - | Error message for form validation |
+| Prop           | Type                                      | Default | Description                                                                   |
+| -------------- | ----------------------------------------- | ------- | ----------------------------------------------------------------------------- |
+| `value`        | `File \| string \| null`                  | -       | Value for controlled component usage (React Hook Form compatibility)          |
+| `onChange`     | `(value: File \| string \| null) => void` | -       | Change handler for controlled component usage (React Hook Form compatibility) |
+| `onBlur`       | `() => void`                              | -       | Blur handler for form validation                                              |
+| `error`        | `boolean`                                 | `false` | Error state for form validation                                               |
+| `errorMessage` | `string`                                  | -       | Error message for form validation                                             |
 
 ## Examples
 
@@ -81,7 +81,7 @@ function MyComponent() {
 
 ```tsx
 <MiniAssetSelector
-  name="basic-selector"
+  name='basic-selector'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
@@ -93,13 +93,13 @@ function MyComponent() {
 
 ```tsx
 <MiniAssetSelector
-  name="custom-manager"
+  name='custom-manager'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
   onSelectedFile={setFile}
   onBrowseClick={() => openCustomAssetManager()}
-  browseButtonText="Asset Library"
+  browseButtonText='Asset Library'
 />
 ```
 
@@ -107,7 +107,7 @@ function MyComponent() {
 
 ```tsx
 <MiniAssetSelector
-  name="restricted-selector"
+  name='restricted-selector'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
@@ -121,7 +121,7 @@ function MyComponent() {
 
 ```tsx
 <MiniAssetSelector
-  name="custom-upload"
+  name='custom-upload'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
@@ -134,13 +134,13 @@ function MyComponent() {
 
 ```tsx
 <MiniAssetSelector
-  name="no-browse"
+  name='no-browse'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
   onSelectedFile={setFile}
   showBrowseButton={false}
-  placeholder="URL input and drag & drop only"
+  placeholder='URL input and drag & drop only'
 />
 ```
 
@@ -148,8 +148,8 @@ function MyComponent() {
 
 ```tsx
 const customButton = (
-  <button 
-    className="px-4 py-2 bg-purple-600 text-white rounded"
+  <button
+    className='px-4 py-2 bg-purple-600 text-white rounded'
     onClick={() => openCustomModal()}
   >
     🎨 Open Gallery
@@ -157,26 +157,26 @@ const customButton = (
 );
 
 <MiniAssetSelector
-  name="custom-button"
+  name='custom-button'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
   onSelectedFile={setFile}
   customBrowseButton={customButton}
-/>
+/>;
 ```
 
 ### Not Full Width
 
 ```tsx
 <MiniAssetSelector
-  name="fixed-width"
+  name='fixed-width'
   selectedURL={url}
   onSelectedURL={setUrl}
   selectedFile={file}
   onSelectedFile={setFile}
   fullWidth={false}
-  className="w-96" // Apply your own width
+  className='w-96' // Apply your own width
 />
 ```
 
@@ -201,19 +201,19 @@ function MultipleFileUpload() {
   const handleRemoveExisting = (id: string) => {
     // Call your API to delete the image
     deleteImageFromAPI(id).then(() => {
-      setExistingImages(prev => prev.filter(img => img.id !== id));
+      setExistingImages((prev) => prev.filter((img) => img.id !== id));
     });
   };
 
   return (
     <MiniAssetSelector
-      name="multiple-files"
+      name='multiple-files'
       multiple={true}
       onSelectedFiles={setSelectedFiles}
       existingImages={existingImages}
       onRemoveExistingImage={handleRemoveExisting}
-      multiplePlaceholder="Drag & drop files here or click Browse"
-      browseButtonText="Browse"
+      multiplePlaceholder='Drag & drop files here or click Browse'
+      browseButtonText='Browse'
       acceptedFileTypes={['image/*']}
       maxFileSize={10 * 1024 * 1024} // 10MB
     />
@@ -222,6 +222,7 @@ function MultipleFileUpload() {
 ```
 
 **Multiple File Upload Features:**
+
 - Select multiple files at once via browse button
 - Drag & drop multiple files simultaneously
 - Display existing/uploaded images from API
@@ -247,22 +248,24 @@ The component supports React Hook Form out of the box with controlled component 
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { 
-  Form, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormControl, 
-  FormMessage 
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
 } from '@broadlume/willow-ui';
 import { MiniAssetSelector } from '@broadlume/willow-ui';
 
 const schema = z.object({
-  assetFile: z.union([
-    z.instanceof(File),
-    z.string().url('Please enter a valid URL'),
-    z.null(),
-  ]).optional(),
+  assetFile: z
+    .union([
+      z.instanceof(File),
+      z.string().url('Please enter a valid URL'),
+      z.null(),
+    ])
+    .optional(),
 });
 
 function MyForm() {
@@ -278,7 +281,7 @@ function MyForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
-          name="assetFile"
+          name='assetFile'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Asset Upload</FormLabel>
@@ -287,8 +290,8 @@ function MyForm() {
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  name="assetFile"
-                  placeholder="Upload image or enter URL"
+                  name='assetFile'
+                  placeholder='Upload image or enter URL'
                 />
               </FormControl>
               <FormMessage />
@@ -313,7 +316,7 @@ The component also works with Formik using the legacy prop pattern:
   {({ values, setFieldValue }) => (
     <Form>
       <MiniAssetSelector
-        name="imageUrl"
+        name='imageUrl'
         selectedURL={values.imageUrl}
         onSelectedURL={(url) => setFieldValue('imageUrl', url)}
         selectedFile={null}
