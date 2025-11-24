@@ -7,6 +7,8 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
+  DragStartEvent,
+  DragOverlay,
 } from '@dnd-kit/core';
 
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
@@ -46,6 +48,7 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
+  ColumnHeaderOverlay,
   Table,
   TableBody,
   TableCell,
@@ -98,6 +101,11 @@ export function useDataTable<TData, TValue>({
     ]);
     return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
   }, [initialColumnOrder]);
+
+  /**
+   * Drag State
+   */
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
   /**
    * Sort
@@ -392,6 +400,14 @@ export function useDataTable<TData, TValue>({
     useSensor(KeyboardSensor, {})
   );
 
+  function handleDragStart(event: DragStartEvent) {
+    setActiveDragId(String(event.active.id));
+  }
+
+  function handleDragCancel() {
+    setActiveDragId(null);
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -417,9 +433,16 @@ export function useDataTable<TData, TValue>({
           return updatedArray;
         });
       }
-      return;
     }
   }
+
+  // Find the header object for the overlay
+  const draggedHeader = useMemo(() => {
+    if (!activeDragId) return null;
+    // We look through the header groups to find the specific header object
+    const headers = table.getHeaderGroups().flatMap((group) => group.headers);
+    return headers.find((header) => header.id === activeDragId);
+  }, [activeDragId, table]);
 
   const toggleSelection = (row: Row<TData>) => {
     handleRowCheckboxChange(row);
@@ -524,7 +547,9 @@ export function useDataTable<TData, TValue>({
         >
           <DndContext
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
             sensors={sensors}
           >
             <Table
@@ -637,6 +662,15 @@ export function useDataTable<TData, TValue>({
                 )}
               </TableBody>
             </Table>
+
+            <DragOverlay>
+              {draggedHeader ? (
+                <ColumnHeaderOverlay
+                  header={draggedHeader}
+                  itemProps={itemProps}
+                />
+              ) : null}
+            </DragOverlay>
           </DndContext>
         </div>
       )}
