@@ -51,6 +51,43 @@ const meta: Meta<typeof GridImageGallery> = {
       control: 'text',
       description: 'Custom class name for the grid container',
     },
+    virtualized: {
+      control: 'boolean',
+      description: 'Enable simple windowed rendering for long lists',
+    },
+    virtualizedRowHeight: {
+      control: 'number',
+      description: 'Row height in pixels when virtualized is enabled',
+    },
+    virtualizedContainerHeight: {
+      control: 'number',
+      description: 'Scroll container height in pixels when virtualized is enabled',
+    },
+    pageIndex: {
+      control: false,
+      description:
+        'Zero-based page index when using the built-in pagination footer (controlled by the parent).',
+    },
+    pageSize: {
+      control: false,
+      description:
+        'Page size when using the built-in pagination footer (controlled by the parent).',
+    },
+    totalItems: {
+      control: false,
+      description:
+        'Total number of items across all pages when using pagination. Defaults to items.length.',
+    },
+    pageSizeOptions: {
+      control: 'object',
+      description:
+        'Available page size options for the pagination footer. Defaults to [12, 24, 48, 96].',
+    },
+    showPagination: {
+      control: 'boolean',
+      description:
+        'Explicitly control whether pagination footer is shown. If not provided, auto-detects based on callbacks or total items.',
+    },
   },
   tags: ['autodocs'],
 };
@@ -87,7 +124,7 @@ const sampleItems: GridAssetItem[] = [
   { id: '24', name: 'Natural Wonders.jpg', imageUrl: 'https://picsum.photos/400/400?random=24' },
 ];
 
-// Default story with interactive controls
+// Default story with interactive controls (no pagination)
 const DefaultExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -106,7 +143,7 @@ const DefaultExample = (args: GridImageGalleryProps) => {
     alert(`Double clicked: ${item.name}`);
   };
 
-  const handleMenuClick = (item: GridAssetItem, event: React.MouseEvent) => {
+  const handleMenuClick = (item: GridAssetItem) => {
     console.log('Menu clicked for:', item);
     alert(`Menu clicked for: ${item.name}`);
   };
@@ -152,14 +189,73 @@ export const Default: Story = {
   },
 };
 
+// Gallery with built-in pagination footer
+const WithPaginationExample = (args: GridImageGalleryProps) => {
+  const [allItems, setAllItems] = useState<GridAssetItem[]>(sampleItems);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(12);
+
+  const handleDelete = (idsToDelete: string[]) => {
+    setAllItems((prev) => prev.filter((item) => !idsToDelete.includes(item.id)));
+  };
+
+  const pagedItems = allItems.slice(
+    pageIndex * pageSize,
+    pageIndex * pageSize + pageSize,
+  );
+
+  return (
+    <div className="w-full">
+      <div className="mb-4 p-4 bg-surface-sec rounded">
+        <p className="text-sm font-medium text-text-pri">
+          Paginated Gallery
+        </p>
+        <p className="text-xs text-text-opt mt-1">
+          Uses the gallery&apos;s optional pagination footer. Change items per page or navigate between pages.
+        </p>
+      </div>
+      <GridImageGallery
+        {...args}
+        items={pagedItems}
+        onDelete={handleDelete}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        totalItems={allItems.length}
+        pageSizeOptions={[6, 12, 24]}
+        onPageChange={setPageIndex}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPageIndex(0);
+        }}
+        showPagination={true}
+      />
+    </div>
+  );
+};
+
+export const WithPagination: Story = {
+  render: WithPaginationExample,
+  args: {
+    allowMultiSelect: true,
+    selectable: true,
+    showActionButtons: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Gallery using the optional pagination footer. The parent component controls page index, size, and items.',
+      },
+    },
+  },
+};
+
 // Single selection only
 const SingleSelectionExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const handleDelete = (selectedIds: string[]) => {
     setItems(items.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
   };
 
   return (
@@ -221,11 +317,8 @@ const highQualityItems: GridAssetItem[] = [
 
 const HighQualityExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(highQualityItems);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const handleDelete = (selectedIds: string[]) => {
     setItems(items.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
   };
 
   return (
@@ -233,7 +326,6 @@ const HighQualityExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
-        onSelectionChange={setSelectedIds}
         onDelete={handleDelete}
       />
     </div>
@@ -259,14 +351,11 @@ export const HighQualityImages: Story = {
 // Custom render example
 const CustomRenderExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems.slice(0, 12));
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const handleDelete = (selectedIds: string[]) => {
     setItems(items.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
   };
 
-  const customRender = (item: GridAssetItem) => {
+  const customRender = (item: GridAssetItem, context: { isSelected: boolean }) => {
     return (
       <div className="flex flex-col h-full">
         <div className="aspect-square w-full relative overflow-hidden">
@@ -277,7 +366,7 @@ const CustomRenderExample = (args: GridImageGalleryProps) => {
           />
           <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-3">
             <p className="text-white text-sm font-medium truncate">
-              {item.name}
+              {context.isSelected ? `Selected: ${item.name}` : item.name}
             </p>
           </div>
         </div>
@@ -298,7 +387,6 @@ const CustomRenderExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
-        onSelectionChange={setSelectedIds}
         onDelete={handleDelete}
         renderCardContent={customRender}
       />
@@ -322,6 +410,76 @@ export const CustomRender: Story = {
   },
 };
 
+// Virtualized long list with mixed states
+const createVirtualizedItems = (count: number): GridAssetItem[] => {
+  return Array.from({ length: count }).map((_, index) => {
+    const id = String(index + 1);
+    // Mark first few items as loading and some without image to demonstrate states
+    if (index < 5) {
+      return {
+        id,
+        name: `Loading asset ${id}`,
+        isLoading: true,
+      };
+    }
+
+    if (index % 7 === 0) {
+      return {
+        id,
+        name: `Text-only asset ${id}`,
+      };
+    }
+
+    return {
+      id,
+      name: `Asset ${id}`,
+      imageUrl: `https://picsum.photos/400/400?random=${index + 30}`,
+    };
+  });
+};
+
+const VirtualizedExample = (args: GridImageGalleryProps) => {
+  const [items] = useState<GridAssetItem[]>(() => createVirtualizedItems(500));
+
+  return (
+    <div className="w-full">
+      <div className="mb-4 p-4 bg-surface-sec rounded">
+        <p className="text-sm font-medium text-text-pri">
+          Virtualized Gallery
+        </p>
+        <p className="text-xs text-text-opt mt-1">
+          Rendering 500 items using simple windowed rendering. Some items are loading-only, some are text-only.
+        </p>
+      </div>
+      <GridImageGallery
+        {...args}
+        items={items}
+      />
+    </div>
+  );
+};
+
+export const VirtualizedLongList: Story = {
+  render: VirtualizedExample,
+  args: {
+    allowMultiSelect: true,
+    selectable: true,
+    showActionButtons: true,
+    columns: 4,
+    virtualized: true,
+    virtualizedRowHeight: 176,
+    virtualizedContainerHeight: 480,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Gallery rendering a long list (500 items) using the built-in simple virtualization for better performance. Demonstrates loading placeholders and text-only items.',
+      },
+    },
+  },
+};
+
 // Portrait orientation images
 const portraitItems: GridAssetItem[] = [
   { id: '1', name: 'Portrait Photo 1.jpg', imageUrl: 'https://picsum.photos/400/600?random=25' },
@@ -336,11 +494,8 @@ const portraitItems: GridAssetItem[] = [
 
 const PortraitExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(portraitItems);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const handleDelete = (selectedIds: string[]) => {
     setItems(items.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
   };
 
   return (
@@ -348,7 +503,6 @@ const PortraitExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
-        onSelectionChange={setSelectedIds}
         onDelete={handleDelete}
       />
     </div>
@@ -374,8 +528,6 @@ export const PortraitImages: Story = {
 // Delete with confirmation
 const DeleteWithConfirmationExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems.slice(0, 12));
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const handleDelete = (selectedIds: string[]) => {
     const count = selectedIds.length;
     const confirmed = window.confirm(
@@ -385,7 +537,6 @@ const DeleteWithConfirmationExample = (args: GridImageGalleryProps) => {
     if (confirmed) {
       console.log('Deleting items:', selectedIds);
       setItems(items.filter((item) => !selectedIds.includes(item.id)));
-      setSelectedIds([]);
     }
   };
 
@@ -403,7 +554,6 @@ const DeleteWithConfirmationExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
-        onSelectionChange={setSelectedIds}
         onDelete={handleDelete}
       />
     </div>
