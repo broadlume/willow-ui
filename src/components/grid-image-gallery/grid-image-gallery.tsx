@@ -189,17 +189,17 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
 
   const currentPageIndex = pageIndex ?? 0;
   const total = totalItems ?? items.length;
-  
+
   // Ensure pageSize is a valid option, defaulting to first option if not provided or not in options
   const effectivePageSize = pageSize ?? pageSizeOptions[0] ?? 12;
   const currentPageSize = pageSizeOptions.includes(effectivePageSize)
     ? effectivePageSize
     : pageSizeOptions[0] ?? 12;
-  
+
   const totalPages = Math.max(1, Math.ceil(total / currentPageSize));
   // Pagination only shows when explicitly enabled via showPagination flag,
   // or when both pagination callbacks are provided (indicating intentional pagination setup)
-  const hasPagination = showPaginationProp  
+  const hasPagination = showPaginationProp;
 
   const handlePreviousPage = () => {
     if (!onPageChange) return;
@@ -297,7 +297,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
               <button
                 type='button'
                 onClick={handleDelete}
-                className='px-4 py-2 text-sm font-medium rounded-md border border-border-destructive bg-surface-destructive-bg text-text-destructive hover:bg-red-100 transition-colors flex items-center gap-2'
+                className='px-4 py-2 text-sm font-medium rounded-md border border-border-destructive text-text-destructive hover:bg-surface-destructive-bg transition-colors flex items-center gap-2'
               >
                 <HiOutlineTrash className='w-4 h-4' />
                 Delete ({selectedCount})
