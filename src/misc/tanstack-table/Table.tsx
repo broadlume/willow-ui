@@ -1,3 +1,10 @@
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react';
 import {
   closestCenter,
   DndContext,
@@ -9,6 +16,7 @@ import {
   useSensors,
   DragStartEvent,
   DragOverlay,
+  useDndContext,
 } from '@dnd-kit/core';
 
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
@@ -30,7 +38,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -62,6 +70,32 @@ import {
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
 
+function getInitialColumnOrder<TData, TValue>(
+  columns: ColumnDef<TData, TValue>[],
+  initialColumnOrder: string[] | undefined,
+  fixedStartColIds: string[],
+  fixedEndColIds: string[]
+): string[] {
+  if (initialColumnOrder && initialColumnOrder.length > 0) {
+    return initialColumnOrder;
+  }
+
+  const colIds = columns
+    .map((col) => {
+      if ('id' in col && col.id) return col.id as string;
+      if ('accessorKey' in col && col.accessorKey)
+        return col.accessorKey as string;
+      return '';
+    })
+    .filter(Boolean);
+
+  const draggable = colIds.filter(
+    (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+  );
+
+  return [...fixedStartColIds, ...draggable, ...fixedEndColIds];
+}
+
 export function useDataTable<TData, TValue>({
   columns,
   data,
@@ -87,25 +121,33 @@ export function useDataTable<TData, TValue>({
   /**
    * Column Ordering
    */
-  const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
-  // Memoize columns to prevent re-renders, and derive initial column order
-  const { draggableColumnIds } = useMemo(() => {
-    const draggableColumnIds =
-      initialColumnOrder?.filter(
-        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
-      ) || [];
-    setColumnOrder([
-      ...fixedStartColIds,
-      ...draggableColumnIds,
-      ...fixedEndColIds,
-    ]);
-    return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
+  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
+    getInitialColumnOrder(
+      columns,
+      initialColumnOrder,
+      fixedStartColIds,
+      fixedEndColIds
+    )
+  );
+
+  // Sync internal columnOrder state when initialColumnOrder prop changes externally
+  useEffect(() => {
+    if (initialColumnOrder && initialColumnOrder.length > 0) {
+      setColumnOrder(initialColumnOrder);
+    }
   }, [initialColumnOrder]);
 
+  // get draggable column IDs from columnOrder
+  const draggableColumnIds = useMemo(() => {
+    return columnOrder.filter(
+      (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+    );
+  }, [columnOrder, fixedStartColIds, fixedEndColIds]);
+
   /**
-   * Drag State
+   * Drag State - Using ref to avoid re-renders that disrupt drag
    */
-  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const activeDragIdRef = useRef<string | null>(null);
 
   /**
    * Sort
@@ -401,11 +443,11 @@ export function useDataTable<TData, TValue>({
   );
 
   function handleDragStart(event: DragStartEvent) {
-    setActiveDragId(String(event.active.id));
+    activeDragIdRef.current = String(event.active.id);
   }
 
   function handleDragCancel() {
-    setActiveDragId(null);
+    activeDragIdRef.current = null;
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -436,13 +478,19 @@ export function useDataTable<TData, TValue>({
     }
   }
 
-  // Find the header object for the overlay
-  const draggedHeader = useMemo(() => {
-    if (!activeDragId) return null;
-    // We look through the header groups to find the specific header object
+  const DragOverlayContent = () => {
+    const { active } = useDndContext();
+
+    if (!active) return null;
+
+    const activeId = String(active.id);
     const headers = table.getHeaderGroups().flatMap((group) => group.headers);
-    return headers.find((header) => header.id === activeDragId);
-  }, [activeDragId, table]);
+    const header = headers.find((h) => h.id === activeId);
+
+    if (!header) return null;
+
+    return <ColumnHeaderOverlay header={header} itemProps={itemProps} />;
+  };
 
   const toggleSelection = (row: Row<TData>) => {
     handleRowCheckboxChange(row);
@@ -664,12 +712,7 @@ export function useDataTable<TData, TValue>({
             </Table>
 
             <DragOverlay>
-              {draggedHeader ? (
-                <ColumnHeaderOverlay
-                  header={draggedHeader}
-                  itemProps={itemProps}
-                />
-              ) : null}
+              <DragOverlayContent />
             </DragOverlay>
           </DndContext>
         </div>
