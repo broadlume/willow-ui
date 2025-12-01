@@ -205,21 +205,18 @@ const DraggableColumnHeader = <TData, TValue>({
               data-testid={'data-table-header-asc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'asc'}
               className={clsx(
-                '-mb-1  h-4 w-4 text-text-pri',
-                header.column.getIsSorted() === 'asc'
-                  ? 'opacity-100'
-                  : 'opacity-40'
+                '-mb-1 h-4 w-4 text-text-pri',
+                header.column.getIsSorted() === 'asc' && 'opacity-100',
+                header.column.getIsSorted() !== 'asc' && 'opacity-40'
               )}
             />
             <HiMiniChevronDown
               data-testid={'data-table-header-desc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'desc'}
-              className={clsx(
-                ' -mb-[2px] h-4 w-4 text-text-pri',
-                header.column.getIsSorted() === 'desc'
-                  ? 'opacity-100'
-                  : 'opacity-40'
-              )}
+              className={clsx('-mb-[2px] h-4 w-4 text-text-pri', {
+                'opacity-100': header.column.getIsSorted() === 'desc',
+                'opacity-40': header.column.getIsSorted() !== 'desc',
+              })}
             />
           </div>
         ) : null}
@@ -239,11 +236,9 @@ export const ColumnHeaderOverlay = <TData, TValue>({
     <div
       className={clsx(
         'flex items-center gap-2 border border-gray-300 bg-white px-4 py-3 font-semibold text-text-pri shadow-xl opacity-90 cursor-grabbing rounded-md whitespace-nowrap',
-        itemProps?.tableHead?.className
+        itemProps?.tableHead?.className,
+        `${header.getSize()}px`
       )}
-      style={{
-        width: `${header.getSize()}px`,
-      }}
     >
       {header.isPlaceholder
         ? null
@@ -254,18 +249,15 @@ export const ColumnHeaderOverlay = <TData, TValue>({
           <HiMiniChevronUp
             className={clsx(
               '-mb-1 h-4 w-4 text-text-pri',
-              header.column.getIsSorted() === 'asc'
-                ? 'opacity-100'
-                : 'opacity-40'
+              header.column.getIsSorted() === 'asc' && 'opacity-100',
+              header.column.getIsSorted() !== 'asc' && 'opacity-40'
             )}
           />
           <HiMiniChevronDown
-            className={clsx(
-              ' -mb-[2px] h-4 w-4 text-text-pri',
-              header.column.getIsSorted() === 'desc'
-                ? 'opacity-100'
-                : 'opacity-40'
-            )}
+            className={clsx('-mb-[2px] h-4 w-4 text-text-pri', {
+              'opacity-100': header.column.getIsSorted() === 'desc',
+              'opacity-40': header.column.getIsSorted() !== 'desc',
+            })}
           />
         </div>
       ) : null}
