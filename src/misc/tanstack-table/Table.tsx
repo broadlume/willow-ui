@@ -782,7 +782,7 @@ export function useDataTable<TData, TValue>({
     return (
       <div
         className={clsx(
-          'mb-[16px] flex items-center justify-between px-2',
+          'mb-[16px]',
           itemProps?.tableFooterWrapper
         )}
       >
