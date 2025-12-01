@@ -1,3 +1,10 @@
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react';
 import {
   closestCenter,
   DndContext,
@@ -7,6 +14,9 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
+  DragStartEvent,
+  DragOverlay,
+  useDndContext,
 } from '@dnd-kit/core';
 
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
@@ -28,24 +38,11 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  HiChevronDown,
-  HiMiniChevronLeft,
-  HiMiniChevronRight,
-} from 'react-icons/hi2';
 import { RiDraggable } from 'react-icons/ri';
-import {
-  Button,
-  Checkbox,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../index';
+import { Checkbox, Pagination as PaginationComponent } from '../../index';
 import {
   DraggableColumnHeader,
+  ColumnHeaderOverlay,
   Table,
   TableBody,
   TableCell,
@@ -58,6 +55,32 @@ import {
   wasMultiSelectKeyUsed,
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
+
+function getInitialColumnOrder<TData, TValue>(
+  columns: ColumnDef<TData, TValue>[],
+  initialColumnOrder: string[] | undefined,
+  fixedStartColIds: string[],
+  fixedEndColIds: string[]
+): string[] {
+  if (initialColumnOrder && initialColumnOrder.length > 0) {
+    return initialColumnOrder;
+  }
+
+  const colIds = columns
+    .map((col) => {
+      if ('id' in col && col.id) return col.id as string;
+      if ('accessorKey' in col && col.accessorKey)
+        return col.accessorKey as string;
+      return '';
+    })
+    .filter(Boolean);
+
+  const draggable = colIds.filter(
+    (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+  );
+
+  return [...fixedStartColIds, ...draggable, ...fixedEndColIds];
+}
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -84,20 +107,33 @@ export function useDataTable<TData, TValue>({
   /**
    * Column Ordering
    */
-  const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
-  // Memoize columns to prevent re-renders, and derive initial column order
-  const { draggableColumnIds } = useMemo(() => {
-    const draggableColumnIds =
-      initialColumnOrder?.filter(
-        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
-      ) || [];
-    setColumnOrder([
-      ...fixedStartColIds,
-      ...draggableColumnIds,
-      ...fixedEndColIds,
-    ]);
-    return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
+  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
+    getInitialColumnOrder(
+      columns,
+      initialColumnOrder,
+      fixedStartColIds,
+      fixedEndColIds
+    )
+  );
+
+  // Sync internal columnOrder state when initialColumnOrder prop changes externally
+  useEffect(() => {
+    if (initialColumnOrder && initialColumnOrder.length > 0) {
+      setColumnOrder(initialColumnOrder);
+    }
   }, [initialColumnOrder]);
+
+  // get draggable column IDs from columnOrder
+  const draggableColumnIds = useMemo(() => {
+    return columnOrder.filter(
+      (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+    );
+  }, [columnOrder, fixedStartColIds, fixedEndColIds]);
+
+  /**
+   * Drag State - Using ref to avoid re-renders that disrupt drag
+   */
+  const activeDragIdRef = useRef<string | null>(null);
 
   /**
    * Sort
@@ -392,6 +428,14 @@ export function useDataTable<TData, TValue>({
     useSensor(KeyboardSensor, {})
   );
 
+  function handleDragStart(event: DragStartEvent) {
+    activeDragIdRef.current = String(event.active.id);
+  }
+
+  function handleDragCancel() {
+    activeDragIdRef.current = null;
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -417,9 +461,22 @@ export function useDataTable<TData, TValue>({
           return updatedArray;
         });
       }
-      return;
     }
   }
+
+  const DragOverlayContent = () => {
+    const { active } = useDndContext();
+
+    if (!active) return null;
+
+    const activeId = String(active.id);
+    const headers = table.getHeaderGroups().flatMap((group) => group.headers);
+    const header = headers.find((h) => h.id === activeId);
+
+    if (!header) return null;
+
+    return <ColumnHeaderOverlay header={header} itemProps={itemProps} />;
+  };
 
   const toggleSelection = (row: Row<TData>) => {
     handleRowCheckboxChange(row);
@@ -524,7 +581,9 @@ export function useDataTable<TData, TValue>({
         >
           <DndContext
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
             sensors={sensors}
           >
             <Table
@@ -637,6 +696,10 @@ export function useDataTable<TData, TValue>({
                 )}
               </TableBody>
             </Table>
+
+            <DragOverlay>
+              <DragOverlayContent />
+            </DragOverlay>
           </DndContext>
         </div>
       )}
@@ -713,135 +776,26 @@ export function useDataTable<TData, TValue>({
   };
 
   const Pagination = ({ itemProps }) => {
-    const { pageCount, state } = useMemo(
-      () => ({ pageCount: table.getPageCount(), state: table.getState() }),
-      []
-    );
-    const paginationButtons = useMemo(() => {
-      const totalPages = pageCount;
-      const currentPage = state.pagination.pageIndex + 1;
-      let startPage = 1;
-      let endPage = totalPages;
+    const state = table.getState();
+    const totalRows = data.length;
 
-      if (totalPages > 5) {
-        if (currentPage <= 3) {
-          startPage = 1;
-          endPage = 5;
-        } else if (currentPage + 2 >= totalPages) {
-          startPage = totalPages - 4;
-          endPage = totalPages;
-        } else {
-          startPage = currentPage - 2;
-          endPage = currentPage + 2;
-        }
-      }
-
-      return Array.from(
-        { length: endPage - startPage + 1 },
-        (_, i) => startPage + i
-      ).map((item) => (
-        <Button
-          {...itemProps?.pagination?.page}
-          type='button'
-          data-testid={'go-to-page-' + item}
-          className={clsx(
-            'h-[30px] w-[30px] rounded-md p-2 text-sm font-normal text-text-pri shadow-none disabled:bg-transparent',
-            currentPage === item ? 'border border-border-primary' : '',
-            itemProps?.pagination?.page?.className
-          )}
-          variant={currentPage === item ? 'outline' : 'ghost'}
-          onClick={() => table.setPageIndex(item - 1)}
-          key={item}
-        >
-          {item}
-        </Button>
-      ));
-    }, [state, pageCount, itemProps?.pagination?.page]);
     return (
       <div
         className={clsx(
-          'mb-[16px] flex items-center justify-between px-2',
+          'mb-[16px]',
           itemProps?.tableFooterWrapper
         )}
       >
-        {/* Item per page */}
-        <div
-          className={clsx(
-            'flex flex-1 flex-row items-center justify-start gap-3',
-            itemProps?.itemPerPage?.className
-          )}
-        >
-          <p className='text-xs font-normal'>Items per Page</p>
-          <Select
-            value={table.getState().pagination.pageSize.toString()}
-            defaultValue='10'
-            onValueChange={(value) => table.setPageSize(Number(value))}
-          >
-            <SelectTrigger
-              icon={<HiChevronDown className='h-4 w-4' />}
-              data-testid='perpage-button'
-              {...itemProps?.itemPerPage?.selectTrigger}
-              className={clsx(
-                'h-[30px] w-fit text-xs font-normal [&>span]:mr-2',
-                itemProps?.itemPerPage?.selectTrigger?.className
-              )}
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent data-testid='perpage-list'>
-              {pageSizeOptions.map((opt) => (
-                <SelectItem
-                  {...itemProps?.itemPerPage?.selectItem}
-                  data-testid={`perpage-item-${opt}`}
-                  className={clsx(
-                    'text-xs font-normal',
-                    itemProps?.itemPerPage?.selectItem?.className
-                  )}
-                  key={opt}
-                  value={opt.toString()}
-                >
-                  {opt}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div
-          className={clsx(
-            'flex items-center gap-[12px]',
-            itemProps?.pagination?.className
-          )}
-        >
-          {/* Left chevron */}
-          <Button
-            {...itemProps?.pagination?.leftChevron}
-            onClick={table.previousPage}
-            data-testid='go-to-previous-page'
-            disabled={!table.getCanPreviousPage()}
-            className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
-              itemProps?.pagination?.leftChevron?.className
-            )}
-          >
-            <HiMiniChevronLeft className='h-6 w-6' />
-          </Button>
-
-          {/* Pages */}
-          {paginationButtons}
-          {/* Right chevron */}
-          <Button
-            {...itemProps?.pagination?.rightChevron}
-            onClick={table.nextPage}
-            data-testid='go-to-next-page'
-            className={clsx(
-              'h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri',
-              itemProps?.pagination?.rightChevron?.className
-            )}
-            disabled={!table.getCanNextPage()}
-          >
-            <HiMiniChevronRight className='h-6 w-6' />
-          </Button>
-        </div>
+        <PaginationComponent
+          pageIndex={state.pagination.pageIndex}
+          pageSize={state.pagination.pageSize}
+          totalItems={totalRows}
+          pageSizeOptions={pageSizeOptions}
+          onPageChange={(pageIndex) => table.setPageIndex(pageIndex)}
+          onPageSizeChange={(pageSize) => table.setPageSize(pageSize)}
+          showPageNumbers={true}
+          itemsPerPageLabel='Items per Page'
+        />
       </div>
     );
   };

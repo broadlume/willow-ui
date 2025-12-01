@@ -310,6 +310,7 @@ const CustomBrowseButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
 
   const customButton = (
     <button
+      type='button'
       className='px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors'
       onClick={() =>
         alert(
@@ -554,6 +555,11 @@ export const FormIntegration: Story = {
 // Multiple files example component
 const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [filePreviews, setFilePreviews] = useState<
+    { file: File; preview: string }[]
+  >([]);
+
+
   const [existingImages, setExistingImages] = useState([
     {
       id: '1',
@@ -587,9 +593,15 @@ const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
     },
   ]);
 
+
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
     setSelectedFiles(files);
+  };
+
+  const handleFilePreviewsChange = (previews: { file: File; preview: string }[]) => {
+    console.log('File previews:', previews);
+    setFilePreviews(previews);
   };
 
   const handleRemoveExistingImage = (id: string) => {
@@ -602,7 +614,10 @@ const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
       <MiniAssetSelector
         {...args}
         multiple={true}
+        selectedFiles={selectedFiles}
+        filePreviews={filePreviews}
         onSelectedFiles={handleFilesSelected}
+        onFilePreviewsChange={handleFilePreviewsChange}
         existingImages={existingImages}
         onRemoveExistingImage={handleRemoveExistingImage}
         name={args.name || 'asset-selector-multiple'}
