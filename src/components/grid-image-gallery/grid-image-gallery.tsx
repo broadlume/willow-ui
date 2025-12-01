@@ -242,8 +242,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
     <div className={className}>
       {/* Action Buttons */}
       {showActionButtons && selectable && items.length > 0 && (
-        <div className='flex items-center justify-between gap-3 mb-4 px-4'>
-          <div />
+        <div className='flex items-center justify-end gap-3 mb-4 px-4'>
           <div className='flex items-center gap-3'>
             <Button
               type='button'
