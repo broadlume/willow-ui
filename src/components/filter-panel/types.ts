@@ -41,6 +41,8 @@ export interface ApiSelectFilterConfig
   filterState?: ApiSelectFilterState;
   onSelectAllToggle?: (isSelectAll: boolean) => void;
   onUpdateFilterState?: (state: ApiSelectFilterState) => void;
+  // Optional custom search function for API-based searching
+  onSearch?: (searchTerm: string) => void;
 }
 
 export interface FilterPanelProps<T extends FilterValues = FilterValues> {

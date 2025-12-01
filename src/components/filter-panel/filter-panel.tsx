@@ -36,6 +36,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     handleDateRangeChange,
     handleClearAll,
     handleScroll,
+    handleSearchChange,
     filterOptions,
     getApiFilterState,
   } = useFilterPanel({ filters, onFiltersChange, filterConfig });
@@ -48,7 +49,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
           id='filter-button'
           variant='outline'
           size='sm'
-          className='border-border-pri ml-1 !rounded-md border bg-transparent px-2'
+          className='border-border-pri ml-1 !rounded-md border bg-transparent px-2 relative overflow-visible'
           aria-label='Filter'
         >
           <HiAdjustments className='rotate-90 text-base' />
@@ -88,9 +89,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
                   selectedValues={(filters[key] as string[]) || []}
                   searchTerm={searchTerms[key] || ''}
                   isLoading={isLoading}
-                  onSearchChange={(key: string, term: string) => {
-                    setSearchTerms((prev) => ({ ...prev, [key]: term }));
-                  }}
+                  onSearchChange={handleSearchChange}
                   onCheckboxChange={handleCheckboxChange}
                   onSelectAll={handleSelectAll}
                   onApiSelectAll={handleApiSelectAll}

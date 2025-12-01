@@ -328,6 +328,96 @@ export const WithDynamicPageSizeOptions: Story = {
   render: (args) => <TanstackTableWithDynamicPageSizeOptions />,
 };
 
+// Story for DataTable with column drag functionality
+const TanstackTableWithColumnDrag = () => {
+  const [columnOrderState, setColumnOrderState] = useState<string[]>([
+    'select',
+    'status',
+    'email',
+    'customerName',
+    'phoneNumber',
+    'address',
+    'city',
+    'country',
+    'description',
+    'amount',
+  ]);
+
+  const { CustomDataTable, table } = useDataTable({
+    columns: columns,
+    data: payments,
+    tableParams: {
+      manualPagination: false,
+    },
+    enableRowSelection: true,
+    initialColumnOrder: columnOrderState, // This enables column drag functionality
+    onColumnOrderChange: (newOrder) => {
+      setColumnOrderState(newOrder);
+      console.log('Column order changed:', newOrder);
+    },
+    fixedStartColIds: ['select'], // Checkbox column cannot be dragged
+    fixedEndColIds: [], // No fixed end columns for this example
+  });
+
+  return (
+    <div>
+      <CustomDataTable />
+    </div>
+  );
+};
+
+export const WithColumnDrag: Story = {
+  render: (args) => <TanstackTableWithColumnDrag />,
+  parameters: {
+    docs: {
+      description: {
+        story: `
+### Column Drag & Drop Functionality (CMS Style)
+
+This example demonstrates the column reordering feature exactly as implemented in the CMS.
+
+**Key Features:**
+- **No separate drag icon** - the entire header cell is draggable
+- **Smart activation** - requires 10px mouse movement or 250ms touch delay to distinguish from clicks
+- **Visual feedback** during drag operations with opacity change
+- **Checkbox column remains fixed** (non-draggable)
+- **State management** for column order changes
+- **Console logging** of order changes
+
+**How It Works:**
+1. **Single click** on column header = **Sort** the column
+2. **Click and drag** column header = **Reorder** the column
+
+**Implementation Details:**
+- Uses \`@dnd-kit/core\` with proper sensor configuration
+- \`MouseSensor\` with 10px distance activation constraint
+- \`TouchSensor\` with 250ms delay activation constraint  
+- Drag listeners and sort handlers on same element (no conflicts due to sensors)
+
+**Required Props:**
+\`\`\`typescript
+useDataTable({
+  // ... other props
+  initialColumnOrder: ['select', 'status', 'email', ...], // REQUIRED
+  onColumnOrderChange: handleOrderChange, // Callback for changes
+  fixedStartColIds: ['select'], // Columns that can't be dragged
+  fixedEndColIds: ['actions'], // Columns that stay at the end
+});
+\`\`\`
+
+**Visual Indicators:**
+- \`cursor: grab\` when hovering over draggable headers
+- \`cursor: move\` when dragging
+- \`opacity: 0.8\` during drag operation
+- Column header transforms smoothly during reorder
+
+This is the **exact same implementation** used in the CMS without any additional drag handles or icons.
+        `,
+      },
+    },
+  },
+};
+
 // Story for DataTable with Header Overlay Toast at index 0 (includes checkbox column)
 // const TanstackTableWithHeaderOverlayToast = () => {
 //   const { CustomDataTable, table, rowSelection } = useDataTable({

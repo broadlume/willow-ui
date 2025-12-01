@@ -22,6 +22,8 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
   const [isOpen, setIsOpen] = useState(false);
   // Search terms for filtering options within each filter
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+  // Debounce timer ref for API search
+  const searchDebounceTimers = useRef<Record<string, NodeJS.Timeout>>({});
   // Date range picker states
   const [dateRanges, setDateRanges] = useState<
     Record<string, DateRange | undefined>
@@ -300,6 +302,41 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
     setDateRanges({});
   }, [filters, filterConfig, onFiltersChange]);
 
+  // Handle search term changes with API integration
+  const handleSearchChange = useCallback(
+    (key: string, term: string) => {
+      // Update local search term state immediately for UI responsiveness
+      setSearchTerms((prev) => ({ ...prev, [key]: term }));
+
+      // Check if this is an API filter with custom search
+      const config = filterConfig.find((c) => c.key === key);
+      if (config && 'onSearch' in config && config.onSearch) {
+        // Clear existing debounce timer for this key
+        if (searchDebounceTimers.current[key]) {
+          clearTimeout(searchDebounceTimers.current[key]);
+        }
+
+        // Debounce API search call (700ms delay)
+        searchDebounceTimers.current[key] = setTimeout(() => {
+          if (config.onSearch) {
+            config.onSearch(term);
+          }
+        }, 700);
+      }
+    },
+    [filterConfig]
+  );
+
+  // Cleanup debounce timers on unmount
+  useEffect(() => {
+    const timers = searchDebounceTimers.current;
+    return () => {
+      Object.values(timers).forEach((timer) => {
+        clearTimeout(timer);
+      });
+    };
+  }, []);
+
   // Filter options based on search term
   const filterOptions = useCallback(
     (options: string[], term: string) =>
@@ -393,6 +430,7 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
     handleDateRangeChange,
     handleClearAll,
     handleScroll,
+    handleSearchChange,
     filterOptions,
     getApiFilterState,
   };
