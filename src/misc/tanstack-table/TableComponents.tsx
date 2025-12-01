@@ -170,7 +170,7 @@ const DraggableColumnHeader = <TData, TValue>({
         'py-3 text-text-pri transition-all duration-200',
         'last:[>td]:justify-center',
         {
-          // Uncomment this line if you want uncomment to show bg when dragging
+          // Uncomment this line if you want to show background when dragging
           // 'bg-surface-cta-bg': isDragging,
           'bg-blue-50/20 border-l-2 border-l-surface-cta':
             isOver && !isDragging,
