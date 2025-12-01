@@ -72,6 +72,15 @@ export interface MiniAssetSelectorProps {
     imageUrl: string;
     originalFile: string;
   }>;
+  /** Selected files when multiple=true (controlled usage) */
+  selectedFiles?: File[];
+  /**
+   * File previews for selected files when multiple=true (controlled usage).
+   * If not provided, the component will manage previews internally.
+   */
+  filePreviews?: { file: File; preview: string }[];
+  /** Callback when file previews change (only used when multiple=true) */
+  onFilePreviewsChange?: (previews: { file: File; preview: string }[]) => void;
   /** Callback when an existing image is removed */
   onRemoveExistingImage?: (id: string) => void;
   /** Value for controlled component usage (React Hook Form compatibility) */
@@ -128,6 +137,9 @@ export const MiniAssetSelector = forwardRef<
       multiple = false,
       onSelectedFiles,
       existingImages = [],
+      selectedFiles: controlledSelectedFiles,
+      filePreviews: controlledFilePreviews,
+      onFilePreviewsChange,
       onRemoveExistingImage,
       // React Hook Form compatibility props
       value,
@@ -156,11 +168,37 @@ export const MiniAssetSelector = forwardRef<
       originalFile,
     } = state;
 
-    // State for multiple files
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [filePreviews, setFilePreviews] = useState<
+    // State for multiple files (supports controlled and uncontrolled usage)
+    const [uncontrolledSelectedFiles, setUncontrolledSelectedFiles] =
+      useState<File[]>([]);
+    const [uncontrolledFilePreviews, setUncontrolledFilePreviews] = useState<
       { file: File; preview: string }[]
     >([]);
+
+    const isSelectedFilesControlled = Array.isArray(controlledSelectedFiles);
+    const isFilePreviewsControlled = Array.isArray(controlledFilePreviews);
+
+    const selectedFiles = isSelectedFilesControlled
+      ? controlledSelectedFiles
+      : uncontrolledSelectedFiles;
+
+    const filePreviews = isFilePreviewsControlled
+      ? controlledFilePreviews
+      : uncontrolledFilePreviews;
+
+    const updateSelectedFiles = (files: File[]) => {
+      if (!isSelectedFilesControlled) {
+        setUncontrolledSelectedFiles(files);
+      }
+      onSelectedFiles?.(files);
+    };
+
+    const updateFilePreviews = (previews: { file: File; preview: string }[]) => {
+      if (!isFilePreviewsControlled) {
+        setUncontrolledFilePreviews(previews);
+      }
+      onFilePreviewsChange?.(previews);
+    };
 
     // Helper function to handle value changes (React Hook Form compatibility)
     const handleValueChange = (newValue: File | string | null) => {
@@ -210,7 +248,7 @@ export const MiniAssetSelector = forwardRef<
     const handleMultipleFilesDrop = (files: File[]) => {
       // Append dropped files to existing files
       const updatedFiles = [...selectedFiles, ...files];
-      setSelectedFiles(updatedFiles);
+      updateSelectedFiles(updatedFiles);
 
       // Generate previews for new image files
       const newPreviews: { file: File; preview: string }[] = [];
@@ -224,7 +262,7 @@ export const MiniAssetSelector = forwardRef<
               newPreviews.length ===
               files.filter((f) => f.type.startsWith('image/')).length
             ) {
-              setFilePreviews([...filePreviews, ...newPreviews]);
+              updateFilePreviews([...filePreviews, ...newPreviews]);
             }
           };
           reader.readAsDataURL(file);
@@ -309,7 +347,7 @@ export const MiniAssetSelector = forwardRef<
           const newFiles = Array.from(files);
           // Append new files to existing files
           const updatedFiles = [...selectedFiles, ...newFiles];
-          setSelectedFiles(updatedFiles);
+          updateSelectedFiles(updatedFiles);
 
           // Generate previews for new image files
           const newPreviews: { file: File; preview: string }[] = [];
@@ -323,7 +361,7 @@ export const MiniAssetSelector = forwardRef<
                   newPreviews.length ===
                   newFiles.filter((f) => f.type.startsWith('image/')).length
                 ) {
-                  setFilePreviews([...filePreviews, ...newPreviews]);
+                  updateFilePreviews([...filePreviews, ...newPreviews]);
                 }
               };
               reader.readAsDataURL(file);
@@ -436,8 +474,8 @@ export const MiniAssetSelector = forwardRef<
 
     const handleRemoveFile = (fileToRemove: File) => {
       const updatedFiles = selectedFiles.filter((f) => f !== fileToRemove);
-      setSelectedFiles(updatedFiles);
-      setFilePreviews(filePreviews.filter((p) => p.file !== fileToRemove));
+      updateSelectedFiles(updatedFiles);
+      updateFilePreviews(filePreviews.filter((p) => p.file !== fileToRemove));
       if (onSelectedFiles) {
         onSelectedFiles(updatedFiles);
       }
@@ -520,14 +558,14 @@ export const MiniAssetSelector = forwardRef<
               {(existingImages.length > 0 || selectedFiles.length > 0) && (
                 <div className='w-full space-y-2 max-h-[500px] overflow-y-auto'>
                   {[
-                    ...existingImages.map((image) => ({
-                      type: 'existing' as const,
-                      data: image,
-                    })),
                     ...selectedFiles.map((file, index) => ({
                       type: 'new' as const,
                       data: file,
                       index,
+                    })),
+                    ...existingImages.map((image) => ({
+                      type: 'existing' as const,
+                      data: image,
                     })),
                   ].map((item) => {
                     if (item.type === 'existing') {
