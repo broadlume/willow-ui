@@ -181,10 +181,10 @@ export const ApiFilterList = ({
                   id={`${filterKey}-${item.id}`}
                   onCheckedChange={() => {
                     // Use the new item toggle handler if available, otherwise fall back to original
-                    if (onItemToggle) {
-                      onItemToggle(filterKey, item.id);
-                    } else if (config.onToggleItem) {
+                    if (config.onToggleItem) {
                       config.onToggleItem(item.id);
+                    } else if (onItemToggle) {
+                      onItemToggle(filterKey, item.id);
                     }
                   }}
                   disabled={isLoading}
