@@ -1,22 +1,10 @@
 import clsx from 'clsx';
 import React, { type UIEvent, useMemo, useState } from 'react';
-import {
-  HiChevronDown,
-  HiMiniChevronLeft,
-  HiMiniChevronRight,
-  HiOutlinePhoto,
-  HiOutlineTrash,
-} from 'react-icons/hi2';
-import {
-  Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../index';
+import { HiOutlinePhoto, HiOutlineTrash } from 'react-icons/hi2';
+import { Button } from '../../index';
 import { Card } from '../card/card';
 import { Checkbox } from '../checkbox/checkbox';
+import { Pagination } from '../pagination/pagination';
 
 export interface GridAssetItem {
   id: string;
@@ -196,29 +184,9 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
     ? effectivePageSize
     : pageSizeOptions[0] ?? 12;
 
-  const totalPages = Math.max(1, Math.ceil(total / currentPageSize));
   // Pagination only shows when explicitly enabled via showPagination flag,
   // or when both pagination callbacks are provided (indicating intentional pagination setup)
   const hasPagination = showPaginationProp;
-
-  const handlePreviousPage = () => {
-    if (!onPageChange) return;
-    if (currentPageIndex <= 0) return;
-    onPageChange(currentPageIndex - 1);
-  };
-
-  const handleNextPage = () => {
-    if (!onPageChange) return;
-    if (currentPageIndex >= totalPages - 1) return;
-    onPageChange(currentPageIndex + 1);
-  };
-
-  const handlePageSizeChange = (value: string) => {
-    const nextSize = Number(value);
-    if (!Number.isNaN(nextSize) && pageSizeOptions.includes(nextSize)) {
-      onPageSizeChange?.(nextSize);
-    }
-  };
 
   const totalRows = useMemo(
     () => Math.ceil(items.length / columns),
@@ -277,31 +245,28 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
         <div className='flex items-center justify-between gap-3 mb-4 px-4'>
           <div />
           <div className='flex items-center gap-3'>
-            <button
+            <Button
               type='button'
+              variant='secondary'
               onClick={handleSelectAll}
               className={clsx(
-                'px-4 py-2 text-sm font-medium rounded-md border transition-colors',
-                {
-                  'bg-surface-cta-bg border-border-cta text-text-cta hover:bg-cta-25':
-                    allSelected,
-                  'bg-surface-pri border-border-pri text-text-pri hover:bg-surface-sec':
-                    !allSelected,
-                }
+                'px-4 py-2 text-sm font-medium rounded-md border transition-colors'
+
               )}
             >
               {allSelected ? 'Deselect All' : 'Select All'}
-            </button>
+            </Button>
 
             {selectedCount > 0 && onDelete && (
-              <button
+              <Button
                 type='button'
+                variant='destructive'
                 onClick={handleDelete}
-                className='px-4 py-2 text-sm font-medium rounded-md border border-border-destructive text-text-destructive hover:bg-surface-destructive-bg transition-colors flex items-center gap-2'
+                className='px-4 py-2 text-sm font-medium rounded-md border transition-colors flex items-center gap-2'
               >
                 <HiOutlineTrash className='w-4 h-4' />
                 Delete ({selectedCount})
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -309,32 +274,23 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
 
       {/* Grid */}
       <div
-        className={clsx('px-4 pb-4', virtualized && 'overflow-y-auto')}
-        style={
-          virtualized ? { maxHeight: virtualizedContainerHeight } : undefined
-        }
+        className={clsx(
+          'px-4 pb-4',
+          virtualized && 'overflow-y-auto',
+          virtualized && `max-h-[${virtualizedContainerHeight}px]`
+        )}
         onScroll={handleScroll}
       >
         {virtualized ? (
-          <div
-            style={{
-              position: 'relative',
-              height: virtualization.totalHeight,
-            }}
-          >
+          <div className={clsx('relative', `h-[${virtualization.totalHeight}px]`)}>
             <div
-              style={{
-                position: 'absolute',
-                top: virtualization.offsetTop,
-                left: 0,
-                right: 0,
-              }}
+              className={clsx(
+                'absolute left-0 right-0',
+                `top-[${virtualization.offsetTop}px]`
+              )}
             >
               <div
-                className='grid gap-3'
-                style={{
-                  gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                }}
+                className={`grid gap-3 grid-cols-[repeat(${columns},minmax(0,1fr))]`}
               >
                 {visibleItems.map((item) => {
                   const isSelected = selectedIds.has(item.id);
@@ -434,12 +390,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
             </div>
           </div>
         ) : (
-          <div
-            className='grid gap-3'
-            style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(216px, 1fr))',
-            }}
-          >
+          <div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(216px,1fr))]'>
             {items.map((item) => {
               const isSelected = selectedIds.has(item.id);
 
@@ -534,66 +485,16 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
         )}
       </div>
 
-      {/* Pagination Footer (similar style to table component) */}
-      {hasPagination && (
-        <div className='flex items-center justify-between gap-3 px-4 pb-4'>
-          {/* Items per page */}
-          <div className='flex flex-1 flex-row items-center justify-start gap-3'>
-            <p className='text-xs font-normal'>Items per page</p>
-            <Select
-              value={currentPageSize.toString()}
-              onValueChange={handlePageSizeChange}
-            >
-              <SelectTrigger
-                icon={<HiChevronDown className='h-4 w-4' />}
-                className='h-[30px] w-fit text-xs font-normal [&>span]:mr-2'
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {pageSizeOptions.map((opt) => (
-                  <SelectItem
-                    key={opt}
-                    value={opt.toString()}
-                    className='text-xs font-normal'
-                  >
-                    {opt}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Pagination controls */}
-          <div className='flex items-center gap-3'>
-            <p className='text-xs text-text-opt'>
-              {total === 0
-                ? '0 of 0'
-                : `${currentPageIndex * currentPageSize + 1}–${Math.min(
-                    (currentPageIndex + 1) * currentPageSize,
-                    total
-                  )} of ${total}`}
-            </p>
-            <div className='flex items-center gap-[12px]'>
-              <Button
-                type='button'
-                onClick={handlePreviousPage}
-                disabled={currentPageIndex <= 0}
-                className='h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri'
-              >
-                <HiMiniChevronLeft className='h-4 w-4' />
-              </Button>
-              <Button
-                type='button'
-                onClick={handleNextPage}
-                disabled={currentPageIndex >= totalPages - 1}
-                className='h-[30px] w-[30px] rounded-md bg-surface-cta p-2 font-normal text-white shadow-none hover:bg-surface-cta hover:opacity-90 disabled:border-none disabled:bg-transparent disabled:text-text-pri'
-              >
-                <HiMiniChevronRight className='h-4 w-4' />
-              </Button>
-            </div>
-          </div>
-        </div>
+      {/* Pagination Footer */}
+      {hasPagination && onPageChange && (
+        <Pagination
+          pageIndex={currentPageIndex}
+          pageSize={currentPageSize}
+          totalItems={total}
+          pageSizeOptions={pageSizeOptions}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+        />
       )}
     </div>
   );

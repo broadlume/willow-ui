@@ -7,7 +7,7 @@ import {
 } from './grid-image-gallery';
 
 const meta: Meta<typeof GridImageGallery> = {
-  title: 'Components/GridImageGallery',
+  title: 'Components/Grid Image Gallery',
   component: GridImageGallery,
   parameters: {
     layout: 'padded',

@@ -50,6 +50,7 @@ export * from '@components/grid-image-gallery/grid-image-gallery';
 export * from '@components/columns-manager/columns-manager';
 export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
+export * from '@components/pagination/pagination';
 
 // Other stuff
 export * from '@src/lib/icons';
