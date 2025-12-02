@@ -12,8 +12,11 @@ import {
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import {
+  HiMiniArrowTopRightOnSquare,
   HiMiniClipboardDocument,
   HiMiniIdentification,
+  HiOutlineClipboardDocument,
+  HiOutlineClipboardDocumentCheck,
   HiOutlineIdentification,
   HiOutlineStar,
   HiStar,
@@ -36,6 +39,7 @@ interface LazyLoadedSelectorProps<T> {
   placeholderText?: string;
   storageKey?: string;
   CustomItemComponent?: React.FC<{ item: T; onClick: (item: T) => void }>;
+  applyNewStyles?: boolean;
 }
 
 const LazyLoadedSelector = <T extends Items>({
@@ -48,12 +52,14 @@ const LazyLoadedSelector = <T extends Items>({
   placeholderText = 'Search website',
   CustomItemComponent,
   storageKey = 'favoriteClients',
+  applyNewStyles = true,
 }: LazyLoadedSelectorProps<T>) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [activeTooltipId, setActiveTooltipId] = useState<string | null>(null);
   const [favoriteItems, setFavoriteItems] = useState<string[]>(
     JSON.parse(localStorage.getItem(storageKey) || '[]')
   );
+  const [copiedItemId, setCopiedItemId] = useState<string | null>(null);
 
   const handleScrollDownEvent = async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -71,10 +77,18 @@ const LazyLoadedSelector = <T extends Items>({
     onSelect(item);
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).catch((err) => {
-      console.error('Failed to copy text to clipboard:', err);
-    });
+  const handleCopy = (text: string, itemId: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopiedItemId(itemId);
+        setTimeout(() => {
+          setCopiedItemId(null);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy text to clipboard:', err);
+      });
   };
 
   const handleFavorites = (itemId: string) => {
@@ -147,46 +161,103 @@ const LazyLoadedSelector = <T extends Items>({
                             <HiOutlineIdentification className='h-5 w-5' />
                           )}
                         </TooltipTrigger>
-                        <TooltipContent className='bg-surface-invert px-3 py-2'>
-                          {item?.id && (
-                            <div className='flex gap-4 w-auto'>
-                              <p>
-                                <span className='font-bold text-sm text-white'>
-                                  UUID:
-                                </span>
-                                <span className='text-sm text-white'>
-                                  {' '}
-                                  {item?.id}
-                                </span>
-                              </p>
-                              <button
-                                className='cursor-pointer'
-                                onClick={() => handleCopy(item?.id)}
-                              >
-                                <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
-                              </button>
-                            </div>
-                          )}
-                          {isCms && item?.tenantId && (
-                            <div className='flex gap-4 w-auto'>
-                              <p>
-                                <span className='font-bold text-sm text-white'>
-                                  Site Id:
-                                </span>
-                                <span className='text-sm text-white'>
-                                  {' '}
-                                  {item?.tenantId}
-                                </span>
-                              </p>
-                              <button
-                                className='cursor-pointer'
-                                onClick={() => handleCopy(item?.tenantId)}
-                              >
-                                <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
-                              </button>
-                            </div>
-                          )}
-                        </TooltipContent>
+                        {applyNewStyles ? (
+                          <TooltipContent
+                            className='bg-surface-pri rounded-md shadow-md'
+                            side='bottom'
+                            align='end'
+                          >
+                            {item?.id && (
+                              <div className='flex flex-col'>
+                                <div
+                                  className='flex gap-2 p-2'
+                                  onClick={() =>
+                                    handleCopy(item?.id, `${item?.id}-retailer`)
+                                  }
+                                >
+                                  <button className='cursor-pointer'>
+                                    {copiedItemId === `${item?.id}-retailer` ? (
+                                      <HiOutlineClipboardDocumentCheck className='text-icon-pri w-4 h-4' />
+                                    ) : (
+                                      <HiOutlineClipboardDocument className='text-icon-pri w-4 h-4' />
+                                    )}
+                                  </button>
+                                  <p>
+                                    <span className='text-sm text-text-pri'>
+                                      Copy Retailer ID
+                                    </span>
+                                  </p>
+                                </div>
+                                <div
+                                  className='flex gap-2 p-2'
+                                  onClick={() =>
+                                    item.url
+                                      ? window.open(item.url, '_blank')
+                                      : undefined
+                                  }
+                                >
+                                  <button className='cursor-pointer'>
+                                    <HiMiniArrowTopRightOnSquare className='text-icon-pri w-4 h-4' />
+                                  </button>
+                                  <p>
+                                    <span className='text-sm text-text-pri'>
+                                      Open Website URL
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </TooltipContent>
+                        ) : (
+                          <TooltipContent className='bg-surface-invert px-3 py-2'>
+                            {item?.id && (
+                              <div className='flex gap-4 w-auto'>
+                                <p>
+                                  <span className='font-bold text-sm text-white'>
+                                    UUID:
+                                  </span>
+                                  <span className='text-sm text-white'>
+                                    {' '}
+                                    {item?.id}
+                                  </span>
+                                </p>
+                                <button
+                                  className='cursor-pointer'
+                                  onClick={() =>
+                                    handleCopy(item?.id, `${item?.id}-uuid`)
+                                  }
+                                >
+                                  <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
+                                </button>
+                              </div>
+                            )}
+
+                            {isCms && item?.tenantId && (
+                              <div className='flex gap-4 w-auto'>
+                                <p>
+                                  <span className='font-bold text-sm text-white'>
+                                    Site Id:
+                                  </span>
+                                  <span className='text-sm text-white'>
+                                    {' '}
+                                    {item?.tenantId}
+                                  </span>
+                                </p>
+                                <button
+                                  className='cursor-pointer'
+                                  onClick={() =>
+                                    handleCopy(
+                                      item?.tenantId,
+                                      `${item?.id}-tenant`
+                                    )
+                                  }
+                                >
+                                  <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
+                                </button>
+                              </div>
+                            )}
+                          </TooltipContent>
+                        )}
                       </Tooltip>
                     </TooltipProvider>
                     {!isCms && (
