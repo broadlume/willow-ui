@@ -12,12 +12,13 @@ import {
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import {
-  HiMiniClipboardDocument,
   HiMiniIdentification,
   HiOutlineIdentification,
   HiOutlineStar,
   HiStar,
 } from 'react-icons/hi2';
+import { TooltipActionItems } from './tooltip-action-items';
+import { TooltipCopyField } from './tooltip-copy-field';
 
 type Items = {
   id: string;
@@ -36,6 +37,7 @@ interface LazyLoadedSelectorProps<T> {
   placeholderText?: string;
   storageKey?: string;
   CustomItemComponent?: React.FC<{ item: T; onClick: (item: T) => void }>;
+  applyNewStyles?: boolean;
 }
 
 const LazyLoadedSelector = <T extends Items>({
@@ -48,12 +50,14 @@ const LazyLoadedSelector = <T extends Items>({
   placeholderText = 'Search website',
   CustomItemComponent,
   storageKey = 'favoriteClients',
+  applyNewStyles = false,
 }: LazyLoadedSelectorProps<T>) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [activeTooltipId, setActiveTooltipId] = useState<string | null>(null);
   const [favoriteItems, setFavoriteItems] = useState<string[]>(
     JSON.parse(localStorage.getItem(storageKey) || '[]')
   );
+  const [copiedItemId, setCopiedItemId] = useState<string | null>(null);
 
   const handleScrollDownEvent = async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -71,10 +75,18 @@ const LazyLoadedSelector = <T extends Items>({
     onSelect(item);
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).catch((err) => {
-      console.error('Failed to copy text to clipboard:', err);
-    });
+  const handleCopy = (text: string, itemId: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopiedItemId(itemId);
+        setTimeout(() => {
+          setCopiedItemId(null);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy text to clipboard:', err);
+      });
   };
 
   const handleFavorites = (itemId: string) => {
@@ -93,6 +105,7 @@ const LazyLoadedSelector = <T extends Items>({
         onValueChange={(q) => onSearch(q)}
         data-testid='website-search'
       />
+
       <CommandList onScroll={handleScrollDownEvent} className='max-w-[400px]'>
         {items?.length > 0 ? (
           <div
@@ -110,6 +123,7 @@ const LazyLoadedSelector = <T extends Items>({
                   />
                 );
               }
+
               return (
                 <div
                   data-testid={'website-item-' + item?.name}
@@ -118,6 +132,7 @@ const LazyLoadedSelector = <T extends Items>({
                 >
                   <div className='flex-grow' onClick={() => handleSelect(item)}>
                     <p data-testid='website-item'>{item?.name}</p>
+
                     {isCms && (
                       <a
                         href={item?.url}
@@ -129,6 +144,7 @@ const LazyLoadedSelector = <T extends Items>({
                       </a>
                     )}
                   </div>
+
                   <div className='flex items-start'>
                     <TooltipProvider>
                       <Tooltip
@@ -147,48 +163,49 @@ const LazyLoadedSelector = <T extends Items>({
                             <HiOutlineIdentification className='h-5 w-5' />
                           )}
                         </TooltipTrigger>
-                        <TooltipContent className='bg-surface-invert px-3 py-2'>
-                          {item?.id && (
-                            <div className='flex gap-4 w-auto'>
-                              <p>
-                                <span className='font-bold text-sm text-white'>
-                                  UUID:
-                                </span>
-                                <span className='text-sm text-white'>
-                                  {' '}
-                                  {item?.id}
-                                </span>
-                              </p>
-                              <button
-                                className='cursor-pointer'
-                                onClick={() => handleCopy(item?.id)}
-                              >
-                                <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
-                              </button>
-                            </div>
-                          )}
-                          {isCms && item?.tenantId && (
-                            <div className='flex gap-4 w-auto'>
-                              <p>
-                                <span className='font-bold text-sm text-white'>
-                                  Site Id:
-                                </span>
-                                <span className='text-sm text-white'>
-                                  {' '}
-                                  {item?.tenantId}
-                                </span>
-                              </p>
-                              <button
-                                className='cursor-pointer'
-                                onClick={() => handleCopy(item?.tenantId)}
-                              >
-                                <HiMiniClipboardDocument className='text-icon-invert w-4 h-4' />
-                              </button>
-                            </div>
-                          )}
-                        </TooltipContent>
+
+                        {/* Tooltip Content with conditional styling */}
+                        {applyNewStyles ? (
+                          <TooltipContent
+                            className='bg-surface-pri rounded-md shadow-md'
+                            side='bottom'
+                            align='end'
+                          >
+                            {item?.id && (
+                              <TooltipActionItems
+                                itemId={item.id}
+                                itemUrl={item.url}
+                                copiedItemId={copiedItemId}
+                                onCopy={handleCopy}
+                              />
+                            )}
+                          </TooltipContent>
+                        ) : (
+                          <TooltipContent className='bg-surface-invert px-3 py-2'>
+                            {item?.id && (
+                              <TooltipCopyField
+                                label='UUID'
+                                value={item.id}
+                                onCopy={() =>
+                                  handleCopy(item.id, `${item.id}-uuid`)
+                                }
+                              />
+                            )}
+
+                            {isCms && item?.tenantId && (
+                              <TooltipCopyField
+                                label='Site Id'
+                                value={item.tenantId}
+                                onCopy={() =>
+                                  handleCopy(item.tenantId, `${item.id}-tenant`)
+                                }
+                              />
+                            )}
+                          </TooltipContent>
+                        )}
                       </Tooltip>
                     </TooltipProvider>
+
                     {!isCms && (
                       <div
                         onClick={() => handleFavorites(item?.id)}
