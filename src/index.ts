@@ -45,6 +45,7 @@ export * from '@components/code-editor/code-editor';
 export * from '@components/Loader/Loader';
 export * from '@components/async-autocomplete/async-autocomplete';
 export * from '@components/sidebar/sidebar';
+export * from '@components/sidebar/types'
 export * from '@components/mini-asset-selector/mini-asset-selector';
 export * from '@components/grid-image-gallery/grid-image-gallery';
 export * from '@components/columns-manager/columns-manager';
