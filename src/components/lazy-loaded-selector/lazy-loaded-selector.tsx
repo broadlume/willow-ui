@@ -52,7 +52,7 @@ const LazyLoadedSelector = <T extends Items>({
   placeholderText = 'Search website',
   CustomItemComponent,
   storageKey = 'favoriteClients',
-  applyNewStyles = true,
+  applyNewStyles = false,
 }: LazyLoadedSelectorProps<T>) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [activeTooltipId, setActiveTooltipId] = useState<string | null>(null);
