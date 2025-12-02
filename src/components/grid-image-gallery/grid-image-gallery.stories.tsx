@@ -228,7 +228,7 @@ const sampleItems: GridAssetItem[] = [
 // Default story with interactive controls (no pagination)
 const DefaultExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(["2", "5"]);
 
   const handleSelectionChange = (ids: string[]) => {
     console.log('Selection changed:', ids);
