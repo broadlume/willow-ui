@@ -23,6 +23,10 @@ const meta: Meta<typeof GridImageGallery> = {
       control: 'object',
       description: 'Array of assets to display in the grid',
     },
+    selectedIds: {
+      control: 'object',
+      description: 'Controlled selected IDs (optional - if not provided, component manages its own state)',
+    },
     onSelectionChange: {
       control: false,
       description: 'Callback when selection changes',
@@ -224,7 +228,7 @@ const sampleItems: GridAssetItem[] = [
 // Default story with interactive controls (no pagination)
 const DefaultExample = (args: GridImageGalleryProps) => {
   const [items, setItems] = useState<GridAssetItem[]>(sampleItems);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(["2", "5"]);
 
   const handleSelectionChange = (ids: string[]) => {
     console.log('Selection changed:', ids);
@@ -266,6 +270,7 @@ const DefaultExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
+        selectedIds={selectedIds}
         onSelectionChange={handleSelectionChange}
         onItemClick={handleItemClick}
         onItemDoubleClick={handleItemDoubleClick}
@@ -369,6 +374,7 @@ const SingleSelectionExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={items}
+        selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         onDelete={handleDelete}
       />
@@ -695,8 +701,7 @@ const DeleteWithConfirmationExample = (args: GridImageGalleryProps) => {
   const handleDelete = (selectedIds: string[]) => {
     const count = selectedIds.length;
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${count} ${
-        count === 1 ? 'item' : 'items'
+      `Are you sure you want to delete ${count} ${count === 1 ? 'item' : 'items'
       }?`
     );
 

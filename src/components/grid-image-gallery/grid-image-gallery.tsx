@@ -21,6 +21,8 @@ export interface GridAssetItem {
 export interface GridImageGalleryProps {
   /** Array of assets to display in the grid */
   items: GridAssetItem[];
+  /** Controlled selected IDs (optional - if not provided, component manages its own state) */
+  selectedIds?: string[];
   /** Callback when selection changes */
   onSelectionChange?: (selectedIds: string[]) => void;
   /** Callback when an item is clicked (single click) */
@@ -92,6 +94,7 @@ export interface GridImageGalleryProps {
  */
 export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   items,
+  selectedIds: selectedIdsProp,
   onSelectionChange,
   onItemClick,
   onItemDoubleClick,
@@ -115,10 +118,16 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   onPageSizeChange,
   showPagination: showPaginationProp,
 }) => {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [internalSelectedIds, setInternalSelectedIds] = useState<Set<string>>(new Set());
+
+  // Use controlled prop if provided, otherwise use internal state
+  const isControlled = selectedIdsProp !== undefined;
+  const selectedIdsSet = isControlled
+    ? new Set(selectedIdsProp)
+    : internalSelectedIds;
 
   const handleCheckboxChange = (itemId: string, checked: boolean) => {
-    const newSelectedIds = new Set(selectedIds);
+    const newSelectedIds = new Set(selectedIdsSet);
 
     if (checked) {
       if (allowMultiSelect) {
@@ -131,17 +140,28 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
       newSelectedIds.delete(itemId);
     }
 
-    setSelectedIds(newSelectedIds);
-    onSelectionChange?.(Array.from(newSelectedIds));
+    const newSelectedIdsArray = Array.from(newSelectedIds);
+
+    if (!isControlled) {
+      setInternalSelectedIds(newSelectedIds);
+    }
+
+    onSelectionChange?.(newSelectedIdsArray);
   };
 
   const handleCardClick = (item: GridAssetItem) => {
     if (selectable && !allowMultiSelect) {
       const newSelectedIds = new Set<string>();
-      if (!selectedIds.has(item.id)) {
+      if (!selectedIdsSet.has(item.id)) {
         newSelectedIds.add(item.id);
-        setSelectedIds(newSelectedIds);
-        onSelectionChange?.(Array.from(newSelectedIds));
+
+        const newSelectedIdsArray = Array.from(newSelectedIds);
+
+        if (!isControlled) {
+          setInternalSelectedIds(newSelectedIds);
+        }
+
+        onSelectionChange?.(newSelectedIdsArray);
       }
     }
     onItemClick?.(item);
@@ -152,27 +172,33 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.size === items.length) {
+    if (selectedIdsSet.size === items.length) {
       // Deselect all
-      setSelectedIds(new Set());
+      if (!isControlled) {
+        setInternalSelectedIds(new Set());
+      }
       onSelectionChange?.([]);
     } else {
       // Select all
       const allIds = new Set(items.map((item) => item.id));
-      setSelectedIds(allIds);
+      if (!isControlled) {
+        setInternalSelectedIds(allIds);
+      }
       onSelectionChange?.(Array.from(allIds));
     }
   };
 
   const handleDelete = () => {
-    if (selectedIds.size > 0 && onDelete) {
-      onDelete(Array.from(selectedIds));
-      setSelectedIds(new Set());
+    if (selectedIdsSet.size > 0 && onDelete) {
+      onDelete(Array.from(selectedIdsSet));
+      if (!isControlled) {
+        setInternalSelectedIds(new Set());
+      }
       onSelectionChange?.([]);
     }
   };
 
-  const selectedCount = selectedIds.size;
+  const selectedCount = selectedIdsSet.size;
   const allSelected = selectedCount === items.length && items.length > 0;
 
   const currentPageIndex = pageIndex ?? 0;
@@ -292,7 +318,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
                 className={`grid gap-3 grid-cols-[repeat(${columns},minmax(0,1fr))]`}
               >
                 {visibleItems.map((item) => {
-                  const isSelected = selectedIds.has(item.id);
+                  const isSelected = selectedIdsSet.has(item.id);
 
                   if (renderItem) {
                     return (
@@ -322,7 +348,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
                     >
                       {/* Checkbox */}
                       {selectable && (
-                        <div className='absolute top-2 left-2 z-10'>
+                        <div className='absolute top-2 left-2 z-10' onClick={(e) => e.stopPropagation()}>
                           <Checkbox
                             checked={isSelected}
                             onCheckedChange={(checked) =>
@@ -391,7 +417,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
         ) : (
           <div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(216px,1fr))]'>
             {items.map((item) => {
-              const isSelected = selectedIds.has(item.id);
+              const isSelected = selectedIdsSet.has(item.id);
 
               if (renderItem) {
                 return (
@@ -420,7 +446,7 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
                 >
                   {/* Checkbox */}
                   {selectable && (
-                    <div className='absolute top-2 left-2 z-10'>
+                    <div className='absolute top-2 left-2 z-10' onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={isSelected}
                         onCheckedChange={(checked) =>
