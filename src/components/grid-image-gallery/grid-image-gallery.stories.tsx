@@ -55,19 +55,6 @@ const meta: Meta<typeof GridImageGallery> = {
       control: 'text',
       description: 'Custom class name for the grid container',
     },
-    virtualized: {
-      control: 'boolean',
-      description: 'Enable simple windowed rendering for long lists',
-    },
-    virtualizedRowHeight: {
-      control: 'number',
-      description: 'Row height in pixels when virtualized is enabled',
-    },
-    virtualizedContainerHeight: {
-      control: 'number',
-      description:
-        'Scroll container height in pixels when virtualized is enabled',
-    },
     pageIndex: {
       control: false,
       description:
@@ -296,12 +283,33 @@ const WithPaginationExample = (args: GridImageGalleryProps) => {
   const [allItems, setAllItems] = useState<GridAssetItem[]>(sampleItems);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(12);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const handleDelete = (idsToDelete: string[]) => {
-    setAllItems((prev) =>
-      prev.filter((item) => !idsToDelete.includes(item.id))
-    );
+  const handleSelectionChange = (ids: string[]) => {
+    console.log('Selection changed:', ids);
+    setSelectedIds(ids);
   };
+
+  const handleItemClick = (item: GridAssetItem) => {
+    console.log('Item clicked:', item);
+  };
+
+  const handleItemDoubleClick = (item: GridAssetItem) => {
+    console.log('Item double clicked:', item);
+    alert(`Double clicked: ${item.name}`);
+  };
+
+  const handleMenuClick = (item: GridAssetItem) => {
+    console.log('Menu clicked for:', item);
+    alert(`Menu clicked for: ${item.name}`);
+  };
+
+  const handleDelete = (selectedIds: string[]) => {
+    console.log('Deleting items:', selectedIds);
+    setAllItems(allItems.filter((item) => !selectedIds.includes(item.id)));
+    setSelectedIds([]);
+  };
+
 
   const pagedItems = allItems.slice(
     pageIndex * pageSize,
@@ -320,7 +328,6 @@ const WithPaginationExample = (args: GridImageGalleryProps) => {
       <GridImageGallery
         {...args}
         items={pagedItems}
-        onDelete={handleDelete}
         pageIndex={pageIndex}
         pageSize={pageSize}
         totalItems={allItems.length}
@@ -330,6 +337,12 @@ const WithPaginationExample = (args: GridImageGalleryProps) => {
           setPageSize(size);
           setPageIndex(0);
         }}
+        selectedIds={selectedIds}
+        onSelectionChange={handleSelectionChange}
+        onItemClick={handleItemClick}
+        onItemDoubleClick={handleItemDoubleClick}
+        onMenuClick={handleMenuClick}
+        onDelete={handleDelete}
         showPagination={true}
       />
     </div>
@@ -550,72 +563,6 @@ export const CustomRender: Story = {
       description: {
         story:
           'Gallery with custom card rendering using renderCardContent prop.',
-      },
-    },
-  },
-};
-
-// Virtualized long list with mixed states
-const createVirtualizedItems = (count: number): GridAssetItem[] => {
-  return Array.from({ length: count }).map((_, index) => {
-    const id = String(index + 1);
-    // Mark first few items as loading and some without image to demonstrate states
-    if (index < 5) {
-      return {
-        id,
-        name: `Loading asset ${id}`,
-        isLoading: true,
-      };
-    }
-
-    if (index % 7 === 0) {
-      return {
-        id,
-        name: `Text-only asset ${id}`,
-      };
-    }
-
-    return {
-      id,
-      name: `Asset ${id}`,
-      imageUrl: `https://picsum.photos/400/400?random=${index + 30}`,
-    };
-  });
-};
-
-const VirtualizedExample = (args: GridImageGalleryProps) => {
-  const [items] = useState<GridAssetItem[]>(() => createVirtualizedItems(500));
-
-  return (
-    <div className='w-full'>
-      <div className='mb-4 p-4 bg-surface-sec rounded'>
-        <p className='text-sm font-medium text-text-pri'>Virtualized Gallery</p>
-        <p className='text-xs text-text-opt mt-1'>
-          Rendering 500 items using simple windowed rendering. Some items are
-          loading-only, some are text-only.
-        </p>
-      </div>
-      <GridImageGallery {...args} items={items} />
-    </div>
-  );
-};
-
-export const VirtualizedLongList: Story = {
-  render: VirtualizedExample,
-  args: {
-    allowMultiSelect: true,
-    selectable: true,
-    showActionButtons: true,
-    columns: 4,
-    virtualized: true,
-    virtualizedRowHeight: 176,
-    virtualizedContainerHeight: 480,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Gallery rendering a long list (500 items) using the built-in simple virtualization for better performance. Demonstrates loading placeholders and text-only items.',
       },
     },
   },
