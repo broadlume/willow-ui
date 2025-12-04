@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { type UIEvent, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { HiOutlinePhoto, HiOutlineTrash } from 'react-icons/hi2';
 import { Button } from '../../index';
 import { Card } from '../card/card';
@@ -21,6 +21,8 @@ export interface GridAssetItem {
 export interface GridImageGalleryProps {
   /** Array of assets to display in the grid */
   items: GridAssetItem[];
+  /** Controlled selected IDs (optional - if not provided, component manages its own state) */
+  selectedIds?: string[];
   /** Callback when selection changes */
   onSelectionChange?: (selectedIds: string[]) => void;
   /** Callback when an item is clicked (single click) */
@@ -61,15 +63,6 @@ export interface GridImageGalleryProps {
   ) => React.ReactNode;
   /** Show action buttons (Select All, Delete) */
   showActionButtons?: boolean;
-  /**
-   * Enable simple windowed rendering for large lists.
-   * When enabled, only the visible rows are rendered to avoid performance issues.
-   */
-  virtualized?: boolean;
-  /** Fixed height for a single row when `virtualized` is true. */
-  virtualizedRowHeight?: number;
-  /** Height of the scroll container when `virtualized` is true. */
-  virtualizedContainerHeight?: number;
   /** Zero-based page index, when using the built-in pagination footer. */
   pageIndex?: number;
   /** Page size, when using the built-in pagination footer. */
@@ -92,6 +85,7 @@ export interface GridImageGalleryProps {
  */
 export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   items,
+  selectedIds: selectedIdsProp,
   onSelectionChange,
   onItemClick,
   onItemDoubleClick,
@@ -104,9 +98,6 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   renderCardContent,
   showActionButtons = true,
   renderItem,
-  virtualized = false,
-  virtualizedRowHeight = 176,
-  virtualizedContainerHeight = 600,
   pageIndex,
   pageSize,
   totalItems,
@@ -115,10 +106,16 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   onPageSizeChange,
   showPagination: showPaginationProp,
 }) => {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [internalSelectedIds, setInternalSelectedIds] = useState<Set<string>>(new Set());
+
+  // Use controlled prop if provided, otherwise use internal state
+  const isControlled = selectedIdsProp !== undefined;
+  const selectedIdsSet = isControlled
+    ? new Set(selectedIdsProp)
+    : internalSelectedIds;
 
   const handleCheckboxChange = (itemId: string, checked: boolean) => {
-    const newSelectedIds = new Set(selectedIds);
+    const newSelectedIds = new Set(selectedIdsSet);
 
     if (checked) {
       if (allowMultiSelect) {
@@ -131,17 +128,28 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
       newSelectedIds.delete(itemId);
     }
 
-    setSelectedIds(newSelectedIds);
-    onSelectionChange?.(Array.from(newSelectedIds));
+    const newSelectedIdsArray = Array.from(newSelectedIds);
+
+    if (!isControlled) {
+      setInternalSelectedIds(newSelectedIds);
+    }
+
+    onSelectionChange?.(newSelectedIdsArray);
   };
 
   const handleCardClick = (item: GridAssetItem) => {
     if (selectable && !allowMultiSelect) {
       const newSelectedIds = new Set<string>();
-      if (!selectedIds.has(item.id)) {
+      if (!selectedIdsSet.has(item.id)) {
         newSelectedIds.add(item.id);
-        setSelectedIds(newSelectedIds);
-        onSelectionChange?.(Array.from(newSelectedIds));
+
+        const newSelectedIdsArray = Array.from(newSelectedIds);
+
+        if (!isControlled) {
+          setInternalSelectedIds(newSelectedIds);
+        }
+
+        onSelectionChange?.(newSelectedIdsArray);
       }
     }
     onItemClick?.(item);
@@ -152,27 +160,33 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.size === items.length) {
+    if (selectedIdsSet.size === items.length) {
       // Deselect all
-      setSelectedIds(new Set());
+      if (!isControlled) {
+        setInternalSelectedIds(new Set());
+      }
       onSelectionChange?.([]);
     } else {
       // Select all
       const allIds = new Set(items.map((item) => item.id));
-      setSelectedIds(allIds);
+      if (!isControlled) {
+        setInternalSelectedIds(allIds);
+      }
       onSelectionChange?.(Array.from(allIds));
     }
   };
 
   const handleDelete = () => {
-    if (selectedIds.size > 0 && onDelete) {
-      onDelete(Array.from(selectedIds));
-      setSelectedIds(new Set());
+    if (selectedIdsSet.size > 0 && onDelete) {
+      onDelete(Array.from(selectedIdsSet));
+      if (!isControlled) {
+        setInternalSelectedIds(new Set());
+      }
       onSelectionChange?.([]);
     }
   };
 
-  const selectedCount = selectedIds.size;
+  const selectedCount = selectedIdsSet.size;
   const allSelected = selectedCount === items.length && items.length > 0;
 
   const currentPageIndex = pageIndex ?? 0;
@@ -187,56 +201,6 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
   // Pagination only shows when explicitly enabled via showPagination flag,
   // or when both pagination callbacks are provided (indicating intentional pagination setup)
   const hasPagination = showPaginationProp;
-
-  const totalRows = useMemo(
-    () => Math.ceil(items.length / columns),
-    [items.length, columns]
-  );
-
-  const [scrollTop, setScrollTop] = useState(0);
-
-  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
-    if (!virtualized) return;
-    setScrollTop(event.currentTarget.scrollTop);
-  };
-
-  const virtualization = useMemo(() => {
-    if (!virtualized) {
-      return {
-        startIndex: 0,
-        endIndex: items.length,
-        offsetTop: 0,
-        totalHeight: undefined as number | undefined,
-      };
-    }
-
-    const containerHeight = virtualizedContainerHeight;
-    const rowHeight = virtualizedRowHeight;
-
-    const startRow = Math.max(Math.floor(scrollTop / rowHeight) - 1, 0);
-    const visibleRowCount = Math.ceil(containerHeight / rowHeight) + 2;
-    const endRow = Math.min(startRow + visibleRowCount, totalRows - 1);
-
-    const startIndex = startRow * columns;
-    const endIndex = Math.min((endRow + 1) * columns, items.length);
-    const offsetTop = startRow * rowHeight;
-    const totalHeight = totalRows * rowHeight;
-
-    return { startIndex, endIndex, offsetTop, totalHeight };
-  }, [
-    virtualized,
-    items.length,
-    columns,
-    scrollTop,
-    virtualizedContainerHeight,
-    virtualizedRowHeight,
-    totalRows,
-  ]);
-
-  const visibleItems = useMemo(
-    () => items.slice(virtualization.startIndex, virtualization.endIndex),
-    [items, virtualization.startIndex, virtualization.endIndex]
-  );
 
   return (
     <div className={className}>
@@ -272,216 +236,99 @@ export const GridImageGallery: React.FC<GridImageGalleryProps> = ({
       )}
 
       {/* Grid */}
-      <div
-        className={clsx(
-          'px-4 pb-4',
-          virtualized && 'overflow-y-auto',
-          virtualized && `max-h-[${virtualizedContainerHeight}px]`
-        )}
-        onScroll={handleScroll}
-      >
-        {virtualized ? (
-          <div className={clsx('relative', `h-[${virtualization.totalHeight}px]`)}>
-            <div
-              className={clsx(
-                'absolute left-0 right-0',
-                `top-[${virtualization.offsetTop}px]`
-              )}
-            >
-              <div
-                className={`grid gap-3 grid-cols-[repeat(${columns},minmax(0,1fr))]`}
-              >
-                {visibleItems.map((item) => {
-                  const isSelected = selectedIds.has(item.id);
+      <div className='px-4 pb-4'>
+        <div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(216px,1fr))]'>
+          {items.map((item) => {
+            const isSelected = selectedIdsSet.has(item.id);
 
-                  if (renderItem) {
-                    return (
-                      <React.Fragment key={item.id}>
-                        {renderItem(item, {
-                          isSelected,
-                          onClick: () => handleCardClick(item),
-                          onDoubleClick: () => handleCardDoubleClick(item),
-                        })}
-                      </React.Fragment>
-                    );
+            if (renderItem) {
+              return (
+                <React.Fragment key={item.id}>
+                  {renderItem(item, {
+                    isSelected,
+                    onClick: () => handleCardClick(item),
+                    onDoubleClick: () => handleCardDoubleClick(item),
+                  })}
+                </React.Fragment>
+              );
+            }
+
+            return (
+              <Card
+                key={item.id}
+                className={clsx(
+                  'relative group cursor-pointer rounded-lg border transition-all duration-200 overflow-hidden bg-surface-pri w-54 h-40',
+                  {
+                    'border-border-cta ring-2 ring-cta-25': isSelected,
+                    'border-border-sec hover:border-border-pri': !isSelected,
                   }
+                )}
+                onClick={() => handleCardClick(item)}
+                onDoubleClick={() => handleCardDoubleClick(item)}
+              >
+                {/* Checkbox */}
+                {selectable && (
+                  <div className='absolute top-2 left-2 z-10' onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={(checked) =>
+                        handleCheckboxChange(item.id, checked as boolean)
+                      }
+                      className='cursor-pointer'
+                    />
+                  </div>
+                )}
 
-                  return (
-                    <Card
-                      key={item.id}
-                      className={clsx(
-                        'relative group cursor-pointer rounded-lg border transition-all duration-200 overflow-hidden w-54 h-40',
-                        {
-                          'border-border-cta ring-2 ring-cta-25': isSelected,
-                          'border-border-sec hover:border-border-pri':
-                            !isSelected,
-                        }
-                      )}
-                      onClick={() => handleCardClick(item)}
-                      onDoubleClick={() => handleCardDoubleClick(item)}
-                    >
-                      {/* Checkbox */}
-                      {selectable && (
-                        <div className='absolute top-2 left-2 z-10'>
-                          <Checkbox
-                            checked={isSelected}
-                            onCheckedChange={(checked) =>
-                              handleCheckboxChange(item.id, checked as boolean)
-                            }
-                            className='cursor-pointer'
+                {/* Card Content */}
+                <div className='flex flex-col h-full'>
+                  {renderCardContent ? (
+                    renderCardContent(item, { isSelected })
+                  ) : (
+                    <>
+                      {/* Image / Placeholder / Loading */}
+                      <div className='w-full h-28 bg-surface-sec flex items-center justify-center overflow-hidden'>
+                        {item.isLoading ? (
+                          <div className='w-full h-full flex flex-col animate-pulse bg-surface-sec'>
+                            {/* Image skeleton */}
+                            <div className='w-full h-28 bg-surface-pri' />
+
+                            {/* Text skeleton */}
+                            <div className='px-3 py-2 flex items-center gap-2'>
+                              <div className='h-3 w-6 bg-surface-pri rounded' />
+                              <div className='h-3 flex-1 bg-surface-pri/80 rounded' />
+                            </div>
+                          </div>
+                        ) : item.imageUrl ? (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className='w-full h-full object-cover'
+                            loading='lazy'
                           />
-                        </div>
-                      )}
-
-                      {/* Card Content */}
-                      <div className='flex flex-col h-full'>
-                        {renderCardContent ? (
-                          renderCardContent(item, { isSelected })
                         ) : (
-                          <>
-                            {/* Image / Placeholder / Loading */}
-                            <div className='w-full h-28 bg-surface-sec flex items-center justify-center overflow-hidden'>
-                              {item.isLoading ? (
-                                <div className='w-full h-full flex flex-col animate-pulse bg-surface-sec'>
-                                  {/* Image skeleton */}
-                                  <div className='w-full h-28 bg-surface-pri' />
-
-                                  {/* Text skeleton */}
-                                  <div className='px-3 py-2 flex items-center gap-2'>
-                                    <div className='h-3 w-6 bg-surface-pri rounded' />
-                                    <div className='h-3 flex-1 bg-surface-pri/80 rounded' />
-                                  </div>
-                                </div>
-                              ) : item.imageUrl ? (
-                                <img
-                                  src={item.imageUrl}
-                                  alt={item.name}
-                                  className='w-full h-full object-cover'
-                                  loading='lazy'
-                                />
-                              ) : (
-                                <HiOutlinePhoto className='w-12 h-12 text-icon-pri' />
-                              )}
-                            </div>
-
-                            {/* Item Name */}
-                            <div className='px-3 py-2 bg-surface-pri h-12 flex items-center'>
-                              <p
-                                className={clsx(
-                                  'text-sm font-medium truncate',
-                                  {
-                                    'text-text-cta': isSelected,
-                                    'text-text-pri': !isSelected,
-                                  }
-                                )}
-                                title={item.name}
-                              >
-                                {item.name}
-                              </p>
-                            </div>
-                          </>
+                          <HiOutlinePhoto className='w-12 h-12 text-icon-pri' />
                         )}
                       </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(216px,1fr))]'>
-            {items.map((item) => {
-              const isSelected = selectedIds.has(item.id);
 
-              if (renderItem) {
-                return (
-                  <React.Fragment key={item.id}>
-                    {renderItem(item, {
-                      isSelected,
-                      onClick: () => handleCardClick(item),
-                      onDoubleClick: () => handleCardDoubleClick(item),
-                    })}
-                  </React.Fragment>
-                );
-              }
-
-              return (
-                <Card
-                  key={item.id}
-                  className={clsx(
-                    'relative group cursor-pointer rounded-lg border transition-all duration-200 overflow-hidden bg-surface-pri w-54 h-40',
-                    {
-                      'border-border-cta ring-2 ring-cta-25': isSelected,
-                      'border-border-sec hover:border-border-pri': !isSelected,
-                    }
+                      {/* Item Name */}
+                      <div className='px-3 py-2 bg-surface-pri h-12 flex items-center'>
+                        <p
+                          className={clsx('text-sm font-medium truncate', {
+                            'text-text-cta': isSelected,
+                            'text-text-pri': !isSelected,
+                          })}
+                          title={item.name}
+                        >
+                          {item.name}
+                        </p>
+                      </div>
+                    </>
                   )}
-                  onClick={() => handleCardClick(item)}
-                  onDoubleClick={() => handleCardDoubleClick(item)}
-                >
-                  {/* Checkbox */}
-                  {selectable && (
-                    <div className='absolute top-2 left-2 z-10'>
-                      <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange(item.id, checked as boolean)
-                        }
-                        className='cursor-pointer'
-                      />
-                    </div>
-                  )}
-
-                  {/* Card Content */}
-                  <div className='flex flex-col h-full'>
-                    {renderCardContent ? (
-                      renderCardContent(item, { isSelected })
-                    ) : (
-                      <>
-                        {/* Image / Placeholder / Loading */}
-                        <div className='w-full h-28 bg-surface-sec flex items-center justify-center overflow-hidden'>
-                          {item.isLoading ? (
-                            <div className='w-full h-full flex flex-col animate-pulse bg-surface-sec'>
-                              {/* Image skeleton */}
-                              <div className='w-full h-28 bg-surface-pri' />
-
-                              {/* Text skeleton */}
-                              <div className='px-3 py-2 flex items-center gap-2'>
-                                <div className='h-3 w-6 bg-surface-pri rounded' />
-                                <div className='h-3 flex-1 bg-surface-pri/80 rounded' />
-                              </div>
-                            </div>
-                          ) : item.imageUrl ? (
-                            <img
-                              src={item.imageUrl}
-                              alt={item.name}
-                              className='w-full h-full object-cover'
-                              loading='lazy'
-                            />
-                          ) : (
-                            <HiOutlinePhoto className='w-12 h-12 text-icon-pri' />
-                          )}
-                        </div>
-
-                        {/* Item Name */}
-                        <div className='px-3 py-2 bg-surface-pri h-12 flex items-center'>
-                          <p
-                            className={clsx('text-sm font-medium truncate', {
-                              'text-text-cta': isSelected,
-                              'text-text-pri': !isSelected,
-                            })}
-                            title={item.name}
-                          >
-                            {item.name}
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        )}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
       {/* Pagination Footer */}
