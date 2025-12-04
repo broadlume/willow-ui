@@ -102,6 +102,7 @@ export interface MiniAssetSelectorProps {
     size: number | null;
     file: File | null;
   }) => void;
+  triggerFileInput?: boolean;
 }
 
 /**
@@ -149,6 +150,7 @@ export const MiniAssetSelector = forwardRef<
       errorMessage,
       onPaste,
       onImageNameClick,
+      triggerFileInput
     },
     ref
   ) => {
@@ -701,6 +703,7 @@ export const MiniAssetSelector = forwardRef<
                 onFileChange={handleFileChange}
                 onBlur={onBlur}
                 onPaste={onPaste}
+                triggerFileInput={triggerFileInput}
               />
 
               <ImagePreview

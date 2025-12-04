@@ -29,6 +29,7 @@ export interface URLInputProps {
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  triggerFileInput?: boolean;
 }
 
 export const URLInput: React.FC<URLInputProps> = ({
@@ -57,6 +58,7 @@ export const URLInput: React.FC<URLInputProps> = ({
   onFileChange,
   onBlur,
   onPaste,
+  triggerFileInput
 }) => {
   return (
     <>
@@ -141,6 +143,7 @@ export const URLInput: React.FC<URLInputProps> = ({
                 multiple={multiple}
                 onBrowseClick={onBrowseClick}
                 onFileChange={onFileChange}
+                triggerFileInput={triggerFileInput}
               />
             ) : undefined
           }
