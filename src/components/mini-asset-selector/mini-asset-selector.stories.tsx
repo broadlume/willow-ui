@@ -159,6 +159,48 @@ const DisabledExample = (args: Partial<MiniAssetSelectorProps>) => {
   );
 };
 
+
+// Custom browse handler WITH file input trigger
+const CustomBrowseWithFileInputExample = (
+  args: Partial<MiniAssetSelectorProps>
+) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedURL, setSelectedURL] = useState<string | null>('');
+
+  const handleCustomBrowse = () => {
+    alert('Custom handler executed! You can also open asset manager here.');
+  };
+
+  return (
+    <div className='w-[600px]'>
+      <MiniAssetSelector
+        {...args}
+        selectedFile={selectedFile}
+        onSelectedFile={setSelectedFile}
+        selectedURL={selectedURL}
+        onSelectedURL={setSelectedURL}
+        onBrowseClick={handleCustomBrowse}
+        triggerFileInput={true}
+        name={args.name || 'asset-selector-custom-with-trigger'}
+      />
+      <div className='mt-4 text-sm text-gray-600'>
+        <p>
+          <strong>How it works:</strong>
+        </p>
+        <ul className='list-disc list-inside space-y-1'>
+          <li>
+            <code>triggerFileInput={'{true}'}</code> - Opens file picker first
+          </li>
+          <li>
+            <code>onBrowseClick</code> - Then calls your custom handler
+          </li>
+          <li>Use this when you want BOTH file picker AND custom logic</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 const CustomButtonExample = (args: Partial<MiniAssetSelectorProps>) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedURL, setSelectedURL] = useState<string | null>('');
@@ -258,6 +300,25 @@ export const Disabled: Story = {
     disabled: true,
   },
 };
+
+// With triggerFileInput enabled
+export const CustomBrowseWithFileInput: Story = {
+  render: CustomBrowseWithFileInputExample,
+  args: {
+    name: 'asset-selector-custom-with-trigger',
+    browseButtonText: 'Browse',
+    placeholder: 'Opens file picker AND runs custom handler',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates using `triggerFileInput={true}` with `onBrowseClick`. When the browse button is clicked, it first opens the native file picker, then executes your custom handler. This is useful when you want to allow file selection AND perform additional actions (like logging, analytics, or opening a secondary modal).',
+      },
+    },
+  },
+};
+
 
 // Custom button text
 export const CustomButtonText: Story = {

@@ -14,6 +14,7 @@ export interface BrowseButtonProps {
   hasImage?: boolean;
   name?: string;
   multiple?: boolean;
+  triggerFileInput?: boolean;
   onBrowseClick?: () => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -28,18 +29,27 @@ export const BrowseButton: React.FC<BrowseButtonProps> = ({
   hasImage = false,
   name = 'asset',
   multiple = true,
+  triggerFileInput = false,
   onBrowseClick,
   onFileChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleBrowseClick = () => {
-    if (multiple) {
+    if (multiple) {  // Multiple file mode 
       fileInputRef.current?.click();
-    } else if (onBrowseClick) {
+    }
+    else if (onBrowseClick) {
+      // If triggerFileInput is true, open file picker first before calling custom handler
+      // This allows BOTH file selection AND custom logic (e.g., analytics, asset manager)
+      if (triggerFileInput) {
+        fileInputRef.current?.click();
+      }
+      // Execute custom handler (e.g., open asset manager modal, logging, etc.)
       onBrowseClick();
-    } else {
-      fileInputRef.current?.click();
+    }
+    else {
+      fileInputRef.current?.click();  // Single file mode
     }
   };
 
