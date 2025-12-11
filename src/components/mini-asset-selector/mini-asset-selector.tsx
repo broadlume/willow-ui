@@ -103,6 +103,9 @@ export interface MiniAssetSelectorProps {
     file: File | null;
   }) => void;
   triggerFileInput?: boolean;
+  isShowEditIcon?: boolean;
+  /** Whether to disable clicking on the image name - independent from the disabled prop */
+  disableImageNameClick?: boolean;
 }
 
 /**
@@ -150,7 +153,9 @@ export const MiniAssetSelector = forwardRef<
       errorMessage,
       onPaste,
       onImageNameClick,
-      triggerFileInput
+      triggerFileInput,
+      isShowEditIcon = false,
+      disableImageNameClick = false,
     },
     ref
   ) => {
@@ -171,8 +176,9 @@ export const MiniAssetSelector = forwardRef<
     } = state;
 
     // State for multiple files (supports controlled and uncontrolled usage)
-    const [uncontrolledSelectedFiles, setUncontrolledSelectedFiles] =
-      useState<File[]>([]);
+    const [uncontrolledSelectedFiles, setUncontrolledSelectedFiles] = useState<
+      File[]
+    >([]);
     const [uncontrolledFilePreviews, setUncontrolledFilePreviews] = useState<
       { file: File; preview: string }[]
     >([]);
@@ -195,7 +201,9 @@ export const MiniAssetSelector = forwardRef<
       onSelectedFiles?.(files);
     };
 
-    const updateFilePreviews = (previews: { file: File; preview: string }[]) => {
+    const updateFilePreviews = (
+      previews: { file: File; preview: string }[]
+    ) => {
       if (!isFilePreviewsControlled) {
         setUncontrolledFilePreviews(previews);
       }
@@ -713,10 +721,12 @@ export const MiniAssetSelector = forwardRef<
                 imageError={imageError}
                 fullWidth={fullWidth}
                 disabled={disabled}
+                disableImageNameClick={disableImageNameClick}
                 onRemove={handleRemoveImage}
                 onImageError={handleImageError}
                 onImageNameClick={onImageNameClick}
                 originalFile={originalFile}
+                isShowEditIcon={isShowEditIcon}
               />
             </>
           )}

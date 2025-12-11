@@ -65,9 +65,30 @@ export interface MenuItemRenderProps {
   setL2Image?: (image: string) => void;
   l2ImageMetadata?: Record<string, string>;
   setL2ImageMetadata?: (metadata: Record<string, string>) => void;
-  onImageBrowseClick?: (editor: Editor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void; // Callback for custom asset manager integration with URL and metadata setter
-  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void; // Callback for custom file drop handling
-  onImageNameClick?: (editor: Editor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void; // Callback for when image name is clicked
+  onImageBrowseClick?: (
+    editor: Editor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void; // Callback for custom asset manager integration with URL and metadata setter
+  onImageDrop?: (
+    editor: Editor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void; // Callback for custom file drop handling
+  onImageNameClick?: (
+    editor: Editor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void; // Callback for when image name is clicked
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   expandedMenu?: boolean; // For More button to hide sub-menus
   setExpandedMenu?: (expanded: boolean) => void;
   expandedMenuL2?: boolean; // For More button to hide sub-menus
@@ -154,7 +175,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             )}
           />
         }
-        eventHandler={() => { }}
+        eventHandler={() => {}}
       />
     ),
     dividerAfter: true,
@@ -174,7 +195,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             darkMode={darkMode}
           />
         }
-        eventHandler={() => { }}
+        eventHandler={() => {}}
       />
     ),
     dividerAfter: true,
@@ -307,7 +328,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
               darkMode={darkMode}
             />
           }
-          eventHandler={() => { }}
+          eventHandler={() => {}}
         />
       </MenuItemWithTooltip>
     ),
@@ -520,7 +541,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
               darkMode={darkMode}
             />
           }
-          eventHandler={() => { }}
+          eventHandler={() => {}}
         />
       </MenuItemWithTooltip>
     ),
@@ -746,9 +767,30 @@ export const getL3MenuContent = (
   l2ImageMetadata: Record<string, string> | undefined,
   setL2ImageMetadata: (metadata: Record<string, string>) => void,
   setExpandedMenuL2: (expanded: boolean) => void,
-  onImageBrowseClick?: (editor: Editor, setImageData: (data: { url: string; metadata?: Record<string, string> }) => void) => void,
-  onImageDrop?: (editor: Editor, file: File, setUrl: (url: string) => void) => void,
-  onImageNameClick?: (editor: Editor, imageData: { name: string | null; url: string | null; size: number | null; file: File | null }) => void
+  onImageBrowseClick?: (
+    editor: Editor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void,
+  onImageDrop?: (
+    editor: Editor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void,
+  onImageNameClick?: (
+    editor: Editor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void,
+  disableAssetImageNameClick?: boolean,
+  isShowAssetEditIcon?: boolean,
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void
 ) => {
   switch (expandedMenuL2Type) {
     case 'link':
@@ -850,9 +892,10 @@ export const getL3MenuContent = (
       );
     case 'image':
       return (
-        <div className="flex flex-col gap-2 w-full">
-          <div className="flex-1">
+        <div className='flex flex-col gap-2 w-full'>
+          <div className='flex-1'>
             <MiniAssetSelector
+              value={l2Image}
               selectedURL={l2Image}
               onSelectedURL={(url) => {
                 if (url) {
@@ -869,16 +912,26 @@ export const getL3MenuContent = (
                   setL2Image(fileUrl);
                 }
               }}
-              placeholder="Enter Image URL here or Drag & drop here"
-              browseButtonText="Browse Assets"
-              onBrowseClick={() => onImageBrowseClick?.(editor, (data) => {
-                setL2Image(data.url);
-                if (data.metadata) {
-                  setL2ImageMetadata(data.metadata);
-                }
-              })}
-              onImageNameClick={(imageData) => onImageNameClick?.(editor, imageData)}
-              className="w-full"
+              placeholder='Enter Image URL here or Drag & drop here'
+              browseButtonText='Browse Assets'
+              onBrowseClick={() =>
+                onImageBrowseClick?.(editor, (data) => {
+                  setL2Image(data.url);
+                  if (data.metadata) {
+                    setL2ImageMetadata(data.metadata);
+                  }
+                })
+              }
+              onImageNameClick={(imageData) =>
+                onImageNameClick?.(editor, imageData)
+              }
+              isShowEditIcon={isShowAssetEditIcon}
+              disableImageNameClick={disableAssetImageNameClick}
+              onChange={(value) => {
+                setL2Image(value as string);
+                onAssetSelectorChange?.(editor, value);
+              }}
+              className='w-full'
               showBrowseButton={true}
               fullWidth={true}
             />
@@ -893,21 +946,25 @@ export const getL3MenuContent = (
                 if (l2Image) {
                   // Create image attributes with metadata
                   const imageAttrs: Record<string, string> = { src: l2Image };
-                  
+
                   // Add metadata as image attributes
                   if (l2ImageMetadata) {
                     // Standard HTML image attributes
-                    if (l2ImageMetadata['alt-text']) imageAttrs.alt = l2ImageMetadata['alt-text'];
-                    if (l2ImageMetadata.width) imageAttrs.width = l2ImageMetadata.width;
-                    if (l2ImageMetadata.height) imageAttrs.height = l2ImageMetadata.height;
-                    if (l2ImageMetadata.title) imageAttrs.title = l2ImageMetadata.title;
-                    
+                    if (l2ImageMetadata['alt-text'])
+                      imageAttrs.alt = l2ImageMetadata['alt-text'];
+                    if (l2ImageMetadata.width)
+                      imageAttrs.width = l2ImageMetadata.width;
+                    if (l2ImageMetadata.height)
+                      imageAttrs.height = l2ImageMetadata.height;
+                    if (l2ImageMetadata.title)
+                      imageAttrs.title = l2ImageMetadata.title;
+
                     // Custom metadata as data attributes
                     Object.entries(l2ImageMetadata).forEach(([key, value]) => {
-                        imageAttrs[key] = value;
+                      imageAttrs[key] = value;
                     });
                   }
-                  
+
                   editor.chain().focus().setCustomImage(imageAttrs).run();
                   setL2Image('');
                   setL2ImageMetadata({});
@@ -930,7 +987,6 @@ export const getL3MenuContent = (
             </Button>
           </div>
         </div>
-
       );
 
     default:

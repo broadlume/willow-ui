@@ -159,7 +159,6 @@ const DisabledExample = (args: Partial<MiniAssetSelectorProps>) => {
   );
 };
 
-
 // Custom browse handler WITH file input trigger
 const CustomBrowseWithFileInputExample = (
   args: Partial<MiniAssetSelectorProps>
@@ -318,7 +317,6 @@ export const CustomBrowseWithFileInput: Story = {
     },
   },
 };
-
 
 // Custom button text
 export const CustomButtonText: Story = {
@@ -620,7 +618,6 @@ const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
     { file: File; preview: string }[]
   >([]);
 
-
   const [existingImages, setExistingImages] = useState([
     {
       id: '1',
@@ -654,13 +651,14 @@ const MultipleFilesExample = (args: Partial<MiniAssetSelectorProps>) => {
     },
   ]);
 
-
   const handleFilesSelected = (files: File[]) => {
     console.log('Selected files:', files);
     setSelectedFiles(files);
   };
 
-  const handleFilePreviewsChange = (previews: { file: File; preview: string }[]) => {
+  const handleFilePreviewsChange = (
+    previews: { file: File; preview: string }[]
+  ) => {
     console.log('File previews:', previews);
     setFilePreviews(previews);
   };
@@ -718,6 +716,56 @@ export const MultipleFiles: Story = {
       description: {
         story:
           'Demonstrates multiple file upload functionality with existing/uploaded images. Users can see previously uploaded images with "Uploaded" badge, select multiple new files via browse button or drag & drop. New files are added to existing selection, and individual files or existing images can be removed.',
+      },
+    },
+  },
+};
+
+const DisabledImageNameClickExample = (
+  args: Partial<MiniAssetSelectorProps>
+) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedURL, setSelectedURL] = useState<string | null>(
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop'
+  );
+
+  return (
+    <div className='w-[600px]'>
+      <MiniAssetSelector
+        {...args}
+        selectedFile={selectedFile}
+        onSelectedFile={setSelectedFile}
+        selectedURL={selectedURL}
+        onSelectedURL={setSelectedURL}
+        name={args.name || 'asset-selector-disabled-click'}
+        disableImageNameClick={true}
+        onImageNameClick={(imageData) => {
+          console.log('This should not be called', imageData);
+        }}
+      />
+      <div className='mt-4 text-sm text-gray-600'>
+        <p>
+          <strong>Note:</strong> The image name is displayed in gray and
+          clicking it will not trigger any action, even though onImageNameClick
+          is provided. This is independent from the disabled prop which controls
+          the entire component.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// Disabled image name click story
+export const DisabledImageNameClick: Story = {
+  render: DisabledImageNameClickExample,
+  args: {
+    name: 'asset-selector-disabled-click',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates the disableImageNameClick prop which allows you to disable the click functionality on the image name independently from the disabled prop. The image name will appear in gray and will not respond to clicks.',
       },
     },
   },
