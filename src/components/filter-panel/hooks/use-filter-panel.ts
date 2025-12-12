@@ -64,6 +64,10 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
         (initialized as Record<string, unknown>)[key] = null;
         hasChanges = true;
       }
+      if (type === 'radio' && filters[key] === undefined) {
+        (initialized as Record<string, unknown>)[key] = null;
+        hasChanges = true;
+      }
       // Initialize API filter states
       if (type === 'api-select' && !apiFilterStates[key]) {
         setApiFilterStates((prev) => ({
@@ -241,6 +245,17 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
     [filters, onFiltersChange]
   );
 
+  // Handle radio filter selection
+  const handleRadioChange = useCallback(
+    (key: string, value: string) => {
+      const currentValue = filters[key] as string | null;
+      // Toggle off if clicking the same value, otherwise set the new value
+      const newValue = currentValue === value ? null : value;
+      onFiltersChange({ ...filters, [key]: newValue });
+    },
+    [filters, onFiltersChange]
+  );
+
   // Reset all filters to their default empty state
   const handleClearAll = useCallback(() => {
     const cleared = { ...filters };
@@ -251,7 +266,14 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
         (
           cleared as Record<
             string,
-            string[] | { from: string; to: string } | null
+            string[] | string | { from: string; to: string } | null
+          >
+        )[key] = null;
+      } else if (type === 'radio') {
+        (
+          cleared as Record<
+            string,
+            string[] | string | { from: string; to: string } | null
           >
         )[key] = null;
       } else if ('hookKey' in config) {
@@ -388,6 +410,9 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
 
       if (type === 'dateRange') {
         if (filters[key] !== null) count++;
+      } else if (type === 'radio') {
+        // Radio filters - check if a value is selected
+        if (filters[key] !== null && filters[key] !== undefined) count++;
       } else if ('hookKey' in config) {
         // API-based filters - check filter state
         const filterState = getApiFilterState(key);
@@ -428,6 +453,7 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
     handleApiSelectAll,
     handleApiItemToggle,
     handleDateRangeChange,
+    handleRadioChange,
     handleClearAll,
     handleScroll,
     handleSearchChange,
