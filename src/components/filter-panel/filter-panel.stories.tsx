@@ -1,7 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useCallback, useRef, useState } from 'react';
 import { FilterPanel } from './filter-panel';
-import type { ApiSelectFilterState, FilterConfig, FilterValues } from './types';
+import type {
+  ApiSelectFilterState,
+  FilterConfig,
+  FilterValues,
+  RadioFilterConfig,
+} from './types';
 
 const meta: Meta<typeof FilterPanel> = {
   component: FilterPanel,
@@ -372,5 +377,57 @@ export const WithApiSelect: Story = {
     };
 
     return <ApiSelectDemo />;
+  },
+};
+
+/** Filter panel with radio button filters using key-value pairs */
+export const WithRadioFilter: Story = {
+  render: () => {
+    const radioFilterConfig: (FilterConfig | RadioFilterConfig)[] = [
+      {
+        key: 'categories',
+        label: 'Categories',
+        type: 'select',
+        options: mockCategories,
+        canSelectAll: true,
+        searchable: true,
+      },
+      {
+        key: 'sortOrder',
+        label: 'Sort Order',
+        type: 'radio',
+        options: [
+          { value: 'asc', label: 'Ascending' },
+          { value: 'desc', label: 'Descending' },
+          { value: 'newest', label: 'Newest First' },
+          { value: 'oldest', label: 'Oldest First' },
+        ],
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        type: 'radio',
+        options: [
+          { value: 'active', label: 'Active' },
+          { value: 'inactive', label: 'Inactive' },
+          { value: 'pending', label: 'Pending Review' },
+          { value: 'archived', label: 'Archived' },
+        ],
+      },
+    ];
+
+    const radioFilters: FilterValues = {
+      categories: [],
+      sortOrder: null,
+      status: null,
+    };
+
+    return (
+      <SafeFilterPanel
+        initialFilters={radioFilters}
+        filterConfig={radioFilterConfig}
+        isLoading={false}
+      />
+    );
   },
 };

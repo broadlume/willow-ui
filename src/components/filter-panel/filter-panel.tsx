@@ -7,9 +7,10 @@ import {
 } from '@components/popover/popover';
 import { HiAdjustments } from 'react-icons/hi';
 import { DateRangeFilter } from './components/date-range-filter';
+import { RadioFilterItem } from './components/radio-filter-item';
 import { SelectFilterItem } from './components/select-filter-item';
 import { useFilterPanel } from './hooks/use-filter-panel';
-import { FilterPanelProps, FilterValues } from './types';
+import { FilterPanelProps, FilterValues, RadioFilterConfig } from './types';
 
 /**
  * Reusable filter panel component with support for checkbox, date range, and API-based infinite scroll filters
@@ -34,6 +35,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
     handleApiSelectAll,
     handleApiItemToggle,
     handleDateRangeChange,
+    handleRadioChange,
     handleClearAll,
     handleScroll,
     handleSearchChange,
@@ -71,18 +73,33 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
             {filterConfig.map((config) => {
               const { key, type } = config;
 
-              return type === 'dateRange' ? (
-                <DateRangeFilter
-                  key={key}
-                  filterKey={key}
-                  label={config.label}
-                  selectedRange={
-                    filters[key] as { from: string; to: string } | null
-                  }
-                  tempRange={dateRanges[key]}
-                  onDateRangeChange={handleDateRangeChange}
-                />
-              ) : (
+              if (type === 'dateRange') {
+                return (
+                  <DateRangeFilter
+                    key={key}
+                    filterKey={key}
+                    label={config.label}
+                    selectedRange={
+                      filters[key] as { from: string; to: string } | null
+                    }
+                    tempRange={dateRanges[key]}
+                    onDateRangeChange={handleDateRangeChange}
+                  />
+                );
+              }
+
+              if (type === 'radio') {
+                return (
+                  <RadioFilterItem
+                    key={key}
+                    config={config as RadioFilterConfig}
+                    selectedValue={(filters[key] as string) || null}
+                    onRadioChange={handleRadioChange}
+                  />
+                );
+              }
+
+              return (
                 <SelectFilterItem
                   key={key}
                   config={config}

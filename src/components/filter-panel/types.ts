@@ -1,14 +1,24 @@
 export interface FilterValues {
-  [key: string]: string[] | { from: string; to: string } | null;
+  [key: string]: string[] | string | { from: string; to: string } | null;
+}
+
+export interface RadioOption {
+  value: string;
+  label: string;
 }
 
 export interface FilterConfig {
   key: string;
   label: string;
-  type: 'select' | 'dateRange' | 'api-select';
+  type: 'select' | 'dateRange' | 'api-select' | 'radio';
   options?: string[];
   canSelectAll?: boolean;
   searchable?: boolean;
+}
+
+export interface RadioFilterConfig extends Omit<FilterConfig, 'type' | 'options'> {
+  type: 'radio';
+  options: RadioOption[];
 }
 
 export interface AllAvailableItems {
@@ -48,6 +58,6 @@ export interface ApiSelectFilterConfig
 export interface FilterPanelProps<T extends FilterValues = FilterValues> {
   filters: T;
   onFiltersChange: (filters: T) => void;
-  filterConfig: (FilterConfig | ApiSelectFilterConfig)[];
+  filterConfig: (FilterConfig | ApiSelectFilterConfig | RadioFilterConfig)[];
   isLoading?: boolean;
 }
