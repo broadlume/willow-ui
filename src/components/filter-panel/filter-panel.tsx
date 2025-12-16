@@ -11,6 +11,7 @@ import { RadioFilterItem } from './components/radio-filter-item';
 import { SelectFilterItem } from './components/select-filter-item';
 import { useFilterPanel } from './hooks/use-filter-panel';
 import { FilterPanelProps, FilterValues, RadioFilterConfig } from './types';
+import { Badge } from '@components/badge/badge';
 
 /**
  * Reusable filter panel component with support for checkbox, date range, and API-based infinite scroll filters
@@ -56,9 +57,9 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
         >
           <HiAdjustments className='rotate-90 text-base' />
           {activeFiltersCount > 0 && (
-            <span className='bg-surface-cta absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-2xs font-medium text-white'>
+            <Badge className='bg-surface-cta absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-2xs font-medium text-white'>
               {activeFiltersCount}
-            </span>
+            </Badge>
           )}
         </Button>
       </PopoverTrigger>

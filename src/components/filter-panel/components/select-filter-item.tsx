@@ -8,6 +8,7 @@ import { CountBadge } from '../count-badge';
 import { ApiSelectFilterConfig, FilterConfig } from '../types';
 import { ApiFilterList } from './api-filter-list';
 import { StaticFilterList } from './static-filter-list';
+import { Badge } from '@components/badge/badge';
 
 interface SelectFilterItemProps {
   config: FilterConfig | ApiSelectFilterConfig;
@@ -98,7 +99,11 @@ export const SelectFilterItem = ({
           </div>
 
           {/* Show count of selected filters */}
-          {countBadge}
+          {countBadge ? (
+            <Badge className='bg-surface-cta rounded-sm text-2xs font-medium text-white'>
+              {countBadge}
+            </Badge>
+          ) : null}
         </div>
       </AccordionTrigger>
 
