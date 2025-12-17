@@ -54,10 +54,18 @@ export interface ApiSelectFilterConfig
   // Optional custom search function for API-based searching
   onSearch?: (searchTerm: string) => void;
 }
+interface ClassNames {
+  buttonClassName?: string;
+  popoverContentClassName?: string;
+  popoverTriggerClassName?: string;
+  clearAllButtonClassName?: string;
+}
 
 export interface FilterPanelProps<T extends FilterValues = FilterValues> {
   filters: T;
   onFiltersChange: (filters: T) => void;
   filterConfig: (FilterConfig | ApiSelectFilterConfig | RadioFilterConfig)[];
   isLoading?: boolean;
+  isClearAllSticky?: boolean;
+  classNames?: ClassNames;
 }

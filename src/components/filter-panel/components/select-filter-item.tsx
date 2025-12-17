@@ -8,6 +8,7 @@ import { CountBadge } from '../count-badge';
 import { ApiSelectFilterConfig, FilterConfig } from '../types';
 import { ApiFilterList } from './api-filter-list';
 import { StaticFilterList } from './static-filter-list';
+import { Badge } from '@components/badge/badge';
 
 interface SelectFilterItemProps {
   config: FilterConfig | ApiSelectFilterConfig;
