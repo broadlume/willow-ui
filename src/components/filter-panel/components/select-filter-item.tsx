@@ -99,11 +99,7 @@ export const SelectFilterItem = ({
           </div>
 
           {/* Show count of selected filters */}
-          {countBadge ? (
-            <Badge className='bg-surface-cta rounded-sm text-2xs font-medium text-white'>
-              {countBadge}
-            </Badge>
-          ) : null}
+          {countBadge}
         </div>
       </AccordionTrigger>
 
