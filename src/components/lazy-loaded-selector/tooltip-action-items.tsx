@@ -41,17 +41,19 @@ const TooltipActionItems: React.FC<TooltipActionItemsProps> = ({
       </div>
 
       {/* Open website URL in new tab */}
-      <div
-        className='flex gap-2 p-2 cursor-pointer rounded-sm'
-        onClick={() => (itemUrl ? window.open(itemUrl, '_blank') : undefined)}
-      >
-        <button className='cursor-pointer'>
-          <HiMiniArrowTopRightOnSquare className='text-icon-pri w-4 h-4' />
-        </button>
-        <p>
-          <span className='text-sm text-text-pri'>Open Website URL</span>
-        </p>
-      </div>
+      {itemUrl ? (
+        <div
+          className='flex gap-2 p-2 cursor-pointer rounded-sm'
+          onClick={() => (itemUrl ? window.open(itemUrl, '_blank') : undefined)}
+        >
+          <button className='cursor-pointer'>
+            <HiMiniArrowTopRightOnSquare className='text-icon-pri w-4 h-4' />
+          </button>
+          <p>
+            <span className='text-sm text-text-pri'>Open Website URL</span>
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 };
