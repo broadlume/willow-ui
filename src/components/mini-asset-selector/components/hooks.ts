@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import { AssetSelectorAction } from './types';
+import { AssetSelectorAction, ErrorTypes } from './types';
 
 // Helper function to check if file is an image
 export const isImageFile = (file: File): boolean => {
@@ -42,7 +42,11 @@ export const useFileHandler = (
   acceptedFileTypes: string[] = ['image/*'],
   onFileUpload?: (file: File) => void,
   handleValueChange?: (value: File | string | null) => void,
-  preferDataUrl = false // New parameter to indicate if we should prefer data URLs
+  preferDataUrl = false, // New parameter to indicate if we should prefer data URLs
+  onError?: (error: {
+    type: ErrorTypes;
+    message: string;
+  } | null) => void // Callback for error handling
 ) => {
   const validateFile = (file: File): string | null => {
     // Basic file object validation
@@ -89,6 +93,11 @@ export const useFileHandler = (
     const error = validateFile(file);
     if (error) {
       dispatch({ type: 'SET_INPUT_ERROR', payload: error });
+      // Determine error type based on error message
+      onError?.({
+        type: ErrorTypes.INPUT_ERROR,
+        message: error,
+      });
       return false;
     }
 
@@ -136,6 +145,11 @@ export const useFileHandler = (
     reader.onerror = () => {
       dispatch({ type: 'SET_INPUT_ERROR', payload: 'Error reading file' });
       dispatch({ type: 'SET_LOADING', payload: false });
+      // Notify parent of the error
+      onError?.({
+        type: ErrorTypes.INPUT_ERROR,
+        message: 'Error reading file',
+      });
     };
 
     reader.readAsDataURL(file);
@@ -155,7 +169,11 @@ export const useDragAndDrop = (
   ) => boolean,
   dispatch: React.Dispatch<AssetSelectorAction>,
   multiple?: boolean,
-  onMultipleFiles?: (files: File[]) => void
+  onMultipleFiles?: (files: File[]) => void,
+  onError?: (error: {
+    type: ErrorTypes;
+    message: string;
+  } | null) => void
 ) => {
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     if (loading || disabled) return;
@@ -206,6 +224,10 @@ export const useDragAndDrop = (
             type: 'SET_INPUT_ERROR',
             payload: 'Please drop an image file',
           });
+          onError?.({
+            type: ErrorTypes.DRAG_ERROR,
+            message: 'Please drop an image file',
+          });
         }
       }
     } catch (error) {
@@ -217,6 +239,10 @@ export const useDragAndDrop = (
       dispatch({
         type: 'SET_INPUT_ERROR',
         payload: 'Error processing dropped file',
+      });
+      onError?.({
+        type: ErrorTypes.DRAG_ERROR,
+        message: 'Error processing dropped file',
       });
     }
   };

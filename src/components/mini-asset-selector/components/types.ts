@@ -105,3 +105,9 @@ export const assetSelectorReducer = (
       return state;
   }
 };
+
+export enum ErrorTypes {
+  IMAGE_ERROR = 'IMAGE_ERROR',
+  INPUT_ERROR = 'INPUT_ERROR',
+  DRAG_ERROR = 'DRAG_ERROR',
+}
