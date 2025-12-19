@@ -26,25 +26,28 @@ export const DateRangeFilter = ({
     >
       {selectedRange ? (
         // Show selected date range with clear option when dates are selected
-        <div
-          data-testid={`date-range-filter-selected-range-${filterKey}`}
-          className='px-1 py-1 flex h-6 w-42.5 cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-shadow-dropdown'
-        >
-          <span className='text-xs text-text-pri'>
-            {format(new Date(selectedRange.from), 'MM-dd-yyyy')} to{' '}
-            {format(new Date(selectedRange.to), 'MM-dd-yyyy')}
-          </span>
-          <button
-            type='button'
-            onClick={(e) => {
-              e.stopPropagation();
-              onDateRangeChange(filterKey, undefined);
-            }}
-            className='rounded text-text-cta cursor-pointer'
+        <>
+          <span>{label}</span>
+          <div
+            data-testid={`date-range-filter-selected-range-${filterKey}`}
+            className='mt-1 px-1 py-1 flex h-6 w-42.5 cursor-pointer items-center justify-between rounded bg-surface-pri font-medium shadow-shadow-dropdown'
           >
-            <HiOutlineXCircle className='h-4 w-4 text-text-cta' />
-          </button>
-        </div>
+            <span className='text-xs text-text-pri'>
+              {format(new Date(selectedRange.from), 'MM-dd-yyyy')} to{' '}
+              {format(new Date(selectedRange.to), 'MM-dd-yyyy')}
+            </span>
+            <button
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation();
+                onDateRangeChange(filterKey, undefined);
+              }}
+              className='rounded text-text-cta cursor-pointer'
+            >
+              <HiOutlineXCircle className='h-4 w-4 text-text-cta' />
+            </button>
+          </div>
+        </>
       ) : (
         // Show label and date picker when no dates are selected
         <div
