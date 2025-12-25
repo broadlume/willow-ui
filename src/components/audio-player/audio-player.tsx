@@ -1,18 +1,19 @@
+import { clsx } from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { HiMiniPlay, HiMiniPause } from 'react-icons/hi2';
 
 interface AudioPlayerProps {
   src: string;
-  wrapClassName?: string;
-  playbackButtonClassName?: string;
-  progressBarClassName?: string;
+  classNames?: {
+    wrapper?: string;
+    playbackButton?: string;
+    progressBar?: string;
+  };
 }
 
 export const AudioPlayer = ({
   src,
-  wrapClassName = '',
-  playbackButtonClassName = '',
-  progressBarClassName = '',
+  classNames = { wrapper: '', playbackButton: '', progressBar: '' },
 }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -106,7 +107,12 @@ export const AudioPlayer = ({
   };
 
   return (
-    <div className={`bg-surface-sec rounded-lg px-5 py-4 ${wrapClassName}`}>
+    <div
+      className={clsx(
+        'bg-surface-sec rounded-lg px-5 py-4',
+        classNames.wrapper
+      )}
+    >
       <audio ref={audioRef} src={src} preload='metadata'>
         <track kind='captions' />
       </audio>
@@ -117,7 +123,10 @@ export const AudioPlayer = ({
           <button
             type='button'
             onClick={togglePlayPause}
-            className={`flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-full !bg-text-cta text-white hover:bg-primary-90 transition-colors cursor-pointer ${playbackButtonClassName}`}
+            className={clsx(
+              'flex h-8 w-8 min-h-8 min-w-8 items-center justify-center rounded-full !bg-text-cta text-white hover:bg-primary-90 transition-colors cursor-pointer',
+              classNames.playbackButton
+            )}
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             {isPlaying ? (
@@ -144,7 +153,10 @@ export const AudioPlayer = ({
             onMouseUp={handleMouseUp}
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp}
-            className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-text-cta focus:outline-none ${progressBarClassName}`}
+            className={clsx(
+              'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-text-cta focus:outline-none',
+              classNames.progressBar
+            )}
             style={{
               background: `linear-gradient(to right, #1A6CFF 0%, #1A6CFF ${
                 (currentTime / duration) * 100

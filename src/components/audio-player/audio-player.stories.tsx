@@ -22,22 +22,26 @@ export const Demo: Story = {
         type: 'text',
       },
     },
-    wrapClassName: {
+    classNames: {
       description:
-        'Additional CSS classes to apply to the audio player container.',
+        'Object containing CSS classes for different parts of the audio player.',
       control: {
-        type: 'text',
+        type: 'object',
       },
     },
   },
   render: (args) => <AudioPlayer {...args} />,
 };
 
-/** Audio player with a custom className. */
+/** Audio player with custom classNames. */
 export const CustomStyle: Story = {
   args: {
     src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    wrapClassName: 'shadow-lg',
+    classNames: {
+      wrapper: 'shadow-lg',
+      playbackButton: 'hover:scale-110',
+      progressBar: '',
+    },
   },
   render: (args) => <AudioPlayer {...args} />,
 };
