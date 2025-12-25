@@ -9,11 +9,17 @@ interface AudioPlayerProps {
     playbackButton?: string;
     progressBar?: string;
   };
+  onCanPlay?: () => void;
+  onLoadedMetadata?: () => void;
+  onLoadedData?: () => void;
 }
 
 export const AudioPlayer = ({
   src,
   classNames = { wrapper: '', playbackButton: '', progressBar: '' },
+  onCanPlay,
+  onLoadedMetadata,
+  onLoadedData,
 }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -28,6 +34,15 @@ export const AudioPlayer = ({
 
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
+      onLoadedMetadata?.();
+    };
+
+    const handleLoadedData = () => {
+      onLoadedData?.();
+    };
+
+    const handleCanPlay = () => {
+      onCanPlay?.();
     };
 
     const handleEnded = () => {
@@ -36,13 +51,17 @@ export const AudioPlayer = ({
     };
 
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('loadeddata', handleLoadedData);
+    audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('loadeddata', handleLoadedData);
+      audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [onLoadedMetadata, onLoadedData, onCanPlay]);
 
   // Use requestAnimationFrame for smooth progress updates
   useEffect(() => {
