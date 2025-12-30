@@ -52,59 +52,68 @@ export const StaticFilterList = ({
         data-testid={`${filterKey}-static-list`}
       >
         <div className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'>
-          {/* Select all/deselect all option */}
-          {canSelectAll && (
-            <div
-              key={`${filterKey}-select-all`}
-              className='flex items-center gap-2'
-            >
-              <Checkbox
-                id={`${filterKey}-select-all`}
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
-                checked={
-                  selectedValues?.length === options.length
-                    ? true
-                    : selectedValues?.length
-                    ? 'indeterminate'
-                    : false
-                }
-                data-state={
-                  selectedValues?.length === options.length
-                    ? 'checked'
-                    : selectedValues?.length
-                    ? 'indeterminate'
-                    : 'unchecked'
-                }
-                onCheckedChange={() => onSelectAll(options)}
-                disabled={isLoading}
-              />
-              <Label
-                htmlFor={`${filterKey}-select-all`}
-                className='cursor-pointer text-sm text-text-pri'
-              >
-                Select All
-              </Label>
+          {/* Show "No items found" when there are no filtered options */}
+          {!filteredOptions?.length ? (
+            <div className='flex items-center justify-center py-4 text-sm text-text-sec'>
+              No items found
             </div>
-          )}
+          ) : (
+            <>
+              {/* Select all/deselect all option */}
+              {canSelectAll && (
+                <div
+                  key={`${filterKey}-select-all`}
+                  className='flex items-center gap-2'
+                >
+                  <Checkbox
+                    id={`${filterKey}-select-all`}
+                    className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
+                    checked={
+                      selectedValues?.length === options.length
+                        ? true
+                        : selectedValues?.length
+                        ? 'indeterminate'
+                        : false
+                    }
+                    data-state={
+                      selectedValues?.length === options.length
+                        ? 'checked'
+                        : selectedValues?.length
+                        ? 'indeterminate'
+                        : 'unchecked'
+                    }
+                    onCheckedChange={() => onSelectAll(options)}
+                    disabled={isLoading}
+                  />
+                  <Label
+                    htmlFor={`${filterKey}-select-all`}
+                    className='cursor-pointer text-sm text-text-pri'
+                  >
+                    Select All
+                  </Label>
+                </div>
+              )}
 
-          {/* Individual filter options */}
-          {filteredOptions.map((option) => (
-            <div key={option} className='flex items-center gap-2'>
-              <Checkbox
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
-                checked={selectedValues?.includes(option)}
-                id={`${filterKey}-${option}`}
-                onCheckedChange={() => onCheckboxChange(option)}
-                disabled={isLoading}
-              />
-              <Label
-                htmlFor={`${filterKey}-${option}`}
-                className='cursor-pointer text-sm'
-              >
-                {option}
-              </Label>
-            </div>
-          ))}
+              {/* Individual filter options */}
+              {filteredOptions.map((option) => (
+                <div key={option} className='flex items-center gap-2'>
+                  <Checkbox
+                    className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
+                    checked={selectedValues?.includes(option)}
+                    id={`${filterKey}-${option}`}
+                    onCheckedChange={() => onCheckboxChange(option)}
+                    disabled={isLoading}
+                  />
+                  <Label
+                    htmlFor={`${filterKey}-${option}`}
+                    className='cursor-pointer text-sm'
+                  >
+                    {option}
+                  </Label>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </>
