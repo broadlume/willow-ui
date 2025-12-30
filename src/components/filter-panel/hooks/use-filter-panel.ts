@@ -229,8 +229,8 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
         onFiltersChange({
           ...filters,
           [key]: {
-            from: range.from.toISOString(),
-            to: range.to.toISOString(),
+            from: getStartOfDay(range.from).toISOString(),
+            to: getEndOfDay(range.to).toISOString(),
           },
         });
       } else if (!range) {
@@ -460,4 +460,16 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
     filterOptions,
     getApiFilterState,
   };
+};
+
+const getStartOfDay = (date: Date): Date => {
+  const startDate = new Date(date);
+  startDate.setHours(0, 0, 0, 0);
+  return startDate;
+};
+
+const getEndOfDay = (date: Date): Date => {
+  const endDate = new Date(date);
+  endDate.setHours(23, 59, 59, 999);
+  return endDate;
 };
