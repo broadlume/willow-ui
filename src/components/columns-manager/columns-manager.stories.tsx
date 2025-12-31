@@ -2,7 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { Button } from '@components/button';
 import { ColumnManager } from './columns-manager';
-import type { Column } from '@src/lib/hooks/useColumnVisibility';
+import { useColumnVisibility, type Column } from '@src/lib/hooks/useColumnVisibility';
+import { Payment, payments } from '@src/misc/tanstack-table/data';
+import { useDataTable } from '@src/misc/tanstack-table/Table';
+import { ColumnDef } from '@tanstack/react-table';
 
 const meta: Meta<typeof ColumnManager> = {
   component: ColumnManager,
@@ -55,15 +58,12 @@ const initialVisibleColumns = ['name', 'email', 'company', 'position', 'status']
 // Component wrapper to handle state
 const DefaultColumnManagerWrapper: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [visibleColumnIds, setVisibleColumnIds] = useState(initialVisibleColumns);
 
-  const handleToggleColumnVisibility = (columnId: string) => {
-    setVisibleColumnIds((prev) =>
-      prev.includes(columnId)
-        ? prev.filter((id) => id !== columnId)
-        : [...prev, columnId]
-    );
-  };
+  const { columnVisibility, visibleColumnIds, toggleColumnVisibility, handleColumnOrderChange } = useColumnVisibility({
+    "pageKey": "column-manager-storybook",
+    columns: sampleColumns,
+    "defaultVisibleColumns": initialVisibleColumns,
+  });
 
   return (
     <div className="p-4">
@@ -74,7 +74,9 @@ const DefaultColumnManagerWrapper: React.FC = () => {
         onClose={() => setIsOpen(false)}
         columns={sampleColumns}
         visibleColumnIds={visibleColumnIds}
-        toggleColumnVisibility={handleToggleColumnVisibility}
+        toggleColumnVisibility={toggleColumnVisibility}
+        handleColumnOrderChange={handleColumnOrderChange}
+        fixedColumnIds={['name', 'email']}
       />
       
       <div className="mt-4">
@@ -313,4 +315,78 @@ const AllVisibleWrapper: React.FC = () => {
 /** Column manager with all columns visible initially */
 export const AllVisible: Story = {
   render: () => <AllVisibleWrapper />,
+};
+
+// Integrating with a table
+const WithTableWrapper = () => {
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const sampleColumns: ColumnDef<Payment>[] = [
+    {
+      accessorKey: 'status',
+      id: 'status',
+      header: 'Status',
+    },
+    {
+      accessorKey: 'email',
+      id: 'email',
+      header: 'Email',
+    },
+    {
+      accessorKey: 'customerName',
+      id: 'customerName',
+      header: 'Customer Name',
+    },
+    {
+      accessorKey: 'phoneNumber',
+      id: 'phoneNumber',
+      header: 'Phone Number',
+    },
+    {
+      accessorKey: 'address',
+      id: 'address',
+      header: 'Address',
+    },
+  ];
+
+  const { columnVisibility, visibleColumnIds, toggleColumnVisibility, handleColumnOrderChange } = useColumnVisibility({
+    "pageKey": "column-manager-storybook",
+    columns: sampleColumns as Column[],
+    "defaultVisibleColumns": ['status', 'email', 'customerName'],
+  });
+
+  const { CustomDataTable, table } = useDataTable({
+    columns: sampleColumns,
+    initialColumnOrder: visibleColumnIds, // set initial order based on visible columns
+    onColumnOrderChange: handleColumnOrderChange, // handle order changes
+    data: payments,
+    tableParams: {
+      manualPagination: false,
+      state: {
+        columnVisibility, // use visibility from the hook
+        columnPinning: { left: ['select'] }
+      }
+    },
+    showPagination: false,
+    enableRowSelection: true,
+  });
+
+  return <>
+    <Button onClick={() => setIsOpen(true)} className='mb-4'>Open Column Manager</Button>
+    <ColumnManager
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      columns={sampleColumns as Column[]}
+      visibleColumnIds={visibleColumnIds}
+      toggleColumnVisibility={toggleColumnVisibility}
+      handleColumnOrderChange={handleColumnOrderChange} // change the order of columns
+      fixedColumnIds={['email', 'customerName']} // pin some columns
+    />
+    <CustomDataTable />
+  </>
+};
+
+export const WithTable: Story = {
+  render: (args) => <WithTableWrapper />,
 };

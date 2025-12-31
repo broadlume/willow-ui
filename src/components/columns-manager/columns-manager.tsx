@@ -15,7 +15,9 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
   onClose,
   columns,
   visibleColumnIds,
+  fixedColumnIds,
   toggleColumnVisibility,
+  handleColumnOrderChange,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -53,8 +55,10 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
             <ManageColumns
               columns={columns}
               visibleColumnIds={visibleColumnIds}
+              fixedColumnIds={fixedColumnIds}
               toggleColumnVisibility={toggleColumnVisibility}
               searchTerm={searchTerm}
+              handleColumnOrderChange={handleColumnOrderChange}
             />
           </div>
         </div>

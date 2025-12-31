@@ -19,6 +19,7 @@ export interface ColumnItem {
   id: string;
   content: string;
   isDraggable: boolean;
+  isFixed?: boolean;
   columnData: Column;
 }
 
@@ -66,6 +67,8 @@ export interface ColumnManagerProps {
   columns: Column[];
   visibleColumnIds: string[];
   toggleColumnVisibility: (columnId: string) => void;
+  fixedColumnIds?: string[];
+  handleColumnOrderChange?: (columnIds: string[]) => void;
 }
 
 export interface ManageColumnsProps {
@@ -73,4 +76,6 @@ export interface ManageColumnsProps {
   visibleColumnIds: string[];
   toggleColumnVisibility: (columnId: string) => void;
   searchTerm: string;
+  fixedColumnIds?: string[];
+  handleColumnOrderChange?: (columnIds: string[]) => void;
 }
