@@ -93,9 +93,22 @@ export function useColumnVisibility({ pageKey, columns, defaultVisibleColumns }:
     [pageKey, setVisibleColumnIds],
   );
 
+  // column order change handler
+  const handleColumnOrderChange = useCallback(
+    (newOrder: string[] | ((prev: string[]) => string[])) => {
+      const finalOrder = typeof newOrder === 'function'
+        ? newOrder(visibleColumnIds)
+        : newOrder;
+
+      setVisibleColumnIds(pageKey, finalOrder);
+    },
+    [pageKey, visibleColumnIds, setVisibleColumnIds]
+  );
+
   return {
     visibleColumnIds,
     columnVisibility,
     toggleColumnVisibility,
+    handleColumnOrderChange
   };
 }

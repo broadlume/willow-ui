@@ -88,7 +88,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
+      'text-muted-foreground text-left align-middle text-sm px-1 font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
       '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-4', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}
@@ -104,7 +104,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={clsx(
-      'py-2 align-middle [&:has([role=checkbox])]:px-[16px] ',
+      'py-2 px-1 align-middle [&:has([role=checkbox])]:px-[16px] ',
       '[&:has([role=checkbox])>button[role=checkbox]]:align-text-bottom',
       className
     )}

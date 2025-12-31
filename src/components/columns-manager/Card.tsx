@@ -85,7 +85,7 @@ const CardPrimitive = forwardRef<HTMLDivElement, CardPrimitiveProps>(
           </span>
           <Button
             variant={'ghost'}
-            disabled={!item.isDraggable}
+            disabled={item.isPinned}
             data-testid={`column-card-visible-hidden-btn`}
             className='cursor-pointer bg-inherit text-inherit shadow-none h-fit w-fit disabled:[&>svg]:opacity-40 p-0'
             onClick={handleCheckboxClick}
@@ -124,7 +124,7 @@ export const Card = memo(function Card({
   item: CardPrimitiveProps['item'];
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const { id } = item;
+  const { id, columnId } = item;
   const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
   const [state, setState] = useState<State>(idleState);
   const { instanceId, registerCard } = useBoardContext();
@@ -151,6 +151,7 @@ export const Card = memo(function Card({
           itemId: id,
           ...item,
           instanceId,
+          columnId: columnId,
         }),
         onGenerateDragPreview: ({ location, source, nativeSetDragImage }) => {
           const rect = source.element.getBoundingClientRect();
@@ -174,12 +175,16 @@ export const Card = memo(function Card({
         element: element,
         canDrop: ({ source }) => {
           return (
-            source.data.instanceId === instanceId && source.data.type === 'card'
+             source.data.type === 'card'
           );
         },
         getIsSticky: () => true,
         getData: ({ input, element }) => {
-          const data = { type: 'card', itemId: id };
+          const data = { 
+            type: 'card', 
+            itemId: id,
+            columnId: columnId
+          };
           return attachClosestEdge(data, {
             input,
             element,
