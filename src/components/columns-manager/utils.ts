@@ -5,14 +5,14 @@ interface FilterColumnsParams {
   visibleColumnIds: string[];
   columns: Column[];
   searchTerm: string;
-  pinnedColumnIds?: string[];
+  fixedColumnIds?: string[];
 }
 
 export function getFilteredColumns({
   visibleColumnIds,
   columns,
   searchTerm,
-  pinnedColumnIds,
+  fixedColumnIds,
 }: FilterColumnsParams): Map<
   keyof typeof ColumnType,
   { id: keyof typeof ColumnType; title: string; items: ColumnItem[] }
@@ -33,13 +33,13 @@ export function getFilteredColumns({
         ? column.id.charAt(0).toUpperCase() + column.id.slice(1)
         : column.header || column.accessorKey || column.id;
 
-    const isPinned = pinnedColumnIds?.includes(column.id);
+    const isFixed = fixedColumnIds?.includes(column.id);
 
     return {
       id: column.id,
       content: String(content),
       isDraggable: column.id !== 'actions',
-      isPinned,
+      isFixed,
       columnData: column,
     };
   };
@@ -59,7 +59,9 @@ export function getFilteredColumns({
         !visibleColumnIds.includes(column.id) && column.id !== 'actions'
     )
     .map((column) => createColumnItem(column, false))
-    .sort((a, b) => a.content.localeCompare(b.content)); // Sort alphabetically
+    .sort((a, b) =>
+      a.content.localeCompare(b.content, undefined, { sensitivity: 'base' })
+    ); // Sort alphabetically
 
   const result = new Map();
 

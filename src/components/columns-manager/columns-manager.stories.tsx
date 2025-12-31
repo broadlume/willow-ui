@@ -76,7 +76,7 @@ const DefaultColumnManagerWrapper: React.FC = () => {
         visibleColumnIds={visibleColumnIds}
         toggleColumnVisibility={toggleColumnVisibility}
         handleColumnOrderChange={handleColumnOrderChange}
-        pinnedColumnIds={['name', 'email']}
+        fixedColumnIds={['name', 'email']}
       />
       
       <div className="mt-4">
@@ -373,7 +373,7 @@ const WithTableWrapper = () => {
   });
 
   return <>
-    <Button onClick={() => setIsOpen(true)}>Open Column Manager</Button>
+    <Button onClick={() => setIsOpen(true)} className='mb-4'>Open Column Manager</Button>
     <ColumnManager
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
@@ -381,7 +381,7 @@ const WithTableWrapper = () => {
       visibleColumnIds={visibleColumnIds}
       toggleColumnVisibility={toggleColumnVisibility}
       handleColumnOrderChange={handleColumnOrderChange} // change the order of columns
-      pinnedColumnIds={['email', 'customerName']} // pin some columns
+      fixedColumnIds={['email', 'customerName']} // pin some columns
     />
     <CustomDataTable />
   </>

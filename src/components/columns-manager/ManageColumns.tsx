@@ -20,7 +20,7 @@ const ManageColumns: React.FC<ManageColumnsProps> = ({
   visibleColumnIds,
   toggleColumnVisibility,
   searchTerm,
-  pinnedColumnIds,
+  fixedColumnIds,
   handleColumnOrderChange,
 }) => {
   const [cardRegistry] = useState(createRegistry<string>());
@@ -33,7 +33,7 @@ const ManageColumns: React.FC<ManageColumnsProps> = ({
       visibleColumnIds,
       columns,
       searchTerm,
-      pinnedColumnIds,
+      fixedColumnIds,
     });
 
     const orderedColumnIds = [
@@ -45,7 +45,7 @@ const ManageColumns: React.FC<ManageColumnsProps> = ({
       filteredColumns,
       orderedColumnIds,
     };
-  }, [columns, visibleColumnIds, searchTerm, pinnedColumnIds]);
+  }, [columns, visibleColumnIds, searchTerm, fixedColumnIds]);
 
   const getColumns = useCallback(() => {
     const { filteredColumns, orderedColumnIds } = columnData;
@@ -88,7 +88,7 @@ const ManageColumns: React.FC<ManageColumnsProps> = ({
             type: string;
             itemId: string;
             columnId: keyof typeof ColumnType;
-            isPinned?: boolean;
+            isFixed?: boolean;
           };
 
           // Find both card and column targets
@@ -113,8 +113,8 @@ const ManageColumns: React.FC<ManageColumnsProps> = ({
 
           if (!targetColumnId) return;
 
-          // Prevent pinned items from moving to different sections
-          if (card.isPinned && targetColumnId !== card.columnId) return;
+          // Prevent fixed items from moving to different sections
+          if (card.isFixed && targetColumnId !== card.columnId) return;
 
           // Case 1: Reordering within visible-columns section
           if (

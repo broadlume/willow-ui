@@ -85,7 +85,7 @@ const CardPrimitive = forwardRef<HTMLDivElement, CardPrimitiveProps>(
           </span>
           <Button
             variant={'ghost'}
-            disabled={item.isPinned}
+            disabled={item.isFixed}
             data-testid={`column-card-visible-hidden-btn`}
             className='cursor-pointer bg-inherit text-inherit shadow-none h-fit w-fit disabled:[&>svg]:opacity-40 p-0'
             onClick={handleCheckboxClick}

@@ -19,7 +19,6 @@ export * from '@components/dropdown-menu/dropdown-menu';
 export * from '@components/form/form';
 export * from '@components/input/input';
 export * from '@components/input/InputWithSlots';
-export * from '@components/search-bar/search-bar';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
 export * from '@components/radio-group/radio-group';
