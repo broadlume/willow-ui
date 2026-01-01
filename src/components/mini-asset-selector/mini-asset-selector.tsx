@@ -19,6 +19,7 @@ import {
   useFileHandler,
   getFileNameFromUrl,
   getImageSizeFromUrl,
+  ErrorTypes,
 } from './components';
 
 export interface MiniAssetSelectorProps {
@@ -106,6 +107,11 @@ export interface MiniAssetSelectorProps {
   isShowEditIcon?: boolean;
   /** Whether to disable clicking on the image name - independent from the disabled prop */
   disableImageNameClick?: boolean;
+  /** Callback when an error occurs internally - allows parent to handle validation */
+  onError?: (error: {
+    type: ErrorTypes;
+    message: string;
+  } | null) => void; // Callback for error handling
 }
 
 /**
@@ -156,6 +162,7 @@ export const MiniAssetSelector = forwardRef<
       triggerFileInput,
       isShowEditIcon = false,
       disableImageNameClick = false,
+      onError,
     },
     ref
   ) => {
@@ -210,6 +217,31 @@ export const MiniAssetSelector = forwardRef<
       onFilePreviewsChange?.(previews);
     };
 
+    // Notify parent component of any errors
+    useEffect(() => {
+      if (!onError) return;
+
+      if (imageError) {
+        onError({
+          type: ErrorTypes.IMAGE_ERROR,
+          message: 'Failed to load the image. Please check the URL or try a different image.',
+        });
+      } else if (inputError) {
+        onError({
+          type: ErrorTypes.INPUT_ERROR,
+          message: inputError,
+        });
+      } else if (dragError) {
+        onError({
+          type: ErrorTypes.DRAG_ERROR,
+          message: 'Invalid file type or size. Please check the file requirements.',
+        });
+      } else {
+        // Clear error when all errors are resolved
+        onError(null);
+      }
+    }, [imageError, inputError, dragError]);
+
     // Helper function to handle value changes (React Hook Form compatibility)
     const handleValueChange = (newValue: File | string | null) => {
       if (onChange) {
@@ -252,7 +284,8 @@ export const MiniAssetSelector = forwardRef<
       acceptedFileTypes,
       onFileUpload,
       handleValueChange,
-      !!onSelectedURL && !onSelectedFile // Prefer data URL if only URL callback is available
+      !!onSelectedURL && !onSelectedFile, // Prefer data URL if only URL callback is available
+      onError
     );
 
     const handleMultipleFilesDrop = (files: File[]) => {
@@ -290,7 +323,8 @@ export const MiniAssetSelector = forwardRef<
       processFile,
       dispatch,
       multiple,
-      handleMultipleFilesDrop
+      handleMultipleFilesDrop,
+      onError
     );
 
     // Enhanced useEffect to properly sync with external selectedURL changes and form value
@@ -457,6 +491,10 @@ export const MiniAssetSelector = forwardRef<
           type: 'SET_INPUT_ERROR',
           payload: 'Please enter a valid image URL.',
         });
+        onError?.(({
+          type: ErrorTypes.INPUT_ERROR,
+          message: 'Please enter a valid image URL.',
+        }));
       }
     };
 
@@ -493,6 +531,10 @@ export const MiniAssetSelector = forwardRef<
 
     const handleImageError = () => {
       dispatch({ type: 'SET_IMAGE_ERROR', payload: true });
+      onError?.({
+        type: ErrorTypes.IMAGE_ERROR,
+        message: 'Failed to load the image. Please check the URL or try a different image.',
+      });
     };
 
     const handleBrowseClick = () => {

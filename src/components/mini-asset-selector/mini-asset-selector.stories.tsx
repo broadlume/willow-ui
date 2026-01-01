@@ -116,6 +116,10 @@ const DefaultExample = (args: Partial<MiniAssetSelectorProps>) => {
         onImageNameClick={(e) => {
           console.log('image clicked', e);
         }}
+        onError={(error) =>
+          // Expose error callback for demo purposes
+          console.log('Error callback from MiniAssetSelector', error)
+        }
       />
     </div>
   );

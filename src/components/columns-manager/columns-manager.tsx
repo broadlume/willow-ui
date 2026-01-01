@@ -15,7 +15,9 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
   onClose,
   columns,
   visibleColumnIds,
+  fixedColumnIds,
   toggleColumnVisibility,
+  handleColumnOrderChange,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -24,22 +26,18 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
       <SheetContent
         data-testid='column-manager-sheet'
         className='w-[400px] overflow-auto p-0'
-        showCloseIcon={false}
+        showCloseIcon={true}
+        onClose={onClose}
       >
         <div className='flex w-full flex-col gap-3 px-3 py-6'>
           <SheetHeader
-            className='mb-3.5 flex flex-row items-center justify-between'
+            className='flex flex-row items-center justify-between mb-0'
             data-testid='manage-columns-title'
           >
             <SheetTitle>Column Manager</SheetTitle>
-            <HiMiniXCircle
-              className='cursor-pointer'
-              size={24}
-              onClick={onClose}
-            />
           </SheetHeader>
 
-          <div className='relative mb-3.5'>
+          <div className='relative'>
             <Input
               placeholder='Search Columns'
               value={searchTerm}
@@ -57,8 +55,10 @@ export const ColumnManager: React.FC<ColumnManagerProps> = ({
             <ManageColumns
               columns={columns}
               visibleColumnIds={visibleColumnIds}
+              fixedColumnIds={fixedColumnIds}
               toggleColumnVisibility={toggleColumnVisibility}
               searchTerm={searchTerm}
+              handleColumnOrderChange={handleColumnOrderChange}
             />
           </div>
         </div>

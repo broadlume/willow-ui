@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.34",
+  "version": "1.0.40",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -167,6 +167,7 @@
     "date-fns": "^2.30.0",
     "emmet-monaco-es": "^5.5.0",
     "lucide-react": "^0.245.0",
+    "marked": "^17.0.1",
     "prosemirror-autocomplete": "^0.4.3",
     "react-data-table-component": "^7.7.0",
     "react-day-picker": "^8.8.0",

@@ -28,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           'disabled:cursor-not-allowed disabled:bg-surface-sec',
           {
             'bg-(--color-blue-50)': props.dirty && !props.invalid,
-            'border-border-destructive text-text-destructive': props.invalid,
+            'border-border-destructive': props.invalid,
           },
           className
         )}

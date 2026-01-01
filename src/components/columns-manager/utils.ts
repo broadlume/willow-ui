@@ -5,12 +5,14 @@ interface FilterColumnsParams {
   visibleColumnIds: string[];
   columns: Column[];
   searchTerm: string;
+  fixedColumnIds?: string[];
 }
 
 export function getFilteredColumns({
   visibleColumnIds,
   columns,
   searchTerm,
+  fixedColumnIds,
 }: FilterColumnsParams): Map<
   keyof typeof ColumnType,
   { id: keyof typeof ColumnType; title: string; items: ColumnItem[] }
@@ -31,27 +33,35 @@ export function getFilteredColumns({
         ? column.id.charAt(0).toUpperCase() + column.id.slice(1)
         : column.header || column.accessorKey || column.id;
 
+    const isFixed = fixedColumnIds?.includes(column.id);
+
     return {
       id: column.id,
       content: String(content),
       isDraggable: column.id !== 'actions',
+      isFixed,
       columnData: column,
     };
   };
 
-  const visibleColumns = filteredColumns
-    .filter(
-      (column) =>
-        visibleColumnIds.includes(column.id) && column.id !== 'actions'
+  const visibleColumns = visibleColumnIds
+    .map((id) =>
+      filteredColumns.find(
+        (column) => column.id === id && column.id !== 'actions'
+      )
     )
-    .map((column) => createColumnItem(column, true));
+    .filter(Boolean)
+    .map((column) => createColumnItem(column!, true));
 
   const hiddenColumns = filteredColumns
     .filter(
       (column) =>
         !visibleColumnIds.includes(column.id) && column.id !== 'actions'
     )
-    .map((column) => createColumnItem(column, false));
+    .map((column) => createColumnItem(column, false))
+    .sort((a, b) =>
+      a.content.localeCompare(b.content, undefined, { sensitivity: 'base' })
+    ); // Sort alphabetically
 
   const result = new Map();
 
