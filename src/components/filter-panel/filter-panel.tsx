@@ -24,6 +24,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   isLoading = false,
   isClearAllSticky = true,
   classNames,
+  inModal = false,
 }: FilterPanelProps<T>) => {
   // Use the custom hook for all filter panel logic
   const {
@@ -48,7 +49,7 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   } = useFilterPanel({ filters, onFiltersChange, filterConfig });
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen} onOpenChange={setIsOpen} modal={inModal}>
       <PopoverTrigger data-testid='filter-panel-popover-trigger' className={classNames?.popoverTriggerClassName} >
         {/* Filter toggle button with active count badge */}
         <Button
