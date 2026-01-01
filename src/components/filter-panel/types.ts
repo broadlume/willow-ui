@@ -68,4 +68,5 @@ export interface FilterPanelProps<T extends FilterValues = FilterValues> {
   isLoading?: boolean;
   isClearAllSticky?: boolean;
   classNames?: ClassNames;
+  insideDialog?: boolean;
 }
