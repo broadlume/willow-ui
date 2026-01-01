@@ -71,7 +71,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
         data-testid='filter-panel-popover-content'
         align='end'
         className={clsx('flex max-h-96 w-55.5 flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm overflow-y-auto', classNames?.popoverContentClassName)}
-        container={typeof window !== 'undefined' ? document.querySelector('.dialog-overlay, [role="dialog"]') : undefined}
       >
         <div className='scrollbar-hide flex-1 overflow-y-auto'>
           <Accordion type='multiple'>
