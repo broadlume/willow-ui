@@ -7,6 +7,8 @@ import type {
   FilterValues,
   RadioFilterConfig,
 } from './types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@components/dialog/dialog';
+import { Button } from '@components/button';
 
 const meta: Meta<typeof FilterPanel> = {
   component: FilterPanel,
@@ -429,5 +431,92 @@ export const WithRadioFilter: Story = {
         isLoading={false}
       />
     );
+  },
+};
+
+/** Filter panel inside a modal with multiple scrollable filters */
+export const InsideModal: Story = {
+  render: () => {
+    // Create many filter options to require scrolling
+    const manyCategories = Array.from({ length: 50 }, (_, i) => `Category ${i + 1}`);
+    const manyBrands = Array.from({ length: 50 }, (_, i) => `Brand ${i + 1}`);
+
+    const modalFilterConfig: FilterConfig[] = [
+      {
+        key: 'categories',
+        label: 'Categories',
+        type: 'select',
+        options: manyCategories,
+        canSelectAll: true,
+        searchable: true,
+      },
+      {
+        key: 'brands',
+        label: 'Brands',
+        type: 'select',
+        options: manyBrands,
+        canSelectAll: true,
+        searchable: true,
+      },
+    ];
+
+    const modalFilters: FilterValues = {
+      categories: [],
+      brands: [],
+    };
+
+    const ModalFilterDemo = () => {
+      const [filters, setFilters] = useState<FilterValues>(modalFilters);
+      const [open, setOpen] = useState(false);
+
+      return (
+        <div className='p-8'>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button variant='outline'>Open Modal with Filter Panel</Button>
+            </DialogTrigger>
+            <DialogContent className='max-w-2xl max-h-[80vh] overflow-y-auto'>
+              <DialogHeader>
+                <DialogTitle>Filter Options</DialogTitle>
+              </DialogHeader>
+              <div className='py-4'>
+                <p className='text-sm text-gray-600 mb-4'>
+                  This modal contains a filter panel with multiple filters that require scrolling.
+                  Try opening the filter panel and scrolling through the options.
+                </p>
+                <div className='flex items-center gap-2'>
+                  <span className='text-sm font-medium'>Filters:</span>
+                  <FilterPanel
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    filterConfig={modalFilterConfig}
+                    isLoading={false}
+                    inModal
+                  />
+                </div>
+                <div className='mt-6 p-4 bg-gray-50 rounded-lg'>
+                  <h4 className='font-semibold text-sm mb-2'>Selected Filters:</h4>
+                  <pre className='text-xs overflow-auto max-h-64'>
+                    {JSON.stringify(filters, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <div className='mt-6 p-4 bg-blue-50 rounded-lg'>
+            <h3 className='font-semibold mb-2'>Instructions:</h3>
+            <ol className='text-sm space-y-1 list-decimal list-inside'>
+              <li>Click the button to open the modal</li>
+              <li>Click the filter icon to open the filter panel</li>
+              <li>Try scrolling through the filter options inside the panel</li>
+              <li>The filter panel should scroll independently within the modal</li>
+            </ol>
+          </div>
+        </div>
+      );
+    };
+
+    return <ModalFilterDemo />;
   },
 };
