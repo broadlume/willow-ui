@@ -51,7 +51,10 @@ export const StaticFilterList = ({
         className='ml-2 mt-1 space-y-2'
         data-testid={`${filterKey}-static-list`}
       >
-        <div className='scrollbar-hide max-h-[200px] space-y-4 overflow-y-auto'>
+        <div
+          className='scrollbar-hide max-h-[100px] space-y-4 overflow-y-auto'
+          onWheel={(e) => e.stopPropagation()}
+        >
           {/* Show "No items found" when there are no filtered options */}
           {!filteredOptions?.length ? (
             <div className='flex items-center justify-center py-4 text-sm text-text-sec'>

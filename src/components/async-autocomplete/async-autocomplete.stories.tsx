@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { AsyncAutocomplete } from './async-autocomplete';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@components/dialog/dialog';
 import { Button } from '@components/button';
 
 const meta: Meta<typeof AsyncAutocomplete> = {
@@ -122,8 +128,16 @@ export const MultiSelect: Story = {
       // Simulate loading more data
       const nextId = data.length + 1;
       const moreData = [
-        { value: `${nextId}`, label: `Fruit ${nextId}`, description: `Description for fruit ${nextId}` },
-        { value: `${nextId + 1}`, label: `Fruit ${nextId + 1}`, description: `Description for fruit ${nextId + 1}` },
+        {
+          value: `${nextId}`,
+          label: `Fruit ${nextId}`,
+          description: `Description for fruit ${nextId}`,
+        },
+        {
+          value: `${nextId + 1}`,
+          label: `Fruit ${nextId + 1}`,
+          description: `Description for fruit ${nextId + 1}`,
+        },
       ];
       setData((prev) => [...prev, ...moreData]);
     };
@@ -134,44 +148,47 @@ export const MultiSelect: Story = {
           multiSelect={true}
           data={data}
           onSearch={handleSearch}
-          onSelect={(item) => console.log('Single select not used in multi-select mode')}
           onMultiSelect={handleMultiSelect}
           onScroll={handleScroll}
           selectedItems={selectedItems}
-          placeholder="Select fruits..."
+          placeholder='Select fruits...'
           classNames={{
             wrapperClassName: 'w-[400px]',
           }}
         />
 
         {/* Display selected items externally */}
-        <div className="mt-4">
-          <div className="text-sm text-gray-600 mb-2">
+        <div className='mt-4'>
+          <div className='text-sm text-gray-600 mb-2'>
             <strong>Selected count:</strong> {selectedItems.length}
           </div>
-          
+
           {selectedItems.length > 0 && (
-            <div className="space-y-2">
-              <strong className="text-sm">Selected Items:</strong>
-              <div className="space-y-1">
+            <div className='space-y-2'>
+              <strong className='text-sm'>Selected Items:</strong>
+              <div className='space-y-1'>
                 {selectedItems.map((item) => (
                   <div
                     key={item.value}
-                    className="flex items-center justify-between bg-secondary px-3 py-2 rounded-md text-sm"
+                    className='flex items-center justify-between bg-secondary px-3 py-2 rounded-md text-sm'
                   >
-                    <div className="flex flex-col">
+                    <div className='flex flex-col'>
                       <span>{item.label}</span>
                       {item.description && (
-                        <span className="text-xs text-muted-foreground">{item.description}</span>
+                        <span className='text-xs text-muted-foreground'>
+                          {item.description}
+                        </span>
                       )}
                     </div>
                     <button
-                      type="button"
+                      type='button'
                       onClick={() => {
-                        const newItems = selectedItems.filter((i) => i.value !== item.value);
+                        const newItems = selectedItems.filter(
+                          (i) => i.value !== item.value
+                        );
                         setSelectedItems(newItems);
                       }}
-                      className="ml-2 opacity-50 hover:opacity-100"
+                      className='ml-2 opacity-50 hover:opacity-100'
                       aria-label={`Remove ${item.label}`}
                     >
                       ✕
@@ -233,14 +250,16 @@ export const InsideModal: Story = {
         <div className='p-8'>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant='outline'>Open Modal with AsyncAutocomplete</Button>
+              <Button variant='outline'>
+                Open Modal with AsyncAutocomplete
+              </Button>
             </DialogTrigger>
             <DialogContent className='max-w-2xl max-h-[80vh] overflow-y-auto'>
               <DialogHeader>
                 <DialogTitle>AsyncAutocomplete</DialogTitle>
               </DialogHeader>
               <div className='py-4'>
-                 <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-2'>
                   <span className='text-sm font-medium'>Filters:</span>
                   <AsyncAutocomplete
                     data={data}
@@ -254,18 +273,21 @@ export const InsideModal: Story = {
                           onBlur: () => console.log('Input blurred'),
                         },
                       },
+                      popoverContentProps: {
+                        onWheel: (e) => {
+                          e.stopPropagation();
+                        },
+                      },
                     }}
                     classNames={{
                       wrapperClassName: 'w-[300px]',
                     }}
-                    inModal={true} // Indicate that it's inside a modal
                   />
                 </div>
               </div>
             </DialogContent>
           </Dialog>
         </div>
-
       </div>
     );
   },

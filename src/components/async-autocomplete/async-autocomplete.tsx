@@ -65,7 +65,6 @@ type Props = {
   onClear?: () => void;
   classNames?: ClassNames;
   dataTestId?: string;
-  inModal?: boolean;
 };
 
 /**
@@ -111,17 +110,20 @@ export const AsyncAutocomplete = ({
   multiSelect = false,
   selectedItems = [],
   onMultiSelect,
-  inModal = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleMultiSelectToggle = (item: AsyncAutocompleteItem) => {
     if (!onMultiSelect) return;
-    
-    const isSelected = selectedItems.some((selected) => selected.value === item.value);
-    
+
+    const isSelected = selectedItems.some(
+      (selected) => selected.value === item.value
+    );
+
     if (isSelected) {
-      onMultiSelect(selectedItems.filter((selected) => selected.value !== item.value));
+      onMultiSelect(
+        selectedItems.filter((selected) => selected.value !== item.value)
+      );
     } else {
       onMultiSelect([...selectedItems, item]);
     }
@@ -129,9 +131,11 @@ export const AsyncAutocomplete = ({
 
   return (
     <div className='w-full'>
-      <Popover open={open} onOpenChange={setOpen} modal={inModal}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}>
+          <div
+            className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}
+          >
             <Button
               {...additionalProps?.buttonProps}
               variant='outline'
@@ -140,7 +144,11 @@ export const AsyncAutocomplete = ({
               aria-label='async-autocomplete'
               className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
             >
-              {multiSelect ? placeholder : (selectedData ? selectedData.label : placeholder)}
+              {multiSelect
+                ? placeholder
+                : selectedData
+                ? selectedData.label
+                : placeholder}
               <RxCaretSort />
             </Button>
             {showClear && !multiSelect && selectedData && onClear && (
@@ -180,8 +188,10 @@ export const AsyncAutocomplete = ({
             placeholder={placeholder}
             getKey={(item) => item.value}
             renderItem={(item, isSelected) => {
-              const isMultiSelected = multiSelect && selectedItems.some((selected) => selected.value === item.value);
-              
+              const isMultiSelected =
+                multiSelect &&
+                selectedItems.some((selected) => selected.value === item.value);
+
               return (
                 <div className='flex items-center gap-2'>
                   {multiSelect && (
@@ -194,10 +204,14 @@ export const AsyncAutocomplete = ({
                   <div className='flex flex-col justify-between flex-1'>
                     <div className='flex items-center justify-between'>
                       <p className='text-sm'>{item.label}</p>
-                      {!multiSelect && isSelected && <HiCheck className='h-3 w-3' />}
+                      {!multiSelect && isSelected && (
+                        <HiCheck className='h-3 w-3' />
+                      )}
                     </div>
                     {item?.description && (
-                      <p className='mb-2 text-xs text-zinc-500'>{item.description}</p>
+                      <p className='mb-2 text-xs text-zinc-500'>
+                        {item.description}
+                      </p>
                     )}
                   </div>
                 </div>
