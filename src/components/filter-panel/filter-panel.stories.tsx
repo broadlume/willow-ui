@@ -7,7 +7,13 @@ import type {
   FilterValues,
   RadioFilterConfig,
 } from './types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@components/dialog/dialog';
 import { Button } from '@components/button';
 
 const meta: Meta<typeof FilterPanel> = {
@@ -438,7 +444,10 @@ export const WithRadioFilter: Story = {
 export const InsideModal: Story = {
   render: () => {
     // Create many filter options to require scrolling
-    const manyCategories = Array.from({ length: 50 }, (_, i) => `Category ${i + 1}`);
+    const manyCategories = Array.from(
+      { length: 50 },
+      (_, i) => `Category ${i + 1}`
+    );
     const manyBrands = Array.from({ length: 50 }, (_, i) => `Brand ${i + 1}`);
 
     const modalFilterConfig: FilterConfig[] = [
@@ -481,8 +490,9 @@ export const InsideModal: Story = {
               </DialogHeader>
               <div className='py-4'>
                 <p className='text-sm text-gray-600 mb-4'>
-                  This modal contains a filter panel with multiple filters that require scrolling.
-                  Try opening the filter panel and scrolling through the options.
+                  This modal contains a filter panel with multiple filters that
+                  require scrolling. Try opening the filter panel and scrolling
+                  through the options.
                 </p>
                 <div className='flex items-center gap-2'>
                   <span className='text-sm font-medium'>Filters:</span>
@@ -491,11 +501,12 @@ export const InsideModal: Story = {
                     onFiltersChange={setFilters}
                     filterConfig={modalFilterConfig}
                     isLoading={false}
-                    inModal
                   />
                 </div>
                 <div className='mt-6 p-4 bg-gray-50 rounded-lg'>
-                  <h4 className='font-semibold text-sm mb-2'>Selected Filters:</h4>
+                  <h4 className='font-semibold text-sm mb-2'>
+                    Selected Filters:
+                  </h4>
                   <pre className='text-xs overflow-auto max-h-64'>
                     {JSON.stringify(filters, null, 2)}
                   </pre>
@@ -510,7 +521,9 @@ export const InsideModal: Story = {
               <li>Click the button to open the modal</li>
               <li>Click the filter icon to open the filter panel</li>
               <li>Try scrolling through the filter options inside the panel</li>
-              <li>The filter panel should scroll independently within the modal</li>
+              <li>
+                The filter panel should scroll independently within the modal
+              </li>
             </ol>
           </div>
         </div>

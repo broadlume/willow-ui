@@ -24,7 +24,6 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   isLoading = false,
   isClearAllSticky = true,
   classNames,
-  inModal = false,
 }: FilterPanelProps<T>) => {
   // Use the custom hook for all filter panel logic
   const {
@@ -49,14 +48,20 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
   } = useFilterPanel({ filters, onFiltersChange, filterConfig });
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen} modal={inModal}>
-      <PopoverTrigger data-testid='filter-panel-popover-trigger' className={classNames?.popoverTriggerClassName} >
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger
+        data-testid='filter-panel-popover-trigger'
+        className={classNames?.popoverTriggerClassName}
+      >
         {/* Filter toggle button with active count badge */}
         <Button
           id='filter-button'
           variant='outline'
           size='sm'
-          className={clsx('border-border-pri ml-1 !rounded-md border bg-transparent px-2 relative overflow-visible', classNames?.buttonClassName)}
+          className={clsx(
+            'border-border-pri ml-1 !rounded-md border bg-transparent px-2 relative overflow-visible',
+            classNames?.buttonClassName
+          )}
           aria-label='Filter'
         >
           <HiAdjustments className='rotate-90 text-base' />
@@ -71,9 +76,17 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
       <PopoverContent
         data-testid='filter-panel-popover-content'
         align='end'
-        className={clsx('flex max-h-96 w-55.5 flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm overflow-y-auto', classNames?.popoverContentClassName)}
+        className={clsx(
+          'flex max-h-96 w-55.5 flex-col rounded-md bg-white p-2 text-sm font-normal shadow-shadow-sm overflow-y-auto',
+          classNames?.popoverContentClassName
+        )}
       >
-        <div className='scrollbar-hide flex-1 overflow-y-auto'>
+        <div
+          className='scrollbar-hide flex-1 overflow-y-auto'
+          onWheel={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <Accordion type='multiple'>
             {filterConfig.map((config) => {
               const { key, type } = config;
@@ -136,7 +149,10 @@ const FilterPanel = <T extends FilterValues = FilterValues>({
             variant='default'
             onClick={handleClearAll}
             data-testid='filter-panel-clear-all-button'
-            className={clsx('mx-auto flex h-8 w-51.5 items-center justify-center !rounded-sm !bg-surface-ter text-xs font-medium !text-text-destructive', classNames?.clearAllButtonClassName)}
+            className={clsx(
+              'mx-auto flex h-8 w-51.5 items-center justify-center !rounded-sm !bg-surface-ter text-xs font-medium !text-text-destructive',
+              classNames?.clearAllButtonClassName
+            )}
           >
             Clear All
           </Button>
