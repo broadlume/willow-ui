@@ -57,7 +57,7 @@ export function AsyncInputSearch<T>({
   };
 
   return (
-    <Command className={wrapClassName}>
+    <Command className={wrapClassName} shouldFilter={false}>
       {onSearch && (
         <CommandInput
           {...commandInputProps}
@@ -66,7 +66,11 @@ export function AsyncInputSearch<T>({
           onValueChange={(q) => onSearch(q)}
         />
       )}
-      <CommandList onScroll={handleScroll}>
+      <CommandList
+        onScroll={handleScroll}
+        className='max-h-[300px] overflow-y-scroll overflow-x-hidden'
+        onWheel={(e) => e.stopPropagation()}
+      >
         {items.length ? (
           <>
             {items.map((item) => {

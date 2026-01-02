@@ -1,9 +1,10 @@
 import { HiCheck, HiMiniXCircle } from 'react-icons/hi2';
-import { Button, Popover, PopoverContent, PopoverTrigger } from '@src/index';
+import { Button } from '@src/index';
 import { useState } from 'react';
 import { AsyncInputSearch } from './async-input-search';
 import { RxCaretSort } from 'react-icons/rx';
 import { Checkbox } from '@src/components/checkbox/checkbox';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface AsyncAutocompleteItem {
   value: string;
@@ -16,7 +17,7 @@ interface AdditionalProps {
     Parameters<typeof AsyncInputSearch>[0],
     'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'
   >;
-  popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
+  dropdownContentProps?: React.HTMLAttributes<HTMLDivElement> &
     Record<`data-${string}`, string>;
   buttonProps?: React.ComponentProps<typeof Button> &
     Record<`data-${string}`, string>;
@@ -24,7 +25,7 @@ interface AdditionalProps {
 
 interface ClassNames {
   buttonClassName?: string;
-  popoverContentClassName?: string;
+  dropdownContentClassName?: string;
   wrapperClassName?: string;
 }
 
@@ -54,7 +55,7 @@ type Props = {
    * @property {object} inputProps - Props passed directly to the AsyncInputSearch component,
    * excluding core props like 'items', 'onSelect', 'onScroll', 'onSearch', 'renderItem', and 'getKey'
    * (which are already managed by AsyncAutocomplete internally).
-   * @property {object} popoverContentProps - Props passed to the PopoverContent component.
+   * @property {object} dropdownContentProps - Props passed to the DropdownMenu.Content component.
    * @property {object} buttonProps - Props passed to the trigger Button component.
    *
    * This allows consumers of AsyncAutocomplete to override or extend certain behaviors or styles,
@@ -65,7 +66,6 @@ type Props = {
   onClear?: () => void;
   classNames?: ClassNames;
   dataTestId?: string;
-  inModal?: boolean;
 };
 
 /**
@@ -87,11 +87,11 @@ type Props = {
  * @param {() => void} [props.onClear] - Callback triggered when the clear button is clicked.
  * @param {Object} [props.additionalProps] - Additional props for customizing internal components.
  * @param {Object} [props.additionalProps.inputProps] - Props passed to the AsyncInputSearch component.
- * @param {Object} [props.additionalProps.popoverContentProps] - Props passed to the PopoverContent component.
+ * @param {Object} [props.additionalProps.dropdownContentProps] - Props passed to the DropdownMenu.Content component.
  * @param {Object} [props.additionalProps.buttonProps] - Props passed to the trigger Button component.
  * @param {Object} [props.classNames] - Object containing className overrides for different parts of the component.
  * @param {string} [props.classNames.buttonClassName] - Class name for the trigger button.
- * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
+ * @param {string} [props.classNames.dropdownContentClassName] - Class name for the dropdown content.
  * @param {string} [props.classNames.wrapperClassName] - Class name for the wrapper div.
  *
  * @returns {JSX.Element} The rendered AsyncAutocomplete component.
@@ -111,17 +111,20 @@ export const AsyncAutocomplete = ({
   multiSelect = false,
   selectedItems = [],
   onMultiSelect,
-  inModal = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleMultiSelectToggle = (item: AsyncAutocompleteItem) => {
     if (!onMultiSelect) return;
-    
-    const isSelected = selectedItems.some((selected) => selected.value === item.value);
-    
+
+    const isSelected = selectedItems.some(
+      (selected) => selected.value === item.value
+    );
+
     if (isSelected) {
-      onMultiSelect(selectedItems.filter((selected) => selected.value !== item.value));
+      onMultiSelect(
+        selectedItems.filter((selected) => selected.value !== item.value)
+      );
     } else {
       onMultiSelect([...selectedItems, item]);
     }
@@ -129,9 +132,11 @@ export const AsyncAutocomplete = ({
 
   return (
     <div className='w-full'>
-      <Popover open={open} onOpenChange={setOpen} modal={inModal}>
-        <PopoverTrigger asChild>
-          <div className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}>
+      <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+        <DropdownMenu.Trigger asChild>
+          <div
+            className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}
+          >
             <Button
               {...additionalProps?.buttonProps}
               variant='outline'
@@ -140,7 +145,11 @@ export const AsyncAutocomplete = ({
               aria-label='async-autocomplete'
               className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
             >
-              {multiSelect ? placeholder : (selectedData ? selectedData.label : placeholder)}
+              {multiSelect
+                ? placeholder
+                : selectedData
+                ? selectedData.label
+                : placeholder}
               <RxCaretSort />
             </Button>
             {showClear && !multiSelect && selectedData && onClear && (
@@ -157,55 +166,79 @@ export const AsyncAutocomplete = ({
               </button>
             )}
           </div>
-        </PopoverTrigger>
-        <PopoverContent
-          {...additionalProps?.popoverContentProps}
-          className={`w-[var(--radix-popover-trigger-width)] p-0 ${classNames?.popoverContentClassName}`}
-        >
-          <AsyncInputSearch
-            {...additionalProps?.inputProps}
-            items={data}
-            onScroll={onScroll}
-            onSearch={onSearch}
-            onSelect={(e) => {
-              if (multiSelect) {
-                handleMultiSelectToggle(e);
-              } else {
-                setOpen(false);
-                onSelect(e);
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            {...additionalProps?.dropdownContentProps}
+            className={`w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-h-[400px] p-0 z-[100] rounded-md border bg-popover shadow-md overflow-hidden ${classNames?.dropdownContentClassName}`}
+            align='start'
+            sideOffset={4}
+            onCloseAutoFocus={(e) => e.preventDefault()}
+            onPointerDownOutside={(e) => {
+              // Prevent closing when clicking inside the dropdown
+              const target = e.target as HTMLElement;
+              if (target.closest('[role="combobox"]')) {
+                e.preventDefault();
               }
             }}
-            selectedItem={selectedData}
-            wrapClassName={wrapClassName}
-            placeholder={placeholder}
-            getKey={(item) => item.value}
-            renderItem={(item, isSelected) => {
-              const isMultiSelected = multiSelect && selectedItems.some((selected) => selected.value === item.value);
-              
-              return (
-                <div className='flex items-center gap-2'>
-                  {multiSelect && (
-                    <Checkbox
-                      checked={isMultiSelected}
-                      onCheckedChange={() => handleMultiSelectToggle(item)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  )}
-                  <div className='flex flex-col justify-between flex-1'>
-                    <div className='flex items-center justify-between'>
-                      <p className='text-sm'>{item.label}</p>
-                      {!multiSelect && isSelected && <HiCheck className='h-3 w-3' />}
-                    </div>
-                    {item?.description && (
-                      <p className='mb-2 text-xs text-zinc-500'>{item.description}</p>
-                    )}
-                  </div>
-                </div>
-              );
+            onWheel={(e) => {
+              // Allow wheel events to propagate for scrolling
+              e.stopPropagation();
             }}
-          />
-        </PopoverContent>
-      </Popover>
+          >
+            <AsyncInputSearch
+              {...additionalProps?.inputProps}
+              items={data}
+              onScroll={onScroll}
+              onSearch={onSearch}
+              onSelect={(e) => {
+                if (multiSelect) {
+                  handleMultiSelectToggle(e);
+                } else {
+                  setOpen(false);
+                  onSelect(e);
+                }
+              }}
+              selectedItem={selectedData}
+              wrapClassName={wrapClassName}
+              placeholder={placeholder}
+              getKey={(item) => item.value}
+              renderItem={(item, isSelected) => {
+                const isMultiSelected =
+                  multiSelect &&
+                  selectedItems.some(
+                    (selected) => selected.value === item.value
+                  );
+
+                return (
+                  <div className='flex items-center gap-2'>
+                    {multiSelect && (
+                      <Checkbox
+                        checked={isMultiSelected}
+                        onCheckedChange={() => handleMultiSelectToggle(item)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    )}
+                    <div className='flex flex-col justify-between flex-1'>
+                      <div className='flex items-center justify-between'>
+                        <p className='text-sm'>{item.label}</p>
+                        {!multiSelect && isSelected && (
+                          <HiCheck className='h-3 w-3' />
+                        )}
+                      </div>
+                      {item?.description && (
+                        <p className='mb-2 text-xs text-zinc-500'>
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
     </div>
   );
 };
