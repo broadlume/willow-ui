@@ -14,7 +14,7 @@ interface AsyncAutocompleteItem {
 interface AdditionalProps {
   inputProps?: Omit<
     Parameters<typeof AsyncInputSearch>[0],
-    'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey'
+    'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey' | 'searchValue'
   >;
   popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
     Record<`data-${string}`, string>;
@@ -112,6 +112,24 @@ export const AsyncAutocomplete = ({
   onMultiSelect,
 }: Props) => {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearchChange = (query: string) => {
+    setSearchValue(query);
+    onSearch?.(query);
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+
+    // Clear search when popover close
+    if (!isOpen) {
+      setSearchValue('');
+      if (searchValue !== '') {
+        onSearch?.('');
+      }
+    }
+  };
 
   const handleMultiSelectToggle = (item: AsyncAutocompleteItem) => {
     if (!onMultiSelect) return;
@@ -131,7 +149,7 @@ export const AsyncAutocomplete = ({
 
   return (
     <div className='w-full'>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <div
             className={`relative ${classNames?.wrapperClassName ?? 'w-full'}`}
@@ -174,12 +192,13 @@ export const AsyncAutocomplete = ({
             {...additionalProps?.inputProps}
             items={data}
             onScroll={onScroll}
-            onSearch={onSearch}
+            onSearch={handleSearchChange}
+            searchValue={searchValue}
             onSelect={(e) => {
               if (multiSelect) {
                 handleMultiSelectToggle(e);
               } else {
-                setOpen(false);
+                handleOpenChange(false);
                 onSelect(e);
               }
             }}
