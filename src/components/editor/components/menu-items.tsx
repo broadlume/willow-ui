@@ -34,6 +34,7 @@ import { ReactComponent as AIIcon } from './ai-icon.svg';
 import { ColorPickerInput } from '@components/color-picker-input/color-picker-input';
 import { Button } from '@components/button';
 import { Input } from '@components/input/input';
+import { MiniAssetSelector } from '@components/mini-asset-selector';
 
 import AIContent from './ai-content';
 import { MenuLink } from './menu-link';
@@ -62,6 +63,32 @@ export interface MenuItemRenderProps {
   setL2EmbedLink?: (link: string) => void;
   l2Image?: string;
   setL2Image?: (image: string) => void;
+  l2ImageMetadata?: Record<string, string>;
+  setL2ImageMetadata?: (metadata: Record<string, string>) => void;
+  onImageBrowseClick?: (
+    editor: Editor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void; // Callback for custom asset manager integration with URL and metadata setter
+  onImageDrop?: (
+    editor: Editor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void; // Callback for custom file drop handling
+  onImageNameClick?: (
+    editor: Editor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void; // Callback for when image name is clicked
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   expandedMenu?: boolean; // For More button to hide sub-menus
   setExpandedMenu?: (expanded: boolean) => void;
   expandedMenuL2?: boolean; // For More button to hide sub-menus
@@ -737,7 +764,33 @@ export const getL3MenuContent = (
   setL2EmbedLink: (link: string) => void,
   l2Image: string | undefined,
   setL2Image: (image: string) => void,
-  setExpandedMenuL2: (expanded: boolean) => void
+  l2ImageMetadata: Record<string, string> | undefined,
+  setL2ImageMetadata: (metadata: Record<string, string>) => void,
+  setExpandedMenuL2: (expanded: boolean) => void,
+  onImageBrowseClick?: (
+    editor: Editor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void,
+  onImageDrop?: (
+    editor: Editor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void,
+  onImageNameClick?: (
+    editor: Editor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void,
+  disableAssetImageNameClick?: boolean,
+  isShowAssetEditIcon?: boolean,
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void
 ) => {
   switch (expandedMenuL2Type) {
     case 'link':
@@ -839,46 +892,101 @@ export const getL3MenuContent = (
       );
     case 'image':
       return (
-        <>
-          <Input
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
+        <div className='flex flex-col gap-2 w-full'>
+          <div className='flex-1'>
+            <MiniAssetSelector
+              value={l2Image}
+              selectedURL={l2Image}
+              onSelectedURL={(url) => {
+                if (url) {
+                  setL2Image(url);
+                }
+              }}
+              onSelectedFile={(file) => {
+                if (file && onImageDrop) {
+                  // Call custom onDrop handler if provided
+                  onImageDrop(editor, file, setL2Image);
+                } else if (file) {
+                  // Default behavior: create object URL for the file
+                  const fileUrl = URL.createObjectURL(file);
+                  setL2Image(fileUrl);
+                }
+              }}
+              placeholder='Enter Image URL here or Drag & drop here'
+              browseButtonText='Browse Assets'
+              onBrowseClick={() =>
+                onImageBrowseClick?.(editor, (data) => {
+                  setL2Image(data.url);
+                  if (data.metadata) {
+                    setL2ImageMetadata(data.metadata);
+                  }
+                })
               }
-            }}
-            type='url'
-            placeholder='https://'
-            value={l2Image}
-            className='rounded-md border-[1px] border-solid border-gray-300 p-2'
-            onChange={(e) => setL2Image(e.target.value)}
-          />
-          <Button
-            type='button'
-            variant='default'
-            className='rounded-3xl px-8'
-            disabled={!l2Image || !isURL(l2Image, { require_protocol: true })}
-            onClick={() => {
-              if (l2Image && isURL(l2Image, { require_protocol: true })) {
-                editor.commands.setImage({ src: l2Image });
+              onImageNameClick={(imageData) =>
+                onImageNameClick?.(editor, imageData)
+              }
+              isShowEditIcon={isShowAssetEditIcon}
+              disableImageNameClick={disableAssetImageNameClick}
+              onChange={(value) => {
+                setL2Image(value as string);
+                onAssetSelectorChange?.(editor, value);
+              }}
+              className='w-full'
+              showBrowseButton={true}
+              fullWidth={true}
+            />
+          </div>
+          <div className='flex justify-end gap-4'>
+            <Button
+              type='button'
+              variant='default'
+              className='rounded-3xl px-8 flex-shrink-0'
+              disabled={!l2Image}
+              onClick={() => {
+                if (l2Image) {
+                  // Create image attributes with metadata
+                  const imageAttrs: Record<string, string> = { src: l2Image };
+
+                  // Add metadata as image attributes
+                  if (l2ImageMetadata) {
+                    // Standard HTML image attributes
+                    if (l2ImageMetadata['alt-text'])
+                      imageAttrs.alt = l2ImageMetadata['alt-text'];
+                    if (l2ImageMetadata.width)
+                      imageAttrs.width = l2ImageMetadata.width;
+                    if (l2ImageMetadata.height)
+                      imageAttrs.height = l2ImageMetadata.height;
+                    if (l2ImageMetadata.title)
+                      imageAttrs.title = l2ImageMetadata.title;
+
+                    // Custom metadata as data attributes
+                    Object.entries(l2ImageMetadata).forEach(([key, value]) => {
+                      imageAttrs[key] = value;
+                    });
+                  }
+
+                  editor.chain().focus().setCustomImage(imageAttrs).run();
+                  setL2Image('');
+                  setL2ImageMetadata({});
+                  setExpandedMenuL2(false);
+                }
+              }}
+            >
+              Insert
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
+              onClick={() => {
                 setL2Image('');
                 setExpandedMenuL2(false);
-              }
-            }}
-          >
-            Submit
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            className='rounded-3xl border-[1px] border-[#000] px-8 shadow-xs'
-            onClick={() => {
-              setL2Image('');
-              setExpandedMenuL2(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </>
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
       );
 
     default:

@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/react';
 import { z } from 'zod';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-
+import { marked } from 'marked';
 import { Button } from '@components/button';
 import { Input } from '@components/input/input';
 import { Textarea } from '@components/textarea/textarea';
@@ -64,7 +64,8 @@ const AIContent = ({ editor, closeDialog, hostname }: AIContentProps) => {
           },
         }
       );
-      setGeneratedContent(aiResponse.data.data.text);
+      const responseText = aiResponse.data.data.text;
+      setGeneratedContent(responseText);
     } catch (error) {
       console.error('Error generating text:', error);
     } finally {
@@ -163,64 +164,36 @@ const AIContent = ({ editor, closeDialog, hostname }: AIContentProps) => {
       </DialogDescription>
 
       <div className='flex-1 flex flex-col gap-2 w-full'>
-        <>
-          <h3>Output:</h3>
-          <Textarea
-            value={generatedContent}
-            onChange={(e) => setGeneratedContent(e.target.value)}
-            className='w-full h-32'
-          />
-          <Button
-            type='button'
-            className='self-end w-fit'
-            onClick={() => {
-              const htmlContent = generatedContent
-                .split('\n')
-                .map((line) => {
-                  const trimmedLine = line.trim();
-                  if (trimmedLine.length === 0) return null;
-                  return {
-                    type: 'paragraph',
-                    content: [
-                      {
-                        type: 'text',
-                        text: trimmedLine,
-                      },
-                    ],
-                  };
-                })
-                .filter((el) => el);
-              if (from && to) {
-                // Insert the generated content at the current selection
-                htmlContent.map((el) => {
-                  editor
-                    .chain()
-                    .focus()
-                    .deleteRange({ from, to })
-                    .insertContent(el)
-                    .run();
-                  editor
-                    .chain()
-                    .focus()
-                    .deleteRange({ from, to })
-                    .insertContent('<br />')
-                    .run();
-                });
-              } else {
-                // If no selection, just insert at the end
-                htmlContent.map((el) => {
-                  editor.chain().focus().insertContent(el).run();
-                  editor.chain().focus().insertContent('<br />').run();
-                });
-              }
-              setGeneratedContent(''); // Clear the generated content after inserting
-              form.reset(); // Reset the form after inserting
-              closeDialog();
-            }}
-          >
-            Insert Content in Editor
-          </Button>
-        </>
+        <h3>Output:</h3>
+        <Textarea
+          value={generatedContent}
+          onChange={(e) => setGeneratedContent(e.target.value)}
+          className='w-full h-32'
+        />
+        <Button
+          type='button'
+          className='self-end w-fit'
+          onClick={async () => {
+            const htmlContent = await marked.parse(generatedContent);
+            if (from && to) {
+              // Replace the selected content with the generated markdown HTML
+              editor
+                .chain()
+                .focus()
+                .deleteRange({ from, to })
+                .insertContent(htmlContent)
+                .run();
+            } else {
+              // If no selection, insert at the current cursor position
+              editor.chain().focus().insertContent(htmlContent).run();
+            }
+            setGeneratedContent(''); // Clear the generated content after inserting
+            form.reset(); // Reset the form after inserting
+            closeDialog();
+          }}
+        >
+          Insert Content in Editor
+        </Button>
       </div>
     </div>
   );

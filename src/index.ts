@@ -19,6 +19,7 @@ export * from '@components/dropdown-menu/dropdown-menu';
 export * from '@components/form/form';
 export * from '@components/input/input';
 export * from '@components/input/InputWithSlots';
+export * from '@components/search-bar/search-bar';
 export * from '@components/label/label';
 export * from '@components/popover/popover';
 export * from '@components/radio-group/radio-group';
@@ -44,9 +45,19 @@ export * from '@components/editor/editor';
 export * from '@components/code-editor/code-editor';
 export * from '@components/Loader/Loader';
 export * from '@components/async-autocomplete/async-autocomplete';
+export * from '@components/audio-player/audio-player';
 export * from '@components/sidebar/sidebar';
+export * from '@components/sidebar/types';
+export * from '@components/mini-asset-selector/mini-asset-selector';
+export * from '@components/grid-image-gallery/grid-image-gallery';
+export * from '@components/columns-manager/columns-manager';
+export * from '@components/filter-panel/filter-panel';
+export * from '@components/filter-panel/types';
+export * from '@components/pagination/pagination';
+
 // Other stuff
 export * from '@src/lib/icons';
 export * from '@src/reports/summary-tile/summary-tile';
 export * from '@src/misc/custom-data-table/custom-data-table';
 export * from '@src/misc/tanstack-table/Table';
+export * from '@src/lib/hooks/useColumnVisibility';
