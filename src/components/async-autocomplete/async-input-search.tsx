@@ -6,6 +6,7 @@ type AsyncInputSearchProps<T> = {
   items: T[];
   onScroll: () => void;
   onSearch?: (query: string) => void;
+  searchValue?: string;
   onSelect: (item: T) => void;
   selectedItem?: T | null;
   wrapClassName?: string;
@@ -25,6 +26,7 @@ type AsyncInputSearchProps<T> = {
  * @param {T[]} props.items - The array of items to display in the list.
  * @param {() => void} props.onScroll - Callback invoked when the user scrolls to the bottom of the list.
  * @param {(query: string) => void} [props.onSearch] - Optional callback invoked when the search input value changes. If not provided, search input will not be shown.
+ * @param {string} [props.searchValue] - Controlled search value for the input.
  * @param {(item: T) => void} props.onSelect - Callback invoked when an item is selected.
  * @param {T | undefined} props.selectedItem - The currently selected item.
  * @param {string} [props.wrapClassName] - Optional class name for the wrapper element.
@@ -40,6 +42,7 @@ export function AsyncInputSearch<T>({
   items,
   onScroll,
   onSearch,
+  searchValue = '',
   onSelect,
   selectedItem,
   wrapClassName = '',
@@ -61,6 +64,7 @@ export function AsyncInputSearch<T>({
       {onSearch && (
         <CommandInput
           {...commandInputProps}
+          value={searchValue}
           placeholder={placeholder}
           className='h-9'
           onValueChange={(q) => onSearch(q)}
