@@ -17,9 +17,9 @@ interface AdditionalProps {
     'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey' | 'searchValue'
   >;
   popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
-    Record<`data-${string}`, string>;
+  Record<`data-${string}`, string>;
   buttonProps?: React.ComponentProps<typeof Button> &
-    Record<`data-${string}`, string>;
+  Record<`data-${string}`, string>;
 }
 
 interface ClassNames {
@@ -147,6 +147,25 @@ export const AsyncAutocomplete = ({
     }
   };
 
+  /**
+   * @description Handles the "Select All" functionality in multi-select mode.
+   * @returns 
+   */
+  const handleSelectAll = () => {
+    if (!onMultiSelect) return;
+
+    // Check if all items are selected
+    const allSelected = data.length > 0 && selectedItems.length === data.length;
+
+    if (allSelected) {
+      // Deselect all
+      onMultiSelect([]);
+    } else {
+      // Select all
+      onMultiSelect(data);
+    }
+  };
+
   return (
     <div className='w-full'>
       <Popover open={open} onOpenChange={handleOpenChange}>
@@ -165,8 +184,8 @@ export const AsyncAutocomplete = ({
               {multiSelect
                 ? placeholder
                 : selectedData
-                ? selectedData.label
-                : placeholder}
+                  ? selectedData.label
+                  : placeholder}
               <RxCaretSort />
             </Button>
             {showClear && !multiSelect && selectedData && onClear && (
@@ -206,6 +225,9 @@ export const AsyncAutocomplete = ({
             wrapClassName={wrapClassName}
             placeholder={placeholder}
             getKey={(item) => item.value}
+            showSelectAll={multiSelect}
+            onSelectAll={handleSelectAll}
+            allSelected={data.length > 0 && selectedItems.length === data.length}
             renderItem={(item, isSelected) => {
               const isMultiSelected =
                 multiSelect &&
