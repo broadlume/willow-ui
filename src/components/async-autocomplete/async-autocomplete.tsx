@@ -65,6 +65,7 @@ type Props = {
   onClear?: () => void;
   classNames?: ClassNames;
   dataTestId?: string;
+  disabled?: boolean;
 };
 
 /**
@@ -92,6 +93,7 @@ type Props = {
  * @param {string} [props.classNames.buttonClassName] - Class name for the trigger button.
  * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
  * @param {string} [props.classNames.wrapperClassName] - Class name for the wrapper div.
+ * @param {boolean} [props.disabled] - Whether the autocomplete is disabled.
  *
  * @returns {JSX.Element} The rendered AsyncAutocomplete component.
  */
@@ -110,6 +112,7 @@ export const AsyncAutocomplete = ({
   multiSelect = false,
   selectedItems = [],
   onMultiSelect,
+  disabled = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -120,6 +123,7 @@ export const AsyncAutocomplete = ({
   };
 
   const handleOpenChange = (isOpen: boolean) => {
+    if (disabled) return;
     setOpen(isOpen);
 
     // Clear search when popover close
@@ -179,6 +183,7 @@ export const AsyncAutocomplete = ({
               role='combobox'
               aria-expanded={open}
               aria-label='async-autocomplete'
+              disabled={disabled}
               className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
             >
               {multiSelect
@@ -188,7 +193,7 @@ export const AsyncAutocomplete = ({
                   : placeholder}
               <RxCaretSort />
             </Button>
-            {showClear && !multiSelect && selectedData && onClear && (
+            {showClear && !multiSelect && selectedData && onClear && !disabled && (
               <button
                 type='button'
                 className='absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 hover:opacity-100 z-10 hover:cursor-pointer text-icon-pri'
