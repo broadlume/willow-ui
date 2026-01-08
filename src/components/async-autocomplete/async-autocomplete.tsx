@@ -17,9 +17,9 @@ interface AdditionalProps {
     'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey' | 'searchValue'
   >;
   popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
-    Record<`data-${string}`, string>;
+  Record<`data-${string}`, string>;
   buttonProps?: React.ComponentProps<typeof Button> &
-    Record<`data-${string}`, string>;
+  Record<`data-${string}`, string>;
 }
 
 interface ClassNames {
@@ -65,6 +65,7 @@ type Props = {
   onClear?: () => void;
   classNames?: ClassNames;
   dataTestId?: string;
+  disabled?: boolean;
 };
 
 /**
@@ -92,6 +93,7 @@ type Props = {
  * @param {string} [props.classNames.buttonClassName] - Class name for the trigger button.
  * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
  * @param {string} [props.classNames.wrapperClassName] - Class name for the wrapper div.
+ * @param {boolean} [props.disabled] - Whether the autocomplete is disabled.
  *
  * @returns {JSX.Element} The rendered AsyncAutocomplete component.
  */
@@ -110,6 +112,7 @@ export const AsyncAutocomplete = ({
   multiSelect = false,
   selectedItems = [],
   onMultiSelect,
+  disabled = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -120,6 +123,7 @@ export const AsyncAutocomplete = ({
   };
 
   const handleOpenChange = (isOpen: boolean) => {
+    if (disabled) return;
     setOpen(isOpen);
 
     // Clear search when popover close
@@ -147,6 +151,25 @@ export const AsyncAutocomplete = ({
     }
   };
 
+  /**
+   * @description Handles the "Select All" functionality in multi-select mode.
+   * @returns 
+   */
+  const handleSelectAll = () => {
+    if (!onMultiSelect) return;
+
+    // Check if all items are selected
+    const allSelected = data.length > 0 && selectedItems.length === data.length;
+
+    if (allSelected) {
+      // Deselect all
+      onMultiSelect([]);
+    } else {
+      // Select all
+      onMultiSelect(data);
+    }
+  };
+
   return (
     <div className='w-full'>
       <Popover open={open} onOpenChange={handleOpenChange}>
@@ -160,16 +183,17 @@ export const AsyncAutocomplete = ({
               role='combobox'
               aria-expanded={open}
               aria-label='async-autocomplete'
+              disabled={disabled}
               className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
             >
               {multiSelect
                 ? placeholder
                 : selectedData
-                ? selectedData.label
-                : placeholder}
+                  ? selectedData.label
+                  : placeholder}
               <RxCaretSort />
             </Button>
-            {showClear && !multiSelect && selectedData && onClear && (
+            {showClear && !multiSelect && selectedData && onClear && !disabled && (
               <button
                 type='button'
                 className='absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 hover:opacity-100 z-10 hover:cursor-pointer text-icon-pri'
@@ -206,6 +230,9 @@ export const AsyncAutocomplete = ({
             wrapClassName={wrapClassName}
             placeholder={placeholder}
             getKey={(item) => item.value}
+            showSelectAll={multiSelect}
+            onSelectAll={handleSelectAll}
+            allSelected={data.length > 0 && selectedItems.length === data.length}
             renderItem={(item, isSelected) => {
               const isMultiSelected =
                 multiSelect &&

@@ -292,3 +292,29 @@ export const InsideModal: Story = {
     );
   },
 };
+
+
+export const Disabled: Story = {
+  render: () => {
+    return (
+      <div>
+        <AsyncAutocomplete
+          data={[]}
+          onSelect={() => { }}
+          onScroll={() => { }}
+          additionalProps={{
+            inputProps: {
+              commandInputProps: {
+                onBlur: () => console.log('Input blurred'),
+              },
+            },
+          }}
+          classNames={{
+            wrapperClassName: 'w-[300px]',
+          }}
+          disabled
+        />
+      </div>
+    );
+  },
+};
