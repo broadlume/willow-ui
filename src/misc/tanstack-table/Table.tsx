@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useState,
   useRef,
+  useLayoutEffect,
 } from 'react';
 import {
   closestCenter,
@@ -150,6 +151,12 @@ export function useDataTable<TData, TValue>({
   const activeDragIdRef = useRef<string | null>(null);
 
   /**
+   * Scroll Position Preservation
+   */
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
+
+  /**
    * Sort
    */
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -176,6 +183,25 @@ export function useDataTable<TData, TValue>({
     {}
   );
 
+  // Save scroll position before row selection changes
+  const saveScrollPosition = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollPositionRef.current = {
+        scrollTop: scrollContainerRef.current.scrollTop,
+        scrollLeft: scrollContainerRef.current.scrollLeft,
+      };
+    }
+  }, []);
+
+  // Restore scroll position after row selection changes
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current) {
+      const { scrollTop, scrollLeft } = scrollPositionRef.current;
+      scrollContainerRef.current.scrollTop = scrollTop;
+      scrollContainerRef.current.scrollLeft = scrollLeft;
+    }
+  }, [rowSelection, isSelectAllPages, excludedRowIds]);
+
   const handleSelectionReset = () => {
     setIsSelectAllPages(false);
     setExcludedRowIds({});
@@ -184,6 +210,7 @@ export function useDataTable<TData, TValue>({
 
   const handleUnselectPage = useCallback(
     (pageRows: Row<TData>[]) => {
+      saveScrollPosition();
       if (isSelectAllPages) {
         setExcludedRowIds((prev) => {
           const newExcluded = { ...prev };
@@ -205,7 +232,7 @@ export function useDataTable<TData, TValue>({
         });
       }
     },
-    [isSelectAllPages]
+    [isSelectAllPages, saveScrollPosition]
   );
 
   const handleSelectPage = useCallback(
@@ -215,6 +242,7 @@ export function useDataTable<TData, TValue>({
         handleUnselectPage(pageRows);
         return;
       }
+      saveScrollPosition();
       setExcludedRowIds({});
       const newSelection = pageRows.reduce((acc, row) => {
         acc[row.id] = true;
@@ -222,9 +250,10 @@ export function useDataTable<TData, TValue>({
       }, {} as Record<string, boolean>);
       setRowSelection((prev) => ({ ...prev, ...newSelection }));
     },
-    [handleUnselectPage]
+    [handleUnselectPage, saveScrollPosition]
   );
   const handleSelectAll = () => {
+    saveScrollPosition();
     setIsSelectAllPages(true);
     setExcludedRowIds({});
     setRowSelection({});
@@ -352,6 +381,7 @@ export function useDataTable<TData, TValue>({
   ]);
 
   const handleRowCheckboxChange = (row: Row<TData>) => {
+    saveScrollPosition();
     if (enableSingleSelection) {
       table.toggleAllRowsSelected(false);
       handleSelectPage([row], false);
@@ -580,6 +610,7 @@ export function useDataTable<TData, TValue>({
         </div>
       ) : (
         <div
+          ref={scrollContainerRef}
           {...(({ enableStickyHeader, ...rest }) => rest)(
             itemProps?.tableWrapper || {}
           )}
