@@ -53,6 +53,7 @@ interface MenuProps {
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu button
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -80,6 +81,7 @@ export const Menu = ({
   onAssetSelectorChange,
   assetSelectorValue,
   onAssetSelectorValueChange,
+  hideAIMenu,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -156,7 +158,10 @@ export const Menu = ({
     const tempHidden: MenuItemDefinition[] = [];
 
     // Iterate through all menu items and decide where to place them
-    for (const item of getAllMenuItems()) {
+    const allMenuItems = getAllMenuItems().filter(
+      (item) => !(hideAIMenu && item.id === 'ai-button')
+    );
+    for (const item of allMenuItems) {
       // Estimate item width, including a gap if it's not the first item
       const itemRenderedWidth = item.widthEstimate + GAP_WIDTH;
 
