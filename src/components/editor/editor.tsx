@@ -83,6 +83,7 @@ export type EditorProps = {
   ) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -280,6 +281,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 onAssetSelectorChange={props.onAssetSelectorChange}
                 assetSelectorValue={props.assetSelectorValue}
                 onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+                hideAIMenu={props.hideAIMenu}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -319,6 +321,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
               onAssetSelectorChange={props.onAssetSelectorChange}
               assetSelectorValue={props.assetSelectorValue}
               onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+              hideAIMenu={props.hideAIMenu}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
