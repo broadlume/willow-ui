@@ -112,6 +112,11 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const extensions = [
     StarterKit.configure({
       gapcursor: false,
+      paragraph: {
+        HTMLAttributes: {
+          style: 'min-height: 1.5em; white-space: pre-wrap;',
+        },
+      },
     }),
     Gapcursor,
     Link.configure({ openOnClick: true }),
