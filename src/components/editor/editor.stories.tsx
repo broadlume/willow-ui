@@ -37,3 +37,31 @@ const EditorComponent = () => {
 export const Demo: Story = {
   render: () => <EditorComponent />,
 };
+
+const EditorComponentWithoutAI = () => {
+  const fetchUsersFromApi = useCallback(async (query: string) => {
+    const users = [
+      { id: '1', name: 'John Doe' },
+      { id: '2', name: 'Jane Smith' },
+      { id: '3', name: 'Peter Jones' },
+    ];
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    return users
+      .filter((user) => user.name.toLowerCase().includes(query.toLowerCase()))
+      .map((user) => ({ label: user.name, value: user.id }));
+  }, []);
+
+  return (
+    <Editor
+      onChange={(html) => console.log('Content changed:', html)}
+      onBlur={(html) => console.log('Content blurred:', html)}
+      autocompleteFetchOptions={fetchUsersFromApi}
+      hostname='https://api.cms.my.dev.broadlume.com'
+      hideAIMenu={true}
+    />
+  );
+};
+
+export const WithoutAIMenu: Story = {
+  render: () => <EditorComponentWithoutAI />,
+};
