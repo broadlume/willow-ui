@@ -140,7 +140,7 @@ export const ApiFilterList = ({
                 onCheckedChange={(checked) => {
                   onSelectAll(filterKey, !!checked);
                 }}
-                disabled={isLoading}
+                disabled={isLoading || searchTerm?.length > 0}
               />
               <Label
                 htmlFor={`${filterKey}-select-all`}

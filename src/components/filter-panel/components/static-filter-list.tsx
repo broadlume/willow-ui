@@ -86,7 +86,7 @@ export const StaticFilterList = ({
                         : 'unchecked'
                     }
                     onCheckedChange={() => onSelectAll(options)}
-                    disabled={isLoading}
+                    disabled={isLoading || searchTerm?.length > 0}
                   />
                   <Label
                     htmlFor={`${filterKey}-select-all`}
