@@ -84,7 +84,7 @@ export const BrowseButton: React.FC<BrowseButtonProps> = ({
     >
       <Button
         type='button'
-        className='bg-surface-cta font-thin gap-2 text-white py-0 h-7'
+        className='bg-surface-cta font-semibold gap-2 text-white py-0 h-7'
         onClick={handleBrowseClick}
         disabled={loading || disabled}
       >

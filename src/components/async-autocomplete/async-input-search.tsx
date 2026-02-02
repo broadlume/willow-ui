@@ -1,17 +1,22 @@
 import React from 'react';
 import { Command, CommandInput, CommandList } from '@src/index';
+import { Checkbox } from '@src/components/checkbox/checkbox';
 
 type AsyncInputSearchProps<T> = {
   commandInputProps?: Parameters<typeof CommandInput>[0];
   items: T[];
   onScroll: () => void;
   onSearch?: (query: string) => void;
+  searchValue?: string;
   onSelect: (item: T) => void;
   selectedItem?: T | null;
   wrapClassName?: string;
   placeholder?: string;
   renderItem: (item: T, isSelected: boolean) => React.ReactNode;
   getKey: (item: T) => string | number;
+  showSelectAll?: boolean;
+  onSelectAll?: () => void;
+  allSelected?: boolean;
 };
 
 /**
@@ -25,6 +30,7 @@ type AsyncInputSearchProps<T> = {
  * @param {T[]} props.items - The array of items to display in the list.
  * @param {() => void} props.onScroll - Callback invoked when the user scrolls to the bottom of the list.
  * @param {(query: string) => void} [props.onSearch] - Optional callback invoked when the search input value changes. If not provided, search input will not be shown.
+ * @param {string} [props.searchValue] - Controlled search value for the input.
  * @param {(item: T) => void} props.onSelect - Callback invoked when an item is selected.
  * @param {T | undefined} props.selectedItem - The currently selected item.
  * @param {string} [props.wrapClassName] - Optional class name for the wrapper element.
@@ -32,6 +38,9 @@ type AsyncInputSearchProps<T> = {
  * @param {(item: T, isSelected: boolean) => React.ReactNode} props.renderItem - Function to render each item.
  * @param {(item: T) => React.Key} props.getKey - Function to get a unique key for each item.
  * @param {(item: T) => string} [props.getLabel] - Optional function to get a label for test IDs. If provided, each option will have a data-testid of "{label}-option".
+ * @param {boolean} [props.showSelectAll] - Whether to show a "Select All" option at the top (for multi-select).
+ * @param {() => void} [props.onSelectAll] - Callback invoked when "Select All" is clicked.
+ * @param {boolean} [props.allSelected] - Whether all items are currently selected.
  *
  * @returns {JSX.Element} The rendered async input search component.
  */
@@ -40,12 +49,16 @@ export function AsyncInputSearch<T>({
   items,
   onScroll,
   onSearch,
+  searchValue = '',
   onSelect,
   selectedItem,
   wrapClassName = '',
   placeholder = 'Search...',
   renderItem,
   getKey,
+  showSelectAll = false,
+  onSelectAll,
+  allSelected = false,
 }: AsyncInputSearchProps<T>) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -61,12 +74,31 @@ export function AsyncInputSearch<T>({
       {onSearch && (
         <CommandInput
           {...commandInputProps}
+          value={searchValue}
           placeholder={placeholder}
           className='h-9'
           onValueChange={(q) => onSearch(q)}
         />
       )}
       <CommandList onScroll={handleScroll}>
+        {showSelectAll && onSelectAll && items.length > 0 && (
+          <div
+            onClick={onSelectAll}
+            className='hover:bg-slate-100 cursor-pointer rounded-xs px-2 py-1.5 text-sm border-b border-slate-200 sticky top-0 bg-white z-10'
+            data-testid='select-all-option'
+          >
+            <div className='flex items-center gap-2'>
+              <Checkbox
+                checked={allSelected}
+                onCheckedChange={onSelectAll}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <p className='text-sm font-medium'>
+                {allSelected ? 'Deselect All' : 'Select All'}
+              </p>
+            </div>
+          </div>
+        )}
         {items.length ? (
           <>
             {items.map((item) => {

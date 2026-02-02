@@ -124,7 +124,7 @@ export const ApiFilterList = ({
             >
               <Checkbox
                 id={`${filterKey}-select-all`}
-                className='data-[state=checked]:!border-surface-cta data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
+                className='data-[state=checked]:!border-surface-cta peer data-[state=checked]:!bg-surface-cta data-[state=indeterminate]:!border-surface-cta data-[state=indeterminate]:!bg-surface-cta h-3.5 w-3.5 !rounded border !border-border-pri'
                 checked={
                   isSelectAllIndeterminate()
                     ? 'indeterminate'
@@ -140,11 +140,11 @@ export const ApiFilterList = ({
                 onCheckedChange={(checked) => {
                   onSelectAll(filterKey, !!checked);
                 }}
-                disabled={isLoading}
+                disabled={isLoading || Boolean(searchTerm?.length)}
               />
               <Label
                 htmlFor={`${filterKey}-select-all`}
-                className='cursor-pointer text-sm text-text-pri'
+                className='cursor-pointer text-sm text-text-pri peer-disabled:text-text-opt'
               >
                 Select All
               </Label>
