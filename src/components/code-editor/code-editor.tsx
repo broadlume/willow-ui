@@ -30,7 +30,6 @@ import {
   HiMiniSun,
   HiPaintBrush,
 } from 'react-icons/hi2';
-import { ReactComponent as AIIcon } from './ai-icon.svg';
 
 // Simplified theme type - just light and dark
 type CustomTheme = 'light' | 'dark';
