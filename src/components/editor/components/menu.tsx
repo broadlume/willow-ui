@@ -53,7 +53,8 @@ interface MenuProps {
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
-  hideAIMenu?: boolean; // Whether to hide the AI Menu button
+  hideAIMenu?: boolean; // Whether to hide the AI Menu button,
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -82,6 +83,7 @@ export const Menu = ({
   assetSelectorValue,
   onAssetSelectorValueChange,
   hideAIMenu,
+  isShowAssetBrowseButton = true
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -195,7 +197,7 @@ export const Menu = ({
 
     setVisibleItems(tempVisible);
     setHiddenItems(tempHidden);
-  }, [availableWidth]);
+  }, [availableWidth, hideAIMenu]);
 
   const commonMenuItemProps: MenuItemRenderProps = {
     editor,
@@ -226,6 +228,7 @@ export const Menu = ({
     setExpandedMenu,
     expandedMenuL2,
     setExpandedMenuL2,
+    isShowAssetBrowseButton
   };
 
   return (
@@ -347,7 +350,8 @@ export const Menu = ({
           onImageNameClick,
           disableAssetImageNameClick,
           isShowAssetEditIcon,
-          onAssetSelectorChange
+          onAssetSelectorChange,
+          isShowAssetBrowseButton
         )}
       </div>
       {/* Expanded Menu L2*/}
