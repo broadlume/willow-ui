@@ -2,105 +2,75 @@ import React from 'react';
 
 import { cn } from '@src/lib/utils';
 
+interface DiffProps extends React.HTMLAttributes<HTMLElement> {
+  /** Custom drag handle component to replace the default handle */
+  dragHandle?: React.ReactNode;
+}
+
 /** A component that shows a side-by-side comparison of two items with a draggable resizer. */
-const Diff = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [position, setPosition] = React.useState(50);
-  const [isDragging, setIsDragging] = React.useState(false);
+const Diff = React.forwardRef<HTMLElement, DiffProps>(
+  ({ className, children, dragHandle, ...props }, ref) => {
+    const containerRef = React.useRef<HTMLElement>(null);
+    const [position, setPosition] = React.useState(50);
+    const [isDragging, setIsDragging] = React.useState(false);
 
-  React.useImperativeHandle(ref, () => containerRef.current!);
+    React.useImperativeHandle(ref, () => containerRef.current!);
 
-  const handleMouseDown = React.useCallback(() => {
-    setIsDragging(true);
-  }, []);
+    const handleMouseDown = React.useCallback(() => {
+      setIsDragging(true);
+    }, []);
 
-  const handleMouseUp = React.useCallback(() => {
-    setIsDragging(false);
-  }, []);
+    const handleMouseUp = React.useCallback(() => {
+      setIsDragging(false);
+    }, []);
 
-  const handleMouseMove = React.useCallback(
-    (e: MouseEvent) => {
-      if (!isDragging || !containerRef.current) return;
+    const handleMouseMove = React.useCallback(
+      (e: MouseEvent) => {
+        if (!isDragging || !containerRef.current) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = (x / rect.width) * 100;
-      setPosition(Math.max(0, Math.min(100, percentage)));
-    },
-    [isDragging]
-  );
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = (x / rect.width) * 100;
+        setPosition(Math.max(0, Math.min(100, percentage)));
+      },
+      [isDragging]
+    );
 
-  const handleTouchMove = React.useCallback(
-    (e: TouchEvent) => {
-      if (!isDragging || !containerRef.current) return;
+    const handleTouchMove = React.useCallback(
+      (e: TouchEvent) => {
+        if (!isDragging || !containerRef.current) return;
 
-      const touch = e.touches[0];
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const percentage = (x / rect.width) * 100;
-      setPosition(Math.max(0, Math.min(100, percentage)));
-    },
-    [isDragging]
-  );
+        const touch = e.touches[0];
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const percentage = (x / rect.width) * 100;
+        setPosition(Math.max(0, Math.min(100, percentage)));
+      },
+      [isDragging]
+    );
 
-  React.useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('touchend', handleMouseUp);
-    }
+    React.useEffect(() => {
+      if (isDragging) {
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleMouseUp);
+      }
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleMouseUp);
+      };
+    }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
 
-  const childArray = React.Children.toArray(children);
-  const item1 = childArray[0];
-  const item2 = childArray[1];
+    const childArray = React.Children.toArray(children);
+    const item1 = childArray[0];
+    const item2 = childArray[1];
 
-  return (
-    <div
-      ref={containerRef}
-      className={cn(
-        'tw-reset relative inline-block overflow-hidden',
-        isDragging && 'select-none',
-        className
-      )}
-      style={{
-        isolation: 'isolate',
-      }}
-      {...props}
-    >
-      {/* Item 2 - positioned absolutely */}
-      <div className='relative'>{item2}</div>
-
-      {/* Item 1 - clipped overlay, also positioned absolutely at same location */}
-      <div
-        className='absolute inset-0 overflow-hidden'
-        style={{
-          clipPath: `inset(0 ${100 - position}% 0 0)`,
-        }}
-      >
-        <div className='absolute inset-0'>{item1}</div>
-      </div>
-
-      {/* Resizer */}
-      <div
-        className='pointer-events-none absolute inset-0 z-10'
-        style={{
-          left: `${position}%`,
-          transform: 'translateX(-50%)',
-          width: '0px',
-        }}
-      >
+    const defaultHandle = (
+      <>
         {/* Vertical line */}
         <div
           className='pointer-events-auto absolute inset-y-0 left-0 w-[2px] -translate-x-1/2 cursor-ew-resize bg-primary/80 shadow-lg'
@@ -136,10 +106,54 @@ const Diff = React.forwardRef<
             />
           </svg>
         </div>
-      </div>
-    </div>
-  );
-});
+      </>
+    );
+
+    return (
+      <figure
+        ref={containerRef}
+        className={cn(
+          'tw-reset relative m-0 inline-block overflow-hidden',
+          isDragging && 'select-none',
+          className
+        )}
+        style={{
+          isolation: 'isolate',
+        }}
+        tabIndex={0}
+        {...props}
+      >
+        {/* Item 1 */}
+        <div className='relative' role='img' tabIndex={0}>
+          {item1}
+        </div>
+
+        {/* Item 2 - clipped overlay */}
+        <div
+          className='absolute inset-0 overflow-hidden'
+          style={{
+            clipPath: `inset(0 ${100 - position}% 0 0)`,
+          }}
+          role='img'
+        >
+          <div className='absolute inset-0'>{item2}</div>
+        </div>
+
+        {/* Resizer */}
+        <div
+          className='pointer-events-none absolute inset-0 z-10'
+          style={{
+            left: `${position}%`,
+            transform: 'translateX(-50%)',
+            width: '0px',
+          }}
+        >
+          {dragHandle || defaultHandle}
+        </div>
+      </figure>
+    );
+  }
+);
 Diff.displayName = 'Diff';
 
 const DiffItem = React.forwardRef<
