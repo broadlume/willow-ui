@@ -61,13 +61,25 @@ export const ApiFilterList = ({
       return true;
     }
 
-    // If we're not in select all mode, check if some but not all visible items are selected
+    // Also check if there are any included items that are not currently visible
     if (!filterState.isSelectAll) {
       const availableItemIds = filteredItems.map((item) => item.id);
-      const selectedCount = availableItemIds.filter((id) =>
+      const visibleSelectedCount = availableItemIds.filter((id) =>
         isItemSelected(id)
       ).length;
-      return selectedCount > 0 && selectedCount < availableItemIds.length;
+      
+      // Check if there are selected items not currently visible in the filtered list
+      const hiddenSelectedItems = filterState.includeItems.filter(
+        (itemId) => !availableItemIds.includes(itemId)
+      );
+            
+      // Show indeterminate if:
+      // 1. Some visible items are selected but not all visible items, OR
+      // 2. There are selected items that are not currently visible (hidden due to pagination/search)
+      const hasPartialVisibleSelection = visibleSelectedCount > 0 && visibleSelectedCount < availableItemIds.length;
+      const hasHiddenSelectedItems = hiddenSelectedItems.length > 0;
+      
+      return hasPartialVisibleSelection || hasHiddenSelectedItems;
     }
 
     return false;
