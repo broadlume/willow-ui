@@ -54,7 +54,7 @@ export const ApiFilterList = ({
 
   // Determine select all checkbox state
   const isSelectAllIndeterminate = () => {
-    if (!filteredItems.length && filterState.includeItems.length === 0) return false;
+    if (!filteredItems.length) return false;
 
     // If we're in select all mode but have some exclusions, it's indeterminate
     if (filterState.isSelectAll && filterState.excludeItems.length > 0) {
