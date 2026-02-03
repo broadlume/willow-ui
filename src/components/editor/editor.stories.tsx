@@ -58,6 +58,7 @@ const EditorComponentWithoutAI = () => {
       autocompleteFetchOptions={fetchUsersFromApi}
       hostname='https://api.cms.my.dev.broadlume.com'
       hideAIMenu={true}
+      isShowAssetBrowseButton={false}
     />
   );
 };

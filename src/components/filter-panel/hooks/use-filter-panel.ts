@@ -198,11 +198,9 @@ export const useFilterPanel = <T extends FilterValues = FilterValues>({
             allSelected &&
             allAvailableItemIds.length === config.totalItemsCount
           ) {
-            // All items are selected and loaded, switch to select all mode
             newState = {
-              isSelectAll: true,
-              includeItems: [],
-              excludeItems: [],
+              ...currentState,
+              includeItems: [...currentState.includeItems, itemId],
             };
           }
         }
