@@ -56,6 +56,7 @@ export const SidebarSection: FC<Props> = ({
         onClick={closeAllSections}
         onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
+        openInNewTab={item.openInNewTab}
       />
     );
   }
