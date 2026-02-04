@@ -7,6 +7,7 @@ export type SidebarItemProps = {
   hidden?: boolean;
   items?: SidebarItemProps[];
   linkPattern?: string; // Support for regex pattern matching
+  openInNewTab?: boolean; // Flag to indicate if the link should open in a new tab
 };
 
 export type SidebarProps = {
@@ -17,6 +18,7 @@ export type SidebarProps = {
     children: ReactNode;
     className?: string;
     onClick?: () => void;
+    openInNewTab?: boolean;
   }) => JSX.Element;
   rightArrow?: ComponentType<{ className?: string }>;
   downArrow?: ComponentType<{ className?: string }>;

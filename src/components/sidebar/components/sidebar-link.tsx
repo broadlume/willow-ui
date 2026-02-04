@@ -12,8 +12,10 @@ type SidebarLinkProps = {
     children: React.ReactNode;
     className?: string;
     onClick?: () => void;
+    openInNewTab?: boolean;
   }) => JSX.Element;
   className?: string;
+  openInNewTab?: boolean;
 };
 
 export const SidebarLink: FC<SidebarLinkProps> = ({
@@ -24,6 +26,7 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
   hasChildren = false,
   onMenuClick,
   className = '',
+  openInNewTab = false,
 }) => {
   const linkClass = cn(
     'w-48 hover:text-text-brand',
@@ -42,5 +45,6 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
     onClick,
     className: linkClass,
     children: label,
+    openInNewTab,
   });
 };

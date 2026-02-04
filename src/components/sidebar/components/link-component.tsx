@@ -6,12 +6,14 @@ type LinkComponentProps = {
   to: string;
   className?: string;
   children: React.ReactNode;
+  openInNewTab?: boolean; // Prop to control opening in a new tab
 };
 
 export const LinkComponent: React.FC<LinkComponentProps> = ({
   to,
   className,
   children,
+  openInNewTab = false,
 }) => {
   return (
     <a
@@ -22,6 +24,10 @@ export const LinkComponent: React.FC<LinkComponentProps> = ({
         'text-text-brand hover:text-text-brand',
         className
       )}
+      {...(openInNewTab && {
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      })}
     >
       {children}
     </a>

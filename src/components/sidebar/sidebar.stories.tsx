@@ -22,6 +22,7 @@ export const Demo: Story = {
           { label: "Assign", link: `#` },
           { label: "Import", link: `#` },
           { label: "Jobs", link: `#` },
+          { label: "Feeds", link: `#`, openInNewTab: true },
           {
             label: "Admin",
             items: [
@@ -35,8 +36,8 @@ export const Demo: Story = {
       { label: "COMPANIES", link: '#' }
     ],
     location: '/',
-    onMenuClick: ({ to, children, className }) => (
-      <LinkComponent to={to} className={className} >
+    onMenuClick: ({ to, children, className, openInNewTab }) => (
+      <LinkComponent to={to} className={className} openInNewTab={openInNewTab}>
         {children}
       </LinkComponent>
     ),
