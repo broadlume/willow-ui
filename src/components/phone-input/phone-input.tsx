@@ -14,7 +14,7 @@ import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { z } from 'zod';
-import { AsYouType, parsePhoneNumber, CountryCode } from 'libphonenumber-js';
+import { AsYouType, parsePhoneNumber, parseDigits, CountryCode } from 'libphonenumber-js';
 
 interface PhoneInputProps {
   value?: string;
@@ -32,19 +32,17 @@ type CountryData = (typeof COUNTRY_CODES)[0];
 const usPhoneSchema = z.string().length(10, 'US phone number must be 10 digits');
 const otherPhoneSchema = z.string().min(5, 'Phone number must be at least 5 digits').max(15, 'Phone number cannot exceed 15 digits');
 
-const toDigits = (val: string) => val.replace(/\D/g, '').slice(0, 15);
+const toDigits = (val: string) => parseDigits(val).slice(0, 15);
 
-const extractNationalNumber = (input: string, country: CountryData): string => {
-  const clean = input.replace(/[^0-9+]/g, '');
-  if (clean.startsWith(country.dial_code)) {
-    return clean.slice(country.dial_code.length);
-  }
-  return clean.replace(/^\+/, '');
+const extractNationalNumber = (input: string, countryCode: CountryCode): string => {
+  const asYouType = new AsYouType(countryCode);
+  asYouType.input(input);
+  return asYouType.getNationalNumber() || parseDigits(input);
 };
 
-const formatNumber = (nationalNumber: string, countryCode: string): string => {
+const formatNumber = (nationalNumber: string, countryCode: CountryCode): string => {
   if (!nationalNumber) return '';
-  return new AsYouType(countryCode as CountryCode).input(nationalNumber);
+  return new AsYouType(countryCode).input(nationalNumber);
 };
 
 const detectCountry = (input: string): CountryData | undefined => {
@@ -56,7 +54,7 @@ const detectCountry = (input: string): CountryData | undefined => {
     const parsed = parsePhoneNumber(input);
     countryCode = parsed?.country;
   } catch (error) {
-    console.warn('Phone detectCountry parse failed:', error);
+    console.error('Phone detectCountry parse failed:', error);
   }
 
   if (!countryCode) {
@@ -65,25 +63,16 @@ const detectCountry = (input: string): CountryData | undefined => {
     countryCode = asYouType.getCountry();
   }
 
-  if (countryCode) {
-    return COUNTRY_CODES.find((c) => c.code === countryCode);
-  }
-
-  return undefined;
+  return countryCode ? COUNTRY_CODES.find((c) => c.code === countryCode) : undefined;
 };
 
-const deriveState = (input: string, fallback: CountryData) => {
+const parseInput = (input: string, fallback: CountryData) => {
   if (input.startsWith('+')) {
     const detected = detectCountry(input);
-    if (detected) {
-      return {
-        country: detected,
-        phoneNumber: toDigits(extractNationalNumber(input, detected)),
-      };
-    }
+    const country = detected || fallback;
     return {
-      country: fallback,
-      phoneNumber: toDigits(extractNationalNumber(input, fallback)),
+      country,
+      phoneNumber: toDigits(extractNationalNumber(input, country.code as CountryCode)),
     };
   }
   return { country: fallback, phoneNumber: toDigits(input) };
@@ -104,20 +93,20 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     [defaultCountry]
   );
 
-  const [selectedCountry, setSelectedCountry] = useState<CountryData>(() => deriveState(value, defaultCountryData).country);
-  const [phoneNumber, setPhoneNumber] = useState(() => deriveState(value, defaultCountryData).phoneNumber);
+  const [selectedCountry, setSelectedCountry] = useState<CountryData>(() => parseInput(value, defaultCountryData).country);
+  const [phoneNumber, setPhoneNumber] = useState(() => parseInput(value, defaultCountryData).phoneNumber);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const next = deriveState(value, defaultCountryData);
+    const next = parseInput(value, defaultCountryData);
     setSelectedCountry((prev) => (prev.code === next.country.code ? prev : next.country));
     setPhoneNumber((prev) => (prev === next.phoneNumber ? prev : next.phoneNumber));
   }, [value, defaultCountryData]);
 
   const formattedNumber = useMemo(
-    () => formatNumber(phoneNumber, selectedCountry.code),
+    () => formatNumber(phoneNumber, selectedCountry.code as CountryCode),
     [phoneNumber, selectedCountry.code]
   );
 
@@ -171,7 +160,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   };
 
   return (
-    <div className={classNames(className)}>
       <InputWithSlots
         error={error}
         type='tel'
@@ -179,9 +167,9 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         onChange={handlePhoneChange}
         placeholder={placeholder}
         disabled={disabled}
-        className='pl-1'
+        className={classNames('pl-1', className)}
         prefixSlot={
-          <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <Popover open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) setSearchTerm(''); }}>
             <PopoverTrigger asChild>
               <button
                 className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
@@ -227,8 +215,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           </Popover>
         }
       />
-    </div>
   );
 };
 
-export { PhoneInput };
+export { PhoneInput }

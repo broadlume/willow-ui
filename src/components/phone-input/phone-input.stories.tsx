@@ -44,7 +44,7 @@ export const Disabled: Story = {
   args: {
     placeholder: 'Enter phone number',
     disabled: true,
-    value: '+11234567890',
+    value: '+112345637890',
   },
 };
 
