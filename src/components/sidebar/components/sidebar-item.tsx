@@ -50,7 +50,7 @@ export const SidebarItem: FC<Props> = ({
         hasChildren={true}
         onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
-        openInNewTab={item.openInNewTab}
+        openInNewTab={item?.openInNewTab}
       />
     );
   }
