@@ -37,7 +37,7 @@ export const Demo: Story = {
     ],
     location: '/',
     onMenuClick: ({ to, children, className, openInNewTab }) => (
-      <LinkComponent to={to} className={className} openInNewTab={openInNewTab}>
+      <LinkComponent to={to} className={className} openInNewTab={openInNewTab as boolean}>
         {children}
       </LinkComponent>
     ),

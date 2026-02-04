@@ -45,12 +45,11 @@ export const SidebarItem: FC<Props> = ({
     return (
       <SidebarLink
         to={primaryLink}
-        label={item.label}
         isActive={isChildActive}
         hasChildren={true}
         onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
-        openInNewTab={item?.openInNewTab}
+        {...item}
       />
     );
   }

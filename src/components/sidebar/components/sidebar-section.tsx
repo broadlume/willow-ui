@@ -51,12 +51,11 @@ export const SidebarSection: FC<Props> = ({
       <SidebarLink
         key={item.label}
         to={primaryLink}
-        label={item.label}
         isActive={isActive}
         onClick={closeAllSections}
         onMenuClick={onMenuClick}
         className={className?.menuLinkClass}
-        openInNewTab={item.openInNewTab}
+        {...item}
       />
     );
   }
