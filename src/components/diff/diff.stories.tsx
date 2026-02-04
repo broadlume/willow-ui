@@ -17,14 +17,14 @@ type Story = StoryObj<typeof Diff>;
 export const ImageComparison: Story = {
   render: () => (
     <Diff className='w-[600px]'>
-      <DiffItem>
+      <DiffItem floatingLabel='Before'>
         <img
           src='https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp'
           alt='Before'
           className='block h-auto w-full object-cover'
         />
       </DiffItem>
-      <DiffItem>
+      <DiffItem floatingLabel='After'>
         <img
           src='https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp'
           alt='After'
