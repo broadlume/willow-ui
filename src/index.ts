@@ -54,6 +54,7 @@ export * from '@components/columns-manager/columns-manager';
 export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
 export * from '@components/pagination/pagination';
+export * from '@components/phone-input/phone-input';
 
 // Other stuff
 export * from '@src/lib/icons';
