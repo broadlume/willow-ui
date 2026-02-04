@@ -60,7 +60,7 @@ export const Controlled: Story = {
           onChange={setFullNumber}
           onCountryChange={setSelectedCountry}
         />
-        <div className='p-3 bg-gray-50 rounded text-sm space-y-1'>
+        <div className='p-3 rounded text-sm space-y-1'>
           <p><strong>Full Number:</strong> {fullNumber || 'N/A'}</p>
           <p><strong>Selected Country:</strong> {selectedCountry}</p>
         </div>
@@ -111,8 +111,8 @@ export const AutoDetectFromValue: Story = {
 
     return (
       <div className='space-y-4'>
-        <div className='p-4 bg-blue-50 border border-blue-200 rounded'>
-          <p className='text-sm text-blue-900'>
+        <div className='p-4  border border-border-cta rounded'>
+          <p className='text-sm'>
             <strong>Auto-Detection:</strong> Pass a phone number with country code (e.g., "+919876543210") 
             and the component automatically detects the country and formats the number.
           </p>
