@@ -93,6 +93,7 @@ export interface MenuItemRenderProps {
   setExpandedMenu?: (expanded: boolean) => void;
   expandedMenuL2?: boolean; // For More button to hide sub-menus
   setExpandedMenuL2?: Dispatch<SetStateAction<boolean>>;
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -790,8 +791,9 @@ export const getL3MenuContent = (
   ) => void,
   disableAssetImageNameClick?: boolean,
   isShowAssetEditIcon?: boolean,
-  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void
-) => {
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void,
+  isShowAssetBrowseButton?: boolean
+) => {  
   switch (expandedMenuL2Type) {
     case 'link':
       return (
@@ -932,7 +934,7 @@ export const getL3MenuContent = (
                 onAssetSelectorChange?.(editor, value);
               }}
               className='w-full'
-              showBrowseButton={true}
+              showBrowseButton={isShowAssetBrowseButton}
               fullWidth={true}
             />
           </div>

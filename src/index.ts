@@ -15,6 +15,7 @@ export * from '@components/command/command';
 export * from '@components/lazy-loaded-selector/lazy-loaded-selector';
 export * from '@components/date-picker/date-picker';
 export * from '@components/dialog/dialog';
+export * from '@components/diff/diff';
 export * from '@components/dropdown-menu/dropdown-menu';
 export * from '@components/form/form';
 export * from '@components/input/input';
@@ -54,6 +55,7 @@ export * from '@components/columns-manager/columns-manager';
 export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
 export * from '@components/pagination/pagination';
+export * from '@components/diff/diff';
 export * from '@components/phone-input/phone-input';
 
 // Other stuff

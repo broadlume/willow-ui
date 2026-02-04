@@ -84,6 +84,7 @@ export type EditorProps = {
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
   hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -287,6 +288,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 assetSelectorValue={props.assetSelectorValue}
                 onAssetSelectorValueChange={props.onAssetSelectorValueChange}
                 hideAIMenu={props.hideAIMenu}
+                isShowAssetBrowseButton={props.isShowAssetBrowseButton}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -327,6 +329,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
               assetSelectorValue={props.assetSelectorValue}
               onAssetSelectorValueChange={props.onAssetSelectorValueChange}
               hideAIMenu={props.hideAIMenu}
+              isShowAssetBrowseButton={props.isShowAssetBrowseButton}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
