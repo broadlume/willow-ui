@@ -28,7 +28,7 @@ export const Default: Story = {
 export const WithDefaultCountry: Story = {
   args: {
     placeholder: 'Enter phone number',
-    defaultCountry: 'GB',
+    defaultCountry: 'AR',
     showFlag: true,
   },
 };
@@ -84,9 +84,6 @@ export const CountryFormats: Story = {
 
     return (
       <div className='space-y-4'>
-        <p className='text-sm text-gray-600 mb-4'>
-          Each input auto-formats based on the selected country using <code>libphonenumber-js</code>.
-        </p>
         {countries.map((c) => (
           <div key={c.code}>
             <label className='block text-sm font-medium mb-1'>{c.label}</label>
@@ -101,8 +98,7 @@ export const CountryFormats: Story = {
 export const AutoDetectFromValue: Story = {
   render: () => {
     const phoneNumbers = [
-      { label: 'US', phone: '+19328656416' },
-      { label: 'UK', phone: '+447911123456' },
+      { label: 'US', phone: '+18323456789' },
       { label: 'India', phone: '+919876543210' },
       { label: 'Germany', phone: '+493012345678' },
       { label: 'France', phone: '+33612345678' },
