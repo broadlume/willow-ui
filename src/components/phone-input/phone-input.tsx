@@ -50,24 +50,23 @@ const formatNumber = (nationalNumber: string, countryCode: string): string => {
 const detectCountry = (input: string): CountryData | undefined => {
   if (!input.startsWith('+')) return undefined;
 
-  try {
-    const parsed = parsePhoneNumber(input);
-    if (parsed?.country) {
-      return COUNTRY_CODES.find((c) => c.code === parsed.country);
-    }
-  } catch (error) {
-    console.warn('Phone detectCountry strict parse failed:', error);
-  }
+  let countryCode: CountryCode | undefined;
 
   try {
+    const parsed = parsePhoneNumber(input);
+    countryCode = parsed?.country;
+  } catch (error) {
+    console.warn('Phone detectCountry parse failed:', error);
+  }
+
+  if (!countryCode) {
     const asYouType = new AsYouType();
     asYouType.input(input);
-    const countryCode = asYouType.getCountry();
-    if (countryCode) {
-      return COUNTRY_CODES.find((c) => c.code === countryCode);
-    }
-  } catch (error) {
-    console.warn('Phone detectCountry heuristic failed:', error);
+    countryCode = asYouType.getCountry();
+  }
+
+  if (countryCode) {
+    return COUNTRY_CODES.find((c) => c.code === countryCode);
   }
 
   return undefined;
@@ -191,31 +190,31 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                 {showFlag && <span className='text-base'>{selectedCountry.flag}</span>}
                 <span className='text-sm font-medium'>{selectedCountry.dial_code}</span>
                 {isOpen ? (
-                  <HiChevronUp className='h-3 w-3 opacity-50' />
+                  <HiChevronUp className='h-4 w-4 opacity-50' />
                 ) : (
-                  <HiChevronDown className='h-3 w-3 opacity-50' />
+                  <HiChevronDown className='h-4 w-4 opacity-50' />
                 )}
               </button>
             </PopoverTrigger>
-            <PopoverContent className='w-[300px] p-0' align='start'>
+            <PopoverContent className='w-75 p-0' align='start'>
               <Command>
                 <CommandInput
                   placeholder='Search country...'
                   onValueChange={setSearchTerm}
                   value={searchTerm}
                 />
-                <CommandList className='max-h-[300px]'>
+                <CommandList className='max-h-75'>
                   {filteredCountries.length > 0 ? (
                     <div className='px-2 py-1.5'>
                       {filteredCountries.map((country) => (
                         <div
                           key={country.code}
-                          className='flex items-center gap-2 px-2 py-1.5 hover:bg-slate-100 rounded-sm cursor-pointer'
+                          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
                           onClick={() => handleCountrySelect(country)}
                         >
                           {showFlag && <span className='text-lg'>{country.flag}</span>}
                           <span className='flex-1 text-sm'>{country.name}</span>
-                          <span className='text-sm text-muted-foreground'>{country.dial_code}</span>
+                          <span className='text-sm text-text-pri'>{country.dial_code}</span>
                         </div>
                       ))}
                     </div>
