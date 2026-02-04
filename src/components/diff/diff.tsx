@@ -66,8 +66,14 @@ const Diff = React.forwardRef<HTMLElement, DiffProps>(
     }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
 
     const childArray = React.Children.toArray(children);
-    const item1 = childArray[0];
-    const item2 = childArray[1];
+    const item1 = childArray[0]; // First item - shown on left (before)
+    const item2 = childArray[1]; // Second item - shown on right (after)
+
+    // Extract labels from DiffItem children
+    const item1Props = React.isValidElement(item1) ? item1.props : {};
+    const item2Props = React.isValidElement(item2) ? item2.props : {};
+    const label1 = item1Props.floatingLabel;
+    const label2 = item2Props.floatingLabel;
 
     const defaultHandle = (
       <>
@@ -123,12 +129,12 @@ const Diff = React.forwardRef<HTMLElement, DiffProps>(
         tabIndex={0}
         {...props}
       >
-        {/* Item 1 */}
+        {/* Item 2 - base layer (right/after side) */}
         <div className='relative' role='img' tabIndex={0}>
-          {item1}
+          {item2}
         </div>
 
-        {/* Item 2 - clipped overlay */}
+        {/* Item 1 - clipped overlay (left/before side) */}
         <div
           className='absolute inset-0 overflow-hidden'
           style={{
@@ -136,7 +142,7 @@ const Diff = React.forwardRef<HTMLElement, DiffProps>(
           }}
           role='img'
         >
-          <div className='absolute inset-0'>{item2}</div>
+          <div className='absolute inset-0'>{item1}</div>
         </div>
 
         {/* Resizer */}
@@ -150,18 +156,36 @@ const Diff = React.forwardRef<HTMLElement, DiffProps>(
         >
           {dragHandle || defaultHandle}
         </div>
+
+        {/* Labels positioned outside clipped areas */}
+        {label1 && (
+          <div className='absolute bg-surface-pri rounded outline-1 -outline-offset-1 outline-border-pri inline-flex justify-start items-center gap-3 bottom-4 text-icon-pri px-2 py-1 leading-3 left-4 z-20 text-xs font-medium shadow-lg backdrop-blur-sm pointer-events-none'>
+            {label1}
+          </div>
+        )}
+        {label2 && (
+          <div className='absolute bg-surface-pri rounded outline-1 -outline-offset-1 outline-border-pri inline-flex justify-start items-center gap-3 bottom-4 text-icon-pri px-2 py-1 leading-3 right-4 z-20 text-xs font-medium shadow-lg backdrop-blur-sm pointer-events-none'>
+            {label2}
+          </div>
+        )}
       </figure>
     );
   }
 );
 Diff.displayName = 'Diff';
 
-const DiffItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('tw-reset', className)} {...props} />
-));
+interface DiffItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Optional floating label to display on the item (e.g., "Before" or "After") */
+  floatingLabel?: string;
+}
+
+const DiffItem = React.forwardRef<HTMLDivElement, DiffItemProps>(
+  ({ className, floatingLabel, children, ...props }, ref) => (
+    <div ref={ref} className={cn('tw-reset relative', className)} {...props}>
+      {children}
+    </div>
+  )
+);
 DiffItem.displayName = 'DiffItem';
 
 export { Diff, DiffItem };
