@@ -1,3 +1,11 @@
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 import {
   closestCenter,
   DndContext,
@@ -7,6 +15,9 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
+  DragStartEvent,
+  DragOverlay,
+  useDndContext,
 } from '@dnd-kit/core';
 
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/list-item';
@@ -28,7 +39,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   HiChevronDown,
   HiMiniChevronLeft,
@@ -46,6 +57,7 @@ import {
 } from '../../index';
 import {
   DraggableColumnHeader,
+  ColumnHeaderOverlay,
   Table,
   TableBody,
   TableCell,
@@ -58,6 +70,32 @@ import {
   wasMultiSelectKeyUsed,
   wasToggleInSelectionGroupKeyUsed,
 } from './utils';
+
+function getInitialColumnOrder<TData, TValue>(
+  columns: ColumnDef<TData, TValue>[],
+  initialColumnOrder: string[] | undefined,
+  fixedStartColIds: string[],
+  fixedEndColIds: string[]
+): string[] {
+  if (initialColumnOrder && initialColumnOrder.length > 0) {
+    return initialColumnOrder;
+  }
+
+  const colIds = columns
+    .map((col) => {
+      if ('id' in col && col.id) return col.id as string;
+      if ('accessorKey' in col && col.accessorKey)
+        return col.accessorKey as string;
+      return '';
+    })
+    .filter(Boolean);
+
+  const draggable = colIds.filter(
+    (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+  );
+
+  return [...fixedStartColIds, ...draggable, ...fixedEndColIds];
+}
 
 export function useDataTable<TData, TValue>({
   columns,
@@ -84,20 +122,39 @@ export function useDataTable<TData, TValue>({
   /**
    * Column Ordering
    */
-  const [columnOrder, setColumnOrder] = useState<string[]>(() => []);
-  // Memoize columns to prevent re-renders, and derive initial column order
-  const { draggableColumnIds } = useMemo(() => {
-    const draggableColumnIds =
-      initialColumnOrder?.filter(
-        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
-      ) || [];
-    setColumnOrder([
-      ...fixedStartColIds,
-      ...draggableColumnIds,
-      ...fixedEndColIds,
-    ]);
-    return { fixedStartColIds, fixedEndColIds, draggableColumnIds };
+  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
+    getInitialColumnOrder(
+      columns,
+      initialColumnOrder,
+      fixedStartColIds,
+      fixedEndColIds
+    )
+  );
+
+  // Sync internal columnOrder state when initialColumnOrder prop changes externally
+  useEffect(() => {
+    if (initialColumnOrder && initialColumnOrder.length > 0) {
+      setColumnOrder(initialColumnOrder);
+    }
   }, [initialColumnOrder]);
+
+  // get draggable column IDs from columnOrder
+  const draggableColumnIds = useMemo(() => {
+    return columnOrder.filter(
+      (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+    );
+  }, [columnOrder, fixedStartColIds, fixedEndColIds]);
+
+  /**
+   * Drag State - Using ref to avoid re-renders that disrupt drag
+   */
+  const activeDragIdRef = useRef<string | null>(null);
+
+  /**
+   * Scroll Position Preservation
+   */
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
 
   /**
    * Sort
@@ -126,6 +183,25 @@ export function useDataTable<TData, TValue>({
     {}
   );
 
+  // Save scroll position before row selection changes
+  const saveScrollPosition = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollPositionRef.current = {
+        scrollTop: scrollContainerRef.current.scrollTop,
+        scrollLeft: scrollContainerRef.current.scrollLeft,
+      };
+    }
+  }, []);
+
+  // Restore scroll position after row selection changes
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current) {
+      const { scrollTop, scrollLeft } = scrollPositionRef.current;
+      scrollContainerRef.current.scrollTop = scrollTop;
+      scrollContainerRef.current.scrollLeft = scrollLeft;
+    }
+  }, [rowSelection, isSelectAllPages, excludedRowIds]);
+
   const handleSelectionReset = () => {
     setIsSelectAllPages(false);
     setExcludedRowIds({});
@@ -134,6 +210,7 @@ export function useDataTable<TData, TValue>({
 
   const handleUnselectPage = useCallback(
     (pageRows: Row<TData>[]) => {
+      saveScrollPosition();
       if (isSelectAllPages) {
         setExcludedRowIds((prev) => {
           const newExcluded = { ...prev };
@@ -155,7 +232,7 @@ export function useDataTable<TData, TValue>({
         });
       }
     },
-    [isSelectAllPages]
+    [isSelectAllPages, saveScrollPosition]
   );
 
   const handleSelectPage = useCallback(
@@ -165,6 +242,7 @@ export function useDataTable<TData, TValue>({
         handleUnselectPage(pageRows);
         return;
       }
+      saveScrollPosition();
       setExcludedRowIds({});
       const newSelection = pageRows.reduce((acc, row) => {
         acc[row.id] = true;
@@ -172,9 +250,10 @@ export function useDataTable<TData, TValue>({
       }, {} as Record<string, boolean>);
       setRowSelection((prev) => ({ ...prev, ...newSelection }));
     },
-    [handleUnselectPage]
+    [handleUnselectPage, saveScrollPosition]
   );
   const handleSelectAll = () => {
+    saveScrollPosition();
     setIsSelectAllPages(true);
     setExcludedRowIds({});
     setRowSelection({});
@@ -302,6 +381,7 @@ export function useDataTable<TData, TValue>({
   ]);
 
   const handleRowCheckboxChange = (row: Row<TData>) => {
+    saveScrollPosition();
     if (enableSingleSelection) {
       table.toggleAllRowsSelected(false);
       handleSelectPage([row], false);
@@ -392,6 +472,14 @@ export function useDataTable<TData, TValue>({
     useSensor(KeyboardSensor, {})
   );
 
+  function handleDragStart(event: DragStartEvent) {
+    activeDragIdRef.current = String(event.active.id);
+  }
+
+  function handleDragCancel() {
+    activeDragIdRef.current = null;
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -417,9 +505,22 @@ export function useDataTable<TData, TValue>({
           return updatedArray;
         });
       }
-      return;
     }
   }
+
+  const DragOverlayContent = () => {
+    const { active } = useDndContext();
+
+    if (!active) return null;
+
+    const activeId = String(active.id);
+    const headers = table.getHeaderGroups().flatMap((group) => group.headers);
+    const header = headers.find((h) => h.id === activeId);
+
+    if (!header) return null;
+
+    return <ColumnHeaderOverlay header={header} itemProps={itemProps} />;
+  };
 
   const toggleSelection = (row: Row<TData>) => {
     handleRowCheckboxChange(row);
@@ -509,6 +610,7 @@ export function useDataTable<TData, TValue>({
         </div>
       ) : (
         <div
+          ref={scrollContainerRef}
           {...(({ enableStickyHeader, ...rest }) => rest)(
             itemProps?.tableWrapper || {}
           )}
@@ -524,7 +626,9 @@ export function useDataTable<TData, TValue>({
         >
           <DndContext
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
             sensors={sensors}
           >
             <Table
@@ -637,6 +741,10 @@ export function useDataTable<TData, TValue>({
                 )}
               </TableBody>
             </Table>
+
+            <DragOverlay>
+              <DragOverlayContent />
+            </DragOverlay>
           </DndContext>
         </div>
       )}
@@ -674,7 +782,11 @@ export function useDataTable<TData, TValue>({
                 className={clsx(
                   // Always add padding-left to the first cell to reserve space
                   // and position the cell relatively for the absolute span.
-                  isFirstCell ? 'relative first:pl-[30px]' : '', // Adjust 30px based on icon size
+                  isFirstCell
+                    ? enableRowSelection
+                      ? 'relative first:pl-[30px]'
+                      : 'first:pl-[16px]'
+                    : '', // Adjust 30px based on icon size
                   'last:px-3',
                   itemProps?.tableCell?.className
                 )}

@@ -61,7 +61,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
     label,
     wrapperProps,
     ...inputProps
-  }) => {
+  }, ref) => {
     return (
       <div className={cn('flex flex-col', classes?.textFieldWrapClass)}>
         {label && (
@@ -102,6 +102,7 @@ const InputWithSlots = React.forwardRef<HTMLInputElement, InputWithSlotsProps>(
         >
           {prefixSlot && prefixSlot}
           <Input
+            ref={ref} 
             {...inputProps}
             className={clsx(
               'flex-1 border-0 bg-transparent p-0 disabled:bg-transparent',

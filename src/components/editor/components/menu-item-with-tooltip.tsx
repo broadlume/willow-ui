@@ -9,17 +9,15 @@ import {
 interface MenuItemWithTooltipProps {
   children: React.ReactNode;
   tooltipContent: string;
-  key?: string | number;
 }
 
 export const MenuItemWithTooltip: React.FC<MenuItemWithTooltipProps> = ({
   children,
   tooltipContent,
-  key,
 }) => {
   return (
     <TooltipProvider>
-      <Tooltip key={key}>
+      <Tooltip>
         <TooltipTrigger className='~mt-1' type='button'>
           {children}
         </TooltipTrigger>

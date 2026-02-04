@@ -27,6 +27,34 @@ interface MenuProps {
   toggleDarkMode?: () => void;
   className?: string;
   hostname: string;
+  onImageBrowseClick?: (
+    editor: Editor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void; // Callback for custom asset manager integration with URL and metadata setter
+  onImageDrop?: (
+    editor: Editor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void; // Callback for custom file drop handling
+  onImageNameClick?: (
+    editor: Editor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void; // Callback for when image name is clicked
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
+  assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
+  onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu button,
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -46,6 +74,16 @@ export const Menu = ({
   darkMode,
   toggleDarkMode,
   hostname,
+  onImageBrowseClick,
+  onImageDrop,
+  onImageNameClick,
+  disableAssetImageNameClick,
+  isShowAssetEditIcon,
+  onAssetSelectorChange,
+  assetSelectorValue,
+  onAssetSelectorValueChange,
+  hideAIMenu,
+  isShowAssetBrowseButton = true
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -53,7 +91,23 @@ export const Menu = ({
   const [fontColor, setFontColor] = useState('#000000');
   const [l2Link, setL2Link] = useState<string>();
   const [l2EmbedLink, setL2EmbedLink] = useState<string>();
-  const [l2Image, setL2Image] = useState<string>();
+  const [l2Image, setL2Image] = useState<string>(assetSelectorValue || '');
+  const [l2ImageMetadata, setL2ImageMetadata] =
+    useState<Record<string, string>>();
+
+  // Sync external assetSelectorValue with internal l2Image state
+  useEffect(() => {
+    setL2Image(assetSelectorValue || '');
+  }, [assetSelectorValue]);
+
+  // Create a wrapper for setL2Image that calls the external callback
+  const handleSetL2Image = useCallback(
+    (value: string) => {
+      setL2Image(value);
+      onAssetSelectorValueChange?.(value);
+    },
+    [onAssetSelectorValueChange]
+  );
 
   const menuRef = useRef<HTMLDivElement>(null);
   const [availableWidth, setAvailableWidth] = useState(0);
@@ -106,7 +160,10 @@ export const Menu = ({
     const tempHidden: MenuItemDefinition[] = [];
 
     // Iterate through all menu items and decide where to place them
-    for (const item of getAllMenuItems()) {
+    const allMenuItems = getAllMenuItems().filter(
+      (item) => !(hideAIMenu && item.id === 'ai-button')
+    );
+    for (const item of allMenuItems) {
       // Estimate item width, including a gap if it's not the first item
       const itemRenderedWidth = item.widthEstimate + GAP_WIDTH;
 
@@ -140,7 +197,7 @@ export const Menu = ({
 
     setVisibleItems(tempVisible);
     setHiddenItems(tempHidden);
-  }, [availableWidth]);
+  }, [availableWidth, hideAIMenu]);
 
   const commonMenuItemProps: MenuItemRenderProps = {
     editor,
@@ -159,10 +216,19 @@ export const Menu = ({
     setL2EmbedLink,
     l2Image,
     setL2Image,
+    l2ImageMetadata,
+    setL2ImageMetadata,
+    onImageBrowseClick,
+    onImageDrop,
+    onImageNameClick,
+    disableAssetImageNameClick,
+    isShowAssetEditIcon,
+    onAssetSelectorChange,
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
     setExpandedMenuL2,
+    isShowAssetBrowseButton
   };
 
   return (
@@ -275,8 +341,17 @@ export const Menu = ({
           l2EmbedLink,
           setL2EmbedLink,
           l2Image,
-          setL2Image,
-          setExpandedMenuL2
+          handleSetL2Image,
+          l2ImageMetadata,
+          setL2ImageMetadata,
+          setExpandedMenuL2,
+          onImageBrowseClick,
+          onImageDrop,
+          onImageNameClick,
+          disableAssetImageNameClick,
+          isShowAssetEditIcon,
+          onAssetSelectorChange,
+          isShowAssetBrowseButton
         )}
       </div>
       {/* Expanded Menu L2*/}

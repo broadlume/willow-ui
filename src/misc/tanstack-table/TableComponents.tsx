@@ -11,7 +11,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className='relative w-full overflow-x-auto'>
+  <div className='relative w-full'>
     <table
       ref={ref}
       className={clsx('w-full caption-bottom text-sm', className)}
@@ -88,7 +88,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground text-left align-middle text-sm font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
+      'text-muted-foreground text-left align-middle text-sm px-1 font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
       '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-4', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}
@@ -104,7 +104,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={clsx(
-      'py-2 align-middle [&:has([role=checkbox])]:px-[16px] ',
+      'py-2 px-1 align-middle [&:has([role=checkbox])]:px-[16px] ',
       '[&:has([role=checkbox])>button[role=checkbox]]:align-text-bottom',
       className
     )}
@@ -141,6 +141,7 @@ const DraggableColumnHeader = <TData, TValue>({
     transform,
     transition,
     isDragging,
+    isOver,
   } = useSortable({
     id: header.column.id,
     disabled: !isDraggable,
@@ -166,8 +167,15 @@ const DraggableColumnHeader = <TData, TValue>({
       // colSpan={header.colSpan}
       {...itemProps?.tableHead}
       className={clsx(
-        'py-3 text-text-pri',
+        'py-3 text-text-pri transition-all duration-200',
         'last:[>td]:justify-center',
+        {
+          // Uncomment this line if you want to show background when dragging
+          // 'bg-surface-cta-bg': isDragging,
+          'bg-blue-50/20 border-l-2 border-l-surface-cta':
+            isOver && !isDragging,
+          'hover:bg-gray-50': isDraggable && !isDragging && !isOver,
+        },
         itemProps?.tableHead?.className
       )}
     >
@@ -178,11 +186,11 @@ const DraggableColumnHeader = <TData, TValue>({
         onClick={header.column.getToggleSortingHandler()}
         className={clsx(
           'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
-          '',
           {
-            'cursor-pointer select-none': header.column.getCanSort(),
+            'cursor-pointer select-none':
+              header.column.getCanSort() && !isDragging,
             'cursor-grab': isDraggable && !isDragging,
-            'cursor-move': !isDragging,
+            'cursor-grabbing': isDragging,
           }
         )}
         // for checked commented this code in future we remove this
@@ -197,26 +205,63 @@ const DraggableColumnHeader = <TData, TValue>({
               data-testid={'data-table-header-asc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'asc'}
               className={clsx(
-                '-mb-1  h-4 w-4 text-text-pri',
-                header.column.getIsSorted() === 'asc'
-                  ? 'opacity-100'
-                  : 'opacity-40'
+                '-mb-1 h-4 w-4 text-text-pri',
+                header.column.getIsSorted() === 'asc' && 'opacity-100',
+                header.column.getIsSorted() !== 'asc' && 'opacity-40'
               )}
             />
             <HiMiniChevronDown
               data-testid={'data-table-header-desc-' + header.column.id}
               data-sortactive={header.column.getIsSorted() === 'desc'}
-              className={clsx(
-                ' -mb-[2px] h-4 w-4 text-text-pri',
-                header.column.getIsSorted() === 'desc'
-                  ? 'opacity-100'
-                  : 'opacity-40'
-              )}
+              className={clsx('-mb-[2px] h-4 w-4 text-text-pri', {
+                'opacity-100': header.column.getIsSorted() === 'desc',
+                'opacity-40': header.column.getIsSorted() !== 'desc',
+              })}
             />
           </div>
         ) : null}
       </TableCell>
     </TableHead>
+  );
+};
+
+export const ColumnHeaderOverlay = <TData, TValue>({
+  header,
+  itemProps,
+}: {
+  header: Header<TData, TValue>;
+  itemProps: DataTableProps<TData, TValue>['itemProps'];
+}) => {
+  return (
+    <div
+      className={clsx(
+        'flex items-center gap-2 border border-gray-300 bg-white px-4 py-3 font-semibold text-text-pri shadow-xl opacity-90 cursor-grabbing rounded-md whitespace-nowrap',
+        itemProps?.tableHead?.className,
+        `${header.getSize()}px`
+      )}
+    >
+      {header.isPlaceholder
+        ? null
+        : flexRender(header.column.columnDef.header, header.getContext())}
+
+      {header.column.getCanSort() ? (
+        <div className='flex h-4 flex-col items-center ml-auto'>
+          <HiMiniChevronUp
+            className={clsx(
+              '-mb-1 h-4 w-4 text-text-pri',
+              header.column.getIsSorted() === 'asc' && 'opacity-100',
+              header.column.getIsSorted() !== 'asc' && 'opacity-40'
+            )}
+          />
+          <HiMiniChevronDown
+            className={clsx('-mb-[2px] h-4 w-4 text-text-pri', {
+              'opacity-100': header.column.getIsSorted() === 'desc',
+              'opacity-40': header.column.getIsSorted() !== 'desc',
+            })}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 };
 

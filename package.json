@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.12",
+  "version": "1.0.54",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -146,7 +146,6 @@
     "@tiptap/extension-floating-menu": "^2.10.3",
     "@tiptap/extension-gapcursor": "^2.14.0",
     "@tiptap/extension-highlight": "^2.10.3",
-    "@tiptap/extension-image": "^2.12.0",
     "@tiptap/extension-link": "^2.10.3",
     "@tiptap/extension-placeholder": "^2.11.5",
     "@tiptap/extension-table": "^2.10.3",
@@ -168,10 +167,12 @@
     "date-fns": "^2.30.0",
     "emmet-monaco-es": "^5.5.0",
     "lucide-react": "^0.245.0",
+    "marked": "^17.0.1",
     "prosemirror-autocomplete": "^0.4.3",
     "react-data-table-component": "^7.7.0",
     "react-day-picker": "^8.8.0",
     "react-hook-form": "^7.49.3",
+    "react-hotkeys-hook": "^5.2.1",
     "react-icons": "^4.10.1",
     "react-resizable-panels": "^1.0.9",
     "react-resize-detector": "^10.0.1",
@@ -179,7 +180,8 @@
     "styled-components": "^6.1.1",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
-    "tippy.js": "^6.3.7"
+    "tippy.js": "^6.3.7",
+    "zustand": "^5.0.8"
   },
   "bugs": {
     "url": "https://github.com/broadlume/willow-ui/issues"

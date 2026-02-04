@@ -10,7 +10,6 @@ import clsx from 'clsx';
 // Extensions
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
 import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
@@ -28,6 +27,7 @@ import Gapcursor from '@tiptap/extension-gapcursor';
 import { Video } from './extensions/video';
 import { LineHeight } from './extensions/line-height';
 import { Indentation } from './extensions/indentation';
+import { CustomImage } from './extensions/custom-image';
 
 // Custom Nodes
 // import { AutocompleteNode } from './nodes/autocomplete-node';
@@ -54,6 +54,37 @@ export type EditorProps = {
     query: string
   ) => Promise<{ label: string; value: string }[]>;
   hostname: string;
+  onImageBrowseClick?: (
+    editor: TiptapEditor,
+    setImageData: (data: {
+      url: string;
+      metadata?: Record<string, string>;
+    }) => void
+  ) => void; // Callback for custom asset manager integration with URL and metadata setter
+  onImageDrop?: (
+    editor: TiptapEditor,
+    file: File,
+    setUrl: (url: string) => void
+  ) => void; // Callback for custom file drop handling
+  onImageNameClick?: (
+    editor: TiptapEditor,
+    imageData: {
+      name: string | null;
+      url: string | null;
+      size: number | null;
+      file: File | null;
+    }
+  ) => void; // Callback for when image name is clicked
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  onAssetSelectorChange?: (
+    editor: TiptapEditor,
+    value: File | string | null
+  ) => void; // Callback when MiniAssetSelector value changes
+  assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
+  onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -82,10 +113,15 @@ export const Editor: React.FC<EditorProps> = (props) => {
   const extensions = [
     StarterKit.configure({
       gapcursor: false,
+      paragraph: {
+        HTMLAttributes: {
+          style: 'min-height: 1.5em; white-space: pre-wrap;',
+        },
+      },
     }),
     Gapcursor,
     Link.configure({ openOnClick: true }),
-    Image,
+    CustomImage,
     Table.configure({ resizable: true }),
     TableRow,
     TableCell,
@@ -243,6 +279,16 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
                 hostname={props.hostname}
+                onImageBrowseClick={props.onImageBrowseClick}
+                onImageDrop={props.onImageDrop}
+                onImageNameClick={props.onImageNameClick}
+                disableAssetImageNameClick={props.disableAssetImageNameClick}
+                isShowAssetEditIcon={props.isShowAssetEditIcon}
+                onAssetSelectorChange={props.onAssetSelectorChange}
+                assetSelectorValue={props.assetSelectorValue}
+                onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+                hideAIMenu={props.hideAIMenu}
+                isShowAssetBrowseButton={props.isShowAssetBrowseButton}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -274,6 +320,16 @@ export const Editor: React.FC<EditorProps> = (props) => {
               darkMode={darkMode}
               toggleDarkMode={() => setDarkMode((v) => !v)}
               hostname={props.hostname}
+              onImageBrowseClick={props.onImageBrowseClick}
+              onImageDrop={props.onImageDrop}
+              onImageNameClick={props.onImageNameClick}
+              disableAssetImageNameClick={props.disableAssetImageNameClick}
+              isShowAssetEditIcon={props.isShowAssetEditIcon}
+              onAssetSelectorChange={props.onAssetSelectorChange}
+              assetSelectorValue={props.assetSelectorValue}
+              onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+              hideAIMenu={props.hideAIMenu}
+              isShowAssetBrowseButton={props.isShowAssetBrowseButton}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,
