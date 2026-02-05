@@ -116,7 +116,7 @@ export const AutoDetectFromValue: Story = {
       { label: 'France', phone: '+33612345678' },
       { label: 'Australia', phone: '+61412345678' },
       { label: 'Canada', phone: '+14165550123' },
-      { label: 'Japan', phone: '+810901234567' },
+      { label: 'Japan', phone: '+8109901234567' },
       { label: 'Brazil', phone: '+5511987654321' },
       { label: 'China', phone: '+8613812345678' },
     ];

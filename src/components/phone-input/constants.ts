@@ -1,6 +1,5 @@
-import { z } from 'zod';
 import { AsYouType, parsePhoneNumber, CountryCode } from 'libphonenumber-js';
-import { COUNTRY_CODES, getValidationForCountry } from './countryCodes';
+import { COUNTRY_CODES } from './countryCodes';
 import { InputWithSlots } from '../input/InputWithSlots';
 
 export type PhoneInputProps = Parameters<typeof InputWithSlots>[0] & {
@@ -28,15 +27,6 @@ export interface CountryDisplayProps {
   nameClassName?: string;
   dialCodeClassName?: string;
 }
-
-export const getPhoneSchema = (countryCode: string) => {
-  const { minDigits, maxDigits } = getValidationForCountry(countryCode);
-
-  return z
-    .string()
-    .min(minDigits, `Phone number must be at least ${minDigits} digits`)
-    .max(maxDigits, `Phone number cannot exceed ${maxDigits} digits`);
-};
 
 export const toDigits = (val: string) => val.replace(/\D/g, '').slice(0, 15);
 

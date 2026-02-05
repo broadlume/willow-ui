@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export const COUNTRY_CODES = [
   {
     name: 'Afghanistan',
@@ -1479,16 +1481,15 @@ export const COUNTRY_CODES = [
 
 export const DEFAULT_COUNTRY_CODE = 'US';
 
-export const PHONE_VALIDATION: Record<
-  string,
-  { minDigits: number; maxDigits: number }
-> = {
-  US: { minDigits: 10, maxDigits: 10 },
-  CA: { minDigits: 10, maxDigits: 10 },
+export const PHONE_VALIDATION: Record<string, z.ZodSchema> = {
+  US: z.string().length(10, 'US phone number must be 10 digits'),
+  CA: z.string().length(10, 'Canada phone number must be 10 digits'),
 };
 
-export const DEFAULT_VALIDATION = { minDigits: 5, maxDigits: 15 };
+export const DEFAULT_PHONE_SCHEMA = z.string()
+  .min(5, 'Phone number must be at least 5 digits')
+  .max(15, 'Phone number cannot exceed 15 digits');
 
 export const getValidationForCountry = (countryCode: string) => {
-  return PHONE_VALIDATION[countryCode] || DEFAULT_VALIDATION;
+  return PHONE_VALIDATION[countryCode] || DEFAULT_PHONE_SCHEMA;
 };

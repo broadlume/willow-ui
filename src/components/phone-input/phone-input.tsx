@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from './countryCodes';
+import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, getValidationForCountry } from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { parsePhoneNumber, CountryCode } from 'libphonenumber-js';
@@ -19,7 +19,6 @@ import {
   CountryData,
   CountryListProps,
   CountryDisplayProps,
-  getPhoneSchema,
   toDigits,
   formatNumber,
   parseInput,
@@ -143,7 +142,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       console.warn('Phone validate parse failed:', error);
     }
 
-    const schema = getPhoneSchema(countryCode);
+    const schema = getValidationForCountry(countryCode);
     const result = schema.safeParse(number);
     setInternalError(result.success ? '' : result.error.errors[0].message);
   }, []);
