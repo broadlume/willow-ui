@@ -6,12 +6,13 @@ type LinkComponentProps = {
   to: string;
   className?: string;
   children: React.ReactNode;
-};
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className' | 'children'>;
 
 export const LinkComponent: React.FC<LinkComponentProps> = ({
   to,
   className,
   children,
+  ...anchorProps
 }) => {
   return (
     <a
@@ -22,6 +23,7 @@ export const LinkComponent: React.FC<LinkComponentProps> = ({
         'text-text-brand hover:text-text-brand',
         className
       )}
+      {...anchorProps}
     >
       {children}
     </a>

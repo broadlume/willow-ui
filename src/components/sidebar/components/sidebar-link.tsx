@@ -12,8 +12,10 @@ type SidebarLinkProps = {
     children: React.ReactNode;
     className?: string;
     onClick?: () => void;
+    [key: string]: unknown; // Allow additional properties
   }) => JSX.Element;
   className?: string;
+  [key: string]: unknown; // Allow additional properties
 };
 
 export const SidebarLink: FC<SidebarLinkProps> = ({
@@ -24,6 +26,7 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
   hasChildren = false,
   onMenuClick,
   className = '',
+  ...props
 }) => {
   const linkClass = cn(
     'w-48 hover:text-text-brand',
@@ -42,5 +45,6 @@ export const SidebarLink: FC<SidebarLinkProps> = ({
     onClick,
     className: linkClass,
     children: label,
+    ...props
   });
 };

@@ -7,6 +7,7 @@ export type SidebarItemProps = {
   hidden?: boolean;
   items?: SidebarItemProps[];
   linkPattern?: string; // Support for regex pattern matching
+  [key: string]: unknown; // Allow additional properties
 };
 
 export type SidebarProps = {
@@ -17,6 +18,7 @@ export type SidebarProps = {
     children: ReactNode;
     className?: string;
     onClick?: () => void;
+    [key: string]: unknown;
   }) => JSX.Element;
   rightArrow?: ComponentType<{ className?: string }>;
   downArrow?: ComponentType<{ className?: string }>;
