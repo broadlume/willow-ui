@@ -6,14 +6,13 @@ type LinkComponentProps = {
   to: string;
   className?: string;
   children: React.ReactNode;
-  openInNewTab?: boolean; // Prop to control opening in a new tab
-};
+} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className' | 'children'>;
 
 export const LinkComponent: React.FC<LinkComponentProps> = ({
   to,
   className,
   children,
-  openInNewTab = false,
+  ...anchorProps
 }) => {
   return (
     <a
@@ -24,10 +23,7 @@ export const LinkComponent: React.FC<LinkComponentProps> = ({
         'text-text-brand hover:text-text-brand',
         className
       )}
-      {...(openInNewTab && {
-        target: '_blank',
-        rel: 'noopener noreferrer'
-      })}
+      {...anchorProps}
     >
       {children}
     </a>

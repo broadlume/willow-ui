@@ -22,7 +22,7 @@ export const Demo: Story = {
           { label: "Assign", link: `#` },
           { label: "Import", link: `#` },
           { label: "Jobs", link: `#` },
-          { label: "Feeds", link: `#`, openInNewTab: true },
+          { label: "Feeds", link: `https://dev.my.broadlume.com`, target: '_blank' },
           {
             label: "Admin",
             items: [
@@ -36,8 +36,8 @@ export const Demo: Story = {
       { label: "COMPANIES", link: '#' }
     ],
     location: '/',
-    onMenuClick: ({ to, children, className, openInNewTab }) => (
-      <LinkComponent to={to} className={className} openInNewTab={openInNewTab as boolean}>
+    onMenuClick: ({ to, children, className, ...props }) => (
+      <LinkComponent to={to} className={className} {...props}>
         {children}
       </LinkComponent>
     ),
