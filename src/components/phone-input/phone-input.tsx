@@ -13,69 +13,63 @@ import {
 import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
-import { z } from 'zod';
-import { AsYouType, parsePhoneNumber, parseDigits, CountryCode } from 'libphonenumber-js';
+import { parsePhoneNumber, CountryCode } from 'libphonenumber-js';
+import {
+  PhoneInputProps,
+  CountryData,
+  CountryListProps,
+  CountryDisplayProps,
+  usPhoneSchema,
+  otherPhoneSchema,
+  toDigits,
+  formatNumber,
+  parseInput,
+} from './constants';
 
-interface PhoneInputProps {
-  value?: string;
-  onChange?: (value: string) => void;
-  onCountryChange?: (countryCode: string) => void;
-  defaultCountry?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  className?: string;
-  showFlag?: boolean;
-}
+const CountryDisplay: React.FC<CountryDisplayProps> = ({
+  country,
+  showFlag,
+  showName = false,
+  showDialCode = false,
+  flagClassName = 'text-base',
+  nameClassName = 'flex-1 text-sm',
+  dialCodeClassName = 'text-sm text-text-pri',
+}) => (
+  <>
+    {showFlag && <span className={flagClassName}>{country.flag}</span>}
+    {showName && <span className={nameClassName}>{country.name}</span>}
+    {showDialCode && <span className={dialCodeClassName}>{country.dial_code}</span>}
+  </>
+);
 
-type CountryData = (typeof COUNTRY_CODES)[0];
-
-const usPhoneSchema = z.string().length(10, 'US phone number must be 10 digits');
-const otherPhoneSchema = z.string().min(5, 'Phone number must be at least 5 digits').max(15, 'Phone number cannot exceed 15 digits');
-
-const toDigits = (val: string) => parseDigits(val).slice(0, 15);
-
-const extractNationalNumber = (input: string, countryCode: CountryCode): string => {
-  const asYouType = new AsYouType(countryCode);
-  asYouType.input(input);
-  return asYouType.getNationalNumber() || parseDigits(input);
-};
-
-const formatNumber = (nationalNumber: string, countryCode: CountryCode): string => {
-  if (!nationalNumber) return '';
-  return new AsYouType(countryCode).input(nationalNumber);
-};
-
-const detectCountry = (input: string): CountryData | undefined => {
-  if (!input.startsWith('+')) return undefined;
-
-  let countryCode: CountryCode | undefined;
-
-  try {
-    const parsed = parsePhoneNumber(input);
-    countryCode = parsed?.country;
-  } catch (error) {
-    console.error('Phone detectCountry parse failed:', error);
+const CountryList: React.FC<CountryListProps> = ({
+  countries,
+  showFlag,
+  onSelect,
+}) => {
+  if (countries.length === 0) {
+    return <div className='py-6 text-center text-sm'>No country found.</div>;
   }
 
-  if (!countryCode) {
-    const asYouType = new AsYouType();
-    asYouType.input(input);
-    countryCode = asYouType.getCountry();
-  }
-
-  return countryCode ? COUNTRY_CODES.find((c) => c.code === countryCode) : undefined;
-};
-
-const parseInput = (input: string, fallback: CountryData) => {
-  if (input.startsWith('+')) {
-    const detected = detectCountry(input);
-    const country = detected || fallback;
-    return {
-      country,
-      phoneNumber: toDigits(extractNationalNumber(input, country.code as CountryCode)),
-    };
-  }
-  return { country: fallback, phoneNumber: toDigits(input) };
+  return (
+    <div className='px-2 py-1.5'>
+      {countries.map((country) => (
+        <div
+          key={country.code}
+          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
+          onClick={() => onSelect(country)}
+        >
+          <CountryDisplay 
+            country={country} 
+            showFlag={showFlag} 
+            showName 
+            showDialCode
+            flagClassName='text-lg'
+          />
+        </div>
+      ))}
+    </div>
+  );
 };
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
@@ -87,6 +81,15 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   disabled = false,
   className = '',
   showFlag = true,
+  error: externalError,
+  label,
+  dirty,
+  invalid,
+  postfixSlot,
+  classes,
+  tooltip,
+  wrapperProps,
+  ...additionalProps
 }) => {
   const defaultCountryData = useMemo(
     () => COUNTRY_CODES.find((c) => c.code === defaultCountry) || COUNTRY_CODES[0],
@@ -97,7 +100,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const [phoneNumber, setPhoneNumber] = useState(() => parseInput(value, defaultCountryData).phoneNumber);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState('');
+  const [internalError, setInternalError] = useState('');
 
   useEffect(() => {
     const next = parseInput(value, defaultCountryData);
@@ -123,14 +126,14 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const validate = useCallback((number: string, countryCode: string) => {
     if (!number) {
-      setError('');
+      setInternalError('');
       return;
     }
 
     try {
       const parsed = parsePhoneNumber(number, countryCode as CountryCode);
       if (parsed?.isValid()) {
-        setError('');
+        setInternalError('');
         return;
       }
     } catch (error) {
@@ -139,7 +142,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
     const schema = countryCode === 'US' ? usPhoneSchema : otherPhoneSchema;
     const result = schema.safeParse(number);
-    setError(result.success ? '' : result.error.errors[0].message);
+    setInternalError(result.success ? '' : result.error.errors[0].message);
   }, []);
 
   useEffect(() => {
@@ -159,15 +162,25 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     onChange?.(`${selectedCountry.dial_code}${digits}`);
   };
 
+  const displayError = externalError || internalError;
+
   return (
       <InputWithSlots
-        error={error}
+        {...additionalProps}
+        error={displayError}
         type='tel'
         value={formattedNumber || phoneNumber}
         onChange={handlePhoneChange}
         placeholder={placeholder}
         disabled={disabled}
         className={classNames('pl-1', className)}
+        label={label}
+        dirty={dirty}
+        invalid={invalid}
+        postfixSlot={postfixSlot}
+        classes={classes}
+        tooltip={tooltip}
+        wrapperProps={wrapperProps}
         prefixSlot={
           <Popover open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) setSearchTerm(''); }}>
             <PopoverTrigger asChild>
@@ -175,8 +188,12 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                 className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
                 disabled={disabled}
               >
-                {showFlag && <span className='text-base'>{selectedCountry.flag}</span>}
-                <span className='text-sm font-medium'>{selectedCountry.dial_code}</span>
+                <CountryDisplay 
+                  country={selectedCountry} 
+                  showFlag={showFlag} 
+                  showDialCode 
+                  dialCodeClassName='text-sm font-medium'
+                />
                 {isOpen ? (
                   <HiChevronUp className='h-4 w-4 opacity-50' />
                 ) : (
@@ -192,23 +209,11 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                   value={searchTerm}
                 />
                 <CommandList className='max-h-75'>
-                  {filteredCountries.length > 0 ? (
-                    <div className='px-2 py-1.5'>
-                      {filteredCountries.map((country) => (
-                        <div
-                          key={country.code}
-                          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
-                          onClick={() => handleCountrySelect(country)}
-                        >
-                          {showFlag && <span className='text-lg'>{country.flag}</span>}
-                          <span className='flex-1 text-sm'>{country.name}</span>
-                          <span className='text-sm text-text-pri'>{country.dial_code}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className='py-6 text-center text-sm'>No country found.</div>
-                  )}
+                  <CountryList
+                    countries={filteredCountries}
+                    showFlag={showFlag}
+                    onSelect={handleCountrySelect}
+                  />
                 </CommandList>
               </Command>
             </PopoverContent>

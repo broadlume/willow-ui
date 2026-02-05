@@ -85,10 +85,12 @@ export const CountryFormats: Story = {
     return (
       <div className='space-y-4'>
         {countries.map((c) => (
-          <div key={c.code}>
-            <label className='block text-sm font-medium mb-1'>{c.label}</label>
-            <PhoneInput defaultCountry={c.code} placeholder={c.placeholder} />
-          </div>
+          <PhoneInput 
+            key={c.code}
+            defaultCountry={c.code} 
+            placeholder={c.placeholder}
+            label={c.label}
+          />
         ))}
       </div>
     );
@@ -118,12 +120,11 @@ export const AutoDetectFromValue: Story = {
           </p>
         </div>
         {phoneNumbers.map((item) => (
-          <div key={item.phone}>
-            <label className='block text-sm font-medium mb-1'>
-              {item.label}: <span className='text-gray-500 font-mono text-xs'>{item.phone}</span>
-            </label>
-            <PhoneInput value={item.phone} />
-          </div>
+          <PhoneInput 
+            key={item.phone}
+            value={item.phone} 
+            label={`${item.label}: ${item.phone}`}
+          />
         ))}
       </div>
     );
