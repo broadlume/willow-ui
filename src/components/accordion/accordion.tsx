@@ -27,16 +27,16 @@ const variantStyles = {
     item: 'border-b',
   },
   bordered: {
-    root: 'border border-b rounded-2xl shadow-sm overflow-hidden',
+    root: 'border border-b rounded-2xl shadow-sm',
     header: 'p-4',
     content: 'pt-0 pb-4 px-4',
-    item: 'border-b last:border-b-0 first:rounded-t-lg last:rounded-b-lg overflow-hidden',
+    item: 'border-b last:border-b-0 first:rounded-t-lg last:rounded-b-lg',
   },
   separated: {
     root: 'space-y-4 rounded-2xl',
     header: 'p-4',
     content: 'border-t p-4',
-    item: 'border border-t rounded-2xl overflow-hidden shadow-sm',
+    item: 'border border-t rounded-2xl shadow-sm',
   },
 } as const;
 
@@ -192,7 +192,7 @@ const AccordionContent = React.forwardRef<
     <AccordionPrimitive.Content
       ref={ref}
       className={cn(
-        'overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
+        'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
       )}
       {...props}
     >

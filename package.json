@@ -1,7 +1,7 @@
 {
   "name": "@broadlume/willow-ui",
   "main": "./src/index.ts",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "author": {
     "name": "dreadhalor",
     "url": "https://scotthetrick.com"
@@ -166,6 +166,7 @@
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "emmet-monaco-es": "^5.5.0",
+    "libphonenumber-js": "^1.12.36",
     "lucide-react": "^0.245.0",
     "marked": "^17.0.1",
     "prosemirror-autocomplete": "^0.4.3",

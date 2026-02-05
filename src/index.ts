@@ -56,6 +56,7 @@ export * from '@components/filter-panel/filter-panel';
 export * from '@components/filter-panel/types';
 export * from '@components/pagination/pagination';
 export * from '@components/diff/diff';
+export * from '@components/phone-input/phone-input';
 
 // Other stuff
 export * from '@src/lib/icons';
