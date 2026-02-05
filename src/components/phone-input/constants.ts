@@ -1,27 +1,16 @@
 import { z } from 'zod';
-import { AsYouType, parsePhoneNumber, parseDigits, CountryCode } from 'libphonenumber-js';
-import { COUNTRY_CODES } from './countryCodes';
-import React from 'react';
+import { AsYouType, parsePhoneNumber, CountryCode } from 'libphonenumber-js';
+import { COUNTRY_CODES, getValidationForCountry } from './countryCodes';
+import { InputWithSlots } from '../input/InputWithSlots';
 
-export interface PhoneInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+export type PhoneInputProps =  Parameters<typeof InputWithSlots>[0] & {
   value?: string;
   onChange?: (value: string) => void;
   onCountryChange?: (countryCode: string) => void;
   defaultCountry?: string;
   showFlag?: boolean;
-  label?: string;
-  error?: string;
-  dirty?: boolean;
-  invalid?: boolean;
-  postfixSlot?: React.ReactNode;
-  classes?: {
-    labelClass?: string;
-    textFieldWrapClass?: string;
-    inputClass?: string;
-  };
-  tooltip?: JSX.Element;
-  wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
-}
+};
+
 
 export type CountryData = (typeof COUNTRY_CODES)[0];
 
@@ -41,15 +30,24 @@ export interface CountryDisplayProps {
   dialCodeClassName?: string;
 }
 
-export const usPhoneSchema = z.string().length(10, 'US phone number must be 10 digits');
-export const otherPhoneSchema = z.string().min(5, 'Phone number must be at least 5 digits').max(15, 'Phone number cannot exceed 15 digits');
+export const getPhoneSchema = (countryCode: string) => {
+  const { minDigits, maxDigits } = getValidationForCountry(countryCode);
+  
+  if (minDigits === maxDigits) {
+    return z.string().length(minDigits, `Phone number must be ${minDigits} digits`);
+  }
+  
+  return z.string()
+    .min(minDigits, `Phone number must be at least ${minDigits} digits`)
+    .max(maxDigits, `Phone number cannot exceed ${maxDigits} digits`);
+};
 
-export const toDigits = (val: string) => parseDigits(val).slice(0, 15);
+export const toDigits = (val: string) => val.replace(/\D/g, '').slice(0, 15);
 
 export const extractNationalNumber = (input: string, countryCode: CountryCode): string => {
   const asYouType = new AsYouType(countryCode);
   asYouType.input(input);
-  return asYouType.getNationalNumber() || parseDigits(input);
+  return asYouType.getNationalNumber() || toDigits(input);
 };
 
 export const formatNumber = (nationalNumber: string, countryCode: CountryCode): string => {

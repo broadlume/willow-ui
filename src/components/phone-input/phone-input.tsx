@@ -19,8 +19,7 @@ import {
   CountryData,
   CountryListProps,
   CountryDisplayProps,
-  usPhoneSchema,
-  otherPhoneSchema,
+  getPhoneSchema,
   toDigits,
   formatNumber,
   parseInput,
@@ -82,13 +81,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   className = '',
   showFlag = true,
   error: externalError,
-  label,
-  dirty,
-  invalid,
-  postfixSlot,
-  classes,
-  tooltip,
-  wrapperProps,
   ...additionalProps
 }) => {
   const defaultCountryData = useMemo(
@@ -140,7 +132,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       console.warn('Phone validate parse failed:', error);
     }
 
-    const schema = countryCode === 'US' ? usPhoneSchema : otherPhoneSchema;
+    const schema = getPhoneSchema(countryCode);
     const result = schema.safeParse(number);
     setInternalError(result.success ? '' : result.error.errors[0].message);
   }, []);
@@ -174,13 +166,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         placeholder={placeholder}
         disabled={disabled}
         className={classNames('pl-1', className)}
-        label={label}
-        dirty={dirty}
-        invalid={invalid}
-        postfixSlot={postfixSlot}
-        classes={classes}
-        tooltip={tooltip}
-        wrapperProps={wrapperProps}
         prefixSlot={
           <Popover open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) setSearchTerm(''); }}>
             <PopoverTrigger asChild>

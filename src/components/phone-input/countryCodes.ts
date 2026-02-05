@@ -1478,3 +1478,14 @@ export const COUNTRY_CODES = [
 ];
 
 export const DEFAULT_COUNTRY_CODE = 'US';
+
+export const PHONE_VALIDATION: Record<string, { minDigits: number; maxDigits: number }> = {
+  US: { minDigits: 10, maxDigits: 10 },
+  CA: { minDigits: 10, maxDigits: 10 }, 
+};
+
+export const DEFAULT_VALIDATION = { minDigits: 5, maxDigits: 15 };
+
+export const getValidationForCountry = (countryCode: string) => {
+  return PHONE_VALIDATION[countryCode] || DEFAULT_VALIDATION;
+};
