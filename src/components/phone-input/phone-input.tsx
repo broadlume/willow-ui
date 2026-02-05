@@ -46,7 +46,7 @@ const CountryList: React.FC<CountryListProps> = ({
   showFlag,
   onSelect,
 }) => {
-  if (countries.length === 0) {
+  if (!countries.length) {
     return <div className='py-6 text-center text-sm'>No country found.</div>;
   }
 
