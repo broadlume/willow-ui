@@ -37,7 +37,9 @@ const CountryDisplay: React.FC<CountryDisplayProps> = ({
   <>
     {showFlag && <span className={flagClassName}>{country.flag}</span>}
     {showName && <span className={nameClassName}>{country.name}</span>}
-    {showDialCode && <span className={dialCodeClassName}>{country.dial_code}</span>}
+    {showDialCode && (
+      <span className={dialCodeClassName}>{country.dial_code}</span>
+    )}
   </>
 );
 
@@ -58,10 +60,10 @@ const CountryList: React.FC<CountryListProps> = ({
           className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
           onClick={() => onSelect(country)}
         >
-          <CountryDisplay 
-            country={country} 
-            showFlag={showFlag} 
-            showName 
+          <CountryDisplay
+            country={country}
+            showFlag={showFlag}
+            showName
             showDialCode
             flagClassName='text-lg'
           />
@@ -84,20 +86,29 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   ...additionalProps
 }) => {
   const defaultCountryData = useMemo(
-    () => COUNTRY_CODES.find((c) => c.code === defaultCountry) || COUNTRY_CODES[0],
+    () =>
+      COUNTRY_CODES.find((c) => c.code === defaultCountry) || COUNTRY_CODES[0],
     [defaultCountry]
   );
 
-  const [selectedCountry, setSelectedCountry] = useState<CountryData>(() => parseInput(value, defaultCountryData).country);
-  const [phoneNumber, setPhoneNumber] = useState(() => parseInput(value, defaultCountryData).phoneNumber);
+  const [selectedCountry, setSelectedCountry] = useState<CountryData>(
+    () => parseInput(value, defaultCountryData).country
+  );
+  const [phoneNumber, setPhoneNumber] = useState(
+    () => parseInput(value, defaultCountryData).phoneNumber
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [internalError, setInternalError] = useState('');
 
   useEffect(() => {
     const next = parseInput(value, defaultCountryData);
-    setSelectedCountry((prev) => (prev.code === next.country.code ? prev : next.country));
-    setPhoneNumber((prev) => (prev === next.phoneNumber ? prev : next.phoneNumber));
+    setSelectedCountry((prev) =>
+      prev.code === next.country.code ? prev : next.country
+    );
+    setPhoneNumber((prev) =>
+      prev === next.phoneNumber ? prev : next.phoneNumber
+    );
   }, [value, defaultCountryData]);
 
   const formattedNumber = useMemo(
@@ -157,55 +168,61 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const displayError = externalError || internalError;
 
   return (
-      <InputWithSlots
-        {...additionalProps}
-        error={displayError}
-        type='tel'
-        value={formattedNumber || phoneNumber}
-        onChange={handlePhoneChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        className={classNames('pl-1', className)}
-        prefixSlot={
-          <Popover open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) setSearchTerm(''); }}>
-            <PopoverTrigger asChild>
-              <button
-                className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
-                disabled={disabled}
-              >
-                <CountryDisplay 
-                  country={selectedCountry} 
-                  showFlag={showFlag} 
-                  showDialCode 
-                  dialCodeClassName='text-sm font-medium'
+    <InputWithSlots
+      {...additionalProps}
+      error={displayError}
+      type='tel'
+      value={formattedNumber || phoneNumber}
+      onChange={handlePhoneChange}
+      placeholder={placeholder}
+      disabled={disabled}
+      className={classNames('pl-1', className)}
+      prefixSlot={
+        <Popover
+          open={isOpen}
+          onOpenChange={(open) => {
+            setIsOpen(open);
+            if (!open) setSearchTerm('');
+          }}
+        >
+          <PopoverTrigger asChild>
+            <button
+              className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
+              disabled={disabled}
+            >
+              <CountryDisplay
+                country={selectedCountry}
+                showFlag={showFlag}
+                showDialCode
+                dialCodeClassName='text-sm font-medium'
+              />
+              {isOpen ? (
+                <HiChevronUp className='h-4 w-4 opacity-50' />
+              ) : (
+                <HiChevronDown className='h-4 w-4 opacity-50' />
+              )}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className='w-75 p-0' align='start'>
+            <Command>
+              <CommandInput
+                placeholder='Search country...'
+                onValueChange={setSearchTerm}
+                value={searchTerm}
+              />
+              <CommandList className='max-h-75'>
+                <CountryList
+                  countries={filteredCountries}
+                  showFlag={showFlag}
+                  onSelect={handleCountrySelect}
                 />
-                {isOpen ? (
-                  <HiChevronUp className='h-4 w-4 opacity-50' />
-                ) : (
-                  <HiChevronDown className='h-4 w-4 opacity-50' />
-                )}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className='w-75 p-0' align='start'>
-              <Command>
-                <CommandInput
-                  placeholder='Search country...'
-                  onValueChange={setSearchTerm}
-                  value={searchTerm}
-                />
-                <CommandList className='max-h-75'>
-                  <CountryList
-                    countries={filteredCountries}
-                    showFlag={showFlag}
-                    onSelect={handleCountrySelect}
-                  />
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        }
-      />
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      }
+    />
   );
 };
 
-export { PhoneInput }
+export { PhoneInput };

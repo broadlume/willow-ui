@@ -7,8 +7,14 @@ const meta: Meta<typeof PhoneInput> = {
   title: 'Components/Phone Input',
   tags: ['autodocs'],
   argTypes: {
-    value: { control: 'text', description: 'Phone number with country code (e.g., +19328656416)' },
-    defaultCountry: { control: 'text', description: 'Default country code (e.g., US, GB, IN)' },
+    value: {
+      control: 'text',
+      description: 'Phone number with country code (e.g., +19328656416)',
+    },
+    defaultCountry: {
+      control: 'text',
+      description: 'Default country code (e.g., US, GB, IN)',
+    },
     placeholder: { control: 'text' },
     disabled: { control: 'boolean' },
     showFlag: { control: 'boolean' },
@@ -61,8 +67,12 @@ export const Controlled: Story = {
           onCountryChange={setSelectedCountry}
         />
         <div className='p-3 rounded text-sm space-y-1'>
-          <p><strong>Full Number:</strong> {fullNumber || 'N/A'}</p>
-          <p><strong>Selected Country:</strong> {selectedCountry}</p>
+          <p>
+            <strong>Full Number:</strong> {fullNumber || 'N/A'}
+          </p>
+          <p>
+            <strong>Selected Country:</strong> {selectedCountry}
+          </p>
         </div>
       </div>
     );
@@ -85,9 +95,9 @@ export const CountryFormats: Story = {
     return (
       <div className='space-y-4'>
         {countries.map((c) => (
-          <PhoneInput 
+          <PhoneInput
             key={c.code}
-            defaultCountry={c.code} 
+            defaultCountry={c.code}
             placeholder={c.placeholder}
             label={c.label}
           />
@@ -115,14 +125,15 @@ export const AutoDetectFromValue: Story = {
       <div className='space-y-4'>
         <div className='p-4  border border-border-cta rounded'>
           <p className='text-sm'>
-            <strong>Auto-Detection:</strong> Pass a phone number with country code (e.g., "+919876543210") 
-            and the component automatically detects the country and formats the number.
+            <strong>Auto-Detection:</strong> Pass a phone number with country
+            code (e.g., "+919876543210") and the component automatically detects
+            the country and formats the number.
           </p>
         </div>
         {phoneNumbers.map((item) => (
-          <PhoneInput 
+          <PhoneInput
             key={item.phone}
-            value={item.phone} 
+            value={item.phone}
             label={`${item.label}: ${item.phone}`}
           />
         ))}
