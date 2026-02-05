@@ -33,10 +33,6 @@ export interface CountryDisplayProps {
 export const getPhoneSchema = (countryCode: string) => {
   const { minDigits, maxDigits } = getValidationForCountry(countryCode);
   
-  if (minDigits === maxDigits) {
-    return z.string().length(minDigits, `Phone number must be ${minDigits} digits`);
-  }
-  
   return z.string()
     .min(minDigits, `Phone number must be at least ${minDigits} digits`)
     .max(maxDigits, `Phone number cannot exceed ${maxDigits} digits`);
