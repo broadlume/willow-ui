@@ -9,7 +9,6 @@ export interface PhoneInputProps extends Omit<React.InputHTMLAttributes<HTMLInpu
   onCountryChange?: (countryCode: string) => void;
   defaultCountry?: string;
   showFlag?: boolean;
-  // InputWithSlots specific props
   label?: string;
   error?: string;
   dirty?: boolean;
