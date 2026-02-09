@@ -83,7 +83,7 @@ export const Menu = ({
   assetSelectorValue,
   onAssetSelectorValueChange,
   hideAIMenu,
-  isShowAssetBrowseButton = true
+  isShowAssetBrowseButton = true,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -99,6 +99,30 @@ export const Menu = ({
   useEffect(() => {
     setL2Image(assetSelectorValue || '');
   }, [assetSelectorValue]);
+
+  const updateColor = () => {
+    const currentColor = editor.getAttributes('textStyle').color;
+    if (currentColor) {
+      setFontColor(currentColor);
+    } else {
+      // Reset to default black if no color is set
+      setFontColor('#000000');
+    }
+  };
+
+  // Update font color based on editor selection
+  useEffect(() => {
+    if (!editor) return;
+
+    // Listen to editor selection and content changes
+    editor.on('selectionUpdate', updateColor);
+    editor.on('update', updateColor);
+
+    return () => {
+      editor.off('selectionUpdate', updateColor);
+      editor.off('update', updateColor);
+    };
+  }, [editor]);
 
   // Create a wrapper for setL2Image that calls the external callback
   const handleSetL2Image = useCallback(
@@ -228,7 +252,7 @@ export const Menu = ({
     setExpandedMenu,
     expandedMenuL2,
     setExpandedMenuL2,
-    isShowAssetBrowseButton
+    isShowAssetBrowseButton,
   };
 
   return (
