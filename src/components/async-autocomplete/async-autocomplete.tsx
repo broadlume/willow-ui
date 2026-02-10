@@ -66,6 +66,7 @@ type Props = {
   classNames?: ClassNames;
   dataTestId?: string;
   disabled?: boolean;
+  showSearch?: boolean;
 };
 
 /**
@@ -94,6 +95,7 @@ type Props = {
  * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
  * @param {string} [props.classNames.wrapperClassName] - Class name for the wrapper div.
  * @param {boolean} [props.disabled] - Whether the autocomplete is disabled.
+ * @param {boolean} [props.showSearch=true] - Whether to show the search input. Defaults to true.
  *
  * @returns {JSX.Element} The rendered AsyncAutocomplete component.
  */
@@ -113,6 +115,7 @@ export const AsyncAutocomplete = ({
   selectedItems = [],
   onMultiSelect,
   disabled = false,
+  showSearch = true,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -233,6 +236,7 @@ export const AsyncAutocomplete = ({
             showSelectAll={multiSelect}
             onSelectAll={handleSelectAll}
             allSelected={data.length > 0 && selectedItems.length === data.length}
+            showSearch={showSearch}
             renderItem={(item, isSelected) => {
               const isMultiSelected =
                 multiSelect &&
