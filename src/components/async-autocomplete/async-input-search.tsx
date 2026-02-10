@@ -17,6 +17,7 @@ type AsyncInputSearchProps<T> = {
   showSelectAll?: boolean;
   onSelectAll?: () => void;
   allSelected?: boolean;
+  showSearch?: boolean;
 };
 
 /**
@@ -41,6 +42,7 @@ type AsyncInputSearchProps<T> = {
  * @param {boolean} [props.showSelectAll] - Whether to show a "Select All" option at the top (for multi-select).
  * @param {() => void} [props.onSelectAll] - Callback invoked when "Select All" is clicked.
  * @param {boolean} [props.allSelected] - Whether all items are currently selected.
+ * @param {boolean} [props.showSearch] - Whether to show the search input. Defaults to true.
  *
  * @returns {JSX.Element} The rendered async input search component.
  */
@@ -59,6 +61,7 @@ export function AsyncInputSearch<T>({
   showSelectAll = false,
   onSelectAll,
   allSelected = false,
+  showSearch = true,
 }: AsyncInputSearchProps<T>) {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -71,7 +74,7 @@ export function AsyncInputSearch<T>({
 
   return (
     <Command className={wrapClassName}>
-      {onSearch && (
+      {onSearch && showSearch && (
         <CommandInput
           {...commandInputProps}
           value={searchValue}
