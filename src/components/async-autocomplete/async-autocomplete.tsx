@@ -196,6 +196,12 @@ export const AsyncAutocomplete = ({
     }
   };
 
+  const displayText = (
+    <span className='line-clamp-2 overflow-hidden text-left break-words mr-3 flex-1'>
+      {multiSelect ? placeholder : selectedData ? selectedData.label : placeholder}
+    </span>
+  );
+
   return (
     <div className='w-full'>
       <Popover open={open} onOpenChange={handleOpenChange}>
@@ -215,18 +221,10 @@ export const AsyncAutocomplete = ({
               {showTooltip ? (
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className='line-clamp-2 overflow-hidden text-left break-words mr-3 flex-1'>
-                        {multiSelect
-                          ? placeholder
-                          : selectedData
-                          ? selectedData.label
-                          : placeholder}
-                      </span>
-                    </TooltipTrigger>
+                    <TooltipTrigger asChild>{displayText}</TooltipTrigger>
                     {selectedData && selectedData.label && (
                       <TooltipContent>
-                        <p className='"text-sm text-pretty max-w-[200px]'>
+                        <p className='text-sm text-pretty max-w-[200px]'>
                           {selectedData.label}
                         </p>
                       </TooltipContent>
@@ -234,13 +232,7 @@ export const AsyncAutocomplete = ({
                   </Tooltip>
                 </TooltipProvider>
               ) : (
-                <span className='line-clamp-2 overflow-hidden text-left break-words mr-3 flex-1'>
-                  {multiSelect
-                    ? placeholder
-                    : selectedData
-                    ? selectedData.label
-                    : placeholder}
-                </span>
+                displayText
               )}
 
               <RxCaretSort />
