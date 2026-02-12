@@ -1,9 +1,19 @@
 import { HiCheck, HiMiniXCircle } from 'react-icons/hi2';
-import { Button, Popover, PopoverContent, PopoverTrigger } from '@src/index';
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@src/index';
 import { useState } from 'react';
 import { AsyncInputSearch } from './async-input-search';
 import { RxCaretSort } from 'react-icons/rx';
 import { Checkbox } from '@src/components/checkbox/checkbox';
+import clsx from 'clsx';
 
 interface AsyncAutocompleteItem {
   value: string;
@@ -14,18 +24,26 @@ interface AsyncAutocompleteItem {
 interface AdditionalProps {
   inputProps?: Omit<
     Parameters<typeof AsyncInputSearch>[0],
-    'items' | 'onSelect' | 'onScroll' | 'onSearch' | 'renderItem' | 'getKey' | 'searchValue'
+    | 'items'
+    | 'onSelect'
+    | 'onScroll'
+    | 'onSearch'
+    | 'renderItem'
+    | 'getKey'
+    | 'searchValue'
   >;
   popoverContentProps?: React.HTMLAttributes<HTMLDivElement> &
-  Record<`data-${string}`, string>;
+    Record<`data-${string}`, string>;
   buttonProps?: React.ComponentProps<typeof Button> &
-  Record<`data-${string}`, string>;
+    Record<`data-${string}`, string>;
 }
 
 interface ClassNames {
   buttonClassName?: string;
   popoverContentClassName?: string;
   wrapperClassName?: string;
+  labelClassName?: string;
+  descriptionClassName?: string;
 }
 
 type Props = {
@@ -66,6 +84,8 @@ type Props = {
   classNames?: ClassNames;
   dataTestId?: string;
   disabled?: boolean;
+  showSearch?: boolean;
+  showTooltip?: boolean;
 };
 
 /**
@@ -93,7 +113,11 @@ type Props = {
  * @param {string} [props.classNames.buttonClassName] - Class name for the trigger button.
  * @param {string} [props.classNames.popoverContentClassName] - Class name for the dropdown content.
  * @param {string} [props.classNames.wrapperClassName] - Class name for the wrapper div.
+ * @param {string} [props.classNames.labelClassName] - Class name for the label text.
+ * @param {string} [props.classNames.descriptionClassName] - Class name for the description text.
  * @param {boolean} [props.disabled] - Whether the autocomplete is disabled.
+ * @param {boolean} [props.showSearch=true] - Whether to show the search input. Defaults to true.
+ *  * @param {boolean} [props.showTooltip=false] - Whether to show tooltip on hover for truncated text.
  *
  * @returns {JSX.Element} The rendered AsyncAutocomplete component.
  */
@@ -113,6 +137,8 @@ export const AsyncAutocomplete = ({
   selectedItems = [],
   onMultiSelect,
   disabled = false,
+  showSearch = true,
+  showTooltip = false,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -153,7 +179,7 @@ export const AsyncAutocomplete = ({
 
   /**
    * @description Handles the "Select All" functionality in multi-select mode.
-   * @returns 
+   * @returns
    */
   const handleSelectAll = () => {
     if (!onMultiSelect) return;
@@ -169,6 +195,12 @@ export const AsyncAutocomplete = ({
       onMultiSelect(data);
     }
   };
+
+  const displayText = (
+    <span className='line-clamp-2 overflow-hidden text-left break-words mr-3 flex-1'>
+      {multiSelect ? placeholder : selectedData ? selectedData.label : placeholder}
+    </span>
+  );
 
   return (
     <div className='w-full'>
@@ -186,26 +218,42 @@ export const AsyncAutocomplete = ({
               disabled={disabled}
               className={`w-full justify-between rounded-md bg-background font-normal normal-case ${classNames?.buttonClassName}`}
             >
-              {multiSelect
-                ? placeholder
-                : selectedData
-                  ? selectedData.label
-                  : placeholder}
+              {showTooltip ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>{displayText}</TooltipTrigger>
+                    {selectedData && selectedData.label && (
+                      <TooltipContent>
+                        <p className='text-sm text-pretty max-w-[200px]'>
+                          {selectedData.label}
+                        </p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                displayText
+              )}
+
               <RxCaretSort />
             </Button>
-            {showClear && !multiSelect && selectedData && onClear && !disabled && (
-              <button
-                type='button'
-                className='absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 hover:opacity-100 z-10 hover:cursor-pointer text-icon-pri'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClear();
-                }}
-                aria-label='Clear selection'
-              >
-                <HiMiniXCircle className='h-4 w-4' />
-              </button>
-            )}
+            {showClear &&
+              !multiSelect &&
+              selectedData &&
+              onClear &&
+              !disabled && (
+                <button
+                  type='button'
+                  className='absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 hover:opacity-100 z-10 hover:cursor-pointer text-icon-pri'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClear();
+                  }}
+                  aria-label='Clear selection'
+                >
+                  <HiMiniXCircle className='h-4 w-4' />
+                </button>
+              )}
           </div>
         </PopoverTrigger>
         <PopoverContent
@@ -232,7 +280,10 @@ export const AsyncAutocomplete = ({
             getKey={(item) => item.value}
             showSelectAll={multiSelect}
             onSelectAll={handleSelectAll}
-            allSelected={data.length > 0 && selectedItems.length === data.length}
+            allSelected={
+              data.length > 0 && selectedItems.length === data.length
+            }
+            showSearch={showSearch}
             renderItem={(item, isSelected) => {
               const isMultiSelected =
                 multiSelect &&
@@ -249,13 +300,25 @@ export const AsyncAutocomplete = ({
                   )}
                   <div className='flex flex-col justify-between flex-1'>
                     <div className='flex items-center justify-between'>
-                      <p className='text-sm'>{item.label}</p>
+                      <p
+                        className={clsx(
+                          'text-sm break-all',
+                          classNames?.labelClassName
+                        )}
+                      >
+                        {item.label}
+                      </p>
                       {!multiSelect && isSelected && (
                         <HiCheck className='h-3 w-3' />
                       )}
                     </div>
                     {item?.description && (
-                      <p className='mb-2 text-xs text-zinc-500'>
+                      <p
+                        className={clsx(
+                          'mb-2 text-xs text-zinc-500 break-all',
+                          classNames?.descriptionClassName
+                        )}
+                      >
                         {item.description}
                       </p>
                     )}
