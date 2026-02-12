@@ -203,28 +203,19 @@ export function useDataTable<TData, TValue>({
     }
   }, [rowSelection, isSelectAllPages, excludedRowIds]);
 
-  // Restore scroll position after new sorted data arrives
+  // Also maintain scroll position on render when we have a saved position
   useLayoutEffect(() => {
-    if (shouldRestoreScrollRef.current && scrollContainerRef.current) {
-      const restoreScroll = () => {
-        const element = scrollContainerRef.current;
-        if (element) {
-          const { scrollLeft } = scrollPositionRef.current;
-          element.scrollLeft = scrollLeft;
-          element.scrollTop = 0;
-        }
-      };
+    if (scrollContainerRef.current && (scrollPositionRef.current.scrollLeft > 0 || scrollPositionRef.current.scrollTop > 0)) {
+      const element = scrollContainerRef.current;
+      const { scrollLeft, scrollTop } = scrollPositionRef.current;
 
-      // Use requestAnimationFrame for more reliable timing
-      const frameId = requestAnimationFrame(() => {
-        requestAnimationFrame(restoreScroll);
-      });
-
-      shouldRestoreScrollRef.current = false;
-
-      return () => cancelAnimationFrame(frameId);
+      // Only restore if position has been reset
+      if (element.scrollLeft !== scrollLeft || element.scrollTop !== scrollTop) {
+        element.scrollLeft = scrollLeft;
+        element.scrollTop = 0;
+      }
     }
-  }, [data]);
+  });
 
   const saveScrollPositionBeforeSort = () => {
     const scrollElement = scrollContainerRef.current;
