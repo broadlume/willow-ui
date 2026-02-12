@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useDataTable } from './Table';
 import { columns, Payment, payments } from './data';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { SortingState } from '@tanstack/react-table';
 import clsx from 'clsx';
 // import HeaderOverlayToast from './HeaderOverlayToast';
 
@@ -1189,3 +1190,106 @@ export const WithHorizontalScrolling: Story = {
 //     },
 //   },
 // };
+
+// Story for testing server-side sorting with scroll preservation
+const TanstackTableWithServerSideSorting = () => {
+  const [sortedData, setSortedData] = useState(payments);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Handle server-side sorting with scroll position preservation
+  const handleSortingChange = useCallback((updaterOrValue: SortingState | ((old: SortingState) => SortingState)) => {
+    const newSorting = typeof updaterOrValue === 'function' ? updaterOrValue(sorting) : updaterOrValue;
+
+    setSorting(newSorting);
+    setLoading(true);
+    
+    // Simulate API call - replace this with your actual API call
+    setTimeout(() => {
+      if (newSorting.length > 0) {
+        const { id, desc } = newSorting[0];
+        const sorted = [...payments].sort((a, b) => {
+          const aVal = a[id as keyof typeof a];
+          const bVal = b[id as keyof typeof b];
+          
+          if (typeof aVal === 'string' && typeof bVal === 'string') {
+            return desc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+          }
+          if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return desc ? bVal - aVal : aVal - bVal;
+          }
+          return 0;
+        });
+        setSortedData(sorted);
+      } else {
+        setSortedData(payments);
+      }
+      setLoading(false);
+    }, 200); // Simulate network delay
+  }, [sorting]);
+
+  const { CustomDataTable } = useDataTable({
+    columns: columns,
+    data: sortedData,
+    tableParams: {
+      manualPagination: false,
+      manualSorting: true, // Enable server-side sorting
+      onSortingChange: handleSortingChange,
+    },
+    itemProps: {
+      tableWrapper: {
+        enableStickyHeader: true,
+      },
+    },
+    enableRowSelection: true,
+    initialPagination: { pageIndex: 0, pageSize: 100 },
+    initialSorting: sorting,
+    includeLoading: loading, // Show loading state during sort
+  });
+  
+  return (
+    <div>
+      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+        <h3 className="font-semibold text-lg mb-2">Server-Side Sorting Example</h3>
+        <p className="text-sm text-gray-600 mb-3">
+          This demonstrates proper server-side sorting with scroll position preservation.
+        </p>
+        <div className="text-sm">
+          <strong>Configuration:</strong>
+          <ul className="list-disc list-inside mt-1 space-y-1">
+            <li><code>manualSorting: true</code> - Enables server-side sorting</li>
+            <li><code>onSortingChange</code> - Handles sort state changes</li>
+            <li><code>initialSorting</code> - Syncs sort state</li>
+            <li><code>includeLoading</code> - Shows loading during API calls</li>
+            <li><code>Scroll Preservation</code> - Maintains horizontal scroll position</li>
+          </ul>
+        </div>
+        <div className="mt-3 p-2 bg-blue-50 rounded">
+          <strong>Current Sort:</strong> {' '}
+          {sorting.length > 0 
+            ? `${sorting[0].id} (${sorting[0].desc ? 'desc' : 'asc'})`
+            : 'None'
+          }
+          {loading && <span className="ml-2 text-blue-600">Loading...</span>}
+        </div>
+      </div>
+      
+      <CustomDataTable />
+      
+      <div className="mt-4 text-sm text-gray-600">
+        <strong>Test Instructions:</strong>
+        <ol className="list-decimal list-inside space-y-1 mt-1">
+          <li>Scroll horizontally to see more columns</li>
+          <li>Click on any column header to sort (especially the last column)</li>
+          <li>Notice the loading state and API call simulation</li>
+          <li>Verify that horizontal scroll position is preserved during sorting</li>
+          <li>Check that data is properly sorted after loading</li>
+        </ol>
+      </div>
+    </div>
+  );
+};
+
+export const ServerSideSortingTest: Story = {
+  render: (args) => <TanstackTableWithServerSideSorting />,
+};
