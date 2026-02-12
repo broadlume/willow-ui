@@ -88,7 +88,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'text-muted-foreground text-left align-middle text-sm px-1 font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
+      'bg-white text-muted-foreground text-left align-middle text-sm px-1 font-semibold last:px-3 last:pr-5 [&:has([role=checkbox])]:px-4',
       '[&:has(td>button[role=checkbox])>td]:mt-[2px] first:px-4', // apply margin-top to td inside th if td has button[role=checkbox]
       className
     )}
@@ -129,10 +129,12 @@ const DraggableColumnHeader = <TData, TValue>({
   header,
   itemProps,
   isDraggable,
+  saveScrollPositionBeforeSort,
 }: {
   header: Header<TData, TValue>;
   itemProps: DataTableProps<TData, TValue>['itemProps'];
   isDraggable: boolean;
+  saveScrollPositionBeforeSort?: () => void;
 }) => {
   const {
     attributes,
@@ -183,7 +185,13 @@ const DraggableColumnHeader = <TData, TValue>({
         data-testid={'data-table-header-cell-' + header.column.id}
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
-        onClick={header.column.getToggleSortingHandler()}
+        onClick={(event) => {
+          if (header.column.getCanSort()) {
+            saveScrollPositionBeforeSort?.();
+            const handler = header.column.getToggleSortingHandler();
+            handler?.(event);
+          }
+        }}
         className={clsx(
           'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
           {

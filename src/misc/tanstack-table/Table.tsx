@@ -155,6 +155,7 @@ export function useDataTable<TData, TValue>({
    */
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
+  const shouldRestoreScrollRef = useRef<boolean>(false);
 
   /**
    * Sort
@@ -201,6 +202,40 @@ export function useDataTable<TData, TValue>({
       scrollContainerRef.current.scrollLeft = scrollLeft;
     }
   }, [rowSelection, isSelectAllPages, excludedRowIds]);
+
+  // Restore scroll position after new sorted data arrives
+  useLayoutEffect(() => {
+    if (shouldRestoreScrollRef.current && scrollContainerRef.current) {
+      const restoreScroll = () => {
+        const element = scrollContainerRef.current;
+        if (element) {
+          const { scrollLeft } = scrollPositionRef.current;
+          element.scrollLeft = scrollLeft;
+          element.scrollTop = 0;
+        }
+      };
+
+      // Use requestAnimationFrame for more reliable timing
+      const frameId = requestAnimationFrame(() => {
+        requestAnimationFrame(restoreScroll);
+      });
+
+      shouldRestoreScrollRef.current = false;
+
+      return () => cancelAnimationFrame(frameId);
+    }
+  }, [data]);
+
+  const saveScrollPositionBeforeSort = () => {
+    const scrollElement = scrollContainerRef.current;
+    if (scrollElement) {
+      scrollPositionRef.current = {
+        scrollTop: scrollElement.scrollTop,
+        scrollLeft: scrollElement.scrollLeft,
+      };
+      shouldRestoreScrollRef.current = true;
+    }
+  };
 
   const handleSelectionReset = () => {
     setIsSelectAllPages(false);
@@ -670,6 +705,7 @@ export function useDataTable<TData, TValue>({
                               isDraggable={draggableColumnIds.includes(
                                 header.column.id
                               )}
+                              saveScrollPositionBeforeSort={saveScrollPositionBeforeSort}
                               itemProps={{
                                 ...itemProps,
                                 tableHead: {
