@@ -194,6 +194,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             onSelection={(value) => TextStyleOnSelection(editor, value)}
             key={1}
             darkMode={darkMode}
+            editor={editor}
           />
         }
         eventHandler={() => {}}
@@ -221,6 +222,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().toggleBold().run()}
+          isActive={editor.isActive('bold')}
         />
       </MenuItemWithTooltip>
     ),
@@ -244,6 +246,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().toggleItalic().run()}
+          isActive={editor.isActive('italic')}
         />
       </MenuItemWithTooltip>
     ),
@@ -267,6 +270,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().toggleUnderline().run()}
+          isActive={editor.isActive('underline')}
         />
       </MenuItemWithTooltip>
     ),
@@ -290,6 +294,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().toggleStrike().run()}
+          isActive={editor.isActive('strike')}
         />
       </MenuItemWithTooltip>
     ),
@@ -354,6 +359,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().setTextAlign('left').run()}
+          isActive={editor.isActive({ textAlign: 'left' })}
         />
       </MenuItemWithTooltip>
     ),
@@ -379,6 +385,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
           eventHandler={() =>
             editor.chain().focus().setTextAlign('center').run()
           }
+          isActive={editor.isActive({ textAlign: 'center' })}
         />
       </MenuItemWithTooltip>
     ),
@@ -404,6 +411,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
           eventHandler={() =>
             editor.chain().focus().setTextAlign('right').run()
           }
+          isActive={editor.isActive({ textAlign: 'right' })}
         />
       </MenuItemWithTooltip>
     ),
@@ -427,6 +435,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
             />
           }
           eventHandler={() => editor.chain().focus().toggleBulletList().run()}
+          isActive={editor.isActive('bulletList')}
         />
       </MenuItemWithTooltip>
     ),
@@ -537,6 +546,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                     editor.chain().focus().setLineHeight(value).run()
                   }
                   darkMode={darkMode}
+                  editor={editor}
                 />
               }
               darkMode={darkMode}
@@ -793,7 +803,7 @@ export const getL3MenuContent = (
   isShowAssetEditIcon?: boolean,
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void,
   isShowAssetBrowseButton?: boolean
-) => {  
+) => {
   switch (expandedMenuL2Type) {
     case 'link':
       return (

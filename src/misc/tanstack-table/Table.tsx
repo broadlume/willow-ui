@@ -155,6 +155,7 @@ export function useDataTable<TData, TValue>({
    */
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
+  const shouldRestoreScrollRef = useRef<boolean>(false);
 
   /**
    * Sort
@@ -201,6 +202,31 @@ export function useDataTable<TData, TValue>({
       scrollContainerRef.current.scrollLeft = scrollLeft;
     }
   }, [rowSelection, isSelectAllPages, excludedRowIds]);
+
+  // Also maintain scroll position on render when we have a saved position
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current && (scrollPositionRef.current.scrollLeft > 0 || scrollPositionRef.current.scrollTop > 0)) {
+      const element = scrollContainerRef.current;
+      const { scrollLeft, scrollTop } = scrollPositionRef.current;
+
+      // Only restore if position has been reset
+      if (element.scrollLeft !== scrollLeft || element.scrollTop !== scrollTop) {
+        element.scrollLeft = scrollLeft;
+        element.scrollTop = 0;
+      }
+    }
+  });
+
+  const saveScrollPositionBeforeSort = () => {
+    const scrollElement = scrollContainerRef.current;
+    if (scrollElement) {
+      scrollPositionRef.current = {
+        scrollTop: scrollElement.scrollTop,
+        scrollLeft: scrollElement.scrollLeft,
+      };
+      shouldRestoreScrollRef.current = true;
+    }
+  };
 
   const handleSelectionReset = () => {
     setIsSelectAllPages(false);
@@ -670,6 +696,7 @@ export function useDataTable<TData, TValue>({
                               isDraggable={draggableColumnIds.includes(
                                 header.column.id
                               )}
+                              saveScrollPositionBeforeSort={saveScrollPositionBeforeSort}
                               itemProps={{
                                 ...itemProps,
                                 tableHead: {
