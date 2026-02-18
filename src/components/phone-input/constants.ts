@@ -89,11 +89,20 @@ export const parseInput = (input: string, fallback: CountryData) => {
   if (input.startsWith('+')) {
     const detected = detectCountry(input);
     const country = detected || fallback;
+    
+    const dialCodeLength = country.dial_code.length;
+    const nationalPart = input.slice(dialCodeLength);
+    
+    if (!nationalPart || nationalPart.trim() === '') {
+      return {
+        country,
+        phoneNumber: '',
+      };
+    }
+    
     return {
       country,
-      phoneNumber: toDigits(
-        extractNationalNumber(input, country.code as CountryCode)
-      ),
+      phoneNumber: toDigits(nationalPart),
     };
   }
   return { country: fallback, phoneNumber: toDigits(input) };

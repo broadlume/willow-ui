@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { InputWithSlots } from '@components/input/InputWithSlots';
 import {
   Command,
@@ -10,7 +10,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, getValidationForCountry } from './countryCodes';
+import {
+  COUNTRY_CODES,
+  DEFAULT_COUNTRY_CODE,
+  getValidationForCountry,
+} from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
 import { parsePhoneNumber, CountryCode } from 'libphonenumber-js';
@@ -99,6 +103,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [internalError, setInternalError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cursorPositionRef = useRef<number | null>(null);
 
   useEffect(() => {
     const next = parseInput(value, defaultCountryData);
@@ -115,15 +121,27 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     [phoneNumber, selectedCountry.code]
   );
 
+  // Restore cursor position after formatting
+  useEffect(() => {
+    if (inputRef.current && cursorPositionRef.current !== null) {
+      const input = inputRef.current;
+      const pos = cursorPositionRef.current;
+      input.setSelectionRange(pos, pos);
+      cursorPositionRef.current = null;
+    }
+  }, [formattedNumber]);
+
   const filteredCountries = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return COUNTRY_CODES;
-    return COUNTRY_CODES.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.dial_code.includes(searchTerm) ||
-        c.code.toLowerCase().includes(query)
-    );
+
+    return COUNTRY_CODES.filter((c) => {
+      const name = c.name.toLowerCase();
+      return (
+        name.startsWith(query) ||
+        c.dial_code.includes(searchTerm)
+      );
+    });
   }, [searchTerm]);
 
   const validate = useCallback((number: string, countryCode: string) => {
@@ -155,19 +173,47 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     setSelectedCountry(country);
     setIsOpen(false);
     setSearchTerm('');
+    cursorPositionRef.current = null; // Reset cursor position when country changes
     onCountryChange?.(country.code);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digits = toDigits(e.target.value);
-    setPhoneNumber(digits);
-    onChange?.(`${selectedCountry.dial_code}${digits}`);
+    const input = e.target;
+    const newValue = input.value;
+    const cursorPos = input.selectionStart || 0;
+    
+    const newDigits = toDigits(newValue);
+    
+    const valueBeforeCursor = newValue.substring(0, cursorPos);
+    const digitsBeforeCursor = toDigits(valueBeforeCursor).length;
+    
+    setPhoneNumber(newDigits);
+    
+    if (newDigits) {
+      const formatted = formatNumber(newDigits, selectedCountry.code as CountryCode);
+      let digitCount = 0;
+      let newCursorPos = 0;
+      
+      for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
+        if (/\d/.test(formatted[i])) {
+          digitCount++;
+        }
+        newCursorPos = i + 1;
+      }
+      
+      cursorPositionRef.current = newCursorPos;
+    } else {
+      cursorPositionRef.current = 0;
+    }
+    
+    onChange?.(newDigits ? `${selectedCountry.dial_code}${newDigits}` : '');
   };
 
   const displayError = externalError || internalError;
 
   return (
     <InputWithSlots
+      ref={inputRef}
       {...additionalProps}
       error={displayError}
       type='tel'
