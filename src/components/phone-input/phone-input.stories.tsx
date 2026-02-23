@@ -9,7 +9,7 @@ const meta: Meta<typeof PhoneInput> = {
   argTypes: {
     value: {
       control: 'text',
-      description: 'Phone number with country code (e.g., +19328656416)',
+      description: 'Phone number with country code (e.g., +19635262622)',
     },
     defaultCountry: {
       control: 'text',
