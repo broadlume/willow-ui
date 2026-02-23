@@ -152,11 +152,11 @@ export const AutoDetectFromValue: Story = {
       { label: 'Germany', phone: '+493012345678' },
       { label: 'France', phone: '+33612345678' },
       { label: 'Australia', phone: '+61412345678' },
-      { label: 'Canada', phone: '+14165550123', defaultCountry: 'CA' },
+      { label: 'Canada', phone: '+14165550123' },
       { label: 'Japan', phone: '+8109901234567' },
       { label: 'Brazil', phone: '+5511987654321' },
       { label: 'China', phone: '+8613812345678' },
-      { label: 'Jersey (+44)', phone: '+447797123456', defaultCountry: 'JE' },
+      { label: 'Jersey (+44)', phone: '+441534123456' },
     ];
 
     return (
@@ -180,65 +180,4 @@ export const AutoDetectFromValue: Story = {
       </div>
     );
   },
-};
-
-export const CanadaVsUS: Story = {
-  render: () => <CanadaVsUSDemo />,
-};
-
-export const FromDatabaseNoDefaultCountry: Story = {
-  render: () => {
-    const savedNumbers = [
-      { label: 'UK mobile (from DB)', phone: '+447797123456' },
-      { label: 'India (from DB)', phone: '+919876543210' },
-      { label: 'Germany (from DB)', phone: '+493012345678' },
-      { label: 'Canada (from DB)', phone: '+14165550123' },
-    ];
-
-    return (
-      <div className='space-y-4'>
-        <div className='p-4 border border-border-cta rounded'>
-          <p className='text-sm'>
-            <strong>Loading saved numbers:</strong> Only the E.164 number is
-            stored in the DB. No <code>defaultCountry</code> needed — the
-            component detects the country from the number and shows the correct
-            flag.
-          </p>
-        </div>
-        {savedNumbers.map((item) => (
-          <PhoneInput
-            key={item.phone}
-            value={item.phone}
-            label={item.label}
-          />
-        ))}
-      </div>
-    );
-  },
-};
-
-export const JerseyAndUK: Story = {
-  render: () => (
-    <div className='space-y-4'>
-      <div className='p-4 border border-border-cta rounded'>
-        <p className='text-sm'>
-          <strong>Jersey & UK (+44):</strong> Both use +44. Select Jersey or UK
-          and type a number. Formatting uses libphonenumber-js for correct
-          display.
-        </p>
-      </div>
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <PhoneInput
-          defaultCountry='JE'
-          placeholder='Jersey number'
-          label='Jersey'
-        />
-        <PhoneInput
-          defaultCountry='GB'
-          placeholder='UK number'
-          label='United Kingdom'
-        />
-      </div>
-    </div>
-  ),
 };
