@@ -184,6 +184,11 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     
     const newDigits = toDigits(newValue);
     
+    const maxLength = ['US','CA','IN'].includes(selectedCountry.code) ? 10 : 15;
+    if (newDigits.length > maxLength) {
+      return; 
+    }
+    
     const valueBeforeCursor = newValue.substring(0, cursorPos);
     const digitsBeforeCursor = toDigits(valueBeforeCursor).length;
     

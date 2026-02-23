@@ -1484,6 +1484,7 @@ export const DEFAULT_COUNTRY_CODE = 'US';
 export const PHONE_VALIDATION: Record<string, z.ZodSchema> = {
   US: z.string().length(10, 'US phone number must be 10 digits'),
   CA: z.string().length(10, 'Canada phone number must be 10 digits'),
+  IN: z.string().length(10, 'India phone number must be 10 digits'),
 };
 
 export const DEFAULT_PHONE_SCHEMA = z.string()
