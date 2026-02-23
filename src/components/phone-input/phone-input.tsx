@@ -207,52 +207,54 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       onChange={handlePhoneChange}
       placeholder={placeholder}
       disabled={disabled}
-      className={classNames('pl-1', className)}
+      className={classNames('pl-1 min-w-0', className)}
       prefixSlot={
-        <Popover
-          open={isOpen}
-          onOpenChange={(open) => {
-            setIsOpen(open);
-            if (!open) setSearchTerm('');
-          }}
-        >
-          <PopoverTrigger asChild>
-            <button
-              type='button'
-              className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
-              disabled={disabled}
-            >
-              <CountryDisplay
-                country={selectedCountry}
-                showFlag={showFlag}
-                showDialCode
-                flagClassName='text-base mt-[1px]'
-                dialCodeClassName='text-sm font-medium'
-              />
-              {isOpen ? (
-                <HiChevronUp className='h-4 w-4 opacity-50' />
-              ) : (
-                <HiChevronDown className='h-4 w-4 opacity-50' />
-              )}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className='w-75 p-0' align='start'>
-            <Command>
-              <CommandInput
-                placeholder='Search country...'
-                onValueChange={setSearchTerm}
-                value={searchTerm}
-              />
-              <CommandList className='max-h-75 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-md [&::-webkit-scrollbar-thumb]:hover:bg-gray-400'>
-                <CountryList
-                  countries={filteredCountries}
+        <div className='flex w-[5.5rem] shrink-0 items-center justify-center'>
+          <Popover
+            open={isOpen}
+            onOpenChange={(open) => {
+              setIsOpen(open);
+              if (!open) setSearchTerm('');
+            }}
+          >
+            <PopoverTrigger asChild>
+              <button
+                type='button'
+                className='flex h-full w-full items-center justify-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
+                disabled={disabled}
+              >
+                <CountryDisplay
+                  country={selectedCountry}
                   showFlag={showFlag}
-                  onSelect={handleCountrySelect}
+                  showDialCode
+                  flagClassName='text-base mt-[1px]'
+                  dialCodeClassName='text-sm font-medium'
                 />
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+                {isOpen ? (
+                  <HiChevronUp className='h-4 w-4 opacity-50' />
+                ) : (
+                  <HiChevronDown className='h-4 w-4 opacity-50' />
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className='w-75 p-0' align='start'>
+              <Command>
+                <CommandInput
+                  placeholder='Search country...'
+                  onValueChange={setSearchTerm}
+                  value={searchTerm}
+                />
+                <CommandList className='max-h-75 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-md [&::-webkit-scrollbar-thumb]:hover:bg-gray-400'>
+                  <CountryList
+                    countries={filteredCountries}
+                    showFlag={showFlag}
+                    onSelect={handleCountrySelect}
+                  />
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
       }
     />
   );
