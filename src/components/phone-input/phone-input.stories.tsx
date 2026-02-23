@@ -54,6 +54,31 @@ export const Disabled: Story = {
   },
 };
 
+export const Controlled: Story = {
+  render: () => {
+    const [fullNumber, setFullNumber] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState('US');
+
+    return (
+      <div className='space-y-4'>
+        <PhoneInput
+          placeholder='Enter phone number'
+          onChange={setFullNumber}
+          onCountryChange={setSelectedCountry}
+        />
+        <div className='p-3 rounded text-sm space-y-1'>
+          <p>
+            <strong>Full Number:</strong> {fullNumber || 'N/A'}
+          </p>
+          <p>
+            <strong>Selected Country:</strong> {selectedCountry}
+          </p>
+        </div>
+      </div>
+    );
+  },
+};
+
 export const CountryFormats: Story = {
   render: () => {
     const countries = [
