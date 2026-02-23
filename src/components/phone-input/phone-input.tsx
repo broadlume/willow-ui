@@ -239,6 +239,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                 country={selectedCountry}
                 showFlag={showFlag}
                 showDialCode
+                flagClassName='text-base mt-[1px]'
                 dialCodeClassName='text-sm font-medium'
               />
               {isOpen ? (
