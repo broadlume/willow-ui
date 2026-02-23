@@ -2,60 +2,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import { PhoneInput } from './phone-input';
 import { useState } from 'react';
 
-function ControlledPhoneInput() {
-  const [fullNumber, setFullNumber] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('US');
-
-  return (
-    <div className='space-y-4'>
-      <PhoneInput
-        placeholder='Enter phone number'
-        onChange={setFullNumber}
-        onCountryChange={setSelectedCountry}
-      />
-      <div className='p-3 rounded text-sm space-y-1'>
-        <p>
-          <strong>Full Number:</strong> {fullNumber || 'N/A'}
-        </p>
-        <p>
-          <strong>Selected Country:</strong> {selectedCountry}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function CanadaVsUSDemo() {
-  const [fullNumber, setFullNumber] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
-
-  return (
-    <div className='space-y-4'>
-      <div className='p-4 border border-border-cta rounded'>
-        <p className='text-sm'>
-          <strong>Canada vs US:</strong> Select &quot;Canada&quot; from the
-          dropdown and enter a number. The country should stay as Canada (not
-          reset to US). Both share +1, but user selection is preserved.
-        </p>
-      </div>
-      <PhoneInput
-        placeholder='Enter phone number'
-        defaultCountry='US'
-        onChange={setFullNumber}
-        onCountryChange={setSelectedCountry}
-      />
-      <div className='p-3 rounded text-sm space-y-1'>
-        <p>
-          <strong>Full Number:</strong> {fullNumber || 'N/A'}
-        </p>
-        <p>
-          <strong>Selected Country:</strong> {selectedCountry || '—'}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 const meta: Meta<typeof PhoneInput> = {
   component: PhoneInput,
   title: 'Components/Phone Input',
@@ -106,10 +52,6 @@ export const Disabled: Story = {
     disabled: true,
     value: '+112345637890',
   },
-};
-
-export const Controlled: Story = {
-  render: () => <ControlledPhoneInput />,
 };
 
 export const CountryFormats: Story = {
