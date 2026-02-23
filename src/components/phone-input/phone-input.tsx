@@ -89,13 +89,12 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   error: externalError,
   ...additionalProps
 }) => {
-  // Fallback only for empty input; when value has country code, we detect from number
-  const effectiveDefault = defaultCountry ?? DEFAULT_COUNTRY_CODE;
+  const Default = defaultCountry ?? DEFAULT_COUNTRY_CODE;
   const defaultCountryData = useMemo(
     () =>
-      COUNTRY_CODES.find((c) => c.code === effectiveDefault) ||
+      COUNTRY_CODES.find((c) => c.code === Default) ||
       COUNTRY_CODES[0],
-    [effectiveDefault]
+    [Default]
   );
 
   const [selectedCountry, setSelectedCountry] = useState<CountryData>(
@@ -103,7 +102,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       parseInput(
         value,
         defaultCountryData,
-        effectiveDefault as CountryCode
+        Default as CountryCode
       ).country
   );
   const [phoneNumber, setPhoneNumber] = useState(
@@ -111,7 +110,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       parseInput(
         value,
         defaultCountryData,
-        effectiveDefault as CountryCode
+        Default as CountryCode
       ).phoneNumber
   );
   const [isOpen, setIsOpen] = useState(false);
@@ -120,22 +119,21 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const userSelectedCountryRef = useRef<string | null>(null);
 
-  // Sync from value prop - detect from number when loading saved E.164 (no defaultCountry needed)
+  // Sync from value prop - detect from number when loading saved E.164
   useEffect(() => {
     const preferred =
       (userSelectedCountryRef.current as CountryCode) ??
-      (effectiveDefault as CountryCode);
+      (Default as CountryCode);
     const next = parseInput(value, defaultCountryData, preferred);
     setPhoneNumber((prev) =>
       prev === next.phoneNumber ? prev : next.phoneNumber
     );
-    // Only update country when value has digits - avoid resetting user's selection on empty
     if (value && value.replace(/\D/g, '').length > 0) {
       setSelectedCountry((prev) =>
         prev.code === next.country.code ? prev : next.country
       );
     }
-  }, [value, defaultCountryData, effectiveDefault]);
+  }, [value, defaultCountryData, Default]);
 
   const formattedNumber = useMemo(
     () => formatNumber(phoneNumber, selectedCountry.code as CountryCode),
