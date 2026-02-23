@@ -17,7 +17,8 @@ import {
 } from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
-import { parsePhoneNumber, CountryCode } from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import type { CountryCode } from 'libphonenumber-js';
 import {
   PhoneInputProps,
   CountryData,
@@ -60,7 +61,7 @@ const CountryList: React.FC<CountryListProps> = ({
       {countries.map((country) => (
         <div
           key={country.code}
-          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
+          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer hover:bg-surface-sec'
           onClick={() => onSelect(country)}
         >
           <CountryDisplay
@@ -80,7 +81,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   value = '',
   onChange,
   onCountryChange,
-  defaultCountry = DEFAULT_COUNTRY_CODE,
+  defaultCountry,
   placeholder = 'Enter phone number',
   disabled = false,
   className = '',
@@ -88,48 +89,58 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   error: externalError,
   ...additionalProps
 }) => {
+  // Fallback only for empty input; when value has country code, we detect from number
+  const effectiveDefault = defaultCountry ?? DEFAULT_COUNTRY_CODE;
   const defaultCountryData = useMemo(
     () =>
-      COUNTRY_CODES.find((c) => c.code === defaultCountry) || COUNTRY_CODES[0],
-    [defaultCountry]
+      COUNTRY_CODES.find((c) => c.code === effectiveDefault) ||
+      COUNTRY_CODES[0],
+    [effectiveDefault]
   );
 
   const [selectedCountry, setSelectedCountry] = useState<CountryData>(
-    () => parseInput(value, defaultCountryData).country
+    () =>
+      parseInput(
+        value,
+        defaultCountryData,
+        effectiveDefault as CountryCode
+      ).country
   );
   const [phoneNumber, setPhoneNumber] = useState(
-    () => parseInput(value, defaultCountryData).phoneNumber
+    () =>
+      parseInput(
+        value,
+        defaultCountryData,
+        effectiveDefault as CountryCode
+      ).phoneNumber
   );
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [internalError, setInternalError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const cursorPositionRef = useRef<number | null>(null);
+  const userSelectedCountryRef = useRef<string | null>(null);
 
+  // Sync from value prop - detect from number when loading saved E.164 (no defaultCountry needed)
   useEffect(() => {
-    const next = parseInput(value, defaultCountryData);
-    setSelectedCountry((prev) =>
-      prev.code === next.country.code ? prev : next.country
-    );
+    const preferred =
+      (userSelectedCountryRef.current as CountryCode) ??
+      (effectiveDefault as CountryCode);
+    const next = parseInput(value, defaultCountryData, preferred);
     setPhoneNumber((prev) =>
       prev === next.phoneNumber ? prev : next.phoneNumber
     );
-  }, [value, defaultCountryData]);
+    // Only update country when value has digits - avoid resetting user's selection on empty
+    if (value && value.replace(/\D/g, '').length > 0) {
+      setSelectedCountry((prev) =>
+        prev.code === next.country.code ? prev : next.country
+      );
+    }
+  }, [value, defaultCountryData, effectiveDefault]);
 
   const formattedNumber = useMemo(
     () => formatNumber(phoneNumber, selectedCountry.code as CountryCode),
     [phoneNumber, selectedCountry.code]
   );
-
-  // Restore cursor position after formatting
-  useEffect(() => {
-    if (inputRef.current && cursorPositionRef.current !== null) {
-      const input = inputRef.current;
-      const pos = cursorPositionRef.current;
-      input.setSelectionRange(pos, pos);
-      cursorPositionRef.current = null;
-    }
-  }, [formattedNumber]);
 
   const filteredCountries = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -137,10 +148,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
     return COUNTRY_CODES.filter((c) => {
       const name = c.name.toLowerCase();
-      return (
-        name.startsWith(query) ||
-        c.dial_code.includes(searchTerm)
-      );
+      return name.startsWith(query) || c.dial_code.includes(searchTerm);
     });
   }, [searchTerm]);
 
@@ -150,14 +158,18 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       return;
     }
 
+    const fullNumber = `${COUNTRY_CODES.find((c) => c.code === countryCode)?.dial_code ?? ''}${number}`;
     try {
-      const parsed = parsePhoneNumber(number, countryCode as CountryCode);
+      const parsed = parsePhoneNumberFromString(
+        fullNumber,
+        countryCode as CountryCode
+      );
       if (parsed?.isValid()) {
         setInternalError('');
         return;
       }
-    } catch (error) {
-      console.warn('Phone validate parse failed:', error);
+    } catch {
+      // ignore
     }
 
     const schema = getValidationForCountry(countryCode);
@@ -170,47 +182,18 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [phoneNumber, selectedCountry.code, validate]);
 
   const handleCountrySelect = (country: CountryData) => {
+    userSelectedCountryRef.current = country.code;
     setSelectedCountry(country);
     setIsOpen(false);
     setSearchTerm('');
-    cursorPositionRef.current = null; // Reset cursor position when country changes
     onCountryChange?.(country.code);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target;
-    const newValue = input.value;
-    const cursorPos = input.selectionStart || 0;
-    
+    const newValue = e.target.value;
     const newDigits = toDigits(newValue);
-    
-    const maxLength = ['US','CA','IN'].includes(selectedCountry.code) ? 10 : 15;
-    if (newDigits.length > maxLength) {
-      return; 
-    }
-    
-    const valueBeforeCursor = newValue.substring(0, cursorPos);
-    const digitsBeforeCursor = toDigits(valueBeforeCursor).length;
-    
+
     setPhoneNumber(newDigits);
-    
-    if (newDigits) {
-      const formatted = formatNumber(newDigits, selectedCountry.code as CountryCode);
-      let digitCount = 0;
-      let newCursorPos = 0;
-      
-      for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
-        if (/\d/.test(formatted[i])) {
-          digitCount++;
-        }
-        newCursorPos = i + 1;
-      }
-      
-      cursorPositionRef.current = newCursorPos;
-    } else {
-      cursorPositionRef.current = 0;
-    }
-    
     onChange?.(newDigits ? `${selectedCountry.dial_code}${newDigits}` : '');
   };
 
@@ -237,6 +220,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         >
           <PopoverTrigger asChild>
             <button
+              type='button'
               className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
               disabled={disabled}
             >

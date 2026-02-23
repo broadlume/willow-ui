@@ -2,6 +2,60 @@ import { Meta, StoryObj } from '@storybook/react';
 import { PhoneInput } from './phone-input';
 import { useState } from 'react';
 
+function ControlledPhoneInput() {
+  const [fullNumber, setFullNumber] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('US');
+
+  return (
+    <div className='space-y-4'>
+      <PhoneInput
+        placeholder='Enter phone number'
+        onChange={setFullNumber}
+        onCountryChange={setSelectedCountry}
+      />
+      <div className='p-3 rounded text-sm space-y-1'>
+        <p>
+          <strong>Full Number:</strong> {fullNumber || 'N/A'}
+        </p>
+        <p>
+          <strong>Selected Country:</strong> {selectedCountry}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function CanadaVsUSDemo() {
+  const [fullNumber, setFullNumber] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+
+  return (
+    <div className='space-y-4'>
+      <div className='p-4 border border-border-cta rounded'>
+        <p className='text-sm'>
+          <strong>Canada vs US:</strong> Select &quot;Canada&quot; from the
+          dropdown and enter a number. The country should stay as Canada (not
+          reset to US). Both share +1, but user selection is preserved.
+        </p>
+      </div>
+      <PhoneInput
+        placeholder='Enter phone number'
+        defaultCountry='US'
+        onChange={setFullNumber}
+        onCountryChange={setSelectedCountry}
+      />
+      <div className='p-3 rounded text-sm space-y-1'>
+        <p>
+          <strong>Full Number:</strong> {fullNumber || 'N/A'}
+        </p>
+        <p>
+          <strong>Selected Country:</strong> {selectedCountry || '—'}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 const meta: Meta<typeof PhoneInput> = {
   component: PhoneInput,
   title: 'Components/Phone Input',
@@ -55,28 +109,7 @@ export const Disabled: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
-    const [fullNumber, setFullNumber] = useState('');
-    const [selectedCountry, setSelectedCountry] = useState('US');
-
-    return (
-      <div className='space-y-4'>
-        <PhoneInput
-          placeholder='Enter phone number'
-          onChange={setFullNumber}
-          onCountryChange={setSelectedCountry}
-        />
-        <div className='p-3 rounded text-sm space-y-1'>
-          <p>
-            <strong>Full Number:</strong> {fullNumber || 'N/A'}
-          </p>
-          <p>
-            <strong>Selected Country:</strong> {selectedCountry}
-          </p>
-        </div>
-      </div>
-    );
-  },
+  render: () => <ControlledPhoneInput />,
 };
 
 export const CountryFormats: Story = {
@@ -109,35 +142,103 @@ export const CountryFormats: Story = {
 
 export const AutoDetectFromValue: Story = {
   render: () => {
-    const phoneNumbers = [
+    const phoneNumbers: Array<{
+      label: string;
+      phone: string;
+      defaultCountry?: string;
+    }> = [
       { label: 'US', phone: '+18323456789' },
       { label: 'India', phone: '+919876543210' },
       { label: 'Germany', phone: '+493012345678' },
       { label: 'France', phone: '+33612345678' },
       { label: 'Australia', phone: '+61412345678' },
-      { label: 'Canada', phone: '+14165550123' },
+      { label: 'Canada', phone: '+14165550123', defaultCountry: 'CA' },
       { label: 'Japan', phone: '+8109901234567' },
       { label: 'Brazil', phone: '+5511987654321' },
       { label: 'China', phone: '+8613812345678' },
+      { label: 'Jersey (+44)', phone: '+447797123456', defaultCountry: 'JE' },
     ];
 
     return (
       <div className='space-y-4'>
-        <div className='p-4  border border-border-cta rounded'>
+        <div className='p-4 border border-border-cta rounded'>
           <p className='text-sm'>
             <strong>Auto-Detection:</strong> Pass a phone number with country
-            code (e.g., "+919876543210") and the component automatically detects
-            the country and formats the number.
+            code (e.g., &quot;+919876543210&quot;) and the component automatically
+            detects the country and formats the number. For shared codes (+1, +44),
+            use <code>defaultCountry</code> to disambiguate.
           </p>
         </div>
         {phoneNumbers.map((item) => (
           <PhoneInput
             key={item.phone}
             value={item.phone}
+            defaultCountry={item.defaultCountry}
             label={`${item.label}: ${item.phone}`}
           />
         ))}
       </div>
     );
   },
+};
+
+export const CanadaVsUS: Story = {
+  render: () => <CanadaVsUSDemo />,
+};
+
+export const FromDatabaseNoDefaultCountry: Story = {
+  render: () => {
+    const savedNumbers = [
+      { label: 'UK mobile (from DB)', phone: '+447797123456' },
+      { label: 'India (from DB)', phone: '+919876543210' },
+      { label: 'Germany (from DB)', phone: '+493012345678' },
+      { label: 'Canada (from DB)', phone: '+14165550123' },
+    ];
+
+    return (
+      <div className='space-y-4'>
+        <div className='p-4 border border-border-cta rounded'>
+          <p className='text-sm'>
+            <strong>Loading saved numbers:</strong> Only the E.164 number is
+            stored in the DB. No <code>defaultCountry</code> needed — the
+            component detects the country from the number and shows the correct
+            flag.
+          </p>
+        </div>
+        {savedNumbers.map((item) => (
+          <PhoneInput
+            key={item.phone}
+            value={item.phone}
+            label={item.label}
+          />
+        ))}
+      </div>
+    );
+  },
+};
+
+export const JerseyAndUK: Story = {
+  render: () => (
+    <div className='space-y-4'>
+      <div className='p-4 border border-border-cta rounded'>
+        <p className='text-sm'>
+          <strong>Jersey & UK (+44):</strong> Both use +44. Select Jersey or UK
+          and type a number. Formatting uses libphonenumber-js for correct
+          display.
+        </p>
+      </div>
+      <div className='grid gap-4 sm:grid-cols-2'>
+        <PhoneInput
+          defaultCountry='JE'
+          placeholder='Jersey number'
+          label='Jersey'
+        />
+        <PhoneInput
+          defaultCountry='GB'
+          placeholder='UK number'
+          label='United Kingdom'
+        />
+      </div>
+    </div>
+  ),
 };
