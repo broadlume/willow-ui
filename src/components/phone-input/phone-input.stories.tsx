@@ -87,7 +87,6 @@ export const AutoDetectFromValue: Story = {
     const phoneNumbers: Array<{
       label: string;
       phone: string;
-      defaultCountry?: string;
     }> = [
       { label: 'US', phone: '+18323456789' },
       { label: 'India', phone: '+919876543210' },
@@ -115,7 +114,6 @@ export const AutoDetectFromValue: Story = {
           <PhoneInput
             key={item.phone}
             value={item.phone}
-            defaultCountry={item.defaultCountry}
             label={`${item.label}: ${item.phone}`}
           />
         ))}
