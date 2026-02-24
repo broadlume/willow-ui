@@ -9,7 +9,7 @@ const meta: Meta<typeof PhoneInput> = {
   argTypes: {
     value: {
       control: 'text',
-      description: 'Phone number with country code (e.g., +19328656416)',
+      description: 'Phone number with country code (e.g., +19635262622)',
     },
     defaultCountry: {
       control: 'text',
@@ -109,7 +109,10 @@ export const CountryFormats: Story = {
 
 export const AutoDetectFromValue: Story = {
   render: () => {
-    const phoneNumbers = [
+    const phoneNumbers: Array<{
+      label: string;
+      phone: string;
+    }> = [
       { label: 'US', phone: '+18323456789' },
       { label: 'India', phone: '+919876543210' },
       { label: 'Germany', phone: '+493012345678' },
@@ -119,15 +122,17 @@ export const AutoDetectFromValue: Story = {
       { label: 'Japan', phone: '+8109901234567' },
       { label: 'Brazil', phone: '+5511987654321' },
       { label: 'China', phone: '+8613812345678' },
+      { label: 'Jersey (+44)', phone: '+441534123456' },
     ];
 
     return (
       <div className='space-y-4'>
-        <div className='p-4  border border-border-cta rounded'>
+        <div className='p-4 border border-border-cta rounded'>
           <p className='text-sm'>
             <strong>Auto-Detection:</strong> Pass a phone number with country
-            code (e.g., "+919876543210") and the component automatically detects
-            the country and formats the number.
+            code (e.g., &quot;+919876543210&quot;) and the component automatically
+            detects the country and formats the number. For shared codes (+1, +44),
+            use <code>defaultCountry</code> to disambiguate.
           </p>
         </div>
         {phoneNumbers.map((item) => (
