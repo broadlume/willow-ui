@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
+import { Button } from '@components/button';
 import {
   COUNTRY_CODES,
   DEFAULT_COUNTRY_CODE,
@@ -244,9 +245,10 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             }}
           >
             <PopoverTrigger asChild>
-              <button
+              <Button
                 type='button'
-                className='flex h-full w-full items-center justify-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
+                variant='ghost'
+                className='flex h-full w-full items-center justify-center gap-1 px-2 py-1 border-r border-border-sec rounded-none shadow-none bg-transparent hover:bg-transparent'
                 disabled={disabled}
               >
                 <CountryDisplay
@@ -261,7 +263,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                 ) : (
                   <HiChevronDown className='h-4 w-4 opacity-50' />
                 )}
-              </button>
+              </Button>
             </PopoverTrigger>
             <PopoverContent className='w-75 p-0' align='start'>
               <Command>
