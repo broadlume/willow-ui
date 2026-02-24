@@ -191,8 +191,34 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     const newValue = e.target.value;
     const newDigits = toDigits(newValue);
 
-    setPhoneNumber(newDigits);
-    onChange?.(newDigits ? `${selectedCountry.dial_code}${newDigits}` : '');
+    const fixedLengthCountries = ['US', 'CA', 'IN'];
+    const maxDigits = fixedLengthCountries.includes(selectedCountry.code)
+      ? 10
+      : 15;
+    if (newDigits.length > maxDigits) {
+      return;
+    }
+
+    const currentFormatted = formatNumber(phoneNumber, selectedCountry.code as CountryCode);
+    const deletedFormattingOnly =
+      newDigits === phoneNumber &&
+      newValue.length < currentFormatted.length;
+    const digitsToSet = deletedFormattingOnly
+      ? phoneNumber.slice(0, -1)
+      : newDigits;
+
+    setPhoneNumber(digitsToSet);
+
+    const isFixedLengthCountry = fixedLengthCountries.includes(
+      selectedCountry.code
+    );
+    const isValidLength =
+      !isFixedLengthCountry || digitsToSet.length === 10;
+    const valueToEmit =
+      digitsToSet && isValidLength
+        ? `${selectedCountry.dial_code}${digitsToSet}`
+        : '';
+    onChange?.(valueToEmit);
   };
 
   const displayError = externalError || internalError;
