@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { InputWithSlots } from '@components/input/InputWithSlots';
 import {
   Command,
@@ -10,10 +10,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
-import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE, getValidationForCountry } from './countryCodes';
+import { Button } from '@components/button';
+import {
+  COUNTRY_CODES,
+  DEFAULT_COUNTRY_CODE,
+  getValidationForCountry,
+} from './countryCodes';
 import classNames from 'classnames';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi2';
-import { parsePhoneNumber, CountryCode } from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import type { CountryCode } from 'libphonenumber-js';
 import {
   PhoneInputProps,
   CountryData,
@@ -56,7 +62,7 @@ const CountryList: React.FC<CountryListProps> = ({
       {countries.map((country) => (
         <div
           key={country.code}
-          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer'
+          className='flex items-center gap-2 px-2 py-1.5 rounded-sm cursor-pointer hover:bg-surface-sec'
           onClick={() => onSelect(country)}
         >
           <CountryDisplay
@@ -76,7 +82,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   value = '',
   onChange,
   onCountryChange,
-  defaultCountry = DEFAULT_COUNTRY_CODE,
+  defaultCountry,
   placeholder = 'Enter phone number',
   disabled = false,
   className = '',
@@ -84,31 +90,51 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   error: externalError,
   ...additionalProps
 }) => {
+  const Default = defaultCountry ?? DEFAULT_COUNTRY_CODE;
   const defaultCountryData = useMemo(
     () =>
-      COUNTRY_CODES.find((c) => c.code === defaultCountry) || COUNTRY_CODES[0],
-    [defaultCountry]
+      COUNTRY_CODES.find((c) => c.code === Default) ||
+      COUNTRY_CODES[0],
+    [Default]
   );
 
   const [selectedCountry, setSelectedCountry] = useState<CountryData>(
-    () => parseInput(value, defaultCountryData).country
+    () =>
+      parseInput(
+        value,
+        defaultCountryData,
+        Default as CountryCode
+      ).country
   );
   const [phoneNumber, setPhoneNumber] = useState(
-    () => parseInput(value, defaultCountryData).phoneNumber
+    () =>
+      parseInput(
+        value,
+        defaultCountryData,
+        Default as CountryCode
+      ).phoneNumber
   );
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [internalError, setInternalError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const userSelectedCountryRef = useRef<string | null>(null);
 
+  // Sync from value prop - detect from number when loading saved E.164
   useEffect(() => {
-    const next = parseInput(value, defaultCountryData);
-    setSelectedCountry((prev) =>
-      prev.code === next.country.code ? prev : next.country
-    );
+    const preferred =
+      (userSelectedCountryRef.current as CountryCode) ??
+      (Default as CountryCode);
+    const next = parseInput(value, defaultCountryData, preferred);
     setPhoneNumber((prev) =>
       prev === next.phoneNumber ? prev : next.phoneNumber
     );
-  }, [value, defaultCountryData]);
+    if (value && value.replace(/\D/g, '').length > 0) {
+      setSelectedCountry((prev) =>
+        prev.code === next.country.code ? prev : next.country
+      );
+    }
+  }, [value, defaultCountryData, Default]);
 
   const formattedNumber = useMemo(
     () => formatNumber(phoneNumber, selectedCountry.code as CountryCode),
@@ -118,12 +144,11 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const filteredCountries = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return COUNTRY_CODES;
-    return COUNTRY_CODES.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.dial_code.includes(searchTerm) ||
-        c.code.toLowerCase().includes(query)
-    );
+
+    return COUNTRY_CODES.filter((c) => {
+      const name = c.name.toLowerCase();
+      return name.startsWith(query) || c.dial_code.includes(searchTerm);
+    });
   }, [searchTerm]);
 
   const validate = useCallback((number: string, countryCode: string) => {
@@ -132,14 +157,18 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       return;
     }
 
+    const fullNumber = `${COUNTRY_CODES.find((c) => c.code === countryCode)?.dial_code ?? ''}${number}`;
     try {
-      const parsed = parsePhoneNumber(number, countryCode as CountryCode);
+      const parsed = parsePhoneNumberFromString(
+        fullNumber,
+        countryCode as CountryCode
+      );
       if (parsed?.isValid()) {
         setInternalError('');
         return;
       }
-    } catch (error) {
-      console.warn('Phone validate parse failed:', error);
+    } catch {
+      // ignore
     }
 
     const schema = getValidationForCountry(countryCode);
@@ -152,6 +181,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [phoneNumber, selectedCountry.code, validate]);
 
   const handleCountrySelect = (country: CountryData) => {
+    userSelectedCountryRef.current = country.code;
     setSelectedCountry(country);
     setIsOpen(false);
     setSearchTerm('');
@@ -159,15 +189,44 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digits = toDigits(e.target.value);
-    setPhoneNumber(digits);
-    onChange?.(`${selectedCountry.dial_code}${digits}`);
+    const newValue = e.target.value;
+    const newDigits = toDigits(newValue);
+
+    const fixedLengthCountries = ['US', 'CA', 'IN'];
+    const maxDigits = fixedLengthCountries.includes(selectedCountry.code)
+      ? 10
+      : 15;
+    if (newDigits.length > maxDigits) {
+      return;
+    }
+
+    const currentFormatted = formatNumber(phoneNumber, selectedCountry.code as CountryCode);
+    const deletedFormattingOnly =
+      newDigits === phoneNumber &&
+      newValue.length < currentFormatted.length;
+    const digitsToSet = deletedFormattingOnly
+      ? phoneNumber.slice(0, -1)
+      : newDigits;
+
+    setPhoneNumber(digitsToSet);
+
+    const isFixedLengthCountry = fixedLengthCountries.includes(
+      selectedCountry.code
+    );
+    const isValidLength =
+      !isFixedLengthCountry || digitsToSet.length === 10;
+    const valueToEmit =
+      digitsToSet && isValidLength
+        ? `${selectedCountry.dial_code}${digitsToSet}`
+        : '';
+    onChange?.(valueToEmit);
   };
 
   const displayError = externalError || internalError;
 
   return (
     <InputWithSlots
+      ref={inputRef}
       {...additionalProps}
       error={displayError}
       type='tel'
@@ -175,50 +234,55 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       onChange={handlePhoneChange}
       placeholder={placeholder}
       disabled={disabled}
-      className={classNames('pl-1', className)}
+      className={classNames('pl-1 min-w-0', className)}
       prefixSlot={
-        <Popover
-          open={isOpen}
-          onOpenChange={(open) => {
-            setIsOpen(open);
-            if (!open) setSearchTerm('');
-          }}
-        >
-          <PopoverTrigger asChild>
-            <button
-              className='flex items-center gap-1 px-2 py-1 border-r border-border-sec disabled:opacity-50 disabled:cursor-not-allowed'
-              disabled={disabled}
-            >
-              <CountryDisplay
-                country={selectedCountry}
-                showFlag={showFlag}
-                showDialCode
-                dialCodeClassName='text-sm font-medium'
-              />
-              {isOpen ? (
-                <HiChevronUp className='h-4 w-4 opacity-50' />
-              ) : (
-                <HiChevronDown className='h-4 w-4 opacity-50' />
-              )}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className='w-75 p-0' align='start'>
-            <Command>
-              <CommandInput
-                placeholder='Search country...'
-                onValueChange={setSearchTerm}
-                value={searchTerm}
-              />
-              <CommandList className='max-h-75'>
-                <CountryList
-                  countries={filteredCountries}
+        <div className='flex w-[5.5rem] shrink-0 items-center justify-center'>
+          <Popover
+            open={isOpen}
+            onOpenChange={(open) => {
+              setIsOpen(open);
+              if (!open) setSearchTerm('');
+            }}
+          >
+            <PopoverTrigger asChild>
+              <Button
+                type='button'
+                variant='ghost'
+                className='flex h-full w-full items-center justify-center gap-1 px-2 py-1 border-r border-border-sec rounded-none shadow-none bg-transparent hover:bg-transparent'
+                disabled={disabled}
+              >
+                <CountryDisplay
+                  country={selectedCountry}
                   showFlag={showFlag}
-                  onSelect={handleCountrySelect}
+                  showDialCode
+                  flagClassName='text-base mt-[1px]'
+                  dialCodeClassName='text-sm font-medium'
                 />
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+                {isOpen ? (
+                  <HiChevronUp className='h-4 w-4 opacity-50' />
+                ) : (
+                  <HiChevronDown className='h-4 w-4 opacity-50' />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-75 p-0' align='start'>
+              <Command>
+                <CommandInput
+                  placeholder='Search country...'
+                  onValueChange={setSearchTerm}
+                  value={searchTerm}
+                />
+                <CommandList className='max-h-75 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-md [&::-webkit-scrollbar-thumb]:hover:bg-gray-400'>
+                  <CountryList
+                    countries={filteredCountries}
+                    showFlag={showFlag}
+                    onSelect={handleCountrySelect}
+                  />
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
       }
     />
   );
