@@ -82,7 +82,8 @@ function getInitialColumnOrder<TData, TValue>(
     columns
       .map((col) => {
         if ('id' in col && col.id) return col.id as string;
-        if ('accessorKey' in col && col.accessorKey) return col.accessorKey as string;
+        if ('accessorKey' in col && col.accessorKey)
+          return col.accessorKey as string;
         return '';
       })
       .filter(Boolean)
@@ -176,7 +177,12 @@ export function useDataTable<TData, TValue>({
   const columnSizingKey = useRef(
     'col-sizing:' +
       columns
-        .map((col) => ('id' in col && col.id) || ('accessorKey' in col && String(col.accessorKey)) || '')
+        .map(
+          (col) =>
+            ('id' in col && col.id) ||
+            ('accessorKey' in col && String(col.accessorKey)) ||
+            ''
+        )
         .filter(Boolean)
         .join(',')
   ).current;
@@ -193,7 +199,9 @@ export function useDataTable<TData, TValue>({
   useEffect(() => {
     try {
       localStorage.setItem(columnSizingKey, JSON.stringify(columnSizing));
-    } catch (e) { /* localStorage unavailable */ }
+    } catch (e) {
+      /* localStorage unavailable */
+    }
   }, [columnSizing, columnSizingKey]);
 
   /**
@@ -673,206 +681,236 @@ export function useDataTable<TData, TValue>({
    * Render Data table Component
    */
   const CustomDataTable = () => {
-    const tableMinWidth = table.getVisibleLeafColumns().reduce((acc, col) => acc + col.getSize(), 0);
+    const tableMinWidth = table
+      .getVisibleLeafColumns()
+      .reduce((acc, col) => acc + col.getSize(), 0);
     const totalColWidth = Math.max(tableMinWidth, 1);
 
-
     return (
-    <div
-      {...itemProps?.root}
-      className={clsx(
-        'flex flex-col gap-[16px] rounded-md bg-white text-sm',
-        itemProps?.root?.className
-      )}
-    >
-      {includeLoading && !data?.length ? (
-        <div className=' flex h-40 items-center justify-center rounded-md'>
-          <Loader />
-        </div>
-      ) : (
-        <div
-          ref={scrollContainerRef}
-          {...(({ enableStickyHeader, ...rest }) => rest)(
-            itemProps?.tableWrapper || {}
-          )}
-          className={clsx(
-            'relative rounded-md border',
-            {
-              'max-h-[65vh] min-h-[0px] overflow-y-auto':
-                itemProps?.tableWrapper?.enableStickyHeader,
-            },
-            'overflow-x-auto data-table-scroll',
-            itemProps?.tableWrapper?.className
-          )}
-        >
-          {topContent}
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
-            sensors={sensors}
+      <div
+        {...itemProps?.root}
+        className={clsx(
+          'flex flex-col gap-[16px] rounded-md bg-white text-sm',
+          itemProps?.root?.className
+        )}
+      >
+        {includeLoading && !data?.length ? (
+          <div className=' flex h-40 items-center justify-center rounded-md'>
+            <Loader />
+          </div>
+        ) : (
+          <div
+            ref={scrollContainerRef}
+            {...(({ enableStickyHeader, ...rest }) => rest)(
+              itemProps?.tableWrapper || {}
+            )}
+            className={clsx(
+              'relative rounded-md border',
+              {
+                'max-h-[65vh] min-h-[0px] overflow-y-auto':
+                  itemProps?.tableWrapper?.enableStickyHeader,
+              },
+              'overflow-x-auto data-table-scroll',
+              itemProps?.tableWrapper?.className
+            )}
           >
-            <Table
-              data-testid='data-table'
-              {...itemProps?.table}
-              className={`${itemProps?.table?.className} text-text-pri`}
-              style={{ ...(itemProps?.table?.style || {}), minWidth: tableMinWidth, tableLayout: 'fixed' }}
+            {topContent}
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
+              sensors={sensors}
             >
-              {table.getRowModel().rows?.length ? (
-                <TableHeader
-                  data-testid='data-table-header'
-                  {...itemProps?.tableHeader}
-                  className={clsx(
-                    {
-                      'sticky top-0 z-20 bg-white shadow-sm':
-                        itemProps?.tableWrapper?.enableStickyHeader,
-                    },
-                    itemProps?.tableHeader?.className
-                  )}
-                >
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow
-                      data-testid={'data-header-row-' + headerGroup.id}
-                      key={headerGroup.id}
-                      {...itemProps?.tableHeaderRow}
-                      className={clsx(
-                        'hover:!bg-transparent',
-                        itemProps?.tableHeaderRow?.className
-                      )}
-                    >
-                      <SortableContext
-                        items={draggableColumnIds}
-                        strategy={horizontalListSortingStrategy}
-                      >
-                        {(() => {
-                          // Get only visible headers (filter out placeholders if needed)
-                          const visibleHeaders = headerGroup.headers.filter(
-                            (header) => !header.isPlaceholder
-                          );
-
-                          // Compute cumulative right offsets for fixedEndColIds sticky columns
-                          const stickyHeaderRightOffsets: Record<string, number> = {};
-                          let headerCumulativeRight = 0;
-                          for (let i = visibleHeaders.length - 1; i >= 0; i--) {
-                            const h = visibleHeaders[i];
-                            if (fixedEndColIds.includes(h.column.id)) {
-                              stickyHeaderRightOffsets[h.column.id] = headerCumulativeRight;
-                              const colWidth =
-                                h.column.columnDef.maxSize !== undefined &&
-                                h.column.columnDef.maxSize < Number.MAX_SAFE_INTEGER
-                                  ? h.getSize()
-                                  : Math.max(h.column.columnDef.minSize ?? 20, 80);
-                              headerCumulativeRight += colWidth;
-                            }
-                          }
-
-                          return visibleHeaders.map((header, index) => {
-                            const isLastVisibleColumn =
-                              index === visibleHeaders.length - 1;
-                            const nextHeader = visibleHeaders[index + 1];
-                            const isBeforeFixedEnd =
-                              !!nextHeader &&
-                              fixedEndColIds.includes(nextHeader.column.id);
-
-                            return (
-                              <DraggableColumnHeader
-                                key={header.id}
-                                header={header}
-                                isDraggable={draggableColumnIds.includes(
-                                  header.column.id
-                                )}
-                                isResizable={true}
-                                saveScrollPositionBeforeSort={
-                                  saveScrollPositionBeforeSort
-                                }
-                                isLastVisibleColumn={isLastVisibleColumn}
-                                itemProps={{
-                                  ...itemProps,
-                                  tableHead: {
-                                    style: {
-                                      ...(itemProps?.tableHead?.style || {}),
-                                      width: `${((header.getSize() / totalColWidth) * 100).toFixed(4)}%`,
-                                      ...(fixedEndColIds.includes(header.column.id)
-                                        ? { position: 'sticky', right: stickyHeaderRightOffsets[header.column.id], zIndex: 2, backgroundColor: 'white' }
-                                        : {}),
-                                    },
-                                    // @ts-expect-error test
-                                    colSpan: header.colSpan,
-                                  },
-                                }}
-                              />
-                            );
-                          });
-                        })()}
-                      </SortableContext>
-                    </TableRow>
-                  ))}
-                </TableHeader>
-              ) : null}
-              <TableBody
-                data-testid='data-table-body'
-                {...itemProps?.tableBody}
-                className={clsx('relative', itemProps?.tableBody?.className)}
+              <Table
+                data-testid='data-table'
+                {...itemProps?.table}
+                className={`${itemProps?.table?.className} text-text-pri`}
+                style={{
+                  ...(itemProps?.table?.style || {}),
+                  minWidth: tableMinWidth,
+                  tableLayout: 'fixed',
+                }}
               >
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) =>
-                    CustomTableRow ? (
-                      <CustomTableRow
-                        key={row.id}
-                        onClick={(event) => handleRowClick({ event, row })}
-                        data-state={row.getIsSelected() && 'selected'}
-                        data-testid={'data-table-row-' + row.id}
-                        row={row}
-                        {...bodyRowProps(row)}
-                        className={clsx(bodyRowProps(row)?.className)}
-                      >
-                        <TableRowCells row={row} itemProps={itemProps} />
-                      </CustomTableRow>
-                    ) : (
-                      <TableRow
-                        key={row.id}
-                        onClick={(event) => handleRowClick({ event, row })}
-                        {...bodyRowProps(row)}
-                        className={clsx(bodyRowProps(row)?.className)}
-                        data-state={row.getIsSelected() && 'selected'}
-                        data-testid={'data-table-row-' + row.id}
-                      >
-                        <TableRowCells row={row} itemProps={itemProps} />
-                      </TableRow>
-                    )
-                  )
-                ) : (
-                  <TableRow
-                    data-testid={'data-table-row-' + 'no-rows'}
-                    {...itemProps?.tableBodyRow}
+                  <TableHeader
+                    data-testid='data-table-header'
+                    {...itemProps?.tableHeader}
+                    className={clsx(
+                      {
+                        'sticky top-0 z-20 bg-white shadow-sm':
+                          itemProps?.tableWrapper?.enableStickyHeader,
+                      },
+                      itemProps?.tableHeader?.className
+                    )}
                   >
-                    <TableCell
-                      data-testid='data-table-row-cell-no-rows'
-                      // colSpan={columns.length}
-                      {...itemProps?.tableCell}
-                      className={clsx(
-                        'h-24 text-center',
-                        itemProps?.tableCell?.className
-                      )}
-                    >
-                      {noRecordFoundMessage}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        data-testid={'data-header-row-' + headerGroup.id}
+                        key={headerGroup.id}
+                        {...itemProps?.tableHeaderRow}
+                        className={clsx(
+                          'hover:!bg-transparent',
+                          itemProps?.tableHeaderRow?.className
+                        )}
+                      >
+                        <SortableContext
+                          items={draggableColumnIds}
+                          strategy={horizontalListSortingStrategy}
+                        >
+                          {(() => {
+                            // Get only visible headers (filter out placeholders if needed)
+                            const visibleHeaders = headerGroup.headers.filter(
+                              (header) => !header.isPlaceholder
+                            );
 
-            <DragOverlay>
-              <DragOverlayContent />
-            </DragOverlay>
-          </DndContext>
-        </div>
-      )}
-      {showPagination && table.getRowModel().rows?.length ? (
-        <Pagination itemProps={itemProps} />
-      ) : null}
-    </div>
+                            // Compute cumulative right offsets for fixedEndColIds sticky columns
+                            const stickyHeaderRightOffsets: Record<
+                              string,
+                              number
+                            > = {};
+                            let headerCumulativeRight = 0;
+                            for (
+                              let i = visibleHeaders.length - 1;
+                              i >= 0;
+                              i--
+                            ) {
+                              const h = visibleHeaders[i];
+                              if (fixedEndColIds.includes(h.column.id)) {
+                                stickyHeaderRightOffsets[h.column.id] =
+                                  headerCumulativeRight;
+                                const colWidth =
+                                  h.column.columnDef.maxSize !== undefined &&
+                                  h.column.columnDef.maxSize <
+                                    Number.MAX_SAFE_INTEGER
+                                    ? h.getSize()
+                                    : Math.max(
+                                        h.column.columnDef.minSize ?? 20,
+                                        80
+                                      );
+                                headerCumulativeRight += colWidth;
+                              }
+                            }
+
+                            return visibleHeaders.map((header, index) => {
+                              const isLastVisibleColumn =
+                                index === visibleHeaders.length - 1;
+                              const nextHeader = visibleHeaders[index + 1];
+                              const isBeforeFixedEnd =
+                                !!nextHeader &&
+                                fixedEndColIds.includes(nextHeader.column.id);
+
+                              return (
+                                <DraggableColumnHeader
+                                  key={header.id}
+                                  header={header}
+                                  isDraggable={draggableColumnIds.includes(
+                                    header.column.id
+                                  )}
+                                  isResizable={true}
+                                  saveScrollPositionBeforeSort={
+                                    saveScrollPositionBeforeSort
+                                  }
+                                  isLastVisibleColumn={isLastVisibleColumn}
+                                  itemProps={{
+                                    ...itemProps,
+                                    tableHead: {
+                                      style: {
+                                        ...(itemProps?.tableHead?.style || {}),
+                                        width: `${(
+                                          (header.getSize() / totalColWidth) *
+                                          100
+                                        ).toFixed(4)}%`,
+                                        ...(fixedEndColIds.includes(
+                                          header.column.id
+                                        )
+                                          ? {
+                                              position: 'sticky',
+                                              right:
+                                                stickyHeaderRightOffsets[
+                                                  header.column.id
+                                                ],
+                                              zIndex: 2,
+                                              backgroundColor: 'white',
+                                            }
+                                          : {}),
+                                      },
+                                      // @ts-expect-error test
+                                      colSpan: header.colSpan,
+                                    },
+                                  }}
+                                />
+                              );
+                            });
+                          })()}
+                        </SortableContext>
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                ) : null}
+                <TableBody
+                  data-testid='data-table-body'
+                  {...itemProps?.tableBody}
+                  className={clsx('relative', itemProps?.tableBody?.className)}
+                >
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) =>
+                      CustomTableRow ? (
+                        <CustomTableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                          row={row}
+                          {...bodyRowProps(row)}
+                          className={clsx(bodyRowProps(row)?.className)}
+                        >
+                          <TableRowCells row={row} itemProps={itemProps} />
+                        </CustomTableRow>
+                      ) : (
+                        <TableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          {...bodyRowProps(row)}
+                          className={clsx(bodyRowProps(row)?.className)}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                        >
+                          <TableRowCells row={row} itemProps={itemProps} />
+                        </TableRow>
+                      )
+                    )
+                  ) : (
+                    <TableRow
+                      data-testid={'data-table-row-' + 'no-rows'}
+                      {...itemProps?.tableBodyRow}
+                    >
+                      <TableCell
+                        data-testid='data-table-row-cell-no-rows'
+                        // colSpan={columns.length}
+                        {...itemProps?.tableCell}
+                        className={clsx(
+                          'h-24 text-center',
+                          itemProps?.tableCell?.className
+                        )}
+                      >
+                        {noRecordFoundMessage}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+
+              <DragOverlay>
+                <DragOverlayContent />
+              </DragOverlay>
+            </DndContext>
+          </div>
+        )}
+        {showPagination && table.getRowModel().rows?.length ? (
+          <Pagination itemProps={itemProps} />
+        ) : null}
+      </div>
     );
   };
 
@@ -917,7 +955,8 @@ export function useDataTable<TData, TValue>({
             const isLastCell = index === visibleCells.length - 1;
             const isResizingThisCell =
               !isLastCell &&
-              table.getState().columnSizingInfo.isResizingColumn === cell.column.id;
+              table.getState().columnSizingInfo.isResizingColumn ===
+                cell.column.id;
             return (
               <TableCell
                 data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
@@ -936,7 +975,12 @@ export function useDataTable<TData, TValue>({
                 style={{
                   ...(itemProps?.tableCell?.style || {}),
                   ...(fixedEndColIds.includes(cell.column.id)
-                    ? { position: 'sticky', right: stickyCellRightOffsets[cell.column.id], zIndex: 1, backgroundColor: 'white' }
+                    ? {
+                        position: 'sticky',
+                        right: stickyCellRightOffsets[cell.column.id],
+                        zIndex: 1,
+                        backgroundColor: 'white',
+                      }
                     : {}),
                 }}
               >
