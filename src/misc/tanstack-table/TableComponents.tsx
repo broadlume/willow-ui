@@ -162,7 +162,11 @@ const DraggableColumnHeader = <TData, TValue>({
     whiteSpace: 'nowrap',
     minWidth: `${header.column.columnDef.minSize ?? 20}px`,
     transition,
-    zIndex: isDragging ? 10 : (header.column.getIsResizing() || isResizeHovered) ? 3 : 1,
+    zIndex: isDragging
+      ? 10
+      : header.column.getIsResizing() || isResizeHovered
+      ? 3
+      : 1,
   };
 
   return (
@@ -254,12 +258,17 @@ const DraggableColumnHeader = <TData, TValue>({
             justifyContent: 'flex-end',
           }}
         >
-          <div style={{
-            width: '1px',
-            height: '100%',
-            backgroundColor: header.column.getIsResizing() || isResizeHovered ? '#3b82f6' : 'transparent',
-            transition: 'background-color 0.15s',
-          }} />
+          <div
+            style={{
+              width: '1px',
+              height: '100%',
+              backgroundColor:
+                header.column.getIsResizing() || isResizeHovered
+                  ? '#3b82f6'
+                  : 'transparent',
+              transition: 'background-color 0.15s',
+            }}
+          />
         </div>
       )}
     </TableHead>
