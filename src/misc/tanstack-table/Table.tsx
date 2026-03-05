@@ -90,10 +90,12 @@ function getInitialColumnOrder<TData, TValue>(
   const validFixedEnd = fixedEndColIds.filter((id) => allColIds.has(id));
 
   if (initialColumnOrder && initialColumnOrder.length > 0) {
-    // Strip fixedEnd cols from provided order (they may or may not be present),
-    // then always append them at the end so they stay pinned.
-    const base = initialColumnOrder.filter((id) => !fixedEndColIds.includes(id));
-    return [...base, ...validFixedEnd];
+    // Strip fixedStart and fixedEnd cols from provided order,
+    // then always prepend/append them so they stay pinned.
+    const base = initialColumnOrder.filter(
+      (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+    );
+    return [...fixedStartColIds, ...base, ...validFixedEnd];
   }
 
   const colIds = [...allColIds];
@@ -141,8 +143,10 @@ export function useDataTable<TData, TValue>({
   // Sync internal columnOrder state when initialColumnOrder prop changes externally
   useEffect(() => {
     if (initialColumnOrder && initialColumnOrder.length > 0) {
-      const base = initialColumnOrder.filter((id) => !fixedEndColIds.includes(id));
-      setColumnOrder([...base, ...fixedEndColIds]);
+      const base = initialColumnOrder.filter(
+        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+      );
+      setColumnOrder([...fixedStartColIds, ...base, ...fixedEndColIds]);
     }
   }, [initialColumnOrder]);
 
@@ -572,9 +576,7 @@ export function useDataTable<TData, TValue>({
           const oldIndex = currentOrder.indexOf(activeColId);
           const newIndex = currentOrder.indexOf(overColId);
           const updatedArray = arrayMove(currentOrder, oldIndex, newIndex);
-          // Strip fixed-end columns before persisting — they are always re-appended on load
-          const storableOrder = updatedArray.filter(id => !fixedEndColIds.includes(id) && !fixedStartColIds.includes(id));
-          onColumnOrderChange(storableOrder);
+          onColumnOrderChange(updatedArray);
           return updatedArray;
         });
       }
