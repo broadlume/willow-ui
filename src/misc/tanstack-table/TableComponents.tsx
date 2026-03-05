@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { flexRender, Header } from '@tanstack/react-table';
 
 import clsx from 'clsx';
-import React from 'react';
+import React, { useState } from 'react';
 import { HiMiniChevronDown, HiMiniChevronUp } from 'react-icons/hi2';
 import { DataTableProps } from './type';
 
@@ -129,12 +129,16 @@ const DraggableColumnHeader = <TData, TValue>({
   header,
   itemProps,
   isDraggable,
+  isResizable = true,
   saveScrollPositionBeforeSort,
+  isLastVisibleColumn,
 }: {
   header: Header<TData, TValue>;
   itemProps: DataTableProps<TData, TValue>['itemProps'];
   isDraggable: boolean;
+  isResizable?: boolean;
   saveScrollPositionBeforeSort?: () => void;
+  isLastVisibleColumn?: boolean;
 }) => {
   const {
     attributes,
@@ -149,27 +153,26 @@ const DraggableColumnHeader = <TData, TValue>({
     disabled: !isDraggable,
   });
 
+  const [isResizeHovered, setIsResizeHovered] = useState(false);
+
   const style: React.CSSProperties = {
     opacity: isDragging ? 0.8 : 1,
     position: 'relative',
     transform: CSS.Translate.toString(transform),
     whiteSpace: 'nowrap',
-    width: `${header.column.columnDef.size}px`,
-    minWidth: `${header.column.columnDef.minSize}px`,
-    maxWidth: `${header.column.columnDef.maxSize}px`,
+    minWidth: `${header.column.columnDef.minSize ?? 20}px`,
     transition,
-    zIndex: isDragging ? 10 : 1,
+    zIndex: isDragging ? 10 : (header.column.getIsResizing() || isResizeHovered) ? 3 : 1,
   };
 
   return (
     <TableHead
       data-testid={'data-table-header-head-' + header.column.id}
       ref={setNodeRef}
-      style={style}
-      // colSpan={header.colSpan}
       {...itemProps?.tableHead}
+      style={{ ...style, ...itemProps?.tableHead?.style }}
       className={clsx(
-        'py-3 text-text-pri transition-all duration-200',
+        'relative py-4 text-text-pri transition-all duration-200',
         'last:[>td]:justify-center',
         {
           // Uncomment this line if you want to show background when dragging
@@ -177,11 +180,12 @@ const DraggableColumnHeader = <TData, TValue>({
           'bg-blue-50/20 border-l-2 border-l-surface-cta':
             isOver && !isDragging,
           'hover:bg-gray-50': isDraggable && !isDragging && !isOver,
+          'border-r border-gray-200': !isLastVisibleColumn,
         },
         itemProps?.tableHead?.className
       )}
     >
-      <TableCell
+      <div
         data-testid={'data-table-header-cell-' + header.column.id}
         {...(isDraggable ? attributes : {})}
         {...(isDraggable ? listeners : {})}
@@ -193,7 +197,7 @@ const DraggableColumnHeader = <TData, TValue>({
           }
         }}
         className={clsx(
-          'flex items-center gap-2 !p-0 font-semibold text-text-pri w-full',
+          'flex items-center gap-2 font-semibold text-text-pri w-full',
           {
             'cursor-pointer select-none':
               header.column.getCanSort() && !isDragging,
@@ -201,8 +205,6 @@ const DraggableColumnHeader = <TData, TValue>({
             'cursor-grabbing': isDragging,
           }
         )}
-        // for checked commented this code in future we remove this
-        // style={itemProps?.tableHead?.style}
       >
         {header.isPlaceholder
           ? null
@@ -228,7 +230,38 @@ const DraggableColumnHeader = <TData, TValue>({
             />
           </div>
         ) : null}
-      </TableCell>
+      </div>
+      {!isLastVisibleColumn && isResizable && (
+        <div
+          onMouseDown={header.getResizeHandler()}
+          onTouchStart={header.getResizeHandler()}
+          onClick={(e) => e.stopPropagation()}
+          onMouseEnter={() => setIsResizeHovered(true)}
+          onMouseLeave={() => setIsResizeHovered(false)}
+          title='Adjust column width'
+          style={{
+            position: 'absolute',
+            right: '0',
+            top: 0,
+            bottom: 0,
+            width: '10px',
+            zIndex: 10,
+            cursor: 'col-resize',
+            userSelect: 'none',
+            touchAction: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <div style={{
+            width: '1px',
+            height: '100%',
+            backgroundColor: header.column.getIsResizing() || isResizeHovered ? '#3b82f6' : 'transparent',
+            transition: 'background-color 0.15s',
+          }} />
+        </div>
+      )}
     </TableHead>
   );
 };
