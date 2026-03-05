@@ -29,6 +29,7 @@ import {
 } from '@dnd-kit/sortable';
 import {
   ColumnDef,
+  ColumnSizingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
@@ -77,19 +78,28 @@ function getInitialColumnOrder<TData, TValue>(
   fixedStartColIds: string[],
   fixedEndColIds: string[]
 ): string[] {
+  const allColIds = new Set(
+    columns
+      .map((col) => {
+        if ('id' in col && col.id) return col.id as string;
+        if ('accessorKey' in col && col.accessorKey)
+          return col.accessorKey as string;
+        return '';
+      })
+      .filter(Boolean)
+  );
+  const validFixedEnd = fixedEndColIds.filter((id) => allColIds.has(id));
+
   if (initialColumnOrder && initialColumnOrder.length > 0) {
-    return initialColumnOrder;
+    // Strip fixedStart and fixedEnd cols from provided order,
+    // then always prepend/append them so they stay pinned.
+    const base = initialColumnOrder.filter(
+      (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+    );
+    return [...fixedStartColIds, ...base, ...validFixedEnd];
   }
 
-  const colIds = columns
-    .map((col) => {
-      if ('id' in col && col.id) return col.id as string;
-      if ('accessorKey' in col && col.accessorKey)
-        return col.accessorKey as string;
-      return '';
-    })
-    .filter(Boolean);
-
+  const colIds = [...allColIds];
   const draggable = colIds.filter(
     (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
   );
@@ -134,7 +144,10 @@ export function useDataTable<TData, TValue>({
   // Sync internal columnOrder state when initialColumnOrder prop changes externally
   useEffect(() => {
     if (initialColumnOrder && initialColumnOrder.length > 0) {
-      setColumnOrder(initialColumnOrder);
+      const base = initialColumnOrder.filter(
+        (id) => !fixedStartColIds.includes(id) && !fixedEndColIds.includes(id)
+      );
+      setColumnOrder([...fixedStartColIds, ...base, ...fixedEndColIds]);
     }
   }, [initialColumnOrder]);
 
@@ -156,6 +169,39 @@ export function useDataTable<TData, TValue>({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef({ scrollTop: 0, scrollLeft: 0 });
   const shouldRestoreScrollRef = useRef<boolean>(false);
+
+  /**
+   * Column Resizing — persisted to localStorage keyed by column IDs
+   */
+  const columnSizingKey = useRef(
+    'col-sizing:' +
+      columns
+        .map(
+          (col) =>
+            ('id' in col && col.id) ||
+            ('accessorKey' in col && String(col.accessorKey)) ||
+            ''
+        )
+        .filter(Boolean)
+        .join(',')
+  ).current;
+
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(() => {
+    try {
+      const saved = localStorage.getItem(columnSizingKey);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(columnSizingKey, JSON.stringify(columnSizing));
+    } catch (e) {
+      /* localStorage unavailable */
+    }
+  }, [columnSizing, columnSizingKey]);
 
   /**
    * Sort
@@ -205,12 +251,19 @@ export function useDataTable<TData, TValue>({
 
   // Also maintain scroll position on render when we have a saved position
   useLayoutEffect(() => {
-    if (scrollContainerRef.current && (scrollPositionRef.current.scrollLeft > 0 || scrollPositionRef.current.scrollTop > 0)) {
+    if (
+      scrollContainerRef.current &&
+      (scrollPositionRef.current.scrollLeft > 0 ||
+        scrollPositionRef.current.scrollTop > 0)
+    ) {
       const element = scrollContainerRef.current;
       const { scrollLeft, scrollTop } = scrollPositionRef.current;
 
       // Only restore if position has been reset
-      if (element.scrollLeft !== scrollLeft || element.scrollTop !== scrollTop) {
+      if (
+        element.scrollLeft !== scrollLeft ||
+        element.scrollTop !== scrollTop
+      ) {
         element.scrollLeft = scrollLeft;
         element.scrollTop = 0;
       }
@@ -446,12 +499,16 @@ export function useDataTable<TData, TValue>({
     manualPagination: true,
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    onColumnSizingChange: setColumnSizing,
     ...tableParams,
     state: {
       columnOrder,
       sorting,
       pagination,
       rowSelection,
+      columnSizing,
       ...tableParams?.state,
     },
   });
@@ -622,164 +679,238 @@ export function useDataTable<TData, TValue>({
   /**
    * Render Data table Component
    */
-  const CustomDataTable = () => (
-    <div
-      {...itemProps?.root}
-      className={clsx(
-        'flex flex-col gap-[16px] rounded-md bg-white text-sm',
-        itemProps?.root?.className
-      )}
-    >
-      {includeLoading && !data?.length ? (
-        <div className=' flex h-40 items-center justify-center rounded-md'>
-          <Loader />
-        </div>
-      ) : (
-        <div
-          ref={scrollContainerRef}
-          {...(({ enableStickyHeader, ...rest }) => rest)(
-            itemProps?.tableWrapper || {}
-          )}
-          className={clsx(
-            'rounded-md border',
-            {
-              'max-h-[65vh] min-h-[0px] overflow-y-auto':
-                itemProps?.tableWrapper?.enableStickyHeader,
-            },
-            'overflow-x-auto',
-            itemProps?.tableWrapper?.className
-          )}
-        >
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
-            sensors={sensors}
+  const CustomDataTable = () => {
+    const tableMinWidth = table
+      .getVisibleLeafColumns()
+      .reduce((acc, col) => acc + col.getSize(), 0);
+    const totalColWidth = Math.max(tableMinWidth, 1);
+
+    return (
+      <div
+        {...itemProps?.root}
+        className={clsx(
+          'flex flex-col gap-[16px] rounded-md bg-white text-sm',
+          itemProps?.root?.className
+        )}
+      >
+        {includeLoading && !data?.length ? (
+          <div className=' flex h-40 items-center justify-center rounded-md'>
+            <Loader />
+          </div>
+        ) : (
+          <div
+            ref={scrollContainerRef}
+            {...(({ enableStickyHeader, ...rest }) => rest)(
+              itemProps?.tableWrapper || {}
+            )}
+            className={clsx(
+              'relative rounded-md border',
+              {
+                'max-h-[65vh] min-h-[0px] overflow-y-auto':
+                  itemProps?.tableWrapper?.enableStickyHeader,
+              },
+              'overflow-x-auto data-table-scroll',
+              itemProps?.tableWrapper?.className
+            )}
           >
-            <Table
-              data-testid='data-table'
-              {...itemProps?.table}
-              className={`${itemProps?.table?.className} text-text-pri`}
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
+              sensors={sensors}
             >
-              {table.getRowModel().rows?.length ? (
-                <TableHeader
-                  data-testid='data-table-header'
-                  {...itemProps?.tableHeader}
-                  className={clsx(
-                    {
-                      'sticky top-0 z-20 bg-white shadow-sm':
-                        itemProps?.tableWrapper?.enableStickyHeader,
-                    },
-                    itemProps?.tableHeader?.className
-                  )}
-                >
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow
-                      data-testid={'data-header-row-' + headerGroup.id}
-                      key={headerGroup.id}
-                      {...itemProps?.tableHeaderRow}
-                      className={clsx(
-                        'hover:!bg-transparent',
-                        itemProps?.tableHeaderRow?.className
-                      )}
-                    >
-                      <SortableContext
-                        items={columnOrder}
-                        strategy={horizontalListSortingStrategy}
-                      >
-                        {headerGroup.headers.map((header) => {
-                          return (
-                            <DraggableColumnHeader
-                              key={header.id}
-                              header={header}
-                              isDraggable={draggableColumnIds.includes(
-                                header.column.id
-                              )}
-                              saveScrollPositionBeforeSort={saveScrollPositionBeforeSort}
-                              itemProps={{
-                                ...itemProps,
-                                tableHead: {
-                                  style: {
-                                    ...(itemProps?.tableHead?.style || {}),
-                                    width: `${header.getSize()}px`,
-                                  },
-                                  // @ts-expect-error test
-                                  colSpan: header.colSpan,
-                                },
-                              }}
-                            />
-                          );
-                        })}
-                      </SortableContext>
-                    </TableRow>
-                  ))}
-                </TableHeader>
-              ) : null}
-              <TableBody
-                data-testid='data-table-body'
-                {...itemProps?.tableBody}
-                className={clsx('relative', itemProps?.tableBody?.className)}
+              <Table
+                data-testid='data-table'
+                {...itemProps?.table}
+                className={`${itemProps?.table?.className} text-text-pri`}
+                style={{
+                  ...(itemProps?.table?.style || {}),
+                  minWidth: tableMinWidth,
+                  tableLayout: 'fixed',
+                }}
               >
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) =>
-                    CustomTableRow ? (
-                      <CustomTableRow
-                        key={row.id}
-                        onClick={(event) => handleRowClick({ event, row })}
-                        data-state={row.getIsSelected() && 'selected'}
-                        data-testid={'data-table-row-' + row.id}
-                        row={row}
-                        {...bodyRowProps(row)}
-                        className={clsx(bodyRowProps(row)?.className)}
-                      >
-                        <TableRowCells row={row} itemProps={itemProps} />
-                      </CustomTableRow>
-                    ) : (
-                      <TableRow
-                        key={row.id}
-                        onClick={(event) => handleRowClick({ event, row })}
-                        {...bodyRowProps(row)}
-                        className={clsx(bodyRowProps(row)?.className)}
-                        data-state={row.getIsSelected() && 'selected'}
-                        data-testid={'data-table-row-' + row.id}
-                      >
-                        <TableRowCells row={row} itemProps={itemProps} />
-                      </TableRow>
-                    )
-                  )
-                ) : (
-                  <TableRow
-                    data-testid={'data-table-row-' + 'no-rows'}
-                    {...itemProps?.tableBodyRow}
+                  <TableHeader
+                    data-testid='data-table-header'
+                    {...itemProps?.tableHeader}
+                    className={clsx(
+                      {
+                        'sticky top-0 z-20 bg-white shadow-sm':
+                          itemProps?.tableWrapper?.enableStickyHeader,
+                      },
+                      itemProps?.tableHeader?.className
+                    )}
                   >
-                    <TableCell
-                      data-testid='data-table-row-cell-no-rows'
-                      // colSpan={columns.length}
-                      {...itemProps?.tableCell}
-                      className={clsx(
-                        'h-24 text-center',
-                        itemProps?.tableCell?.className
-                      )}
-                    >
-                      {noRecordFoundMessage}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        data-testid={'data-header-row-' + headerGroup.id}
+                        key={headerGroup.id}
+                        {...itemProps?.tableHeaderRow}
+                        className={clsx(
+                          'hover:!bg-transparent',
+                          itemProps?.tableHeaderRow?.className
+                        )}
+                      >
+                        <SortableContext
+                          items={draggableColumnIds}
+                          strategy={horizontalListSortingStrategy}
+                        >
+                          {(() => {
+                            // Get only visible headers (filter out placeholders if needed)
+                            const visibleHeaders = headerGroup.headers.filter(
+                              (header) => !header.isPlaceholder
+                            );
 
-            <DragOverlay>
-              <DragOverlayContent />
-            </DragOverlay>
-          </DndContext>
-        </div>
-      )}
-      {showPagination && table.getRowModel().rows?.length ? (
-        <Pagination itemProps={itemProps} />
-      ) : null}
-    </div>
-  );
+                            // Compute cumulative right offsets for fixedEndColIds sticky columns
+                            const stickyHeaderRightOffsets: Record<
+                              string,
+                              number
+                            > = {};
+                            let headerCumulativeRight = 0;
+                            for (
+                              let i = visibleHeaders.length - 1;
+                              i >= 0;
+                              i--
+                            ) {
+                              const h = visibleHeaders[i];
+                              if (fixedEndColIds.includes(h.column.id)) {
+                                stickyHeaderRightOffsets[h.column.id] =
+                                  headerCumulativeRight;
+                                const colWidth =
+                                  h.column.columnDef.maxSize !== undefined &&
+                                  h.column.columnDef.maxSize <
+                                    Number.MAX_SAFE_INTEGER
+                                    ? h.getSize()
+                                    : Math.max(
+                                        h.column.columnDef.minSize ?? 20,
+                                        80
+                                      );
+                                headerCumulativeRight += colWidth;
+                              }
+                            }
+
+                            return visibleHeaders.map((header, index) => {
+                              const isLastVisibleColumn =
+                                index === visibleHeaders.length - 1;
+                              const nextHeader = visibleHeaders[index + 1];
+                              const isBeforeFixedEnd =
+                                !!nextHeader &&
+                                fixedEndColIds.includes(nextHeader.column.id);
+
+                              return (
+                                <DraggableColumnHeader
+                                  key={header.id}
+                                  header={header}
+                                  isDraggable={draggableColumnIds.includes(
+                                    header.column.id
+                                  )}
+                                  isResizable={true}
+                                  saveScrollPositionBeforeSort={
+                                    saveScrollPositionBeforeSort
+                                  }
+                                  isLastVisibleColumn={isLastVisibleColumn}
+                                  itemProps={{
+                                    ...itemProps,
+                                    tableHead: {
+                                      style: {
+                                        ...(itemProps?.tableHead?.style || {}),
+                                        width: `${(
+                                          (header.getSize() / totalColWidth) *
+                                          100
+                                        ).toFixed(4)}%`,
+                                        ...(fixedEndColIds.includes(
+                                          header.column.id
+                                        )
+                                          ? {
+                                              position: 'sticky',
+                                              right:
+                                                stickyHeaderRightOffsets[
+                                                  header.column.id
+                                                ],
+                                              zIndex: 2,
+                                              backgroundColor: 'white',
+                                            }
+                                          : {}),
+                                      },
+                                      // @ts-expect-error test
+                                      colSpan: header.colSpan,
+                                    },
+                                  }}
+                                />
+                              );
+                            });
+                          })()}
+                        </SortableContext>
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                ) : null}
+                <TableBody
+                  data-testid='data-table-body'
+                  {...itemProps?.tableBody}
+                  className={clsx('relative', itemProps?.tableBody?.className)}
+                >
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) =>
+                      CustomTableRow ? (
+                        <CustomTableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                          row={row}
+                          {...bodyRowProps(row)}
+                          className={clsx(bodyRowProps(row)?.className)}
+                        >
+                          <TableRowCells row={row} itemProps={itemProps} />
+                        </CustomTableRow>
+                      ) : (
+                        <TableRow
+                          key={row.id}
+                          onClick={(event) => handleRowClick({ event, row })}
+                          {...bodyRowProps(row)}
+                          className={clsx(bodyRowProps(row)?.className)}
+                          data-state={row.getIsSelected() && 'selected'}
+                          data-testid={'data-table-row-' + row.id}
+                        >
+                          <TableRowCells row={row} itemProps={itemProps} />
+                        </TableRow>
+                      )
+                    )
+                  ) : (
+                    <TableRow
+                      data-testid={'data-table-row-' + 'no-rows'}
+                      {...itemProps?.tableBodyRow}
+                    >
+                      <TableCell
+                        data-testid='data-table-row-cell-no-rows'
+                        // colSpan={columns.length}
+                        {...itemProps?.tableCell}
+                        className={clsx(
+                          'h-24 text-center',
+                          itemProps?.tableCell?.className
+                        )}
+                      >
+                        {noRecordFoundMessage}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+
+              <DragOverlay>
+                <DragOverlayContent />
+              </DragOverlay>
+            </DndContext>
+          </div>
+        )}
+        {showPagination && table.getRowModel().rows?.length ? (
+          <Pagination itemProps={itemProps} />
+        ) : null}
+      </div>
+    );
+  };
 
   type TableRowCellProps<TData> = {
     row: Row<TData>;
@@ -796,32 +927,59 @@ export function useDataTable<TData, TValue>({
     itemProps,
     dropIndicatorInstruction,
   }: TableRowCellProps<TData>) => {
+    const visibleCells = row.getVisibleCells();
+
+    // Compute cumulative right offsets for fixedEndColIds sticky columns
+    const stickyCellRightOffsets: Record<string, number> = {};
+    let cellCumulativeRight = 0;
+    for (let i = visibleCells.length - 1; i >= 0; i--) {
+      const c = visibleCells[i];
+      if (fixedEndColIds.includes(c.column.id)) {
+        stickyCellRightOffsets[c.column.id] = cellCumulativeRight;
+        const colWidth =
+          c.column.columnDef.maxSize !== undefined &&
+          c.column.columnDef.maxSize < Number.MAX_SAFE_INTEGER
+            ? c.column.getSize()
+            : Math.max(c.column.columnDef.minSize ?? 20, 80);
+        cellCumulativeRight += colWidth;
+      }
+    }
+
     return (
       <>
         <div style={{ display: 'contents' }}>
-          {row.getVisibleCells().map((cell, index) => {
+          {visibleCells.map((cell, index) => {
             const isFirstCell = index === 0;
+            const isLastCell = index === visibleCells.length - 1;
+            const isResizingThisCell =
+              !isLastCell &&
+              table.getState().columnSizingInfo.isResizingColumn ===
+                cell.column.id;
             return (
               <TableCell
                 data-testid={`data-table-row-${cell.column.id}-cell-${cell.row.id}`}
                 key={cell.id}
                 {...itemProps?.tableCell}
                 className={clsx(
-                  // Always add padding-left to the first cell to reserve space
-                  // and position the cell relatively for the absolute span.
                   isFirstCell
                     ? enableRowSelection
                       ? 'relative first:pl-[30px]'
                       : 'first:pl-[16px]'
-                    : '', // Adjust 30px based on icon size
+                    : '',
                   'last:px-3',
+                  isResizingThisCell && 'border-r border-blue-500',
                   itemProps?.tableCell?.className
                 )}
                 style={{
                   ...(itemProps?.tableCell?.style || {}),
-                  width: `${cell.column.getSize()}px`,
-                  minWidth: `${cell.column.getSize()}px`,
-                  maxWidth: `${cell.column.getSize()}px`,
+                  ...(fixedEndColIds.includes(cell.column.id)
+                    ? {
+                        position: 'sticky',
+                        right: stickyCellRightOffsets[cell.column.id],
+                        zIndex: 1,
+                        backgroundColor: 'white',
+                      }
+                    : {}),
                 }}
               >
                 {/* Inject the draggable icon ONLY in the first cell when renderDraggableIcon is true */}
