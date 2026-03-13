@@ -94,6 +94,7 @@ export interface MenuItemRenderProps {
   expandedMenuL2?: boolean; // For More button to hide sub-menus
   setExpandedMenuL2?: Dispatch<SetStateAction<boolean>>;
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  authToken?: string; // Bearer token for AI API authorization
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -156,7 +157,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
   {
     id: 'ai-button',
     widthEstimate: 60,
-    render: ({ editor, darkMode, hostname }) => (
+    render: ({ editor, darkMode, hostname, authToken }) => (
       <MenuLink
         title={
           <DialogMenuItem
@@ -172,6 +173,7 @@ export const getAllMenuItems = (): MenuItemDefinition[] => [
                 editor={editor}
                 closeDialog={closeDialog}
                 hostname={hostname}
+                authToken={authToken}
               />
             )}
           />

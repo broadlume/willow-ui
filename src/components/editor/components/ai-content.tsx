@@ -18,9 +18,10 @@ interface AIContentProps {
   editor: Editor;
   closeDialog: () => void;
   hostname: string;
+  authToken?: string;
 }
 
-const AIContent = ({ editor, closeDialog, hostname }: AIContentProps) => {
+const AIContent = ({ editor, closeDialog, hostname, authToken }: AIContentProps) => {
   const [loading, setLoading] = useState(false);
   const { from, to } = editor.state.selection;
   const [generatedContent, setGeneratedContent] = useState('');
@@ -48,23 +49,25 @@ const AIContent = ({ editor, closeDialog, hostname }: AIContentProps) => {
 
     try {
       // Call the API to get the rewritten text
-      const apiUrl = `${hostname}/ai/generate`;
+      const apiUrl = `${hostname}/api/v2/ai/generate`;
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      
       const aiResponse = await axios.post(
         apiUrl,
         {
-          messages: [
-            {
-              content: prompt,
-            },
-          ],
+          prompt: prompt,
         },
         {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
         }
       );
-      const responseText = aiResponse.data.data.text;
+      const responseText = aiResponse.data.data[0].text;
       setGeneratedContent(responseText);
     } catch (error) {
       console.error('Error generating text:', error);

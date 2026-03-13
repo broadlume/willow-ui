@@ -55,6 +55,7 @@ interface MenuProps {
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
   hideAIMenu?: boolean; // Whether to hide the AI Menu button,
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  authToken?: string; // Bearer token for AI API authorization
 }
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -84,6 +85,7 @@ export const Menu = ({
   onAssetSelectorValueChange,
   hideAIMenu,
   isShowAssetBrowseButton = true,
+  authToken,
 }: MenuProps) => {
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
@@ -253,6 +255,7 @@ export const Menu = ({
     expandedMenuL2,
     setExpandedMenuL2,
     isShowAssetBrowseButton,
+    authToken,
   };
 
   return (
