@@ -85,6 +85,7 @@ export type EditorProps = {
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
   hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  authToken?: string; // Bearer token for AI API authorization
 };
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -279,6 +280,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 darkMode={darkMode}
                 toggleDarkMode={() => setDarkMode((v) => !v)}
                 hostname={props.hostname}
+                authToken={props.authToken}
                 onImageBrowseClick={props.onImageBrowseClick}
                 onImageDrop={props.onImageDrop}
                 onImageNameClick={props.onImageNameClick}
@@ -320,6 +322,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
               darkMode={darkMode}
               toggleDarkMode={() => setDarkMode((v) => !v)}
               hostname={props.hostname}
+              authToken={props.authToken}
               onImageBrowseClick={props.onImageBrowseClick}
               onImageDrop={props.onImageDrop}
               onImageNameClick={props.onImageNameClick}
