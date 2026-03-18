@@ -21,7 +21,12 @@ interface AIContentProps {
   authToken?: string;
 }
 
-const AIContent = ({ editor, closeDialog, hostname, authToken }: AIContentProps) => {
+const AIContent = ({
+  editor,
+  closeDialog,
+  hostname,
+  authToken,
+}: AIContentProps) => {
   const [loading, setLoading] = useState(false);
   const { from, to } = editor.state.selection;
   const [generatedContent, setGeneratedContent] = useState('');
@@ -53,11 +58,11 @@ const AIContent = ({ editor, closeDialog, hostname, authToken }: AIContentProps)
       const headers = {
         'Content-Type': 'application/json',
       };
-      
+
       if (authToken) {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
-      
+
       const aiResponse = await axios.post(
         apiUrl,
         {
@@ -106,7 +111,13 @@ const AIContent = ({ editor, closeDialog, hostname, authToken }: AIContentProps)
               name='prompt'
               render={({ field }) => (
                 <FormItem className='flex flex-col flex-1 gap-2'>
-                  <Label>Prompt:</Label>
+                  <div className='flex items-center justify-between gap-2'>
+                    <Label>Prompt:</Label>
+                    <span className='text-sm text-text-opt'>
+                      (Note : It will generate content of a maximum of 3000
+                      words)
+                    </span>
+                  </div>
                   <Textarea
                     placeholder='Enter your prompt here...'
                     {...field}
