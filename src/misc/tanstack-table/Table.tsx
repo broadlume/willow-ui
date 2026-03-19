@@ -118,6 +118,7 @@ export function useDataTable<TData, TValue>({
   enableSingleSelection = false,
   noRecordFoundMessage = 'There are no records to display',
   pageSizeOptions = [5, 10, 20, 50],
+  topContent,
 }: DataTableProps<TData, TValue>) {
   /**
    * Column Ordering
@@ -650,6 +651,7 @@ export function useDataTable<TData, TValue>({
             itemProps?.tableWrapper?.className
           )}
         >
+          {topContent}
           <DndContext
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
