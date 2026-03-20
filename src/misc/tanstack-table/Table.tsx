@@ -196,12 +196,24 @@ export function useDataTable<TData, TValue>({
     }
   });
 
+  const columnSizingDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
-    try {
-      localStorage.setItem(columnSizingKey, JSON.stringify(columnSizing));
-    } catch (e) {
-      /* localStorage unavailable */
+    if (columnSizingDebounceRef.current) {
+      clearTimeout(columnSizingDebounceRef.current);
     }
+    columnSizingDebounceRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(columnSizingKey, JSON.stringify(columnSizing));
+      } catch (e) {
+        /* localStorage unavailable */
+      }
+    }, 300);
+    return () => {
+      if (columnSizingDebounceRef.current) {
+        clearTimeout(columnSizingDebounceRef.current);
+      }
+    };
   }, [columnSizing, columnSizingKey]);
 
   /**
