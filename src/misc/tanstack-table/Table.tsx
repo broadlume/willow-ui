@@ -110,6 +110,7 @@ function getInitialColumnOrder<TData, TValue>(
 export function useDataTable<TData, TValue>({
   columns,
   data,
+  tableId,
   itemProps,
   initialColumnOrder,
   initialSorting,
@@ -172,25 +173,17 @@ export function useDataTable<TData, TValue>({
   const shouldRestoreScrollRef = useRef<boolean>(false);
 
   /**
-   * Column Resizing — persisted to localStorage keyed by column IDs
+   * Column Resizing — persisted to localStorage under a single
+   * "table-column-sizing" key as { [tableId]: ColumnSizingState }.
+   * Requires tableId prop; skips persistence if not provided.
    */
-  const columnSizingKey = useRef(
-    'col-sizing:' +
-      columns
-        .map(
-          (col) =>
-            ('id' in col && col.id) ||
-            ('accessorKey' in col && String(col.accessorKey)) ||
-            ''
-        )
-        .filter(Boolean)
-        .join(',')
-  ).current;
+  const STORAGE_KEY = 'table-column-sizing';
 
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(() => {
+    if (!tableId) return {};
     try {
-      const saved = localStorage.getItem(columnSizingKey);
-      return saved ? JSON.parse(saved) : {};
+      const all = localStorage.getItem(STORAGE_KEY);
+      return all ? (JSON.parse(all)[tableId] ?? {}) : {};
     } catch {
       return {};
     }
@@ -199,13 +192,16 @@ export function useDataTable<TData, TValue>({
   const columnSizingDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (!tableId) return;
     if (columnSizingDebounceRef.current) {
       clearTimeout(columnSizingDebounceRef.current);
     }
     columnSizingDebounceRef.current = setTimeout(() => {
       try {
-        localStorage.setItem(columnSizingKey, JSON.stringify(columnSizing));
-      } catch (e) {
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
+        all[tableId] = columnSizing;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      } catch {
         /* localStorage unavailable */
       }
     }, 300);
@@ -214,7 +210,7 @@ export function useDataTable<TData, TValue>({
         clearTimeout(columnSizingDebounceRef.current);
       }
     };
-  }, [columnSizing, columnSizingKey]);
+  }, [columnSizing, tableId]);
 
   /**
    * Sort
