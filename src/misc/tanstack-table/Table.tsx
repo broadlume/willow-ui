@@ -201,9 +201,7 @@ export function useDataTable<TData, TValue>({
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
         all[tableId] = columnSizing;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-      } catch {
-        /* localStorage unavailable */
-      }
+      } catch {}
     }, 300);
     return () => {
       if (columnSizingDebounceRef.current) {
