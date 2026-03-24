@@ -53,16 +53,19 @@ export const COUNTRY_CODES = buildCountryList();
 
 export const DEFAULT_COUNTRY_CODE = 'US';
 
+const PHONE_INVALID_10 = 'Phone number must be 10 digits';
+const PHONE_INVALID_INTL = 'Phone number must be 5-15 digits';
+
 export const PHONE_VALIDATION: Record<string, z.ZodSchema> = {
-  US: z.string().length(10, 'US phone number must be 10 digits'),
-  CA: z.string().length(10, 'Canada phone number must be 10 digits'),
-  IN: z.string().length(10, 'India phone number must be 10 digits'),
+  US: z.string().length(10, PHONE_INVALID_10),
+  CA: z.string().length(10, PHONE_INVALID_10),
+  IN: z.string().length(10, PHONE_INVALID_10),
 };
 
 export const DEFAULT_PHONE_SCHEMA = z
   .string()
-  .min(5, 'Phone number must be at least 5 digits')
-  .max(15, 'Phone number cannot exceed 15 digits');
+  .min(5, PHONE_INVALID_INTL)
+  .max(15, PHONE_INVALID_INTL);
 
 export const getValidationForCountry = (countryCode: string) => {
   return PHONE_VALIDATION[countryCode] || DEFAULT_PHONE_SCHEMA;
