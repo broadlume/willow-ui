@@ -33,6 +33,7 @@ export type DataProps = Partial<{
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  tableId?: string;
   tableParams?: Partial<Parameters<typeof useReactTable<TData>>[0]>;
   initialColumnOrder?: string[];
   initialSorting?: SortingState;
