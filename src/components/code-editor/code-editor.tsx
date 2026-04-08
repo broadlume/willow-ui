@@ -15,11 +15,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@components/popover/popover';
+import { DialogMenuItem } from '@components/editor/components/dialog-menu-item';
 import {
   EMMET_SUPPORTED_LANGUAGES,
   oneDarkProTheme,
   oneLightProTheme,
 } from './utils';
+import AIContent from './ai-content';
+import { getAISystemPrompt } from './ai-prompts';
 
 // icons
 import {
@@ -30,6 +33,7 @@ import {
   HiMiniSun,
   HiPaintBrush,
 } from 'react-icons/hi2';
+import { HiSparkles } from 'react-icons/hi2';
 
 // Simplified theme type - just light and dark
 type CustomTheme = 'light' | 'dark';
@@ -44,6 +48,8 @@ interface CodeEditorProps {
   options?: EditorProps['options'];
   asyncTokenSuggestions?: (query: string) => Promise<string[]>;
   enableTokenSuggestion?: boolean;
+  hostname?: string;
+  authToken?: string;
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
@@ -56,6 +62,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   options: passedOptions,
   asyncTokenSuggestions,
   enableTokenSuggestion = true,
+  hostname = '',
+  authToken,
 }: CodeEditorProps) => {
   const [code, setCode] = useState<string>(passedCode);
   const [theme, setTheme] = useState<CustomTheme>(passedTheme);
@@ -361,11 +369,26 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
         {/* Toolbar */}
         <div className='flex items-center gap-4 relative'>
-          {/* AI Icon */}
-          {/* <div className='flex items-center gap-1 cursor-pointer'>
-                        <AIIcon />
-                        <span className='text-sm font-normal text-[#6038E8]'>Ai</span>
-                    </div> */}
+          {/* AI Button */}
+          {hostname && (
+            <DialogMenuItem
+              title={
+                <div className='flex items-center gap-1'>
+                  <HiSparkles size={16} className='text-[#6038E8]' />
+                  <span className='text-sm font-normal text-[#6038E8]'>AI</span>
+                </div>
+              }
+              content={({ closeDialog }) => (
+                <AIContent
+                  editor={editorRef.current}
+                  closeDialog={closeDialog}
+                  hostname={hostname}
+                  authToken={authToken}
+                  systemPrompt={getAISystemPrompt(language)}
+                />
+              )}
+            />
+          )}
 
           {/* Theme Toggle */}
           <Button

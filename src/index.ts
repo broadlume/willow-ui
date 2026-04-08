@@ -44,6 +44,7 @@ export * from '@components/drag-n-drop-file-input/drag-n-drop-file-input';
 export * from '@components/checkbox-tree-view/checkbox-tree-view';
 export * from '@components/editor/editor';
 export * from '@components/code-editor/code-editor';
+export { getAISystemPrompt } from '@components/code-editor/ai-prompts';
 export * from '@components/Loader/Loader';
 export * from '@components/async-autocomplete/async-autocomplete';
 export * from '@components/audio-player/audio-player';
