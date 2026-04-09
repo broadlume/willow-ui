@@ -7,6 +7,7 @@ import {
   HiArrowDownTray,
   HiCheckCircle,
   HiClipboardDocument,
+  HiCodeBracket,
   HiPaperAirplane,
   HiSparkles,
   HiXMark,
@@ -18,6 +19,7 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  selectionLines?: { start: number; end: number };
 }
 
 interface ContentPart {
@@ -89,6 +91,7 @@ const AIAssistantPanel = ({
   const [isLoading, setIsLoading] = useState(false);
   const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
   const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH);
+  const [activeSelection, setActiveSelection] = useState<{ start: number; end: number } | null>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -106,6 +109,22 @@ const AIAssistantPanel = ({
       container.scrollTop = container.scrollHeight;
     }
   }, [messages, isLoading]);
+
+  // Track the editor's live selection so we can show a chip in the input box.
+  useEffect(() => {
+    if (!editor) return;
+    const disposable = editor.onDidChangeCursorSelection(({ selection }) => {
+      if (selection.isEmpty()) {
+        setActiveSelection(null);
+      } else {
+        setActiveSelection({
+          start: selection.startLineNumber,
+          end: selection.endLineNumber,
+        });
+      }
+    });
+    return () => disposable.dispose();
+  }, [editor]);
 
   // Focus input on mount
   useEffect(() => {
@@ -146,15 +165,16 @@ const AIAssistantPanel = ({
 
   // Editor helpers
   const getEditorContext = useCallback(() => {
-    if (!editor) return { selectedText: '', fullCode: '' };
+    if (!editor) return { selectedText: '', fullCode: '', selectionLines: null as null | { start: number; end: number } };
     const selection = editor.getSelection();
     const model = editor.getModel();
     const fullCode = model?.getValue() ?? '';
-    const selectedText =
-      selection && !selection.isEmpty()
-        ? (model?.getValueInRange(selection) ?? '')
-        : '';
-    return { selectedText, fullCode };
+    const hasSelection = !!(selection && !selection.isEmpty());
+    const selectedText = hasSelection ? (model?.getValueInRange(selection) ?? '') : '';
+    const selectionLines = hasSelection && selection
+      ? { start: selection.startLineNumber, end: selection.endLineNumber }
+      : null;
+    return { selectedText, fullCode, selectionLines };
   }, [editor]);
 
   const insertCode = useCallback(
@@ -187,12 +207,13 @@ const AIAssistantPanel = ({
     const trimmedInput = input.trim();
     if (!trimmedInput || isLoading) return;
 
-    const { selectedText, fullCode } = getEditorContext();
+    const { selectedText, fullCode, selectionLines } = getEditorContext();
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
       content: trimmedInput,
+      selectionLines: selectionLines ?? undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -207,8 +228,11 @@ const AIAssistantPanel = ({
         );
       }
       if (selectedText.trim()) {
+        const lineLabel = selectionLines
+          ? ` (Lines ${selectionLines.start}–${selectionLines.end})`
+          : '';
         contextParts.push(
-          `Selected text:\n\`\`\`${language}\n${selectedText}\n\`\`\``
+          `Selected text${lineLabel}:\n\`\`\`${language}\n${selectedText}\n\`\`\``
         );
       }
       contextParts.push(`Request: ${trimmedInput}`);
@@ -251,6 +275,7 @@ const AIAssistantPanel = ({
       ]);
     } finally {
       setIsLoading(false);
+      setActiveSelection(null);
       // Return focus to the textarea so the page does not scroll elsewhere.
       inputRef.current?.focus();
     }
@@ -401,8 +426,16 @@ const AIAssistantPanel = ({
               </span>
 
               {msg.role === 'user' ? (
-                <div className='bg-[#6038E8] text-white px-3 py-2 rounded-xl rounded-tr-sm text-sm leading-relaxed max-w-[90%] wrap-break-word'>
-                  {msg.content}
+                <div className='flex flex-col items-end gap-1 max-w-[90%]'>
+                  {msg.selectionLines && (
+                    <span className='flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#6038E8]/15 text-[#6038E8] border border-[#6038E8]/25 select-none cursor-pointer'>
+                      <span className='opacity-60'>&#x23;</span>
+                      Lines {msg.selectionLines.start}-{msg.selectionLines.end}
+                    </span>
+                  )}
+                  <div className='bg-[#6038E8] text-white px-3 py-2 rounded-xl rounded-tr-sm text-sm leading-relaxed wrap-break-word w-full'>
+                    {msg.content}
+                  </div>
                 </div>
               ) : (
                 <div className='flex flex-col gap-2 w-full'>
@@ -530,43 +563,85 @@ const AIAssistantPanel = ({
         >
           <div
             className={clsx(
-              'flex gap-2 rounded-lg p-2 transition-shadow focus-within:ring-1 focus-within:ring-[#6038E8]/50 border',
+              'flex flex-col rounded-lg transition-shadow focus-within:ring-1 focus-within:ring-[#6038E8]/50 border overflow-hidden',
               {
                 'bg-[#f5f5f7] border-[#d9dade]': isLight,
                 'bg-[#12151b] border-[#2e3340]': !isLight,
               }
             )}
           >
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onKeyUp={(e) => e.stopPropagation()}
-              onKeyPress={(e) => e.stopPropagation()}
-              placeholder='Ask Code Assistant… (↵ send, ⇧↵ new line)'
-              rows={2}
-              className={clsx(
-                'flex-1 resize-none bg-transparent outline-none text-sm leading-relaxed placeholder:opacity-35',
-                {
-                  'text-[#383a42]': isLight,
-                  'text-[#abb2bf]': !isLight,
-                }
-              )}
-            />
-            <Button
-              type='button'
-              variant='default'
-              className='self-end p-1.5 h-auto bg-[#6038E8] hover:bg-[#4f2ec9] shrink-0 disabled:opacity-40'
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                sendMessage().then(() => inputRef.current?.focus());
-              }}
-              disabled={!input.trim() || isLoading}
-            >
-              <HiPaperAirplane size={14} />
-            </Button>
+            {/* Selection reference chip — shown when editor has an active selection */}
+            {activeSelection && (
+              <div
+                className={clsx(
+                  'flex items-center gap-1.5 px-2 pt-2 pb-1',
+                )}
+              >
+                <div
+                  className={clsx(
+                    'flex items-center gap-1 pl-1.5 pr-1 py-0.5 rounded text-[11px] font-medium border select-none',
+                    {
+                      'bg-[#6038E8]/10 border-[#6038E8]/30 text-[#6038E8]': true,
+                    }
+                  )}
+                >
+                  <HiCodeBracket size={11} />
+                  <span className='font-mono'>
+                    {activeSelection.start === activeSelection.end
+                      ? `Line ${activeSelection.start}`
+                      : `Lines ${activeSelection.start}–${activeSelection.end}`}
+                  </span>
+                  <button
+                    type='button'
+                    className='ml-0.5 opacity-60 hover:opacity-100 transition-opacity'
+                    onClick={() => {
+                      setActiveSelection(null);
+                      // Also clear the editor selection
+                      if (editor) {
+                        const pos = editor.getPosition();
+                        if (pos) editor.setSelection({ startLineNumber: pos.lineNumber, startColumn: pos.column, endLineNumber: pos.lineNumber, endColumn: pos.column });
+                      }
+                    }}
+                    aria-label='Dismiss selection'
+                  >
+                    <HiXMark size={10} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className='flex gap-2 p-2'>
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onKeyUp={(e) => e.stopPropagation()}
+                onKeyPress={(e) => e.stopPropagation()}
+                placeholder='Ask Code Assistant… (↵ send, ⇧↵ new line)'
+                rows={2}
+                className={clsx(
+                  'flex-1 resize-none bg-transparent outline-none text-sm leading-relaxed placeholder:opacity-35',
+                  {
+                    'text-[#383a42]': isLight,
+                    'text-[#abb2bf]': !isLight,
+                  }
+                )}
+              />
+              <Button
+                type='button'
+                variant='default'
+                className='self-end p-1.5 h-auto bg-[#6038E8] hover:bg-[#4f2ec9] shrink-0 disabled:opacity-40'
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  sendMessage().then(() => inputRef.current?.focus());
+                }}
+                disabled={!input.trim() || isLoading}
+              >
+                <HiPaperAirplane size={14} />
+              </Button>
+            </div>
           </div>
           <p
             className={clsx('text-[11px] select-none opacity-70', {

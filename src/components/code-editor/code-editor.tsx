@@ -410,6 +410,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           'bg-[#282c34] border-[#3e4451]': isDarkTheme,
         }
       )}
+      onKeyDown={(e) => e.stopPropagation()}
+      onKeyUp={(e) => e.stopPropagation()}
+      onKeyPress={(e) => e.stopPropagation()}
     >
       {/* Editor column */}
       <div className='flex flex-col flex-1 min-w-0'>
