@@ -91,7 +91,10 @@ const AIAssistantPanel = ({
   const [isLoading, setIsLoading] = useState(false);
   const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
   const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH);
-  const [activeSelection, setActiveSelection] = useState<{ start: number; end: number } | null>(null);
+  const [activeSelection, setActiveSelection] = useState<{
+    start: number;
+    end: number;
+  } | null>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -126,12 +129,6 @@ const AIAssistantPanel = ({
     return () => disposable.dispose();
   }, [editor]);
 
-  // Focus input on mount
-  useEffect(() => {
-    const timer = setTimeout(() => inputRef.current?.focus(), 50);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Resize drag logic — panel is on the right, drag left = wider
   const onResizeMouseDown = (e: React.MouseEvent) => {
     isDraggingRef.current = true;
@@ -165,40 +162,82 @@ const AIAssistantPanel = ({
 
   // Editor helpers
   const getEditorContext = useCallback(() => {
-    if (!editor) return { selectedText: '', fullCode: '', selectionLines: null as null | { start: number; end: number } };
+    if (!editor)
+      return {
+        selectedText: '',
+        fullCode: '',
+        selectionLines: null as null | { start: number; end: number },
+      };
     const selection = editor.getSelection();
     const model = editor.getModel();
     const fullCode = model?.getValue() ?? '';
     const hasSelection = !!(selection && !selection.isEmpty());
-    const selectedText = hasSelection ? (model?.getValueInRange(selection) ?? '') : '';
-    const selectionLines = hasSelection && selection
-      ? { start: selection.startLineNumber, end: selection.endLineNumber }
-      : null;
+    const selectedText = hasSelection
+      ? model?.getValueInRange(selection) ?? ''
+      : '';
+    const selectionLines =
+      hasSelection && selection
+        ? { start: selection.startLineNumber, end: selection.endLineNumber }
+        : null;
     return { selectedText, fullCode, selectionLines };
   }, [editor]);
 
   const insertCode = useCallback(
     (code: string) => {
       if (!editor) return;
-      const selection = editor.getSelection();
-      const position = editor.getPosition();
+      const model = editor.getModel();
+      if (!model) return;
 
-      if (selection && !selection.isEmpty()) {
-        editor.executeEdits('ai-assistant', [{ range: selection, text: code }]);
-      } else if (position) {
-        editor.executeEdits('ai-assistant', [
+      const selection = editor.getSelection();
+      const hasSelection = !!(selection && !selection.isEmpty());
+
+      // Determine and clear the target range first
+      const clearRange =
+        hasSelection && selection ? selection : model.getFullModelRange();
+
+      editor.executeEdits('ai-assistant', [{ range: clearRange, text: '' }]);
+
+      // Snapshot the start position (Monaco columns are 1-based)
+      const startLine = clearRange.startLineNumber;
+      const startCol = clearRange.startColumn;
+
+      const CHARS_PER_TICK = 4; // characters streamed per frame
+      const DELAY_MS = 10; // ms between frames — lower = faster
+
+      let charIndex = 0;
+
+      const animate = () => {
+        charIndex = Math.min(charIndex + CHARS_PER_TICK, code.length);
+        const partial = code.slice(0, charIndex);
+
+        // Calculate the end position of the text inserted so far
+        const lines = partial.split('\n');
+        const endLine = startLine + lines.length - 1;
+        const endCol =
+          lines.length === 1
+            ? startCol + lines[0].length
+            : lines[lines.length - 1].length + 1;
+
+        editor.executeEdits('ai-assistant-stream', [
           {
             range: {
-              startLineNumber: position.lineNumber,
-              startColumn: position.column,
-              endLineNumber: position.lineNumber,
-              endColumn: position.column,
+              startLineNumber: startLine,
+              startColumn: startCol,
+              endLineNumber: endLine,
+              endColumn: endCol,
             },
-            text: code,
+            text: partial,
           },
         ]);
-      }
-      editor.focus();
+
+        if (charIndex < code.length) {
+          setTimeout(animate, DELAY_MS);
+        } else {
+          editor.focus();
+        }
+      };
+
+      animate();
     },
     [editor]
   );
@@ -222,6 +261,17 @@ const AIAssistantPanel = ({
 
     try {
       const contextParts: string[] = [];
+
+      // Prepend prior conversation history so the AI remembers previous turns
+      if (messages.length > 0) {
+        const historyLines = messages
+          .map(
+            (m) => `[${m.role === 'user' ? 'User' : 'Assistant'}]: ${m.content}`
+          )
+          .join('\n');
+        contextParts.push(`Previous conversation:\n${historyLines}`);
+      }
+
       if (fullCode.trim()) {
         contextParts.push(
           `Current ${language} code:\n\`\`\`${language}\n${fullCode}\n\`\`\``
@@ -279,7 +329,16 @@ const AIAssistantPanel = ({
       // Return focus to the textarea so the page does not scroll elsewhere.
       inputRef.current?.focus();
     }
-  }, [input, isLoading, getEditorContext, hostname, authToken, language, systemPrompt]);
+  }, [
+    input,
+    isLoading,
+    messages,
+    getEditorContext,
+    hostname,
+    authToken,
+    language,
+    systemPrompt,
+  ]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Always stop propagation so key events don't bubble to the Monaco editor
@@ -306,7 +365,10 @@ const AIAssistantPanel = ({
 
   return (
     // width is driven by JS state — the only inline style in the file.
-    <div className='relative flex h-full shrink-0' style={{ width: panelWidth }}>
+    <div
+      className='relative flex h-full shrink-0'
+      style={{ width: panelWidth }}
+    >
       {/* Drag-to-resize handle on the left edge */}
       <div
         className='absolute left-0 top-0 bottom-0 w-1 z-20 cursor-col-resize group'
@@ -358,10 +420,13 @@ const AIAssistantPanel = ({
         {/* Messages area */}
         <div
           ref={messagesContainerRef}
-          className={clsx('flex-1 overflow-y-auto p-4 flex flex-col gap-4 min-h-0', {
-            'bg-[#eff0f2]': isLight,
-            'bg-[#1a1d24]': !isLight,
-          })}
+          className={clsx(
+            'flex-1 overflow-y-auto p-4 flex flex-col gap-4 min-h-0',
+            {
+              'bg-[#eff0f2]': isLight,
+              'bg-[#1a1d24]': !isLight,
+            }
+          )}
         >
           {/* Empty state */}
           {messages.length === 0 && !isLoading && (
@@ -385,17 +450,6 @@ const AIAssistantPanel = ({
               >
                 Select code first to use it as context.
               </p>
-              <div
-                className={clsx('mt-2 rounded-lg px-3 py-2 text-xs border', {
-                  'border-[#d9dade] text-[#888c96]': isLight,
-                  'border-[#2e3340] text-[#636870]': !isLight,
-                })}
-              >
-                <kbd className='font-mono'>Alt</kbd>
-                {' + '}
-                <kbd className='font-mono'>Space</kbd>
-                {'  inline suggestions'}
-              </div>
             </div>
           )}
 
@@ -462,10 +516,13 @@ const AIAssistantPanel = ({
                             )}
                           >
                             <span
-                              className={clsx('text-[11px] font-mono opacity-60', {
-                                'text-[#383a42]': isLight,
-                                'text-[#abb2bf]': !isLight,
-                              })}
+                              className={clsx(
+                                'text-[11px] font-mono opacity-60',
+                                {
+                                  'text-[#383a42]': isLight,
+                                  'text-[#abb2bf]': !isLight,
+                                }
+                              )}
                             >
                               {part.lang || language}
                             </span>
@@ -482,7 +539,9 @@ const AIAssistantPanel = ({
                                     'text-[#abb2bf]': !isCopied && !isLight,
                                   }
                                 )}
-                                onClick={() => handleCopy(blockId, part.content)}
+                                onClick={() =>
+                                  handleCopy(blockId, part.content)
+                                }
                                 title='Copy code'
                               >
                                 {isCopied ? (
@@ -572,16 +631,13 @@ const AIAssistantPanel = ({
           >
             {/* Selection reference chip — shown when editor has an active selection */}
             {activeSelection && (
-              <div
-                className={clsx(
-                  'flex items-center gap-1.5 px-2 pt-2 pb-1',
-                )}
-              >
+              <div className={clsx('flex items-center gap-1.5 px-2 pt-2 pb-1')}>
                 <div
                   className={clsx(
                     'flex items-center gap-1 pl-1.5 pr-1 py-0.5 rounded text-[11px] font-medium border select-none',
                     {
-                      'bg-[#6038E8]/10 border-[#6038E8]/30 text-[#6038E8]': true,
+                      'bg-[#6038E8]/10 border-[#6038E8]/30 text-[#6038E8]':
+                        true,
                     }
                   )}
                 >
@@ -599,7 +655,13 @@ const AIAssistantPanel = ({
                       // Also clear the editor selection
                       if (editor) {
                         const pos = editor.getPosition();
-                        if (pos) editor.setSelection({ startLineNumber: pos.lineNumber, startColumn: pos.column, endLineNumber: pos.lineNumber, endColumn: pos.column });
+                        if (pos)
+                          editor.setSelection({
+                            startLineNumber: pos.lineNumber,
+                            startColumn: pos.column,
+                            endLineNumber: pos.lineNumber,
+                            endColumn: pos.column,
+                          });
                       }
                     }}
                     aria-label='Dismiss selection'
@@ -618,13 +680,13 @@ const AIAssistantPanel = ({
                 onKeyDown={handleKeyDown}
                 onKeyUp={(e) => e.stopPropagation()}
                 onKeyPress={(e) => e.stopPropagation()}
-                placeholder='Ask Code Assistant… (↵ send, ⇧↵ new line)'
+                placeholder='Ask Code Assistant'
                 rows={2}
                 className={clsx(
                   'flex-1 resize-none bg-transparent outline-none text-sm leading-relaxed placeholder:opacity-35',
                   {
                     'text-[#383a42]': isLight,
-                    'text-[#abb2bf]': !isLight,
+                    'text-white': !isLight,
                   }
                 )}
               />
@@ -643,18 +705,6 @@ const AIAssistantPanel = ({
               </Button>
             </div>
           </div>
-          <p
-            className={clsx('text-[11px] select-none opacity-70', {
-              'text-[#888c96]': isLight,
-              'text-[#636870]': !isLight,
-            })}
-          >
-            Press{' '}
-            <kbd className='font-mono'>Alt</kbd>
-            {' + '}
-            <kbd className='font-mono'>Space</kbd>
-            {' in editor for inline suggestions'}
-          </p>
         </div>
       </div>
     </div>
