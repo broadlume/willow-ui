@@ -45,15 +45,11 @@ import { EditorContent } from './components/editor-content';
 import { SlashCommand } from './extensions/slash-command';
 
 export type EditorAdvancedOptions = {
-  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
   hideImageOption?: boolean; // Whether to hide the Insert Image toolbar option
   hideVideoOption?: boolean; // Whether to hide the Insert Video toolbar option
   hideTableOption?: boolean; // Whether to hide the Insert Table toolbar option
   hideLinkOption?: boolean; // Whether to hide the Add Link toolbar option
   hideToggleRawHtmlOption?: boolean; // Whether to hide the Toggle Code/Raw HTML toolbar option
-  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
-  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
-  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name
 };
 
 export type EditorProps = {
@@ -87,12 +83,16 @@ export type EditorProps = {
       file: File | null;
     }
   ) => void; // Callback for when image name is clicked
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
   onAssetSelectorChange?: (
     editor: TiptapEditor,
     value: File | string | null
   ) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
   advancedOptions?: EditorAdvancedOptions; // Optional object to configure visibility of toolbar items
   authToken?: string; // Bearer token for AI API authorization
 };
@@ -293,10 +293,14 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 onImageBrowseClick={props.onImageBrowseClick}
                 onImageDrop={props.onImageDrop}
                 onImageNameClick={props.onImageNameClick}
+                disableAssetImageNameClick={props.disableAssetImageNameClick}
+                isShowAssetEditIcon={props.isShowAssetEditIcon}
                 advancedOptions={props.advancedOptions}
                 onAssetSelectorChange={props.onAssetSelectorChange}
                 assetSelectorValue={props.assetSelectorValue}
                 onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+                hideAIMenu={props.hideAIMenu}
+                isShowAssetBrowseButton={props.isShowAssetBrowseButton}
                 className={clsx({
                   'bg-gray-100': !darkMode,
                   'text-gray-800': !darkMode,
@@ -332,10 +336,14 @@ export const Editor: React.FC<EditorProps> = (props) => {
               onImageBrowseClick={props.onImageBrowseClick}
               onImageDrop={props.onImageDrop}
               onImageNameClick={props.onImageNameClick}
+              disableAssetImageNameClick={props.disableAssetImageNameClick}
+              isShowAssetEditIcon={props.isShowAssetEditIcon}
               advancedOptions={props.advancedOptions}
               onAssetSelectorChange={props.onAssetSelectorChange}
               assetSelectorValue={props.assetSelectorValue}
               onAssetSelectorValueChange={props.onAssetSelectorValueChange}
+              hideAIMenu={props.hideAIMenu}
+              isShowAssetBrowseButton={props.isShowAssetBrowseButton}
               className={clsx({
                 'bg-surface-pri text-text-pri': !darkMode,
                 'border-gray-700 bg-gray-900 text-white': darkMode,

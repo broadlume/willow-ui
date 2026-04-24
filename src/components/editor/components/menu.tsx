@@ -53,19 +53,19 @@ interface MenuProps {
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
+  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
+  isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
   authToken?: string; // Bearer token for AI API authorization
 }
 
 const DEFAULT_ADVANCED_OPTIONS: Required<EditorAdvancedOptions> = {
-  hideAIMenu: false,
   hideImageOption: false,
   hideVideoOption: false,
   hideTableOption: false,
   hideLinkOption: false,
   hideToggleRawHtmlOption: false,
-  isShowAssetBrowseButton: true,
-  isShowAssetEditIcon: false,
-  disableAssetImageNameClick: false,
 };
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
@@ -92,6 +92,10 @@ export const Menu = ({
   onAssetSelectorChange,
   assetSelectorValue,
   onAssetSelectorValueChange,
+  hideAIMenu,
+  isShowAssetBrowseButton = true,
+  isShowAssetEditIcon,
+  disableAssetImageNameClick,
   authToken,
 }: MenuProps) => {
   const options: Required<EditorAdvancedOptions> = {
@@ -199,7 +203,7 @@ export const Menu = ({
 
     // Iterate through all menu items and decide where to place them
     const allMenuItems = getAllMenuItems().filter((item) => {
-      if (options.hideAIMenu && item.id === 'ai-button') return false;
+      if (hideAIMenu && item.id === 'ai-button') return false;
       if (options.hideImageOption && item.id === 'image') return false;
       if (options.hideVideoOption && item.id === 'video') return false;
       if (options.hideTableOption && item.id === 'table') return false;
@@ -243,7 +247,7 @@ export const Menu = ({
     setHiddenItems(tempHidden);
   }, [
     availableWidth,
-    options.hideAIMenu,
+    hideAIMenu,
     options.hideImageOption,
     options.hideVideoOption,
     options.hideTableOption,
@@ -273,14 +277,14 @@ export const Menu = ({
     onImageBrowseClick,
     onImageDrop,
     onImageNameClick,
-    disableAssetImageNameClick: options.disableAssetImageNameClick,
-    isShowAssetEditIcon: options.isShowAssetEditIcon,
+    disableAssetImageNameClick,
+    isShowAssetEditIcon,
     onAssetSelectorChange,
     expandedMenu,
     setExpandedMenu,
     expandedMenuL2,
     setExpandedMenuL2,
-    isShowAssetBrowseButton: options.isShowAssetBrowseButton,
+    isShowAssetBrowseButton,
     authToken,
   };
 
@@ -401,10 +405,10 @@ export const Menu = ({
           onImageBrowseClick,
           onImageDrop,
           onImageNameClick,
-          options.disableAssetImageNameClick,
-          options.isShowAssetEditIcon,
+          disableAssetImageNameClick,
+          isShowAssetEditIcon,
           onAssetSelectorChange,
-          options.isShowAssetBrowseButton
+          isShowAssetBrowseButton
         )}
       </div>
       {/* Expanded Menu L2*/}

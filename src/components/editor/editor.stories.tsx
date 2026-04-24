@@ -57,10 +57,8 @@ const EditorComponentWithoutAI = () => {
       onBlur={(html) => console.log('Content blurred:', html)}
       autocompleteFetchOptions={fetchUsersFromApi}
       hostname='https://api.cms.my.dev.broadlume.com'
-      advancedOptions={{
-        hideAIMenu: true,
-        isShowAssetBrowseButton: false,
-      }}
+      hideAIMenu={true}
+      isShowAssetBrowseButton={false}
     />
   );
 };
@@ -88,9 +86,9 @@ const EditorComponentWithoutAdvancedOption = () => {
       onBlur={(html) => console.log('Content blurred:', html)}
       autocompleteFetchOptions={fetchUsersFromApi}
       hostname='https://api.cms.my.dev.broadlume.com'
+      hideAIMenu={true}
+      isShowAssetBrowseButton={false}
       advancedOptions={{
-        hideAIMenu: true,
-        isShowAssetBrowseButton: false,
         hideImageOption: true,
         hideVideoOption: true,
         hideTableOption: true,
