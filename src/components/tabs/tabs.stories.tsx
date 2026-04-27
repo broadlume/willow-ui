@@ -62,6 +62,25 @@ export const Pills: Story = {
   ),
 };
 
+/** Pill-style tabs with custom styling via className props. */
+export const PillsCustomized: Story = {
+  render: (args) => (
+    <Tabs defaultValue='contacts' {...args} variant='pills' className='w-full'>
+      <TabsList className='grid grid-cols-4 gap-2 bg-surface-opt p-2 [&>div]:bg-surface-brand'>
+        <TabsTrigger
+          value='leads'
+          className='data-[state=active]:text-yellow-200 data-[state=inactive]:text-red-600'
+        >
+          Leads
+        </TabsTrigger>
+        <TabsTrigger value='contacts'>Contacts</TabsTrigger>
+        <TabsTrigger value='stores'>Stores</TabsTrigger>
+        <TabsTrigger value='reviews'>Reviews</TabsTrigger>
+      </TabsList>
+    </Tabs>
+  ),
+};
+
 /** Disabled tabs. */
 export const DisabledTabs: Story = {
   render: (args) => (
