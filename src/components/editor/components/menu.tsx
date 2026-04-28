@@ -53,7 +53,7 @@ interface MenuProps {
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
-  hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
+  hideAIMenu?: boolean; // // Whether to hide the AI Menu
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
   isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
   disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
@@ -201,16 +201,22 @@ export const Menu = ({
     const tempVisible: MenuItemDefinition[] = [];
     const tempHidden: MenuItemDefinition[] = [];
 
-    // Iterate through all menu items and decide where to place them
-    const allMenuItems = getAllMenuItems().filter((item) => {
-      if (hideAIMenu && item.id === 'ai-button') return false;
-      if (options.hideImageOption && item.id === 'image') return false;
-      if (options.hideVideoOption && item.id === 'video') return false;
-      if (options.hideTableOption && item.id === 'table') return false;
-      if (options.hideLinkOption && item.id === 'link') return false;
-      if (options.hideToggleRawHtmlOption && item.id === 'code') return false;
-      return true;
-    });
+    const hideConfig: ReadonlyArray<[boolean | undefined, string]> = [
+      [hideAIMenu, 'ai-button'],
+      [options.hideImageOption, 'image'],
+      [options.hideVideoOption, 'video'],
+      [options.hideTableOption, 'table'],
+      [options.hideLinkOption, 'link'],
+      [options.hideToggleRawHtmlOption, 'code'],
+    ];
+
+    const hiddenItemIds = new Set(
+      hideConfig.filter(([condition]) => condition).map(([, id]) => id)
+    );
+
+    const allMenuItems = getAllMenuItems().filter(
+      (item) => !hiddenItemIds.has(item.id)
+    );
     for (const item of allMenuItems) {
       // Estimate item width, including a gap if it's not the first item
       const itemRenderedWidth = item.widthEstimate + GAP_WIDTH;
