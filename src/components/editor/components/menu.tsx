@@ -53,7 +53,7 @@ interface MenuProps {
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
-  hideAIMenu?: boolean; // // Whether to hide the AI Menu
+  hideAIMenu?: boolean; // Whether to hide the AI Menu
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
   isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
   disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
