@@ -69,7 +69,7 @@ export const PillsCustomized: Story = {
       <TabsList className='grid grid-cols-4 gap-2 bg-surface-opt p-2 [&>div]:bg-surface-brand'>
         <TabsTrigger
           value='leads'
-          className='data-[state=active]:text-yellow-200 data-[state=inactive]:text-red-600'
+          className='data-[state=active]:text-text-success data-[state=inactive]:text-text-destructive'
         >
           Leads
         </TabsTrigger>
