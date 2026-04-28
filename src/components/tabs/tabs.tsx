@@ -17,7 +17,7 @@ const tabListVariants = cva(
       variant: {
         default:
           'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-border-sec after:content-[""]',
-        pills: 'rounded-full border border-border-brand p-1',
+        pills: 'rounded-md border border-pri p-1',
       },
     },
     defaultVariants: {
@@ -32,7 +32,7 @@ const sliderVariants = cva(
     variants: {
       variant: {
         default: 'bottom-0 h-0.5 bg-surface-brand border-l-2',
-        pills: 'bottom-1 top-1 rounded-full bg-surface-brand',
+        pills: 'bottom-1 top-1 rounded-md bg-surface-cta',
       },
       orientation: {
         horizontal: 'left-0',
@@ -46,7 +46,7 @@ const sliderVariants = cva(
         variant: 'pills',
         orientation: 'horizontal',
         className:
-          'bottom-1 top-1 h-auto rounded-full border-none bg-surface-brand',
+          'bottom-1 top-1 h-auto rounded-md border-none bg-surface-cta',
       },
     ],
     defaultVariants: {
@@ -69,8 +69,8 @@ const tabTriggerVariants = cva(
           'data-[state=inactive]:text-text-opt data-[state=active]:text-foreground'
         ),
         pills: cn(
-          'px-3 py-1',
-          'z-10 rounded-full text-foreground data-[state=active]:text-white'
+          'text-sm font-normal px-3 py-1',
+          'z-10 rounded-md data-[state=inactive]:text-text-opt data-[state=active]:text-white'
         ),
       },
     },
