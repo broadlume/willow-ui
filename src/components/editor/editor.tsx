@@ -44,6 +44,14 @@ import { Menu } from './components/menu';
 import { EditorContent } from './components/editor-content';
 import { SlashCommand } from './extensions/slash-command';
 
+export type EditorAdvancedOptions = {
+  hideImageOption?: boolean; // Whether to hide the Insert Image toolbar option
+  hideVideoOption?: boolean; // Whether to hide the Insert Video toolbar option
+  hideTableOption?: boolean; // Whether to hide the Insert Table toolbar option
+  hideLinkOption?: boolean; // Whether to hide the Add Link toolbar option
+  hideToggleRawHtmlOption?: boolean; // Whether to hide the Toggle Code/Raw HTML toolbar option
+};
+
 export type EditorProps = {
   content?: string;
   onChange?: (html: string) => void;
@@ -85,6 +93,7 @@ export type EditorProps = {
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
   hideAIMenu?: boolean; // Whether to hide the AI Menu (slash command menu)
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  advancedOptions?: EditorAdvancedOptions; // Optional object to configure visibility of toolbar items
   authToken?: string; // Bearer token for AI API authorization
 };
 
@@ -286,6 +295,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
                 onImageNameClick={props.onImageNameClick}
                 disableAssetImageNameClick={props.disableAssetImageNameClick}
                 isShowAssetEditIcon={props.isShowAssetEditIcon}
+                advancedOptions={props.advancedOptions}
                 onAssetSelectorChange={props.onAssetSelectorChange}
                 assetSelectorValue={props.assetSelectorValue}
                 onAssetSelectorValueChange={props.onAssetSelectorValueChange}
@@ -328,6 +338,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
               onImageNameClick={props.onImageNameClick}
               disableAssetImageNameClick={props.disableAssetImageNameClick}
               isShowAssetEditIcon={props.isShowAssetEditIcon}
+              advancedOptions={props.advancedOptions}
               onAssetSelectorChange={props.onAssetSelectorChange}
               assetSelectorValue={props.assetSelectorValue}
               onAssetSelectorValueChange={props.onAssetSelectorValueChange}

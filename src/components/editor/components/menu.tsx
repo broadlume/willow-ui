@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Editor } from '@tiptap/react';
 import clsx from 'clsx';
+import type { EditorAdvancedOptions } from '../editor';
 
 // Icons
 import { MdOutlineMoreVert } from 'react-icons/md';
@@ -48,15 +49,24 @@ interface MenuProps {
       file: File | null;
     }
   ) => void; // Callback for when image name is clicked
-  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
-  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  advancedOptions?: EditorAdvancedOptions; // Advanced visibility/config options for menu actions
   onAssetSelectorChange?: (editor: Editor, value: File | string | null) => void; // Callback when MiniAssetSelector value changes
   assetSelectorValue?: string; // Controlled value for the MiniAssetSelector input in the image insertion dialog
   onAssetSelectorValueChange?: (value: string) => void; // Callback when the MiniAssetSelector input value changes
-  hideAIMenu?: boolean; // Whether to hide the AI Menu button,
+  hideAIMenu?: boolean; // Whether to hide the AI Menu
   isShowAssetBrowseButton?: boolean; // Whether to show the browse button in the asset selector
+  isShowAssetEditIcon?: boolean; // Whether to show edit icon on image preview
+  disableAssetImageNameClick?: boolean; // Whether to disable clicking on the image name - independent from the disabled prop
   authToken?: string; // Bearer token for AI API authorization
 }
+
+const DEFAULT_ADVANCED_OPTIONS: Required<EditorAdvancedOptions> = {
+  hideImageOption: false,
+  hideVideoOption: false,
+  hideTableOption: false,
+  hideLinkOption: false,
+  hideToggleRawHtmlOption: false,
+};
 
 type L2MenuType = 'video' | 'embed' | 'link' | 'image';
 
@@ -78,15 +88,21 @@ export const Menu = ({
   onImageBrowseClick,
   onImageDrop,
   onImageNameClick,
-  disableAssetImageNameClick,
-  isShowAssetEditIcon,
+  advancedOptions,
   onAssetSelectorChange,
   assetSelectorValue,
   onAssetSelectorValueChange,
   hideAIMenu,
   isShowAssetBrowseButton = true,
+  isShowAssetEditIcon,
+  disableAssetImageNameClick,
   authToken,
 }: MenuProps) => {
+  const options: Required<EditorAdvancedOptions> = {
+    ...DEFAULT_ADVANCED_OPTIONS,
+    ...advancedOptions,
+  };
+
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [expandedMenuL2, setExpandedMenuL2] = useState(false);
   const [expandedMenuL2Type, setExpandedMenuL2Type] = useState<L2MenuType>();
@@ -185,9 +201,21 @@ export const Menu = ({
     const tempVisible: MenuItemDefinition[] = [];
     const tempHidden: MenuItemDefinition[] = [];
 
-    // Iterate through all menu items and decide where to place them
+    const hideConfig: ReadonlyArray<[boolean | undefined, string]> = [
+      [hideAIMenu, 'ai-button'],
+      [options.hideImageOption, 'image'],
+      [options.hideVideoOption, 'video'],
+      [options.hideTableOption, 'table'],
+      [options.hideLinkOption, 'link'],
+      [options.hideToggleRawHtmlOption, 'code'],
+    ];
+
+    const hiddenItemIds = new Set(
+      hideConfig.filter(([condition]) => condition).map(([, id]) => id)
+    );
+
     const allMenuItems = getAllMenuItems().filter(
-      (item) => !(hideAIMenu && item.id === 'ai-button')
+      (item) => !hiddenItemIds.has(item.id)
     );
     for (const item of allMenuItems) {
       // Estimate item width, including a gap if it's not the first item
@@ -223,7 +251,15 @@ export const Menu = ({
 
     setVisibleItems(tempVisible);
     setHiddenItems(tempHidden);
-  }, [availableWidth, hideAIMenu]);
+  }, [
+    availableWidth,
+    hideAIMenu,
+    options.hideImageOption,
+    options.hideVideoOption,
+    options.hideTableOption,
+    options.hideLinkOption,
+    options.hideToggleRawHtmlOption,
+  ]);
 
   const commonMenuItemProps: MenuItemRenderProps = {
     editor,

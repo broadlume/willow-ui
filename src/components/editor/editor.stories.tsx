@@ -64,5 +64,29 @@ const EditorComponentWithoutAI = () => {
 };
 
 export const WithoutAIMenu: Story = {
-  render: () => <EditorComponentWithoutAI />,
+  render: () => <EditorComponentWithoutAI />
+};
+
+const EditorComponentWithoutAdvancedOption = () => {
+
+  return (
+    <Editor
+      onChange={(html) => console.log('Content changed:', html)}
+      onBlur={(html) => console.log('Content blurred:', html)}
+      hostname='https://api.cms.my.dev.broadlume.com'
+      hideAIMenu={true}
+      isShowAssetBrowseButton={false}
+      advancedOptions={{
+        hideImageOption: true,
+        hideVideoOption: true,
+        hideTableOption: true,
+        hideLinkOption: true,
+        hideToggleRawHtmlOption: true,
+      }}
+    />
+  );
+};
+
+export const EditorWithoutAdvancedOption: Story = {
+  render: () => <EditorComponentWithoutAdvancedOption />
 };
